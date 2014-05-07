@@ -1,0 +1,640 @@
+package root.util;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+/**
+ * Class is representing all table in database. It has all data
+ * that is needed, I hope so :D. 
+ *
+ */
+public class TableMetaData {
+    /**
+     * Databese name of this table.
+     */
+    private String dbName;
+    /**
+     * Name of this table that is in human readable form.
+     */
+    private String realName;
+    /**
+     * Columns in this table.
+     */
+    private List<ColumnMetaData> columns;
+    /**
+     * Refereces to other table.
+     */
+    private Set<ReferencesMetaData> entities;
+    /**
+     * Menu in which this table can be found.
+     */
+    private String menu;
+    /**
+     * Tables that can be used for next mechanism.
+     */
+    private HashSet<TableMetaData> forNext;
+    /**
+     * Mark for this table, if he is only readable.
+     */
+    private Boolean readOnly;
+    
+    /**
+     * Constructor.
+     */
+    public TableMetaData(){
+        columns = new Vector<ColumnMetaData>();
+        entities = new HashSet<ReferencesMetaData>();
+        forNext = new HashSet<TableMetaData>();
+        readOnly = false;
+    }
+    /**
+     * Constructor
+     */
+    public TableMetaData(String dbName, String realName,
+            List<ColumnMetaData> columns, HashSet<ReferencesMetaData> entities, 
+            String meni, HashSet<TableMetaData> referencedBy,
+            Boolean readOnly) {
+        super();
+        this.dbName = dbName;
+        this.realName = realName;
+        this.columns = columns;
+        this.entities = entities;
+        this.menu = meni;
+        this.forNext = referencedBy;
+        this.readOnly = readOnly;
+    }
+    /**
+     * 
+     * @return name of this table in database.
+     */
+    public String getDbName() {
+        return dbName;
+    }
+    /**
+     * 
+     * @param dbName new name for this table in database.
+     */
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+    /**
+     * 
+     * @return human readable name for this table.
+     */
+    public String getRealName() {
+        return realName;
+    }
+    /**
+     * 
+     * @param realName new human readable name for this table.
+     */
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+    /**
+     * 
+     * @return list of columns in this table.
+     */
+    public List<ColumnMetaData> getColumns() {
+        return columns;
+    }
+    /**
+     * 
+     * @param columns list of new columns in this table.
+     */
+    public void setColumns(List<ColumnMetaData> columns) {
+        this.columns = columns;
+    }
+
+    /**
+     * Returns tables that are needed for making next mechanism.
+     * This is main task for this method.
+     * @return tables that are referencing this table.
+     */
+    public HashSet<TableMetaData> getForNext() {
+        return forNext;
+    }
+
+    @Override
+    public String toString() {
+        return "TableMetaData [columns=" + columns + ", dbName=" + dbName
+                + ", entities=" + entities + ", forNext=" + forNext + ", menu="
+                + menu + ", realName=" + realName + "]";
+    }
+    /**
+     * 
+     * @return number of columns.
+     */
+    public int count(){
+        return columns.size();
+    }
+    /**
+     * 
+     * @return array of column names.
+     */
+    public String [] getColumnNames(){
+        String [] columnNames = new String[columns.size()];
+        
+        for(int i = 0; i < columns.size(); i++){
+            columnNames[i] = columns.get(i).getName();
+        }
+        
+        return columnNames;
+    }
+    /**
+     * 
+     * @return collection of references.
+     */
+    public Collection<ReferencesMetaData> getEntities() {
+        return entities;
+    }
+
+    /**
+     * 
+     * @param dbName database name of column that is used for search.
+     * @return column that has database name equal dbName.
+     */
+    public ColumnMetaData getColumnByDbName(String dbName){
+        for(ColumnMetaData cmd : columns){
+            if(cmd.getCodeName().equals(dbName)){
+                return cmd;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * 
+     * @param displayName name of column in human readable form that is used for search.
+     * @return column with name that is equal to displayName.
+     */
+    public ColumnMetaData getColumnByDisplayName(String displayName){
+    	for(ColumnMetaData cmd : columns){
+    		if(cmd.getName().equals(displayName)){
+    			return cmd;
+    		}
+    	}
+    	return null;
+    }
+    /**
+     * 
+     * @return select query for this table.
+     */
+    public String getSelectAllQuery(){
+        String select = "SELECT ";
+        String from = " FROM " + this.dbName + " ";
+        String orderBy = " ORDER BY ";
+        boolean firstColumn = true;
+        boolean firstOrder = true;
+        Collection<ColumnMetaData> used = new Vector<ColumnMetaData>();
+        
+        for(Object o : this.getFields()){
+            if(o instanceof ColumnMetaData){
+                ColumnMetaData cmd = (ColumnMetaData)o;
+                
+                if(used.contains(cmd)){
+                    continue;
+                }
+                
+                if(!firstColumn){
+                    select += ", ";
+                }else{
+                    firstColumn = false;
+                }
+                select += cmd.getTableDbName() + "." + cmd.getCodeName();
+                used.add(cmd);
+            }else{
+                if(o instanceof ReferencesMetaData){
+                    ReferencesMetaData rmd = (ReferencesMetaData)o;
+                    String tempSelect = rmd.getSelectWithout(used);
+                    if(!firstColumn && !tempSelect.equals("")){
+                        
+                        select += ", ";
+                    }else{
+                        firstColumn = false;
+                    }
+                    select += tempSelect; 
+                    from += " LEFT OUTER JOIN " +  rmd.getParentTable() + " " + rmd.getName() + " ON ";
+                    from += rmd.getFrom();
+                    
+                }
+            }
+        }
+        
+        
+        for(ColumnMetaData cmd : this.getKeys()){
+                if(!firstOrder){
+                    orderBy += ", ";
+                }else{
+                    firstOrder = false;
+                }
+            
+            orderBy += cmd.getTableDbName() + "." + cmd.getCodeName();
+        }
+        
+        return select + from + orderBy;
+        
+    }
+    /**
+     * 
+     * @return select query  without order by.
+     */
+    public String getSelectAllQueryWithoutOrderBy(){
+        String select = "SELECT ";
+        String from = " FROM " + this.dbName + " ";
+        boolean firstColumn = true;
+        
+        for(Object o : this.getFields()){
+            if(o instanceof ColumnMetaData){
+                ColumnMetaData cmd = (ColumnMetaData)o;
+                
+                if(!firstColumn){
+                    select += ", ";
+                }else{
+                    firstColumn = false;
+                }
+                select += cmd.getTableDbName() + "." + cmd.getCodeName();
+            }else{
+                if(o instanceof ReferencesMetaData){
+                    ReferencesMetaData rmd = (ReferencesMetaData)o;
+                    if(!firstColumn){
+                        select += ", ";
+                    }else{
+                        firstColumn = false;
+                    }
+                    select +=  rmd.getSelect();
+                    from += " LEFT OUTER JOIN " +  rmd.getParentTable() + " " + rmd.getName() + " ON ";
+                    from += rmd.getFrom();
+                    
+                }
+            }
+        }
+        
+        
+        return select + from;
+    }
+    /**
+     * 
+     * @return where part of select query, but only for keys in this table.
+     */
+    public String getWhereForKeys(){
+        Collection<ColumnMetaData> keys = this.getKeys();
+        
+        String where = "";
+        Boolean firsKey = true;
+        
+        for(ColumnMetaData cmd : keys){
+            if(firsKey){
+                where += " WHERE ";
+                firsKey = false;
+            }else{
+                where += " AND ";
+            }
+            where += cmd.getTableDbName() + "." + cmd.getCodeName() + "=?";
+            
+        }
+        
+        return where;
+        
+    }
+    /**
+     * 
+     * @return collection in indexes for keys.
+     */
+    public Collection<Integer> getIndexOfKeys(){
+        Vector<Integer> indexes = new Vector<Integer>();
+        Collection<ColumnMetaData> columns = this.getJoinedTables();
+        int index = 0;
+        
+        for(ColumnMetaData cmd : columns){
+            if(cmd.isKey()){
+                indexes.add(index);
+            }
+            
+            index++;
+        }
+        
+        return indexes;
+    }
+    /**
+     * 
+     * @return from part in select query.
+     */
+    public String getFromClausual(){
+        
+        String from = "";
+        
+        for(ReferencesMetaData s : entities){
+            
+            from += " LEFT OUTER JOIN " +  s.getParentTable() + " " + s.getName() + " ON ";
+            from += s.getFrom();
+            
+        }
+        
+        return from;
+        
+    }
+    /**
+     * 
+     * @return ColumnList for this table.
+     */
+    public ColumnList getColumnListForTable(){
+        ColumnList cl = new ColumnList();
+        
+        for(ColumnMetaData cmd : this.getJoinedTables()){
+            cl.add(new Column(cmd));
+        }
+        
+        return cl;
+    }
+    /**
+     * DO NOT USE THIS METHOD ANY MORE
+     * @param forigenTableName name of table
+     * @return list of columns that has same foreign table name.
+     */
+    public List<ColumnMetaData> getAllColumWithSameForigenTableName(String forigenTableName){
+        List<ColumnMetaData> rez = new Vector<ColumnMetaData>();
+        for(ColumnMetaData c : columns){
+            if(c.getForigen_column_name() != null && c.getForigen_table_name() != null &&
+                    c.getForigen_table_name().equals(forigenTableName)){
+                rez.add(c);
+            }
+        }
+        
+        return rez;
+    }
+    /**
+     * 
+     * @return collection of columns that are no FK.
+     */
+    public Collection<ColumnMetaData> getColumnsThatAreNotFK(){
+        Collection<ColumnMetaData> res = new Vector<ColumnMetaData>();
+        
+        for(ColumnMetaData c : columns){
+            if(c.getForigen_table_name() == null){
+                res.add(c);
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
+     * 
+     * @return all columns that are marked visible and are not PK.
+     */
+    public Collection<ColumnMetaData> getColumnsThatAreVisibleNotPK(){
+        Collection<ColumnMetaData> rez = new Vector<ColumnMetaData>();
+        
+        for(ColumnMetaData cmd : columns){
+            if(cmd.getVisble() && !cmd.isKey()){
+                rez.add(cmd);
+            }
+        }
+        
+        return rez;
+    }
+    /**
+     * 
+     * @return collection of columns that are not PK.
+     */
+    public Collection<ColumnMetaData> getColumnsThatAreNotPK(){
+        Collection<ColumnMetaData> res = new Vector<ColumnMetaData>();
+        
+        for(ColumnMetaData c: columns){
+            if(!c.isKey()){
+                res.add(c);
+            }
+        }
+        
+        return res;
+    }
+    /**
+     * 
+     * @return collection of table name that are referenced from this table.
+     */
+    public Collection<String> getAllForignTableName(){
+        Collection<String> rez = new HashSet<String>();
+        
+        for(ReferencesMetaData c : entities){
+            if(c.getParentTable() != null){
+                rez.add(c.getParentTable());
+            }
+        }
+        
+        return rez;
+    }
+    
+    /**
+     * Get all columns that need to be represented in dialog.
+     * @return collection of columns that need to be shown for this table.
+     */
+    public Collection<ColumnMetaData> getJoinedTables(){
+        Vector<ColumnMetaData> res = new Vector<ColumnMetaData>();
+        
+        res.addAll(columns);
+        
+        for(ReferencesMetaData ref : entities){
+            ColumnMetaData referenced = ref.getAllVisibleColumnFromParentTable();
+            if(referenced != null){
+                ColumnMetaData last = ref.last();
+                int index = res.indexOf(last);
+                
+                res.add(++index, referenced);
+            }
+        }
+        
+        return res;
+    }
+    /**
+     * Get all columns for this table that need to be shown without PK columns.
+     * @return collection of columns that need to be shown for this table without PK columns.
+     */
+    public Collection<ColumnMetaData> getJoinedTablesWithoutPK(){
+        Collection<ColumnMetaData> res = getJoinedTables();
+        
+        for(ColumnMetaData col : res){
+            if(!col.isKey())
+                res.remove(col);
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Get all columns for this table that need to be shown without columns that are supplied to method.
+     * @param listOfColumn collection of columns that should not be shown.
+     * @return collection of columns from this table without supplied columns.
+     */
+    public Collection<ColumnMetaData> getJoinedTablesWithoutEnteredColumns(List<ColumnMetaData> listOfColumn){
+        Collection<ColumnMetaData> res = getJoinedTables();
+        
+        for(ColumnMetaData cmd : listOfColumn){
+            if(res.contains(cmd)){
+                res.remove(cmd);
+            }
+            
+        }
+
+        return res;
+    }
+    /**
+     * 
+     * @return collection of columns that are part of key.
+     */
+    public Collection<ColumnMetaData> getKeys(){
+        Collection<ColumnMetaData> rez = new Vector<ColumnMetaData>();
+        
+        for(ColumnMetaData cmd : columns){
+            if(cmd.isKey()){
+                rez.add(cmd);
+            }
+        }
+        
+        return rez;
+    }
+    /**
+     * 
+     * @return menu name in which table should be.
+     */
+    public String getMenu() {
+        return menu;
+    }
+    /**
+     * Set new menu for this table
+     * @param meni new menu name for this table.
+     */
+    public void setMenu(String meni) {
+        this.menu = meni;
+    }
+    /**
+     * 
+     * @return true if table is read only, otherwise false.
+     */
+    public Boolean getReadOnly() {
+        return readOnly;
+    }
+    /**
+     * 
+     * @param readOnly new mark for read only property.
+     */
+    public void setReadOnly(Boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+    /**
+     * 
+     * @return collection of CMD and RMD that are sorted in order in which
+     * columns are shown in table. 
+     */
+    public Collection<Object> getFields(){
+        Collection<Object> rez = new Vector<Object>();
+        ReferencesMetaData res = null;
+        int hops = -1;
+        int minHops = Integer.MAX_VALUE;
+        for(ColumnMetaData cmd : columns){
+            res = null;
+            if(cmd.isFK()){
+                if(cmd.references.size() > 1 ){
+                    for(ReferencesMetaData rmd: cmd.references){
+                        
+                        hops = cmd.getHopsToParrent(rmd.getParentTableMetaData());
+                        if(hops == 0){
+                            if(rmd.containsColumnName(cmd.getCodeName())){
+                                
+                                if(!rez.contains(rmd)){
+                                    rez.add(rmd);
+                                    break;
+                                } 
+                            }
+                        }else{
+                            if(minHops > hops){
+                                res = rmd;
+                                minHops = hops;
+                            }
+                        }
+                        
+                    }
+                    
+                    if(hops == 0){
+                        continue;
+                    }else{
+                        if(res != null && res.containsColumnName(cmd.getCodeName())){
+                            
+                            if(!rez.contains(res)){
+                                rez.add(res);
+                                break;
+                            } 
+                        }
+                    }
+                }else{
+                    if(cmd.references.size() != 0){
+                        for(ReferencesMetaData rmd: cmd.references){
+                            if(!rez.contains(rmd)){
+                                rez.add(rmd);
+                                break;
+                            } 
+                        }
+                    }
+                }
+            }else{
+                rez.add(cmd);
+            }
+        }
+        
+        
+        return rez;
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((dbName == null) ? 0 : dbName.hashCode());
+        result = prime * result + ((menu == null) ? 0 : menu.hashCode());
+        result = prime * result
+                + ((readOnly == null) ? 0 : readOnly.hashCode());
+        result = prime * result
+                + ((realName == null) ? 0 : realName.hashCode());
+        return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof TableMetaData))
+            return false;
+        TableMetaData other = (TableMetaData) obj;
+        if (dbName == null) {
+            if (other.dbName != null)
+                return false;
+        } else if (!dbName.equals(other.dbName))
+            return false;
+        if (menu == null) {
+            if (other.menu != null)
+                return false;
+        } else if (!menu.equals(other.menu))
+            return false;
+        if (readOnly == null) {
+            if (other.readOnly != null)
+                return false;
+        } else if (!readOnly.equals(other.readOnly))
+            return false;
+        if (realName == null) {
+            if (other.realName != null)
+                return false;
+        } else if (!realName.equals(other.realName))
+            return false;
+        return true;
+    }
+   
+    
+    
+    
+    
+    
+}

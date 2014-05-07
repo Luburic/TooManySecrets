@@ -1,0 +1,125 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/faks_dlzteam/!svn/ver/164/trunk/SF/src/root.util
+END
+Constants.java
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/faks_dlzteam/!svn/ver/164/trunk/SF/src/root.util/Constants.java
+END
+ZoomValidationEvent.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/faks_dlzteam/!svn/ver/101/trunk/SF/src/root.util/ZoomValidationEvent.java
+END
+NumericField.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/faks_dlzteam/!svn/ver/145/trunk/SF/src/root.util/NumericField.java
+END
+ZoomElement.java
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/faks_dlzteam/!svn/ver/157/trunk/SF/src/root.util/ZoomElement.java
+END
+ColumnMetaData.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/faks_dlzteam/!svn/ver/126/trunk/SF/src/root.util/ColumnMetaData.java
+END
+MetaDataLoader.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/faks_dlzteam/!svn/ver/164/trunk/SF/src/root.util/MetaDataLoader.java
+END
+LookupElement.java
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/faks_dlzteam/!svn/ver/133/trunk/SF/src/root.util/LookupElement.java
+END
+StatusBar.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/faks_dlzteam/!svn/ver/86/trunk/SF/src/root.util/StatusBar.java
+END
+ZoomValidationListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/faks_dlzteam/!svn/ver/101/trunk/SF/src/root.util/ZoomValidationListener.java
+END
+TableMetaData.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/faks_dlzteam/!svn/ver/85/trunk/SF/src/root.util/TableMetaData.java
+END
+VarcharField.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/faks_dlzteam/!svn/ver/145/trunk/SF/src/root.util/VarcharField.java
+END
+ZoomValueEvent.java
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/faks_dlzteam/!svn/ver/86/trunk/SF/src/root.util/ZoomValueEvent.java
+END
+Lookup.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/faks_dlzteam/!svn/ver/9/trunk/SF/src/root.util/Lookup.java
+END
+Field.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/faks_dlzteam/!svn/ver/142/trunk/SF/src/root.util/Field.java
+END
+ErrorProvider.java
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/faks_dlzteam/!svn/ver/144/trunk/SF/src/root.util/ErrorProvider.java
+END
+ReferencesMetaData.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/faks_dlzteam/!svn/ver/103/trunk/SF/src/root.util/ReferencesMetaData.java
+END
+Column.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/faks_dlzteam/!svn/ver/80/trunk/SF/src/root.util/Column.java
+END
+ColumnList.java
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/faks_dlzteam/!svn/ver/80/trunk/SF/src/root.util/ColumnList.java
+END
+SortUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/faks_dlzteam/!svn/ver/6/trunk/SF/src/root.util/SortUtils.java
+END
+ZoomValueListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/faks_dlzteam/!svn/ver/40/trunk/SF/src/root.util/ZoomValueListener.java
+END

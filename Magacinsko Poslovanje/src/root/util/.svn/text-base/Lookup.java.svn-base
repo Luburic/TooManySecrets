@@ -1,0 +1,23 @@
+package root.util;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import dbConnection.DBConnection;
+
+public class Lookup { 
+    public static String getDrzava (String sifraDrzave) throws SQLException {
+      String naziv = "";  
+      if (sifraDrzave == "") return naziv;
+      Statement stmt = DBConnection.getConnection().createStatement();
+      String sql = "SELECT DR_NAZIV FROM DRZAVA WHERE DR_SIFRA = '" + sifraDrzave + "'";  
+      ResultSet rset = stmt.executeQuery(sql);
+      while (rset.next()) {      
+        naziv = rset.getString("DR_NAZIV");      
+      }
+      rset.close();
+      stmt.close();
+      return naziv;
+    }
+  }

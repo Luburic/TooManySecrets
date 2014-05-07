@@ -1,0 +1,62 @@
+package root.util;
+
+import java.util.ArrayList;
+import java.util.EventObject;
+import java.util.HashMap;
+
+@SuppressWarnings("serial")
+public class ZoomValueEvent extends EventObject {
+
+//	@SuppressWarnings("rawtypes")
+//	HashMap<String, Object> data;
+//	
+	ArrayList<String> fieldPKNames = new ArrayList<String>();
+	ArrayList<Object> fieldPKValues = new ArrayList<Object>();
+//	
+//	@SuppressWarnings("rawtypes")
+//	public ZoomValueEvent(Object arg0) {
+//		super(arg0);
+//		this.data = (HashMap<String, Object>) arg0;
+//	}
+	
+	public ZoomValueEvent(ArrayList<String> fieldPKNames, ArrayList<Object> fieldPKValues) {
+		super(fieldPKValues);
+		this.fieldPKNames = fieldPKNames;
+		this.fieldPKValues = fieldPKValues;
+	}
+	
+//	public Object getData(String key) {
+//		return data.get(key);
+//	}
+//	
+//	public HashMap<String, Object> getData() {
+//		return this.data;
+//	}
+	
+	public ArrayList<String> getDataKeys(){
+		return this.fieldPKNames;
+	}
+	
+	public ArrayList<Object> getDataValues() {
+		return this.fieldPKValues;
+	}
+
+//	public String getData() {
+//		String result = "";
+//		if (data.getClass().getName().equals("java.util.ArrayList")) {
+//			Object[] list = data.toArray();
+//			result = list[0].toString();
+//		}
+//		
+//		return result;
+//	}
+//	
+//	public Object[] getDataArray() {
+//		Object[] list = null;
+//		if (data.getClass().getName().equals("java.util.ArrayList")) {
+//			list = data.toArray();
+//		}
+//		
+//		return list;
+//	}
+}

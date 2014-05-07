@@ -1,12 +1,12 @@
 package root;
 
-import root.gui.MainFrame;
+import root.gui.LoginDialog;
 
 public class Application {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		MainFrame mf = new MainFrame();
-		mf.setVisible(true);
+		LoginDialog lg = new LoginDialog();
 	}
 
 }

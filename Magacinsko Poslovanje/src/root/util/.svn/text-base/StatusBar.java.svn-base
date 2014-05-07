@@ -1,0 +1,94 @@
+package root.util;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+
+public class StatusBar extends JPanel {
+
+	private static final long serialVersionUID = 1L;
+	//componentMap predstavlja kolekciju komponenti na status bar-u
+	//mainComponent glavna komponenta koja se ravna uz levu ivicu
+	private Map<Integer,JComponent> componentMap = new HashMap<Integer,JComponent>();
+	private JComponent mainComponent;
+	private JPopupMenu popupMenu = new JPopupMenu();
+	private Action hideAction;
+	private Object sender;	
+
+	public void popup(){
+//		hideAction = new ActionHandler("visibleStatusBar", "Hide", null, sender);
+		popupMenu.add(hideAction);
+		setComponentPopupMenu(popupMenu);
+	}
+
+	public StatusBar(Object sender) {
+		this.sender = sender;
+		popup();
+	}
+
+
+	public StatusBar(Object sender, JComponent mainComponent) {
+		this.sender = sender;
+		popup();
+		initialize( mainComponent, null );        
+	}
+
+	public StatusBar(Object sender, JComponent mainComponent, List<JComponent> secondaryComponents) {
+		this.sender = sender;
+		popup();
+		initialize( mainComponent, secondaryComponents );   
+	}
+
+
+	private void initialize( JComponent mainComponent, List<JComponent> secondaryComponents ) {
+		this.mainComponent = mainComponent;
+		setLayout( new BorderLayout() );
+		add( buildPanel( mainComponent ), BorderLayout.CENTER );
+
+		if( secondaryComponents != null && secondaryComponents.size() > 0 ) {
+			int index = 0;
+			//spoljni panel na koji se lepe nove komponente
+			JPanel outerPanel = this;
+
+			for( JComponent component : secondaryComponents ) {
+				componentMap.put( index++, component );
+				JPanel panel = new JPanel( new BorderLayout() );
+				panel.add( buildPanel( component ), BorderLayout.CENTER );
+				outerPanel.add( panel, BorderLayout.EAST );
+
+				//za spoljni panel se proglasava novo kreirani panel
+				outerPanel = panel;
+			}
+
+		}
+	}
+
+	public JComponent getMainComponent() {
+		return mainComponent;
+	}
+
+	public JComponent getSecondaryComponent( int index ) {
+		if( index < componentMap.size() ) {
+			return componentMap.get( index );
+		}
+
+		return null;
+	}
+
+	private JPanel buildPanel( JComponent component ) {
+		JPanel panel = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
+
+		panel.setBorder( BorderFactory.createLoweredBevelBorder() );
+		panel.add( component );
+
+		return panel;
+	}
+
+}

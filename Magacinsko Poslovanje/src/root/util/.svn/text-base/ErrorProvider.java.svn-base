@@ -1,0 +1,50 @@
+package root.util;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+
+@SuppressWarnings("serial")
+public class ErrorProvider extends JLabel{
+
+	public ErrorProvider() {
+		super();
+		
+		ImageIcon icon = new ImageIcon(getClass().getResource("/images/error.gif"));
+		setIcon(icon);
+		setFocusable(false);
+		
+		setVisible(false);
+	}
+	
+	public ErrorProvider(String errorContent) {
+		super();
+		
+		ImageIcon icon = new ImageIcon(getClass().getResource("/images/error.gif"));
+		setIcon(icon);
+		setToolTipText(errorContent);
+		setFocusable(false);
+		
+		setVisible(false);
+	}
+	
+	public void showError() {
+		if (Constants.MODE != Constants.MODE_SEARCH) {
+			this.setVisible(true);
+		}
+	}
+	
+	public void showError(String errorContent) {
+		if (Constants.MODE != Constants.MODE_SEARCH) {
+			this.setToolTipText(errorContent);
+			this.setVisible(true);
+		}
+	}
+	
+	public void hideError() {
+		this.setVisible(false);
+	}
+	
+	public void setText(String errorContent) {
+		this.setToolTipText(errorContent);
+	}
+}

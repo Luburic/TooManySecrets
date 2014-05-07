@@ -1,0 +1,7 @@
+package root.util;
+
+import java.util.EventListener;
+
+public interface ZoomValueListener extends EventListener {
+	public void zoomValueSet(ZoomValueEvent event);
+}

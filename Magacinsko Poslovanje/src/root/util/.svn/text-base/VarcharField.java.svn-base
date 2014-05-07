@@ -1,0 +1,79 @@
+package root.util;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.JTextArea;
+
+public class VarcharField extends JTextArea {
+	
+	private static final int BOUNDARY = 40;
+	private int size;
+	
+	public VarcharField(int size) {
+		super();
+		
+		this.size = size;
+		this.setLineWrap(true);
+		
+		if (size > BOUNDARY) {
+			this.setColumns(BOUNDARY);
+			this.setRows(2);
+		} else {
+			this.setColumns(size);
+			this.setRows(1);
+		}
+		
+		
+	this.addKeyListener(new KeyListener() {
+
+		@Override
+		public void keyPressed(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			if (arg0.getKeyChar() == 9) {
+				if (arg0.getModifiers() > 0) {
+					VarcharField.this.transferFocusBackward();
+				} else {
+					VarcharField.this.transferFocus();
+				}
+				arg0.consume();
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	});
+		
+		
+	}
+
+
+
+	@Override
+	protected void processKeyEvent(KeyEvent e) {
+		
+		if (VarcharField.this.getSelectedText() != null) {
+			super.processKeyEvent(e);
+			return;
+		}
+
+		if (VarcharField.this.getText().length() < size) {
+			super.processKeyEvent(e);
+			return;
+		}
+
+		if ( e.getKeyChar() == 8 || e.getKeyChar() == 127 || e.getKeyChar() == 9) {
+			super.processKeyEvent(e);
+		}
+	}
+
+}

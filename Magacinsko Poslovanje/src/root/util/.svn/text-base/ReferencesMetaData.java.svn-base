@@ -1,0 +1,604 @@
+package root.util;
+
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Vector;
+
+public class ReferencesMetaData {
+    
+    /**
+     * Table that are referencing other table.
+     * if A have field from table B, and connection from A to be we is called C
+     * then in C parent table will be B and A will  be source.
+     * A--C-->B
+     * From model.
+     * We have Drzava i Naseljeno mesto, and connection Mesta u drzavi.
+     * In Naseljeno Mesto, Drzava will be parentTable and Naseljeno mesto source table.
+     */
+    private String sourceTable;
+    /**
+     * Table that are being referenced.
+     * if A have field from table B, and connection from A to be we call C
+     * then in C parent table will be B and A will  be source.
+     * A--C-->B
+     * From model.
+     * We have Drzava i Naseljeno mesto, and connection Mesta u drzavi.
+     * In Naseljeno Mesto, Drzava will be parentTable and Naseljeno mesto source table.
+     */
+    private String parentTable;
+    private HashMap<String, ColumnMetaData> refs;
+    private Vector<ColumnMetaData> refSorted;
+    
+    /**
+     * This field is used in situation where we need to filtrate our table
+     * and we have 2 or more columns from same table. 
+     */
+    private Boolean forNext;
+    /**
+     * ReadOnly polja su specifična po tome što im je 
+     * ime baze naziv veze kojom se referencira to polje u drguoj tabeli.
+     *                          CHANGED
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!IMPORTANT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Read only columns are specific because name of foreign table name is 
+     * name of table from which this column is. From table db name you will
+     * get name of reference.
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!IMPORTANT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     */
+    private ColumnMetaData readOnly;
+    
+    /**
+     * Name of reference that is used in code.
+     */
+    private String name;
+    
+    /**
+     * Name of connection that is easily readable for humans.
+     */
+    private String humanReadableName;
+    
+    /**
+     * If any of columns are mandatory whole reference will be mandatory.
+     */
+    private Boolean mandatory;
+    /**
+     * Constructor
+     */
+    public ReferencesMetaData(String sourceTable, String parentTable,
+            HashMap<String, ColumnMetaData> refs, String name,
+            ColumnMetaData readOnlys, String humanReadableName,
+            Vector<ColumnMetaData> refSorted, Boolean forNext, Boolean mandatory) {
+        super();
+        this.sourceTable = sourceTable;
+        this.parentTable = parentTable;
+        this.refs = refs;
+        this.name = name;
+        this.readOnly = readOnlys;
+        this.humanReadableName = humanReadableName;
+        this.refSorted = new Vector<ColumnMetaData>();
+        this.refSorted.addAll(refSorted);
+        this.forNext = forNext;
+        this.mandatory = mandatory;
+    }
+
+    /**
+     * Default constructor.
+     */
+    public ReferencesMetaData() {
+        super();
+        refs = new HashMap<String, ColumnMetaData>();
+        readOnly = null;
+        refSorted = new Vector<ColumnMetaData>();
+        forNext = true;
+        mandatory = false;
+    }
+    
+    /**
+     * 
+     * @return name of source table.
+     */
+    public String getSourceTable() {
+        return sourceTable;
+    }
+    
+    /**
+     * 
+     * @return TableMetaData model for table that are referencing other table.
+     */
+    public TableMetaData getSourceTableMetaData(){
+        MetaDataLoader loader = MetaDataLoader.getInstace();
+        return loader.getTable(sourceTable);
+        
+    }
+    /**
+     * 
+     * @param sourceTable new name for source table.
+     */
+    public void setSourceTable(String sourceTable) {
+        this.sourceTable = sourceTable;
+    }
+    
+    /**
+     * 
+     * @return name of parent table.
+     */
+    public String getParentTable() {
+        return parentTable;
+    }
+    
+    /**
+     * 
+     * @return TableMetaData that is referenced.
+     */
+    public TableMetaData getParentTableMetaData(){
+        MetaDataLoader loader = MetaDataLoader.getInstace();
+        return loader.getTable(parentTable);
+    }
+    /**
+     * 
+     * @param parentTable new name for parent table.
+     */
+    public void setParentTable(String parentTable) {
+        this.parentTable = parentTable;
+    }
+    /**
+     * 
+     * @return name of reference
+     */
+    public String getName() {
+        return name;
+    }
+    /**
+     * 
+     * @param name new name for reference
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "ReferencesMetaData [humanReadableName=" + humanReadableName
+                + ", name=" + name + ", parentTable=" + parentTable
+                + ", readOnly=" + readOnly + ", refs=" + refs
+                + ", sourceTable=" + sourceTable + "]";
+    }
+    /**
+     * Add new column to this reference.
+     * @param value new column.
+     */
+    public void add(ColumnMetaData value){
+        refs.put(value.getCodeName(), value);
+        if(!refSorted.contains(value))
+            refSorted.add(value);
+    }
+    /**
+     * 
+     * @param dbName name of column
+     * @return column that has name that is equal to dbName
+     */
+    public ColumnMetaData get(String dbName){
+        return refs.get(dbName);
+    }
+    
+    /**
+     * 
+     * @return last column from reference.
+     */
+    public ColumnMetaData last(){
+        if(refSorted.size() >= 1)
+            return refSorted.lastElement();
+        else
+            return null;
+    }
+    
+    /**
+     * 
+     * @return first column from reference.
+     */
+    public ColumnMetaData first(){
+        if(refs.size() > 0){
+            
+            return refSorted.firstElement();
+        }
+        return null;
+    }
+    /**
+     * 
+     * @return all columns that are in reference according to model.
+     * It will not return columns that are marked read only.
+     */
+    public Collection<ColumnMetaData> getColumns(){
+        Vector<ColumnMetaData> res =  new Vector<ColumnMetaData>();
+        res.addAll(refSorted);
+        return res;
+    }
+    
+    /**
+     * This method should be called whene all TableMetaData are loaded.
+     * This method is finishing loading of ReferencesMetaData.
+     */
+    public void loadReadOnlyFields(){
+        if(parentTable != null){
+            Collection<ColumnMetaData> temp = MetaDataLoader.getInstace().
+                getTable(parentTable).getColumnsThatAreVisibleNotPK();
+            
+            for(ColumnMetaData cmd : temp){
+                ColumnMetaData newCmd = new ColumnMetaData(cmd);
+                newCmd.setReadOnly(true);
+                newCmd.setForigen_table_name(parentTable);
+                newCmd.setTableDbName(parentTable);
+                newCmd.setForigen_column_name(cmd.getCodeName());
+                newCmd.setAsName(name + cmd.getCodeName());
+                newCmd.setReferences(new HashSet<ReferencesMetaData>());
+                newCmd.addReferece(this);
+                readOnly = newCmd;
+            }
+        }
+    }
+    
+    /**
+     * Whene all columns are loaded this method should be called so
+     * it can be decided if this reference is mandatory.
+     */
+    public void loadMandatory(){
+        boolean man = false;
+        for(ColumnMetaData cmd : this.getZoomableColumns()){
+            if(cmd.isMandatory()){
+                man = true;
+            }
+        }
+        
+        mandatory = man;
+    }
+    /**
+     * 
+     * @return all columns, even columns that are marked read only.
+     */
+    public Collection<ColumnMetaData> getAllColumn(){
+        Collection<ColumnMetaData> res = new Vector<ColumnMetaData>();
+        
+        res.addAll(refSorted);
+        if(readOnly != null){
+            res.add(readOnly);
+        }
+        
+        return res;
+    }
+    /**
+     * 
+     * @return string that is representing select in db query.
+     */
+    public String getSelect(){
+        StringBuilder select = new StringBuilder();
+        Collection<ColumnMetaData> allColumns = getAllColumn();
+        boolean first = true;
+        for(ColumnMetaData cmd : allColumns){
+            if(!first){
+                select.append(", ");
+            }else{
+                first = false;
+            }
+            if(!cmd.getReadOnly()){
+                select.append(sourceTable + "." + cmd.codeName + " ");
+            }else{
+                select.append(name + "." + cmd.forigen_column_name+ " as " + 
+                        cmd.getAsName() + " ");
+            }
+        }
+        
+        return select.toString();
+    }
+    
+    /**
+     * 
+     * @return string for select with zoomable and read only columns.
+     */
+    public String getSelectZoomableAndReadOnly(){
+        StringBuilder select = new StringBuilder();
+        Collection<ColumnMetaData> allColumns = this.getZoomableColumns();
+        if(readOnly != null){
+            allColumns.add(readOnly);
+        }
+        boolean first = true;
+        for(ColumnMetaData cmd : allColumns){
+            if(!first){
+                select.append(", ");
+            }else{
+                first = false;
+            }
+            if(!cmd.getReadOnly()){
+                select.append(sourceTable + "." + cmd.codeName + " ");
+            }else{
+                select.append(name + "." + cmd.forigen_column_name+ " as " + 
+                        cmd.getAsName() + " ");
+            }
+        }
+        
+        return select.toString();
+    }
+    
+    /**
+     * 
+     * @param coll collection of columns that are used already in select.
+     * @return string that can be used for select.
+     */
+    public String getSelectWithout(Collection<ColumnMetaData> coll){
+        StringBuilder select = new StringBuilder();
+        Collection<ColumnMetaData> allColumns = this.getColumns();
+        if(readOnly != null){
+            allColumns.add(readOnly);
+        }
+        boolean first = true;
+        for(ColumnMetaData cmd : allColumns){
+            boolean used = false;
+            if(coll.contains(cmd)){
+                used = true;
+            }
+            
+            if(used){
+                continue;
+            }
+            if(!first){
+                select.append(", ");
+            }else{
+                first = false;
+            }
+            if(!cmd.getReadOnly()){
+                select.append(sourceTable + "." + cmd.codeName + " ");
+            }else{
+                select.append(name + "." + cmd.forigen_column_name+ " as " + 
+                        cmd.getAsName() + " ");
+            }
+            
+            coll.add(cmd);
+        }
+        
+        return select.toString();
+    }
+    
+    
+    
+    /**
+     * 
+     * @return string that is representing from in sql query.
+     */
+    public String getFrom(){
+        StringBuilder from = new StringBuilder();
+        Collection<ColumnMetaData> allColumns = refs.values();
+        boolean first = true;
+        for(ColumnMetaData cmd : allColumns){
+            if(!first){
+                from.append(" AND ");
+            }else{
+                first = false;
+            }
+            from.append(sourceTable + "." + cmd.getCodeName() + " = " + 
+                    name + "." + cmd.getForigen_column_name());
+        }
+        
+        return from.toString();
+    }
+    
+    /**
+     * 
+     * @return column that is mareked with @visible mark, if there is 
+     * not that column it return null;
+     */
+    public ColumnMetaData getAllVisibleColumnFromParentTable(){
+        return readOnly;
+    }
+    
+    /**
+     * 
+     * @return all keys from parent table.
+     */
+    public Collection<ColumnMetaData> getParentTablePK(){
+        MetaDataLoader loader = MetaDataLoader.getInstace();
+        Collection<ColumnMetaData> res = new HashSet<ColumnMetaData>();
+        
+        TableMetaData parent = loader.getTable(parentTable);
+        
+        res.addAll(parent.getKeys());
+        
+        return res;
+        
+    }
+    /**
+     * 
+     * @return human readable name for this reference.
+     */
+    public String getHumanReadableName() {
+        return humanReadableName;
+    }
+
+    /**
+     * 
+     * @param humanReadableName new human readable name for this reference.
+     */
+    public void setHumanReadableName(String humanReadableName) {
+        this.humanReadableName = humanReadableName;
+    }
+    /**
+     * 
+     * @return columns that are used for representing entities in
+     * dialog.
+     */
+    public Collection<ColumnMetaData> getZoomableColumns(){
+        Collection<ColumnMetaData> rez = new Vector<ColumnMetaData>();
+        
+        for(ColumnMetaData cmd : refSorted){
+            if(cmd.getReferences().size() > 1){
+                int max = Integer.MAX_VALUE;
+                ReferencesMetaData maxRef = null;
+                int index = 0;
+                for(ReferencesMetaData rmd : cmd.getReferences()){
+                    int temp = cmd.getHopsToParrent(rmd.getParentTableMetaData());
+                    if(temp >= 0 && temp < max){
+                        max = temp;
+                        maxRef =rmd;
+                    }
+                    
+                    
+                    index++;
+                }
+                
+                if(maxRef.getName().equals(this.getName())){
+                    rez.add(cmd);
+                }
+            }else{
+                rez.add(cmd);
+            }
+        }
+        
+        return rez;
+    }
+    /**
+     * Check if this column name is in this reference.
+     * @param columnName name of column
+     * @return true if there is column with that name, else false.
+     */
+    public boolean containsColumnName(String columnName){
+
+        for(ColumnMetaData cmd : refs.values()){
+            if(cmd.getCodeName().equals(columnName)){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime
+                * result
+                + ((humanReadableName == null) ? 0 : humanReadableName
+                        .hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result
+                + ((parentTable == null) ? 0 : parentTable.hashCode());
+        result = prime * result
+                + ((sourceTable == null) ? 0 : sourceTable.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof ReferencesMetaData))
+            return false;
+        ReferencesMetaData other = (ReferencesMetaData) obj;
+        if (humanReadableName == null) {
+            if (other.humanReadableName != null)
+                return false;
+        } else if (!humanReadableName.equals(other.humanReadableName))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (parentTable == null) {
+            if (other.parentTable != null)
+                return false;
+        } else if (!parentTable.equals(other.parentTable))
+            return false;
+        if (sourceTable == null) {
+            if (other.sourceTable != null)
+                return false;
+        } else if (!sourceTable.equals(other.sourceTable))
+            return false;
+        return true;
+    }
+    /**
+     * 
+     * @return mark if this reference should be used for next mechanism.
+     */
+    public Boolean getForNext() {
+        return forNext;
+    }
+    /**
+     * 
+     * @param forNext new mark for next mechanism.
+     */
+    public void setForNext(Boolean forNext) {
+        this.forNext = forNext;
+    }
+    
+    /**
+     * For code name column in parent table get code name column in source table.
+     * @param nameInParent column code name in parent table.
+     * @return code name column in source table.
+     */
+    public String getDBNameInSource(String nameInParent){
+        for(ColumnMetaData cmd : getAllColumn()){
+            if(cmd.getForigen_column_name().equals(nameInParent)){
+                return cmd.getCodeName();
+            }
+        }
+        return null;
+    }    
+    
+    /**
+     * For name column in parent table get name column in source table.
+     * @param nameInParent column name in parent table.
+     * @return name column in source table.
+     */
+    public String getNameInSource(String nameInParent){
+        TableMetaData parent = getParentTableMetaData();
+        
+        for(ColumnMetaData cmd : parent.getColumns()){
+            if(cmd.getName().equals(nameInParent)){
+                return this.refs.get(getDBNameInSource(cmd.getCodeName())).getName();
+            }
+        }
+        
+        return null;
+    }
+    /**
+     * For name in source return name in parent
+     * @param nameInSource name in source
+     * @return name of column in parent
+     */
+    public String getNameInParent(String nameInSource){
+        TableMetaData parent = this.getParentTableMetaData();
+        
+        for(ColumnMetaData cmd : refSorted){
+            if(cmd.getName().equals(nameInSource)){
+                ColumnMetaData parentCmd = parent.getColumnByDbName(cmd.getForigen_column_name());
+                if(parentCmd != null){
+                    return parentCmd.getName();
+                }
+            }
+        }
+        
+        return null;
+    }
+    /**
+     * For db name in source return db name of column in parent
+     * @param dbNameInSource db name in sourece
+     * @return return db name in parent or null
+     */
+    public String getDbNameInParent(String dbNameInSource){
+        TableMetaData parent = this.getParentTableMetaData();
+        
+        ColumnMetaData cmd = refs.get(dbNameInSource);
+        if(cmd == null)
+        	return null;
+        ColumnMetaData res = parent.getColumnByDbName(cmd.getForigen_column_name());
+        
+        return res.getCodeName();
+                
+    }
+
+    public Boolean getMandatory() {
+        return mandatory;
+    }
+}

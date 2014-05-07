@@ -1,0 +1,63 @@
+package root.util;
+
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+
+import javax.swing.JTextField;
+
+@SuppressWarnings("serial")
+public class NumericField extends JTextField{
+	
+	private int size;
+	private boolean decimal;
+	
+	public NumericField(int size) {
+		this(size, false);
+	}
+	
+	public NumericField(int size, boolean decimal) {
+		super(size);
+		this.size = size;
+		this.decimal = decimal;
+	}
+
+	@Override
+	protected void processKeyEvent(KeyEvent e) {
+		System.out.println(size + " _ "+NumericField.this.getText().length());
+
+		if (this.getText().contains(".") || this.getText().contains(",")) {
+			if ( (e.getKeyChar() >= '0' && e.getKeyChar() <='9') || e.getKeyChar() == '-') {
+				if (NumericField.this.getText().length() <= size) {
+					super.processKeyEvent(e);
+					return;
+				}
+			}
+		} else {
+			if ( (e.getKeyChar() >= '0' && e.getKeyChar() <='9') 
+					|| e.getKeyChar() == '-' 
+						|| e.getKeyChar() == '.' 
+							|| e.getKeyChar() == ',' ) {
+				
+				if ( (e.getKeyChar() == '.' 
+							|| e.getKeyChar() == ',') && !decimal) {
+					return;
+				}
+				
+				if (NumericField.this.getText().length() < size) {
+					super.processKeyEvent(e);
+					return;
+				}
+			}
+		}
+		
+		if ( e.getKeyChar() == 8 || e.getKeyChar() == 127) {
+			super.processKeyEvent(e);
+		}
+		
+		if (Constants.MODE == Constants.MODE_SEARCH) {
+			if (e.getKeyChar() == '*') {
+				super.processKeyEvent(e);
+			}
+		}
+	}
+}

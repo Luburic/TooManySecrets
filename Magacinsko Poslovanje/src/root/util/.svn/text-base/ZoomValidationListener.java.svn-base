@@ -1,0 +1,8 @@
+package root.util;
+
+import java.awt.Event;
+import java.util.EventListener;
+
+public interface ZoomValidationListener extends EventListener {
+	public void zoomValidationSet(ZoomValidationEvent event);
+}

@@ -1,0 +1,17 @@
+package root.util;
+
+import java.util.EventObject;
+
+public class ZoomValidationEvent extends EventObject {
+
+	String data;
+	public ZoomValidationEvent(Object source) {
+		super(source);
+		data = (String) source;
+	}
+	
+	public String getData() {
+		return data;
+	}
+
+}
