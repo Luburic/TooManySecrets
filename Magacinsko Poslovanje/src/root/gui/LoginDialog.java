@@ -55,16 +55,18 @@ public class LoginDialog extends JFrame {
 					uname = uname.replace("'", "''");
 					pwd = pwd.replace("'", "''");
 					String sqlSelect = "";
-					sqlSelect = "SELECT [dbo].[KORISNIK].[USERNAME], [dbo].[KORISNIK].[PASSWORD], [dbo].[KORISNIK].[ROLE] FROM [dbo].[KORISNIK] WHERE [dbo].[KORISNIK].[USERNAME] = '"
-							+ uname + "'" + " AND [dbo].[KORISNIK].[PASSWORD] = '" + pwd + "'";
+					sqlSelect = "SELECT [dbo].[KORISNIK].[USERNAME], [dbo].[KORISNIK].[PASSWORD], [dbo].[KORISNIK].[PASSWORD SALT], [dbo].[KORISNIK].[ROLE] FROM [dbo].[KORISNIK] WHERE [dbo].[KORISNIK].[USERNAME] = '"
+							+ uname + "'";
 					PreparedStatement statement = DBConnection.getConnection().prepareStatement(sqlSelect);
 					ResultSet rset = statement.executeQuery();
 					if (rset.next()) {
-						User user = new User(rset.getString(1), rset.getString(2), rset.getString(3));
-						Constants.setCurrentUser(user);
-
-						MainFrame mw = new MainFrame();
-						dispose();
+						if (User.checkPassword(pwd, rset.getString(3), rset.getString(2))) {
+							Constants.setCurrentUser(new User(rset.getString(1), rset.getString(2), rset.getString(3)));
+							MainFrame mw = new MainFrame();
+							dispose();
+						} else {
+							jlError.setVisible(true);
+						}
 					} else {
 						jlError.setVisible(true);
 					}
