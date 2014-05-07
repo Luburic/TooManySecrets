@@ -3,8 +3,11 @@ package root.gui;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -83,6 +86,19 @@ public class LoginDialog extends JFrame {
 		add(jlError, "cell 0 2");
 		add(jbOK, "cell 0 3");
 		add(jbCancel, "cell 1 3");
+
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				super.windowClosing(e);
+				try {
+					DBConnection.getConnection().close();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				System.exit(0);
+			}
+		});
 
 		setSize(300, 180);
 		setVisible(true);
