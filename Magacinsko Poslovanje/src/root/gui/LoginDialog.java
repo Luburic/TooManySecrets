@@ -65,7 +65,7 @@ public class LoginDialog extends JFrame {
 					if (rset.next()) {
 						if (User.checkPassword(pwd, rset.getString(3), rset.getString(2))) {
 							Constants.setCurrentUser(new User(rset.getString(1), rset.getString(2), rset.getString(3)));
-							MainFrame mw = new MainFrame();
+							MainFrame mw = MainFrame.getInstance();
 							dispose();
 						} else {
 							jlError.setVisible(true);

@@ -15,6 +15,10 @@ public class Application {
 				| UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
+		UIManager.put("OptionPane.yesButtonText", "Da");
+		UIManager.put("OptionPane.noButtonText", "Ne");
+		UIManager.put("OptionPane.cancelButtonText", "Otkaži");
+
 		LoginDialog lg = new LoginDialog();
 	}
 

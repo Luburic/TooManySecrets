@@ -10,10 +10,9 @@ public class User {
 	private String role;
 
 	public User(String u, String p, String role) {
-		this.username = u;
-		this.password = p;
-		this.passwordSalt = "";
-		this.role = role;
+		setUsername(u);
+		setPassword(p);
+		setRole(role);
 	}
 
 	public String getRole() {
