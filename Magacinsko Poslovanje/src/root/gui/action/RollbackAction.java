@@ -1,0 +1,25 @@
+
+package root.gui.action;
+
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+
+public class RollbackAction extends AbstractAction {
+
+	private static final long serialVersionUID = 1L;
+	private JDialog standardForm;
+
+	public RollbackAction(JDialog standardForm) {
+		putValue(SMALL_ICON, new ImageIcon("img/remove.gif"));
+		putValue(SHORT_DESCRIPTION, "Poništi");
+		this.standardForm=standardForm;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+	}
+}

@@ -1,4 +1,4 @@
-package root.tablemodel;
+package root.gui.tablemodel;
 
 import java.sql.SQLException;
 

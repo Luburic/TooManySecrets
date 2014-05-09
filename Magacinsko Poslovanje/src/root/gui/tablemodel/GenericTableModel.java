@@ -1,4 +1,4 @@
-package root.tablemodel;
+package root.gui.tablemodel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +20,7 @@ import rs.mgifos.mosquito.model.MetaModel;
 import rs.mgifos.mosquito.model.MetaTable;
 
 @SuppressWarnings("serial")
-public abstract class GenericTableModel extends DefaultTableModel implements ITableModel {
+public class GenericTableModel extends DefaultTableModel implements ITableModel {
 
 	protected String basicQuery = "";
 	protected String joinQuery = "";
@@ -31,13 +31,13 @@ public abstract class GenericTableModel extends DefaultTableModel implements ITa
 
 	private String tableCode;
 	private Collection<MetaColumn> columns;
+	private String primaryKey;
 
-	@SuppressWarnings("unchecked")
-	public GenericTableModel(String tableCode, Object[] colNames, int rowCount) {
-		super(colNames, rowCount);
+	public GenericTableModel(String tableCode, Object[] colNames, Collection<MetaColumn> columns) {
+		super(colNames, 0);
 		this.tableCode = tableCode;
-
-		IMetaLoader metaLoader = new PDMetaLoader();
+		this.columns = columns;
+		/*IMetaLoader metaLoader = new PDMetaLoader();
 
 		Properties properties = new Properties();
 		properties.put(PDMetaLoader.FILENAME, "model/Magacinsko Poslovanje.pdm");
@@ -51,13 +51,37 @@ public abstract class GenericTableModel extends DefaultTableModel implements ITa
 			}
 		} catch (LoadingException e) {
 			e.printStackTrace();
-		}
+		}*/
+
+		this.primaryKey = columns.iterator().next().getCode();
 	}
 
 	@Override
 	public void open() throws SQLException {
-		fillData(basicQuery + joinQuery + whereStmt + orderBy);
+		if (basicQuery.equals("")) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT ");
+			Iterator<MetaColumn> iterator = columns.iterator();
+			while (iterator.hasNext()) {
+				String name = iterator.next().getCode();
+				if (name.equals(primaryKey)) {
+					continue;
+				}
+				sb.append(iterator.next().getCode());
+				if (iterator.hasNext()) {
+					sb.append(", ");
+				} else {
+					sb.append("FROM " + tableCode);
+					break;
+				}
+			}
+		}
 
+		if (orderBy.equals("")) {
+			orderBy = " ORDER BY " + columns.iterator().next().getCode();
+		}
+
+		fillData(basicQuery + joinQuery + whereStmt + orderBy);
 	}
 
 	@Override
@@ -86,6 +110,11 @@ public abstract class GenericTableModel extends DefaultTableModel implements ITa
 	}
 
 	@Override
+	public boolean isCellEditable(int row, int column) {
+		return false;
+	}
+
+	@Override
 	public void openAsChildForm(String whereValue) throws SQLException {
 
 		if (this instanceof Object) {
@@ -105,7 +134,7 @@ public abstract class GenericTableModel extends DefaultTableModel implements ITa
 	public void deleteRow(int index) throws SQLException {
 
 		PreparedStatement statement = DBConnection.getConnection().prepareStatement(
-				"DELETE FROM " + tableCode + " WHERE " + columns.iterator().next().getCode() + "=?");
+				"DELETE FROM " + tableCode + " WHERE " + primaryKey + "=?");
 
 		String sifra = (String) getValueAt(index, 0);
 		statement.setString(1, sifra);
@@ -126,10 +155,14 @@ public abstract class GenericTableModel extends DefaultTableModel implements ITa
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("INSERT INTO " + tableCode + " (");
+		sb.append("INSERT INTO cveki.dbo." + tableCode + " (");
 		Iterator<MetaColumn> iterator = columns.iterator();
 		while (iterator.hasNext()) {
-			sb.append(iterator.next().getCode());
+			String column = iterator.next().getCode();
+			if (column.equals(primaryKey)) {
+				continue;
+			}
+			sb.append(column);
 			if (iterator.hasNext()) {
 				sb.append(", ");
 			} else {
@@ -142,11 +175,14 @@ public abstract class GenericTableModel extends DefaultTableModel implements ITa
 			sb.append("?, ");
 		sb.append("?)");
 
-		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sb.toString());
+		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sb.toString(),
+				Statement.RETURN_GENERATED_KEYS);
 		int retVal = 0;
 
 		for (int i = 0; i < colNames.length; i++)
 			stmt.setString(i + 1, (String) colNames[i]);
+
+		System.out.println(sb.toString());
 
 		int rowsAffected = stmt.executeUpdate();
 		stmt.close();
@@ -191,25 +227,17 @@ public abstract class GenericTableModel extends DefaultTableModel implements ITa
 	}
 
 	// Postavljeno radi testiranja ucitavanja metapodataka
-	/*public static void main(String[] args) {
-		IMetaLoader metaLoader = new PDMetaLoader();
-
-		Properties properties = new Properties();
-		properties.put(PDMetaLoader.FILENAME, "model/Magacinsko Poslovanje.pdm");
+	public static void main(String[] args) {
+		GenericTableModel gtm = TableModelCreator.createTableModel("Država");
+		// GenericTableModel gtm = new GenericTableModel("Drzava", new String[] { "Šifra države", "Naziv države" });
 
 		try {
-			MetaModel model = metaLoader.getMetaModel(properties);
-			for (MetaTable table : model) {
-				System.out.println(table.getCode());
-				for (Object o : table.cColumns()) {
-					MetaColumn mt = (MetaColumn) o;
-					System.out.print(mt.getCode() + "\t");
-				}
-				System.out.println("\n");
-			}
-		} catch (LoadingException e) {
+			gtm.insertRow(new String[] { "SRB", "Srbija" });
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+			DBConnection.close();
 		}
-	}*/
-
+		DBConnection.close();
+	}
 }

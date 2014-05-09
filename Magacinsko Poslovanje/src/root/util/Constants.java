@@ -32,7 +32,7 @@ public class Constants {
 	public static final String VALIDATION_ZOOM_FIELD = "Uneti sadrzaj ne odgovara podacima u sistemu.";
 
 	public static final String DB_CONNECTION = "magacinConnection";
-	public static final String MODEL_LOCATION = "model/Magacin.pdm";
+	public static final String MODEL_LOCATION = "model/Magacinsko Poslovanje.pdm";
 
 	public static int MODE;
 
