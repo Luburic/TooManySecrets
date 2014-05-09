@@ -12,11 +12,11 @@ public class Lookup {
 		if (sifraDrzave == "")
 			return naziv;
 		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
-				"SELECT DR_NAZIV FROM DRZAVA WHERE DR_SIFRA = ?");
+				"SELECT naziv_drzave FROM Drzava WHERE sifra_drzave = ?");
 		stmt.setString(1, sifraDrzave);
 		ResultSet rset = stmt.executeQuery();
 		while (rset.next()) {
-			naziv = rset.getString("DR_NAZIV");
+			naziv = rset.getString("naziv_drzave");
 		}
 		rset.close();
 		stmt.close();

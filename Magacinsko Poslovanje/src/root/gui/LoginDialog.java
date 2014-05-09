@@ -58,7 +58,7 @@ public class LoginDialog extends JFrame {
 					uname = uname.replace("'", "''");
 					pwd = pwd.replace("'", "''");
 					String sqlSelect = "";
-					sqlSelect = "SELECT [dbo].[KORISNIK].[USERNAME], [dbo].[KORISNIK].[PASSWORD], [dbo].[KORISNIK].[PASSWORD SALT], [dbo].[KORISNIK].[ROLE] FROM [dbo].[KORISNIK] WHERE [dbo].[KORISNIK].[USERNAME] = '"
+					sqlSelect = "SELECT [dbo].[KORISNIK].[USERNAME], [dbo].[KORISNIK].[PASSWORD], [dbo].[KORISNIK].[PASSWORD_SALT], [dbo].[KORISNIK].[ROLE] FROM [dbo].[KORISNIK] WHERE [dbo].[KORISNIK].[USERNAME] = '"
 							+ uname + "'";
 					PreparedStatement statement = DBConnection.getConnection().prepareStatement(sqlSelect);
 					ResultSet rset = statement.executeQuery();

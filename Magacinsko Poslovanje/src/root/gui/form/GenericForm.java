@@ -14,7 +14,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 import root.gui.MainFrame;
@@ -53,8 +52,6 @@ public abstract class GenericForm extends JDialog {
 	protected boolean childAction = false;
 
 	protected JTable tblGrid = new JTable();
-
-	protected DefaultTableModel tableModel = new DefaultTableModel();
 
 	protected int mode;
 
@@ -114,7 +111,6 @@ public abstract class GenericForm extends JDialog {
 	}
 
 	public void initPanels() {
-
 		JScrollPane scrollPane = new JScrollPane(tblGrid);
 		add(scrollPane, "grow, wrap");
 
@@ -197,7 +193,7 @@ public abstract class GenericForm extends JDialog {
 			setMode(Constants.MODE_ADD);
 
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(this, ex.getMessage(), "Greska", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -222,19 +218,19 @@ public abstract class GenericForm extends JDialog {
 		int newIndex = index;
 
 		// sem ako se obrise poslednji red, tada selektujemo prethodni
-		if (index == tableModel.getRowCount() - 1)
+		if (index == tblGrid.getModel().getRowCount() - 1)
 			newIndex--;
 
 		try {
 
 			GenericTableModel dtm = (GenericTableModel) tblGrid.getModel();
-			((GenericTableModel) dtm).deleteRow(index);
+			dtm.deleteRow(index);
 
-			if (tableModel.getRowCount() > 0)
+			if (tblGrid.getModel().getRowCount() > 0)
 				tblGrid.setRowSelectionInterval(newIndex, newIndex);
 
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(this, ex.getMessage(), "Greska", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -310,12 +306,15 @@ public abstract class GenericForm extends JDialog {
 		while (iter.hasNext()) {
 			Column c = iter.next();
 			String cname = c.getName();
-			String value = (String) c.getValue();
+			String value = "";
+			if (c.getValue() != null) {
+				value = (String) c.getValue().toString();
+			}
 
 			for (Component cp : dataPanel.getComponents()) {
 				if (cp instanceof JTextField) {
 					JTextField textField = (JTextField) cp;
-					if (textField.getName().equals(cname)) {
+					if (textField.getName() != null && textField.getName().equals(cname)) {
 						textField.setText(value);
 					}
 				}

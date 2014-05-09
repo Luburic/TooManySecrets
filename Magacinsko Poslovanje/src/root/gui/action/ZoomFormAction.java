@@ -1,24 +1,18 @@
 package root.gui.action;
 
-import gui.standard.form.DrzavaStandardForm;
-import gui.standard.form.NaseljenoMestoStandardForm;
-
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 
-import tools.ColumnList;
-
-
 public class ZoomFormAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1L;
 
-	private ColumnList cl;
+	//private ColumnList cl;
 	private JDialog dialog; 
-	private NaseljenoMestoStandardForm naseljenoMestoForm;
+	//private NaseljenoMestoStandardForm naseljenoMestoForm;
 
 	//called from child form
 	public ZoomFormAction(JDialog dialog) {
@@ -30,7 +24,7 @@ public class ZoomFormAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		
+		/*
 		//**********parent form**************
 		DrzavaStandardForm form = null;
 		try {
@@ -55,7 +49,7 @@ public class ZoomFormAction extends AbstractAction {
 				naseljenoMestoForm.getTfNazivDrzave().setText((String)cl.getColumn("dr_naziv").getValue());
 			}
 		
-		}
+		}*/
 		
 	}
 	

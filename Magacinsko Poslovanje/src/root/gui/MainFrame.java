@@ -1,17 +1,24 @@
 package root.gui;
 
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import root.dbConnection.DBConnection;
+import root.gui.action.dialog.DrzaveAction;
+import root.gui.action.dialog.NaseljenoMestoAction;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 3706293806794500307L;
 
 	private static MainFrame instance = null;
+	private JMenuBar menuBar;
 
 	private MainFrame() {
 		this.addWindowListener(new WindowAdapter() {
@@ -26,6 +33,9 @@ public class MainFrame extends JFrame {
 			}
 		});
 
+		setUpMenu();
+		setJMenuBar(menuBar);
+
 		this.setSize(500, 500);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -35,5 +45,18 @@ public class MainFrame extends JFrame {
 		if (instance == null)
 			instance = new MainFrame();
 		return instance;
+	}
+
+	private void setUpMenu() {
+		menuBar = new JMenuBar();
+
+		JMenu orgSemaMenu = new JMenu("Organizaciona sema");
+		orgSemaMenu.setMnemonic(KeyEvent.VK_O);
+		JMenuItem drzaveMI = new JMenuItem(new DrzaveAction());
+		orgSemaMenu.add(drzaveMI);
+		JMenuItem mestoMI = new JMenuItem(new NaseljenoMestoAction());
+		orgSemaMenu.add(mestoMI);
+
+		menuBar.add(orgSemaMenu);
 	}
 }

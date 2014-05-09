@@ -160,14 +160,20 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		System.out.println(sb.toString());
 
 		int rowsAffected = stmt.executeUpdate();
+		if (rowsAffected > 0) {
+			stmt.getGeneratedKeys().next();
+			Object[] insertion = new Object[colNames.length + 1];
+			insertion[0] = stmt.getGeneratedKeys().getInt(1);
+			for (int i = 0; i < colNames.length; i++) {
+				insertion[i + 1] = colNames[i];
+			}
+			retVal = sortedInsert(insertion);
+			fireTableDataChanged();
+		}
+
 		stmt.close();
 
 		DBConnection.getConnection().commit();
-
-		if (rowsAffected > 0) {
-			retVal = sortedInsert(colNames);
-			fireTableDataChanged();
-		}
 		return retVal;
 
 	}
@@ -183,9 +189,9 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 			String aSifra = (String) getValueAt(mid, 1);
 
-			if (SortUtils.getLatCyrCollator().compare((String) colNames[0], aSifra) > 0)
+			if (SortUtils.getLatCyrCollator().compare((String) colNames[0].toString(), aSifra) > 0)
 				left = mid + 1;
-			else if (SortUtils.getLatCyrCollator().compare((String) colNames[0], aSifra) < 0)
+			else if (SortUtils.getLatCyrCollator().compare((String) colNames[0].toString(), aSifra) < 0)
 				right = mid - 1;
 			else
 				break;
@@ -202,7 +208,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 	}
 
 	public static void main(String[] args) {
-		GenericTableModel gtm = TableModelCreator.createTableModel("Država");
+		GenericTableModel gtm = TableModelCreator.createTableModel("Država", null);
 
 		try {
 			gtm.open();

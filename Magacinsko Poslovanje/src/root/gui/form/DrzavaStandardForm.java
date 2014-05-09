@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import root.gui.MainFrame;
 import root.gui.tablemodel.GenericTableModel;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ColumnList;
@@ -21,14 +22,16 @@ public class DrzavaStandardForm extends GenericForm {
 
 	private ColumnList drzavaColumnList;
 
-	private JTextField tfSifraDrzave = new JTextField();
-	private JTextField tfNazivDrzave = new JTextField();
+	private JTextField tfSifraDrzave = new JTextField(5);
+	private JTextField tfNazivDrzave = new JTextField(20);
 
 	public DrzavaStandardForm() throws SQLException {
 		super();
 		setTitle("Države");
+		tfSifraDrzave.setName("šifra države");
+		tfNazivDrzave.setName("naziv države");
 
-		tableModel = TableModelCreator.createTableModel("Država");
+		tableModel = TableModelCreator.createTableModel("Država", null);
 		tblGrid.setModel(tableModel);
 
 		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -63,7 +66,8 @@ public class DrzavaStandardForm extends GenericForm {
 		dataPanel.add(tfSifraDrzave, "wrap");
 		dataPanel.add(lblNaziv);
 		dataPanel.add(tfNazivDrzave, "pushx");
-
+		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(0));
+		setLocationRelativeTo(MainFrame.getInstance());
 	}
 
 	public ColumnList getDrzavaColumnList() {

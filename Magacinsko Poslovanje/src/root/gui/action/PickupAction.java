@@ -1,8 +1,5 @@
 package root.gui.action;
 
-import gui.standard.form.DrzavaStandardForm;
-import gui.tablemodel.DrzaveTableModel;
-
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -10,18 +7,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JTable;
 
-import tools.Column;
-import tools.ColumnList;
 
 public class PickupAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1L;
 	
 	private JDialog standardForm;
-	
-	private DrzaveTableModel tableModel;
-	
-	private DrzavaStandardForm drzavaForm;
 	
 	private JTable tblGrid = new JTable();
 	
@@ -36,7 +27,7 @@ public class PickupAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		
-
+/*
 			if(standardForm instanceof DrzavaStandardForm) {
 				drzavaForm =(DrzavaStandardForm)standardForm;
 					
@@ -63,6 +54,6 @@ public class PickupAction extends AbstractAction {
 			    drzavaForm.setDrzavaColumnList(atributi);
 			    drzavaForm.setVisible(false);
 			}
-			
+			*/
 	}
 }

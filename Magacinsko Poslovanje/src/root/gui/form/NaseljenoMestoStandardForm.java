@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -18,6 +19,12 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 
 	private JButton btnZoom = new JButton("...");
 	private String qsifra;
+
+	protected JTextField tfSifraDrzave = new JTextField(5);
+	protected JTextField tfNazivDrzave = new JTextField(20);
+	// naseljenoMesto
+	protected JTextField tfSifraMesta = new JTextField(5);
+	protected JTextField tfNazivMesta = new JTextField(20);
 
 	public NaseljenoMestoStandardForm() {
 		super();
@@ -73,20 +80,16 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 
 	public void setUpTable() {
 
-		NaseljenoMestoTableModel tableModel = new NaseljenoMestoTableModel(new String[] { "Šifra mesta", "Naziv mesta",
-				"Šifra države", "Naziv države" }, 0);
-		tblGrid.setModel(tableModel);
+		// NaseljenoMestoTableModel tableModel = new NaseljenoMestoTableModel(new String[] { "Šifra mesta",
+		// "Naziv mesta",
+		// "Šifra države", "Naziv države" }, 0);
+		// tblGrid.setModel(tableModel);
 
-		try {
-			if (qsifra == null) {
-				tableModel.open();
-			} else {
-				tableModel.openAsChildForm(qsifra);
-				childAction = true;
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (qsifra == null) {
+			// tableModel.open();
+		} else {
+			// tableModel.openAsChildForm(qsifra);
+			childAction = true;
 		}
 
 	}

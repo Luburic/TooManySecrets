@@ -18,9 +18,9 @@ public class PopupAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 	private JDialog standardForm;
 
-	private DrzavaStandardForm drzavaForm;
+	//private DrzavaStandardForm drzavaForm;
 	private JTable tblGrid = new JTable();
-	private DrzaveTableModel tableModel;
+	//private DrzaveTableModel tableModel;
 
 	public PopupAction(JDialog standardForm) {
 		putValue(SMALL_ICON, new ImageIcon("img/nextform.gif"));
@@ -30,7 +30,7 @@ public class PopupAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-
+/*
 		if (standardForm instanceof DrzavaStandardForm) {
 
 			drzavaForm = (DrzavaStandardForm) standardForm;
@@ -64,7 +64,7 @@ public class PopupAction extends AbstractAction {
 			/*
 			 * try { while (tSet.next()){ possibleValues.add(tSet.getString("TABLE_NAME")); } } catch (SQLException e) {
 			 * // TODO Auto-generated catch block e.printStackTrace(); }
-			 */
+			 *
 
 			Object[] values = possibleValues.toArray();
 			String selectedValue = (String) JOptionPane.showInputDialog(standardForm, "Izaberi sledeći dijalog",
@@ -76,7 +76,7 @@ public class PopupAction extends AbstractAction {
 
 			}
 
-		}
+		}*/
 
 	}
 }
