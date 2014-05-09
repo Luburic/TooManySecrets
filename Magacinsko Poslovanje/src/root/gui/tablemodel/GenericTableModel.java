@@ -6,18 +6,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Properties;
 
 import javax.swing.table.DefaultTableModel;
 
 import root.dbConnection.DBConnection;
 import root.util.SortUtils;
-import rs.mgifos.mosquito.IMetaLoader;
-import rs.mgifos.mosquito.LoadingException;
-import rs.mgifos.mosquito.impl.pdm.PDMetaLoader;
 import rs.mgifos.mosquito.model.MetaColumn;
-import rs.mgifos.mosquito.model.MetaModel;
-import rs.mgifos.mosquito.model.MetaTable;
 
 @SuppressWarnings("serial")
 public class GenericTableModel extends DefaultTableModel implements ITableModel {
@@ -37,22 +31,6 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		super(colNames, 0);
 		this.tableCode = tableCode;
 		this.columns = columns;
-		/*IMetaLoader metaLoader = new PDMetaLoader();
-
-		Properties properties = new Properties();
-		properties.put(PDMetaLoader.FILENAME, "model/Magacinsko Poslovanje.pdm");
-
-		try {
-			MetaModel model = metaLoader.getMetaModel(properties);
-			for (MetaTable table : model) {
-				if (table.getCode().equals(tableCode)) {
-					columns = table.cColumns();
-				}
-			}
-		} catch (LoadingException e) {
-			e.printStackTrace();
-		}*/
-
 		this.primaryKey = columns.iterator().next().getCode();
 	}
 
@@ -64,23 +42,21 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			Iterator<MetaColumn> iterator = columns.iterator();
 			while (iterator.hasNext()) {
 				String name = iterator.next().getCode();
-				if (name.equals(primaryKey)) {
-					continue;
-				}
-				sb.append(iterator.next().getCode());
+				sb.append(name);
 				if (iterator.hasNext()) {
 					sb.append(", ");
 				} else {
-					sb.append("FROM " + tableCode);
+					sb.append(" FROM " + tableCode);
 					break;
 				}
 			}
+			basicQuery = sb.toString();
 		}
 
 		if (orderBy.equals("")) {
 			orderBy = " ORDER BY " + columns.iterator().next().getCode();
 		}
-
+		System.out.println(basicQuery + joinQuery + whereStmt + orderBy);
 		fillData(basicQuery + joinQuery + whereStmt + orderBy);
 	}
 
@@ -135,9 +111,8 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 		PreparedStatement statement = DBConnection.getConnection().prepareStatement(
 				"DELETE FROM " + tableCode + " WHERE " + primaryKey + "=?");
-
-		String sifra = (String) getValueAt(index, 0);
-		statement.setString(1, sifra);
+		Integer sifra = (Integer) getValueAt(index, 0);
+		statement.setInt(1, sifra);
 
 		int rowsAffected = statement.executeUpdate();
 		statement.close();
@@ -155,7 +130,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("INSERT INTO cveki.dbo." + tableCode + " (");
+		sb.append("INSERT INTO " + tableCode + " (");
 		Iterator<MetaColumn> iterator = columns.iterator();
 		while (iterator.hasNext()) {
 			String column = iterator.next().getCode();
@@ -206,7 +181,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		while (left <= right) {
 			mid = (left + right) / 2;
 
-			String aSifra = (String) getValueAt(mid, 0);
+			String aSifra = (String) getValueAt(mid, 1);
 
 			if (SortUtils.getLatCyrCollator().compare((String) colNames[0], aSifra) > 0)
 				left = mid + 1;
@@ -226,15 +201,14 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		return left;
 	}
 
-	// Postavljeno radi testiranja ucitavanja metapodataka
 	public static void main(String[] args) {
 		GenericTableModel gtm = TableModelCreator.createTableModel("Država");
-		// GenericTableModel gtm = new GenericTableModel("Drzava", new String[] { "Šifra države", "Naziv države" });
 
 		try {
+			gtm.open();
 			gtm.insertRow(new String[] { "SRB", "Srbija" });
+			gtm.deleteRow(5);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			DBConnection.close();
 		}
