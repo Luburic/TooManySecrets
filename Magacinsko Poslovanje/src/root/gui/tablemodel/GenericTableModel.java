@@ -1,15 +1,20 @@
 package root.gui.tablemodel;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.table.DefaultTableModel;
 
 import root.dbConnection.DBConnection;
+import root.util.Constants;
 import root.util.SortUtils;
 import rs.mgifos.mosquito.model.MetaColumn;
 
@@ -63,26 +68,87 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 	@Override
 	public void fillData(String sql) throws SQLException {
 		setRowCount(0);
-
 		Statement stmt = DBConnection.getConnection().createStatement();
-
 		ResultSet rset = stmt.executeQuery(sql);
 		int columnCount = rset.getMetaData().getColumnCount();
 
 		while (rset.next()) {
-
-			Object[] rowForInsert = new Object[rset.getMetaData().getColumnCount()];
-
-			for (int i = 0; i < columnCount; i++)
-				rowForInsert[i] = rset.getObject(i + 1);
-
+			String[] rowForInsert = new String[rset.getMetaData().getColumnCount()];
+			for (int i = 0; i < columnCount; i++) {
+				if (rset.getMetaData().getColumnType(i + 1) == Types.BOOLEAN) {
+					if (rset.getString(i + 1).equals("1")) {
+						rowForInsert[i] = "Da";
+					} else {
+						rowForInsert[i] = "Ne";
+					}
+				} else if (rset.getMetaData().getColumnType(i + 1) == Types.DATE) {
+					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+					java.util.Date date = rset.getDate(i + 1);
+					rowForInsert[i] = formatter.format(date);
+				} else {
+					rowForInsert[i] = rset.getString(i + 1);
+				}
+			}
 			addRow(rowForInsert);
-
 		}
+
 		rset.close();
 		stmt.close();
 		fireTableDataChanged();
+	}
 
+	// U kodu je generalno hardkodovano da je prva kolona za surogatni ključ, a poslednja za verziju. Isti rezultat bi
+	// se postigao da preko meta podataka obeležavamo koje kolone su za verziju, a koje za ključ, ali ovako je
+	// efikasnije i nema potrebe komplikovati.
+	public void checkRow(int index) throws SQLException {
+		DBConnection.getConnection().setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+
+		PreparedStatement statement = DBConnection.getConnection().prepareStatement(
+				"SELECT * FROM " + tableCode + " WHERE " + primaryKey + "=?");
+		Integer sifra = (Integer) getValueAt(index, 0);
+		statement.setInt(1, sifra);
+		ResultSet rset = statement.executeQuery();
+		String errorMessage = null;
+
+		if (!rset.next()) {
+			removeRow(index);
+			fireTableDataChanged();
+			errorMessage = Constants.ERROR_RECORD_WAS_DELETED;
+		} else {
+			int columnCount = rset.getMetaData().getColumnCount();
+			Integer versionFromDb = rset.getInt(columnCount);
+			Integer versionFromTable = (Integer) getValueAt(index, getColumnCount() - 1);
+			if (versionFromDb != versionFromTable) {
+				errorMessage = Constants.ERROR_RECORD_WAS_CHANGED;
+				for (int i = 0; i < columnCount; i++) {
+					String newValue;
+					if (rset.getMetaData().getColumnType(i + 1) == Types.BOOLEAN) {
+						if (rset.getString(i + 1).equals("1")) {
+							newValue = "Da";
+						} else {
+							newValue = "Ne";
+						}
+					} else if (rset.getMetaData().getColumnType(i + 1) == Types.DATE) {
+						DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+						java.util.Date date = rset.getDate(i + 1);
+						newValue = formatter.format(date);
+					} else {
+						newValue = rset.getString(i + 1);
+					}
+					setValueAt(newValue, index, i);
+					fireTableDataChanged();
+				}
+			}
+		}
+
+		rset.close();
+		statement.close();
+
+		if (errorMessage != null) {
+			DBConnection.getConnection().commit();
+			DBConnection.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			throw new SQLException(errorMessage, "");
+		}
 	}
 
 	@Override
@@ -106,9 +172,40 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 	}
 
+	public void updateRow(Object[] colNames, int index) throws SQLException {
+		checkRow(index);
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("UPDATE " + tableCode + " SET ");
+		Iterator<MetaColumn> iterator = columns.iterator();
+		while (iterator.hasNext()) {
+			String column = iterator.next().getCode();
+			if (column.equals(primaryKey)) {
+				continue;
+			}
+			sb.append(column + " = ?");
+			if (iterator.hasNext()) {
+				sb.append(", ");
+			} else {
+				sb.append(" WHERE " + primaryKey + " = ?");
+				break;
+			}
+		}
+		System.out.println(sb.toString());
+		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sb.toString());
+		for (int i = 0; i < colNames.length; i++)
+			stmt.setString(i + 1, (String) colNames[i]);
+		// Za verziju
+		stmt.setInt(colNames.length + 1, (int) getValueAt(index, getColumnCount() - 1) + 1);
+		// Za where od primarnog
+		stmt.setInt(colNames.length + 2, (int) getValueAt(index, 0));
+		// Ovde sam stao
+	}
+
 	@Override
 	public void deleteRow(int index) throws SQLException {
-
+		checkRow(index);
 		PreparedStatement statement = DBConnection.getConnection().prepareStatement(
 				"DELETE FROM " + tableCode + " WHERE " + primaryKey + "=?");
 		Integer sifra = (Integer) getValueAt(index, 0);
@@ -117,7 +214,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		int rowsAffected = statement.executeUpdate();
 		statement.close();
 		DBConnection.getConnection().commit();
-
+		DBConnection.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 		if (rowsAffected > 0) {
 			removeRow(index);
 			fireTableDataChanged();
@@ -146,8 +243,9 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			}
 		}
 
-		for (int i = 0; i < colNames.length - 1; i++)
+		for (int i = 0; i < colNames.length; i++)
 			sb.append("?, ");
+		// Za verziju
 		sb.append("?)");
 
 		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sb.toString(),
@@ -156,6 +254,8 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 		for (int i = 0; i < colNames.length; i++)
 			stmt.setString(i + 1, (String) colNames[i]);
+		// Za verziju
+		stmt.setInt(colNames.length + 1, 1);
 
 		System.out.println(sb.toString());
 
@@ -208,12 +308,10 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 	}
 
 	public static void main(String[] args) {
-		GenericTableModel gtm = TableModelCreator.createTableModel("Država", null);
+		GenericTableModel gtm = TableModelCreator.createTableModel("Mesto", null);
 
 		try {
-			gtm.open();
-			gtm.insertRow(new String[] { "SRB", "Srbija" });
-			gtm.deleteRow(5);
+			gtm.updateRow(new String[] { "Test1", "Test2" }, 1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			DBConnection.close();

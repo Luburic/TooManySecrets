@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     09-May-14 11:56:33 AM                        */
+/* Created on:     10-May-14 11:02:55 AM                        */
 /*==============================================================*/
 
 
@@ -414,6 +414,7 @@ create table Analitika_magacinske_kartice (
    kolicina             numeric(12)          not null,
    cena                 decimal(15,2)        not null,
    vrednost             decimal(15,2)        not null,
+   analitika_kartice_version int                  not null,
    constraint PK_ANALITIKA_MAGACINSKE_KARTIC primary key nonclustered (id_analitike)
 )
 go
@@ -450,6 +451,7 @@ create table Artikal (
    id_grupe             int                  not null,
    sifra_artikla        char(8)              not null,
    naziv_artikla        varchar(30)          not null,
+   artikal_version      int                  not null,
    constraint PK_ARTIKAL primary key nonclustered (id_artikla)
 )
 go
@@ -471,6 +473,7 @@ create table Clan_komisije (
    id_popisnog_dokumenta int                  not null,
    vrsta_clana          char(1)              not null
       constraint CKC_VRSTA_CLANA_CLAN_KOM check (vrsta_clana in ('P','Z','O')),
+   clan_version         int                  not null,
    constraint PK_CLAN_KOMISIJE primary key nonclustered (id_clana_komisije)
 )
 go
@@ -498,6 +501,7 @@ create table Drzava (
    id_drzave            int                  identity,
    sifra_drzave         char(3)              not null,
    naziv_drzave         varchar(20)          not null,
+   drzava_version       int                  not null,
    constraint PK_DRZAVA primary key nonclustered (id_drzave)
 )
 go
@@ -509,6 +513,7 @@ create table Grupa_artikla (
    id_grupe             int                  identity,
    Gru_id_grupe         int                  null,
    naziv_grupe          varchar(30)          not null,
+   grupa_artikla_version int                  not null,
    constraint PK_GRUPA_ARTIKLA primary key nonclustered (id_grupe)
 )
 go
@@ -531,6 +536,7 @@ create table Korisnik (
    password_salt        varchar(20)          not null,
    role                 char(1)              not null
       constraint CKC_ROLE_KORISNIK check (role in ('A','R')),
+   korisnik_version     int                  not null,
    constraint PK_KORISNIK primary key nonclustered (id_korisnika)
 )
 go
@@ -550,6 +556,7 @@ create table Magacinska_kartica (
    vrednost_pocetnog_stanja decimal(15,2)        not null,
    vrednost_ulaza       decimal(15,2)        not null,
    vrednost_izlaza      decimal(15,2)        not null,
+   kartica_version      int                  not null,
    constraint PK_MAGACINSKA_KARTICA primary key nonclustered (id_magacinske_kartice)
 )
 go
@@ -586,6 +593,7 @@ create table Mesto (
    id_drzave            int                  not null,
    zip_kod              varchar(10)          not null,
    naziv_mesta          varchar(20)          not null,
+   mesto_version        int                  not null,
    constraint PK_MESTO primary key nonclustered (id_mesta)
 )
 go
@@ -607,6 +615,7 @@ create table Organizaciona_jedinica (
    id_preduzeca         int                  not null,
    naziv_jedinice       varchar(30)          not null,
    magacin              bit                  not null,
+   org_jedinica_verzion int                  not null,
    constraint PK_ORGANIZACIONA_JEDINICA primary key nonclustered (id_jedinice)
 )
 go
@@ -639,6 +648,7 @@ create table Popisni_dokument (
    datum_knjizenja      datetime             null,
    status_popisnog      char(1)              not null
       constraint CKC_STATUS_POPISNOG_POPISNI_ check (status_popisnog in ('F','P')),
+   popisni_version      int                  not null,
    constraint PK_POPISNI_DOKUMENT primary key nonclustered (id_popisnog_dokumenta)
 )
 go
@@ -667,6 +677,7 @@ create table Poslovna_godina (
    id_preduzeca         int                  not null,
    godina               char(4)              not null,
    zakljucena           bit                  not null default 0,
+   godina_version       int                  not null,
    constraint PK_POSLOVNA_GODINA primary key nonclustered (id_poslovne_godine)
 )
 go
@@ -690,6 +701,7 @@ create table Poslovni_partner (
    adresa_poslovnog_partnera varchar(30)          not null,
    vrsta_poslovnog_partnera char(1)              not null
       constraint CKC_VRSTA_POSLOVNOG_P_POSLOVNI check (vrsta_poslovnog_partnera in ('K','D','O')),
+   partner_version      int                  not null,
    constraint PK_POSLOVNI_PARTNER primary key nonclustered (id_poslovnog_partnera)
 )
 go
@@ -719,6 +731,7 @@ create table Preduzece (
    naziv_preduzeca      varchar(30)          not null,
    broj_telefona_preduzeca varchar(15)          null,
    adresa_preduzeca     varchar(30)          null,
+   preduzece_version    int                  not null,
    constraint PK_PREDUZECE primary key nonclustered (id_preduzeca)
 )
 go
@@ -746,6 +759,7 @@ create table Prometni_dokument (
    datum_knjizenja_prometnog datetime             null,
    status_prometnog     char(1)              not null
       constraint CKC_STATUS_PROMETNOG_PROMETNI check (status_prometnog in ('F','P')),
+   prometni_version     int                  not null,
    constraint PK_PROMETNI_DOKUMENT primary key nonclustered (id_prometnog_dokumenta)
 )
 go
@@ -801,6 +815,7 @@ create table Radnik (
    prezime              varchar(30)          not null,
    jmbg                 varchar(13)          not null,
    adresa               varchar(30)          not null,
+   radnik_version       int                  not null,
    constraint PK_RADNIK primary key nonclustered (id_radnika)
 )
 go
@@ -831,6 +846,7 @@ create table Stavka_popisa (
    popisana_kolicina    numeric(12)          not null,
    kolicina_po_knjigama numeric(12)          not null,
    prosecna_cena_popis  decimal(15,2)        not null,
+   stavka_popisa_version int                  not null,
    constraint PK_STAVKA_POPISA primary key nonclustered (id_stavke_popisa)
 )
 go
@@ -861,6 +877,7 @@ create table Stavka_prometa (
    kolicina_prometa     numeric(12)          not null,
    cena_prometa         decimal(15,2)        not null,
    vrednost_prometa     decimal(15,2)        not null,
+   stavka_prometa_version int                  not null,
    constraint PK_STAVKA_PROMETA primary key nonclustered (id_stavke_prometa)
 )
 go
@@ -888,6 +905,7 @@ create table Vrsta_prometa (
    id_prometa           int                  identity,
    sifra_prometa        char(2)              not null,
    naziv_prometa        varchar(20)          not null,
+   vrsta_prometa_version int                  not null,
    constraint PK_VRSTA_PROMETA primary key nonclustered (id_prometa)
 )
 go

@@ -110,6 +110,11 @@ public abstract class GenericForm extends JDialog {
 
 	}
 
+	protected void setupTable() {
+		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(tblGrid.getColumnCount() - 1));
+		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(0));
+	}
+
 	public void initPanels() {
 		JScrollPane scrollPane = new JScrollPane(tblGrid);
 		add(scrollPane, "grow, wrap");

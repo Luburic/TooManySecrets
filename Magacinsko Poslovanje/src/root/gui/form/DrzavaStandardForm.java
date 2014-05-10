@@ -66,7 +66,7 @@ public class DrzavaStandardForm extends GenericForm {
 		dataPanel.add(tfSifraDrzave, "wrap");
 		dataPanel.add(lblNaziv);
 		dataPanel.add(tfNazivDrzave, "pushx");
-		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(0));
+		setupTable();
 		setLocationRelativeTo(MainFrame.getInstance());
 	}
 
