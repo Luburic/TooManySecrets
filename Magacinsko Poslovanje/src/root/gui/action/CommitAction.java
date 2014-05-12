@@ -29,6 +29,7 @@ public class CommitAction extends AbstractAction {
 			standardForm.addRow();
 			break;
 		case Constants.MODE_EDIT:
+			standardForm.updateRow();
 			break;
 		case Constants.MODE_SEARCH:
 			break;

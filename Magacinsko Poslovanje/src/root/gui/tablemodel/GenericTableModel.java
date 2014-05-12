@@ -73,7 +73,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		int columnCount = rset.getMetaData().getColumnCount();
 
 		while (rset.next()) {
-			String[] rowForInsert = new String[rset.getMetaData().getColumnCount()];
+			Object[] rowForInsert = new Object[rset.getMetaData().getColumnCount()];
 			for (int i = 0; i < columnCount; i++) {
 				if (rset.getMetaData().getColumnType(i + 1) == Types.BOOLEAN) {
 					if (rset.getString(i + 1).equals("1")) {
@@ -85,6 +85,8 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 					java.util.Date date = rset.getDate(i + 1);
 					rowForInsert[i] = formatter.format(date);
+				} else if (rset.getMetaData().getColumnType(i + 1) == Types.INTEGER) {
+					rowForInsert[i] = rset.getInt(i + 1);
 				} else {
 					rowForInsert[i] = rset.getString(i + 1);
 				}
@@ -105,6 +107,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 		PreparedStatement statement = DBConnection.getConnection().prepareStatement(
 				"SELECT * FROM " + tableCode + " WHERE " + primaryKey + "=?");
+		// Kad se ucita onda je string, kad se sacuva onda je int.
 		Integer sifra = (Integer) getValueAt(index, 0);
 		statement.setInt(1, sifra);
 		ResultSet rset = statement.executeQuery();
@@ -197,10 +200,24 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		for (int i = 0; i < colNames.length; i++)
 			stmt.setString(i + 1, (String) colNames[i]);
 		// Za verziju
-		stmt.setInt(colNames.length + 1, (int) getValueAt(index, getColumnCount() - 1) + 1);
+		Integer version = (int) getValueAt(index, getColumnCount() - 1) + 1;
+		stmt.setInt(colNames.length + 1, version);
 		// Za where od primarnog
 		stmt.setInt(colNames.length + 2, (int) getValueAt(index, 0));
 		// Ovde sam stao
+
+		int rowsAffected = stmt.executeUpdate();
+		stmt.close();
+		DBConnection.getConnection().commit();
+		DBConnection.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
+		if (rowsAffected > 0) {
+			setValueAt(version, index, getColumnCount() - 1);
+			for (int i = 0; i < colNames.length; i++) {
+				setValueAt(colNames[i], index, i + 1);
+			}
+			fireTableDataChanged();
+		}
 	}
 
 	@Override
@@ -262,11 +279,12 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		int rowsAffected = stmt.executeUpdate();
 		if (rowsAffected > 0) {
 			stmt.getGeneratedKeys().next();
-			Object[] insertion = new Object[colNames.length + 1];
+			Object[] insertion = new Object[colNames.length + 2];
 			insertion[0] = stmt.getGeneratedKeys().getInt(1);
 			for (int i = 0; i < colNames.length; i++) {
 				insertion[i + 1] = colNames[i];
 			}
+			insertion[colNames.length + 1] = 1;
 			retVal = sortedInsert(insertion);
 			fireTableDataChanged();
 		}

@@ -14,6 +14,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 import root.gui.MainFrame;
@@ -111,6 +113,12 @@ public abstract class GenericForm extends JDialog {
 	}
 
 	protected void setupTable() {
+		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				setMode(Constants.MODE_EDIT);
+			}
+		});
 		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(tblGrid.getColumnCount() - 1));
 		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(0));
 	}
@@ -197,6 +205,21 @@ public abstract class GenericForm extends JDialog {
 			tblGrid.setRowSelectionInterval(index, index);
 			setMode(Constants.MODE_ADD);
 
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(this, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public void updateRow() {
+
+		try {
+			GenericTableModel dtm = (GenericTableModel) tblGrid.getModel();
+
+			LinkedList<Object> newRow = new LinkedList<Object>();
+
+			getDataAndAddToRow(newRow);
+
+			dtm.updateRow(newRow.toArray(), tblGrid.getSelectedRow());
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(this, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
