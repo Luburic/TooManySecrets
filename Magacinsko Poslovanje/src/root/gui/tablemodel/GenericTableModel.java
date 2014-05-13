@@ -10,23 +10,33 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
 
 import root.dbConnection.DBConnection;
 import root.util.Constants;
+import root.util.MetaSurogateDisplay;
 import root.util.SortUtils;
 import rs.mgifos.mosquito.model.MetaColumn;
 
 @SuppressWarnings("serial")
 public class GenericTableModel extends DefaultTableModel implements ITableModel {
+	private String basicQuery = "";
+	private String joinQuery = "";
+	private String whereStmt = "";
+	private String orderBy = "";
 
-	protected String basicQuery = "";
-	protected String joinQuery = "";
-	protected String whereStmt = "";
-	protected String orderBy = "";
+	// private String openAsChildQuery = "";
+	private List<MetaSurogateDisplay> outsideColumns;
 
-	protected String openAsChildQuery = "";
+	public List<MetaSurogateDisplay> getOutsideColumns() {
+		return outsideColumns;
+	}
+
+	public void setOutsideColumns(List<MetaSurogateDisplay> outsideColumns) {
+		this.outsideColumns = outsideColumns;
+	}
 
 	private String tableCode;
 	private Collection<MetaColumn> columns;
@@ -46,16 +56,47 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			sb.append("SELECT ");
 			Iterator<MetaColumn> iterator = columns.iterator();
 			while (iterator.hasNext()) {
-				String name = iterator.next().getCode();
+				MetaColumn column = iterator.next();
+				String name = column.getCode();
+				if (column.isPartOfFK() && outsideColumns != null) {
+					Iterator<MetaSurogateDisplay> itar = outsideColumns.iterator();
+					while (itar.hasNext()) {
+						MetaSurogateDisplay temp = itar.next();
+						if (temp.getIdColumnName().equals(name)) {
+							sb.append(temp.getTableCode() + ".");
+						}
+					}
+				}
 				sb.append(name);
 				if (iterator.hasNext()) {
 					sb.append(", ");
 				} else {
+					if (outsideColumns != null) {
+						Iterator<MetaSurogateDisplay> outsideIterator = outsideColumns.iterator();
+						while (outsideIterator.hasNext()) {
+							Iterator<String> insideIterator = outsideIterator.next().getDisplayColumnName().iterator();
+							while (insideIterator.hasNext()) {
+								sb.append(", " + insideIterator.next());
+							}
+						}
+					}
 					sb.append(" FROM " + tableCode);
 					break;
 				}
 			}
 			basicQuery = sb.toString();
+		}
+
+		if (outsideColumns != null) {
+			StringBuilder sb = new StringBuilder(" JOIN ");
+			Iterator<MetaSurogateDisplay> outsideIterator = outsideColumns.iterator();
+			while (outsideIterator.hasNext()) {
+				MetaSurogateDisplay msd = outsideIterator.next();
+				sb.append(msd.getTableCode());
+				String foreignKey = msd.getIdColumnName();
+				sb.append(" ON " + tableCode + "." + foreignKey + " = " + msd.getTableCode() + "." + foreignKey);
+			}
+			joinQuery = sb.toString();
 		}
 
 		if (orderBy.equals("")) {
@@ -124,7 +165,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			if (versionFromDb != versionFromTable) {
 				errorMessage = Constants.ERROR_RECORD_WAS_CHANGED;
 				for (int i = 0; i < columnCount; i++) {
-					String newValue;
+					Object newValue;
 					if (rset.getMetaData().getColumnType(i + 1) == Types.BOOLEAN) {
 						if (rset.getString(i + 1).equals("1")) {
 							newValue = "Da";
@@ -135,6 +176,8 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 						DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 						java.util.Date date = rset.getDate(i + 1);
 						newValue = formatter.format(date);
+					} else if (rset.getMetaData().getColumnType(i + 1) == Types.INTEGER) {
+						newValue = rset.getInt(i + 1);
 					} else {
 						newValue = rset.getString(i + 1);
 					}
@@ -161,17 +204,6 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 	@Override
 	public void openAsChildForm(String whereValue) throws SQLException {
-
-		if (this instanceof Object) {
-			openAsChildQuery = "SELECT nm_sifra, nm_naziv, naseljeno_mesto.dr_sifra, naseljeno_mesto.dr_naziv FROM naseljeno_mesto JOIN drzava on naseljeno_mesto.dr_sifra = drzava.dr_sifra WHERE naseljeno_mesto.dr_sifra ='"
-					+ whereValue + "' ORDER BY nm_sifra";
-		}
-
-		if (this instanceof Object) {
-
-		}
-
-		fillData(openAsChildQuery);
 
 	}
 
@@ -335,5 +367,37 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			DBConnection.close();
 		}
 		DBConnection.close();
+	}
+
+	public String getBasicQuery() {
+		return basicQuery;
+	}
+
+	public void setBasicQuery(String basicQuery) {
+		this.basicQuery = basicQuery;
+	}
+
+	public String getJoinQuery() {
+		return joinQuery;
+	}
+
+	public void setJoinQuery(String joinQuery) {
+		this.joinQuery = joinQuery;
+	}
+
+	public String getWhereStmt() {
+		return whereStmt;
+	}
+
+	public void setWhereStmt(String whereStmt) {
+		this.whereStmt = whereStmt;
+	}
+
+	public String getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
 	}
 }

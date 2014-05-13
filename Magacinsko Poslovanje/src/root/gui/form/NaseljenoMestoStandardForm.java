@@ -1,55 +1,59 @@
 package root.gui.form;
 
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.SQLException;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import root.gui.action.ZoomFormAction;
+import root.gui.tablemodel.TableModelCreator;
+import root.util.ComboBoxPair;
 import root.util.Lookup;
+import root.util.MetaSurogateDisplay;
 
 public class NaseljenoMestoStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
 
 	private JButton btnZoom = new JButton("...");
 	private String qsifra;
+	private ZoomFormAction drzavaZoom;
 
-	protected JTextField tfSifraDrzave = new JTextField(5);
-	protected JTextField tfNazivDrzave = new JTextField(20);
+	protected JComboBox<ComboBoxPair> cmbDrzava;
 	// naseljenoMesto
 	protected JTextField tfSifraMesta = new JTextField(5);
 	protected JTextField tfNazivMesta = new JTextField(20);
 
-	public NaseljenoMestoStandardForm() {
-		super();
+	public NaseljenoMestoStandardForm(GenericForm returning) {
+		super(returning);
 		setTitle("Naseljena mesta");
 
-		tfSifraDrzave.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent e) {
-				String sifraDrzave = tfSifraDrzave.getText().trim();
-				try {
-					tfNazivDrzave.setText(Lookup.getDrzava(sifraDrzave));
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-
-		btnZoom.addActionListener(new ZoomFormAction(this));
-
-		Vector<String> columnNames = new Vector<String>();
-		columnNames.add("Šifra");
-		columnNames.add("Naziv");
+		// Next mehanizam ce da proveri da li postoji columnlist i koliko ima clanova. Ako ima jedan odmah generisi
+		// formu, ako ne dropdown lista. Klikom na konkretnu akciju, otvaramo formu, i uzimamo id drzave, formiramo
+		// where clausulu i selektujemo. Bice problem kod visestrukih, tu cemo hardkodovati
+		drzavaZoom = new ZoomFormAction(new DrzavaStandardForm(this));
+		btnZoom.addActionListener(drzavaZoom);
 
 		JLabel lblSifra = new JLabel("Šifra mesta:");
 		JLabel lblNaziv = new JLabel("Naziv mesta:");
-		JLabel lblSifraDrzave = new JLabel("Šifra države:");
+		JLabel lblDrzava = new JLabel("Država:");
+		try {
+			cmbDrzava = new JComboBox<ComboBoxPair>(Lookup.getDrzave());
+			cmbDrzava.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					drzavaZoom.setId(((ComboBoxPair) e.getItem()).getId());
+				}
+			});
+			drzavaZoom.setId(((ComboBoxPair) cmbDrzava.getSelectedItem()).getId());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		dataPanel.add(lblSifra);
 		dataPanel.add(tfSifraMesta, "wrap, gapx 15px");
@@ -57,41 +61,30 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		dataPanel.add(lblNaziv);
 		dataPanel.add(tfNazivMesta, "wrap,gapx 15px, span 3");
 
-		dataPanel.add(lblSifraDrzave);
-		dataPanel.add(tfSifraDrzave, "gapx 15px");
+		dataPanel.add(lblDrzava);
+		dataPanel.add(cmbDrzava, "gapx 15px");
 
 		dataPanel.add(btnZoom);
 
-		dataPanel.add(tfNazivDrzave, "pushx");
-		tfNazivDrzave.setEditable(false);
-
-		btnPickup.setEnabled(false);
-
-		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				if (e.getValueIsAdjusting())
-					return;
-				sync();
-			}
-		});
-		// mode = Mod.MODE_EDIT;
-
+		setupTable();
 	}
 
-	public void setUpTable() {
-
-		// NaseljenoMestoTableModel tableModel = new NaseljenoMestoTableModel(new String[] { "Šifra mesta",
-		// "Naziv mesta",
-		// "Šifra države", "Naziv države" }, 0);
-		// tblGrid.setModel(tableModel);
-
-		if (qsifra == null) {
-			// tableModel.open();
-		} else {
-			// tableModel.openAsChildForm(qsifra);
-			childAction = true;
+	@Override
+	public void setupTable() {
+		List<MetaSurogateDisplay> listForJoin = new ArrayList<MetaSurogateDisplay>();
+		MetaSurogateDisplay temp = new MetaSurogateDisplay();
+		temp.setTableCode("Drzava");
+		temp.setIdColumnName("id_drzave");
+		temp.getDisplayColumnName().add("naziv_drzave");
+		listForJoin.add(temp);
+		tableModel = TableModelCreator.createTableModel("Mesto", listForJoin);
+		super.setupTable();
+		try {
+			tableModel.open();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
 	}
 
 	public String getQsifra() {

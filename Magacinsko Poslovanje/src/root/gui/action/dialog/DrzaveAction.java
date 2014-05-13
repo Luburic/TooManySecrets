@@ -2,7 +2,6 @@ package root.gui.action.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.sql.SQLException;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
@@ -22,12 +21,7 @@ public class DrzaveAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		DrzavaStandardForm form = null;
-		try {
-			form = new DrzavaStandardForm();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		form = new DrzavaStandardForm(null);
 		form.setVisible(true);
 	}
 }

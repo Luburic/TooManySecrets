@@ -47,6 +47,10 @@ public abstract class GenericForm extends JDialog {
 
 	protected JPanel dataPanel;
 
+	protected ColumnList columnList;
+
+	protected GenericForm returning;
+
 	// ime forme koja je selektovana next mehanizmom(popupAction->nextFormAction)
 	protected String selectedForm;
 
@@ -57,13 +61,16 @@ public abstract class GenericForm extends JDialog {
 
 	protected int mode;
 
-	public GenericForm() {
+	protected GenericTableModel tableModel;
+
+	public GenericForm(GenericForm returning) {
 		setLayout(new MigLayout("fill"));
 		setSize(new Dimension(600, 400));
 		setLocationRelativeTo(MainFrame.getInstance());
 		setModal(true);
 		initToolbar();
 		initPanels();
+		this.returning = returning;
 	}
 
 	public void initToolbar() {
@@ -77,6 +84,7 @@ public abstract class GenericForm extends JDialog {
 
 		btnPickup = new JButton(new PickupAction(this));
 		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 
 		btnHelp = new JButton(new HelpAction());
 		toolBar.add(btnHelp);
@@ -109,13 +117,16 @@ public abstract class GenericForm extends JDialog {
 		toolBar.add(btnNextForm);
 
 		add(toolBar, "dock north");
-
 	}
 
 	protected void setupTable() {
+		tblGrid.setModel(tableModel);
 		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
+				if (e.getValueIsAdjusting())
+					return;
+				sync();
 				setMode(Constants.MODE_EDIT);
 			}
 		});

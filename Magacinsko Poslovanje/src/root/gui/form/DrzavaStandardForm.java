@@ -6,11 +6,8 @@ import java.sql.SQLException;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import root.gui.MainFrame;
-import root.gui.tablemodel.GenericTableModel;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ColumnList;
 import root.util.Lookup;
@@ -18,35 +15,18 @@ import root.util.Lookup;
 public class DrzavaStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
 
-	private GenericTableModel tableModel;
-
 	private ColumnList drzavaColumnList;
 
 	private JTextField tfSifraDrzave = new JTextField(5);
 	private JTextField tfNazivDrzave = new JTextField(20);
 
-	public DrzavaStandardForm() throws SQLException {
-		super();
+	public DrzavaStandardForm(GenericForm returning) {
+		super(returning);
 		setTitle("Države");
 		tfSifraDrzave.setName("šifra države");
 		tfNazivDrzave.setName("naziv države");
 
 		tableModel = TableModelCreator.createTableModel("Država", null);
-		tblGrid.setModel(tableModel);
-
-		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				if (e.getValueIsAdjusting())
-					return;
-				sync();
-			}
-		});
-
-		try {
-			tableModel.open();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 
 		tfSifraDrzave.addFocusListener(new FocusAdapter() {
 			public void focusLost(FocusEvent e) {
@@ -67,6 +47,11 @@ public class DrzavaStandardForm extends GenericForm {
 		dataPanel.add(lblNaziv);
 		dataPanel.add(tfNazivDrzave, "pushx");
 		setupTable();
+		try {
+			tableModel.open();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		setLocationRelativeTo(MainFrame.getInstance());
 	}
 

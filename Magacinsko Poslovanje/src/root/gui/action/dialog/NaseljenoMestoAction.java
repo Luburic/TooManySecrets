@@ -21,8 +21,7 @@ public class NaseljenoMestoAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		NaseljenoMestoStandardForm form = null;
-		form = new NaseljenoMestoStandardForm();
-		form.setUpTable();
+		form = new NaseljenoMestoStandardForm(null);
 		form.setVisible(true);
 	}
 
