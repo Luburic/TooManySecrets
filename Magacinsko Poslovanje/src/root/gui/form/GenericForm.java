@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -35,6 +36,7 @@ import root.gui.action.SearchAction;
 import root.gui.tablemodel.GenericTableModel;
 import root.util.Column;
 import root.util.ColumnList;
+import root.util.ComboBoxPair;
 import root.util.Constants;
 
 @SuppressWarnings("serial")
@@ -131,6 +133,12 @@ public abstract class GenericForm extends JDialog {
 			}
 		});
 		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(tblGrid.getColumnCount() - 1));
+		if (tableModel.getOutsideColumns() != null) {
+			int n = tableModel.getOutsideColumns().size();
+			for (int i = 1; i <= n; i++) {
+				tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(i));
+			}
+		}
 		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(0));
 	}
 
@@ -237,6 +245,16 @@ public abstract class GenericForm extends JDialog {
 	}
 
 	protected void getDataAndAddToRow(LinkedList<Object> newRow) {
+		int relatedTabelCount = 0;
+		for (Component cp : dataPanel.getComponents()) {
+			if (cp instanceof JComboBox<?>) {
+				@SuppressWarnings("unchecked")
+				JComboBox<ComboBoxPair> comboBox = (JComboBox<ComboBoxPair>) cp;
+				ComboBoxPair selected = (ComboBoxPair) comboBox.getSelectedItem();
+				tableModel.getOutsideColumns().get(relatedTabelCount).getDisplayColumnValue().add(selected.toString());
+				newRow.add(selected.getId());
+			}
+		}
 		for (Component cp : dataPanel.getComponents()) {
 			if (cp instanceof JTextField) {
 				JTextField textField = (JTextField) cp;
@@ -345,16 +363,31 @@ public abstract class GenericForm extends JDialog {
 		while (iter.hasNext()) {
 			Column c = iter.next();
 			String cname = c.getName();
-			String value = "";
+			Object value = null;
 			if (c.getValue() != null) {
-				value = (String) c.getValue().toString();
+				value = c.getValue();
 			}
 
 			for (Component cp : dataPanel.getComponents()) {
 				if (cp instanceof JTextField) {
 					JTextField textField = (JTextField) cp;
 					if (textField.getName() != null && textField.getName().equals(cname)) {
-						textField.setText(value);
+						if (value != null) {
+							textField.setText(value.toString());
+						} else {
+							textField.setText("");
+						}
+					}
+				} else if (cp instanceof JComboBox<?>) {
+					@SuppressWarnings("unchecked")
+					JComboBox<ComboBoxPair> cmb = (JComboBox<ComboBoxPair>) cp;
+					if (cmb.getName() != null && cmb.getName().equals(cname)) {
+						for (int i = 0; i < cmb.getModel().getSize(); i++) {
+							if (cmb.getItemAt(i).getId() == value) {
+								cmb.setSelectedIndex(i);
+								break;
+							}
+						}
 					}
 				}
 			}

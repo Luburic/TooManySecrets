@@ -41,6 +41,15 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 	private String tableCode;
 	private Collection<MetaColumn> columns;
 	private String primaryKey;
+	private int columnForSorting = 1;
+
+	public int getColumnForSorting() {
+		return columnForSorting;
+	}
+
+	public void setColumnForSorting(int columnForSorting) {
+		this.columnForSorting = columnForSorting;
+	}
 
 	public GenericTableModel(String tableCode, Object[] colNames, Collection<MetaColumn> columns) {
 		super(colNames, 0);
@@ -58,6 +67,20 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			while (iterator.hasNext()) {
 				MetaColumn column = iterator.next();
 				String name = column.getCode();
+				if (name.contains("version") && outsideColumns != null) {
+					if (outsideColumns != null) {
+						Iterator<MetaSurogateDisplay> outsideIterator = outsideColumns.iterator();
+						while (outsideIterator.hasNext()) {
+							Iterator<String> insideIterator = outsideIterator.next().getDisplayColumnCode().iterator();
+							while (insideIterator.hasNext()) {
+								sb.append(insideIterator.next() + ", ");
+							}
+						}
+						sb.append(name);
+					}
+					sb.append(" FROM " + tableCode);
+					break;
+				}
 				if (column.isPartOfFK() && outsideColumns != null) {
 					Iterator<MetaSurogateDisplay> itar = outsideColumns.iterator();
 					while (itar.hasNext()) {
@@ -71,15 +94,6 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 				if (iterator.hasNext()) {
 					sb.append(", ");
 				} else {
-					if (outsideColumns != null) {
-						Iterator<MetaSurogateDisplay> outsideIterator = outsideColumns.iterator();
-						while (outsideIterator.hasNext()) {
-							Iterator<String> insideIterator = outsideIterator.next().getDisplayColumnName().iterator();
-							while (insideIterator.hasNext()) {
-								sb.append(", " + insideIterator.next());
-							}
-						}
-					}
 					sb.append(" FROM " + tableCode);
 					break;
 				}
@@ -148,7 +162,6 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 		PreparedStatement statement = DBConnection.getConnection().prepareStatement(
 				"SELECT * FROM " + tableCode + " WHERE " + primaryKey + "=?");
-		// Kad se ucita onda je string, kad se sacuva onda je int.
 		Integer sifra = (Integer) getValueAt(index, 0);
 		statement.setInt(1, sifra);
 		ResultSet rset = statement.executeQuery();
@@ -229,8 +242,18 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		}
 		System.out.println(sb.toString());
 		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sb.toString());
-		for (int i = 0; i < colNames.length; i++)
-			stmt.setString(i + 1, (String) colNames[i]);
+		// Strani ključevi
+		int k = 0;
+		if (outsideColumns != null) {
+			k = outsideColumns.size();
+		}
+		for (int i = 0; i < colNames.length - k; i++)
+			stmt.setString(i + 1 + k, (String) colNames[i + k]);
+		// Za strane kljuceve
+		for (int i = 0; i < k; i++) {
+			stmt.setInt(i + 1, (int) colNames[i]);
+		}
+
 		// Za verziju
 		Integer version = (int) getValueAt(index, getColumnCount() - 1) + 1;
 		stmt.setInt(colNames.length + 1, version);
@@ -247,6 +270,11 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			setValueAt(version, index, getColumnCount() - 1);
 			for (int i = 0; i < colNames.length; i++) {
 				setValueAt(colNames[i], index, i + 1);
+			}
+			if (outsideColumns != null) {
+				for (int i = 0; i < outsideColumns.size(); i++) {
+					setValueAt(outsideColumns.get(i).getDisplayColumnValue().get(0), index, i + colNames.length + 1);
+				}
 			}
 			fireTableDataChanged();
 		}
@@ -301,22 +329,34 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 				Statement.RETURN_GENERATED_KEYS);
 		int retVal = 0;
 
-		for (int i = 0; i < colNames.length; i++)
-			stmt.setString(i + 1, (String) colNames[i]);
+		for (int i = 0; i < colNames.length; i++) {
+			stmt.setObject(i + 1, colNames[i]);
+		}
 		// Za verziju
 		stmt.setInt(colNames.length + 1, 1);
 
 		System.out.println(sb.toString());
-
+		// Ovaj object insertion treba prepraviti da radi sa povezanim tabelama. Isto vazi i za optimisticko
+		// zakljucavanje (ali videcemo to na kurvaka)
 		int rowsAffected = stmt.executeUpdate();
 		if (rowsAffected > 0) {
 			stmt.getGeneratedKeys().next();
-			Object[] insertion = new Object[colNames.length + 2];
+			int k = 0;
+			if (outsideColumns != null) {
+				k = outsideColumns.size();
+			}
+			Object[] insertion = new Object[colNames.length + 2 + k];
 			insertion[0] = stmt.getGeneratedKeys().getInt(1);
 			for (int i = 0; i < colNames.length; i++) {
 				insertion[i + 1] = colNames[i];
+			} // Ovde je za sada hardkodovano da ce uvek biti jedna povezana kolona za prikaz, ali je stavljena lista u
+				// slucaju da kasnije bude potrebno par kolona.
+			if (outsideColumns != null) {
+				for (int i = 0; i < k; i++) {
+					insertion[colNames.length + 1 + i] = outsideColumns.get(i).getDisplayColumnValue().get(0);
+				}
 			}
-			insertion[colNames.length + 1] = 1;
+			insertion[colNames.length + k + 1] = 1;
 			retVal = sortedInsert(insertion);
 			fireTableDataChanged();
 		}
@@ -337,7 +377,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		while (left <= right) {
 			mid = (left + right) / 2;
 
-			String aSifra = (String) getValueAt(mid, 1);
+			String aSifra = (String) getValueAt(mid, columnForSorting);
 
 			if (SortUtils.getLatCyrCollator().compare((String) colNames[0].toString(), aSifra) > 0)
 				left = mid + 1;

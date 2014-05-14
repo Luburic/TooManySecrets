@@ -13,8 +13,9 @@ public class MetaSurogateDisplay {
 	private String tableCode;
 	private Integer id;
 	private String idColumnName;
-	private List<Object> display = new ArrayList<Object>();
+	private List<String> displayColumnValue = new ArrayList<String>();
 	private List<String> displayColumnName = new ArrayList<String>();
+	private List<String> displayColumnCode = new ArrayList<String>();
 
 	public Integer getId() {
 		return id;
@@ -32,12 +33,20 @@ public class MetaSurogateDisplay {
 		this.idColumnName = idColumnName;
 	}
 
-	public List<Object> getDisplay() {
-		return display;
+	public List<String> getDisplayColumnCode() {
+		return displayColumnCode;
 	}
 
-	public void setDisplay(List<Object> display) {
-		this.display = display;
+	public void setDisplayColumnCode(List<String> displayColumnCode) {
+		this.displayColumnCode = displayColumnCode;
+	}
+
+	public String getTableCode() {
+		return tableCode;
+	}
+
+	public void setTableCode(String tableCode) {
+		this.tableCode = tableCode;
 	}
 
 	public List<String> getDisplayColumnName() {
@@ -48,11 +57,11 @@ public class MetaSurogateDisplay {
 		this.displayColumnName = displayColumnName;
 	}
 
-	public String getTableCode() {
-		return tableCode;
+	public List<String> getDisplayColumnValue() {
+		return displayColumnValue;
 	}
 
-	public void setTableCode(String tableCode) {
-		this.tableCode = tableCode;
+	public void setDisplayColumnValue(List<String> displayColumnValue) {
+		this.displayColumnValue = displayColumnValue;
 	}
 }

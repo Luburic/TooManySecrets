@@ -42,8 +42,12 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		JLabel lblSifra = new JLabel("Šifra mesta:");
 		JLabel lblNaziv = new JLabel("Naziv mesta:");
 		JLabel lblDrzava = new JLabel("Država:");
+		tfNazivMesta.setName("naziv mesta");
+		tfSifraMesta.setName("zip kod");
+
 		try {
 			cmbDrzava = new JComboBox<ComboBoxPair>(Lookup.getDrzave());
+			cmbDrzava.setName("id države");
 			cmbDrzava.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
@@ -75,14 +79,15 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		MetaSurogateDisplay temp = new MetaSurogateDisplay();
 		temp.setTableCode("Drzava");
 		temp.setIdColumnName("id_drzave");
-		temp.getDisplayColumnName().add("naziv_drzave");
+		temp.getDisplayColumnCode().add("naziv_drzave");
+		temp.getDisplayColumnName().add("naziv države");
 		listForJoin.add(temp);
 		tableModel = TableModelCreator.createTableModel("Mesto", listForJoin);
+		tableModel.setColumnForSorting(2);
 		super.setupTable();
 		try {
 			tableModel.open();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -1,5 +1,6 @@
 package root.gui.tablemodel;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -38,11 +39,25 @@ public class TableModelCreator {
 				if (table.getName().equals(tableName)) {
 					tableCode = table.getCode();
 					columns = table.cColumns();
-					columnNames = new String[columns.size()];
+					int moreColumns = 0;
+					List<String> moreColumnNames = new ArrayList<String>();
+					if (additionalColumns != null) {
+						Iterator<MetaSurogateDisplay> additionalIterator = additionalColumns.iterator();
+						while (additionalIterator.hasNext()) {
+							MetaSurogateDisplay msd = additionalIterator.next();
+							moreColumns += msd.getDisplayColumnName().size();
+							moreColumnNames.addAll(msd.getDisplayColumnName());
+						}
+					}
+					columnNames = new String[columns.size() + moreColumns];
 					Iterator<MetaColumn> iter = columns.iterator();
-					for (int i = 0; i < columns.size(); i++) {
+					for (int i = 0; i < columns.size() - 1; i++) {
 						columnNames[i] = iter.next().getName();
 					}
+					for (int i = columns.size() - 1, j = 0; i < columnNames.length - 1; i++, j++) {
+						columnNames[i] = moreColumnNames.get(j);
+					}
+					columnNames[columnNames.length - 1] = iter.next().getName();
 					GenericTableModel retVal = new GenericTableModel(tableCode, columnNames, columns);
 					retVal.setOutsideColumns(additionalColumns);
 					return retVal;

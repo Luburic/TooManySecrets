@@ -17,7 +17,7 @@ public class DrzavaStandardForm extends GenericForm {
 
 	private ColumnList drzavaColumnList;
 
-	private JTextField tfSifraDrzave = new JTextField(5);
+	private JTextField tfSifraDrzave = new JTextField(3);
 	private JTextField tfNazivDrzave = new JTextField(20);
 
 	public DrzavaStandardForm(GenericForm returning) {
