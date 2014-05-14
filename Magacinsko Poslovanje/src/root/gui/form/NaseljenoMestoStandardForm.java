@@ -29,15 +29,13 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 	protected JTextField tfSifraMesta = new JTextField(5);
 	protected JTextField tfNazivMesta = new JTextField(20);
 
-	public NaseljenoMestoStandardForm(GenericForm returning) {
+	public NaseljenoMestoStandardForm(JComboBox<ComboBoxPair> returning) {
 		super(returning);
 		setTitle("Naseljena mesta");
 
 		// Next mehanizam ce da proveri da li postoji columnlist i koliko ima clanova. Ako ima jedan odmah generisi
 		// formu, ako ne dropdown lista. Klikom na konkretnu akciju, otvaramo formu, i uzimamo id drzave, formiramo
 		// where clausulu i selektujemo. Bice problem kod visestrukih, tu cemo hardkodovati
-		drzavaZoom = new ZoomFormAction(new DrzavaStandardForm(this));
-		btnZoom.addActionListener(drzavaZoom);
 
 		JLabel lblSifra = new JLabel("Šifra mesta:");
 		JLabel lblNaziv = new JLabel("Naziv mesta:");
@@ -54,10 +52,12 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 					drzavaZoom.setId(((ComboBoxPair) e.getItem()).getId());
 				}
 			});
-			drzavaZoom.setId(((ComboBoxPair) cmbDrzava.getSelectedItem()).getId());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		drzavaZoom = new ZoomFormAction(new DrzavaStandardForm(cmbDrzava));
+		drzavaZoom.setId(((ComboBoxPair) cmbDrzava.getSelectedItem()).getId());
+		btnZoom.addActionListener(drzavaZoom);
 
 		dataPanel.add(lblSifra);
 		dataPanel.add(tfSifraMesta, "wrap, gapx 15px");

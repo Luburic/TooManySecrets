@@ -4,12 +4,14 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.sql.SQLException;
 
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import root.gui.MainFrame;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ColumnList;
+import root.util.ComboBoxPair;
 import root.util.Lookup;
 
 public class DrzavaStandardForm extends GenericForm {
@@ -20,7 +22,7 @@ public class DrzavaStandardForm extends GenericForm {
 	private JTextField tfSifraDrzave = new JTextField(3);
 	private JTextField tfNazivDrzave = new JTextField(20);
 
-	public DrzavaStandardForm(GenericForm returning) {
+	public DrzavaStandardForm(JComboBox<ComboBoxPair> returning) {
 		super(returning);
 		setTitle("Države");
 		tfSifraDrzave.setName("šifra države");

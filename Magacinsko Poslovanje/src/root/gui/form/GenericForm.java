@@ -51,7 +51,11 @@ public abstract class GenericForm extends JDialog {
 
 	protected ColumnList columnList;
 
-	protected GenericForm returning;
+	protected JComboBox<ComboBoxPair> returning;
+
+	public JComboBox<ComboBoxPair> getReturning() {
+		return returning;
+	}
 
 	// ime forme koja je selektovana next mehanizmom(popupAction->nextFormAction)
 	protected String selectedForm;
@@ -65,7 +69,7 @@ public abstract class GenericForm extends JDialog {
 
 	protected GenericTableModel tableModel;
 
-	public GenericForm(GenericForm returning) {
+	public GenericForm(JComboBox<ComboBoxPair> returning) {
 		setLayout(new MigLayout("fill"));
 		setSize(new Dimension(600, 400));
 		setLocationRelativeTo(MainFrame.getInstance());
