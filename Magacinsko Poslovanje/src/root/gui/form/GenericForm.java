@@ -3,8 +3,10 @@ package root.gui.form;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -37,6 +39,8 @@ import root.util.Column;
 import root.util.ColumnList;
 import root.util.ComboBoxPair;
 import root.util.Constants;
+import root.util.Lookup;
+import root.util.MetaSurogateDisplay;
 
 @SuppressWarnings("serial")
 public abstract class GenericForm extends JDialog {
@@ -56,10 +60,9 @@ public abstract class GenericForm extends JDialog {
 		return returning;
 	}
 
-	private String childWhere;
+	protected List<MetaSurogateDisplay> joinColumn = new ArrayList<MetaSurogateDisplay>();
 
-	// da li se desilo otvaranje child forme
-	protected boolean childAction = false;
+	private String childWhere;
 
 	protected JTable tblGrid = new JTable();
 
@@ -121,6 +124,25 @@ public abstract class GenericForm extends JDialog {
 		add(toolBar, "dock north");
 	}
 
+	protected JComboBox<ComboBoxPair> setupJoins(JComboBox<ComboBoxPair> cmbForJoin, String tableCode, String pkCode,
+			String pkName, String displayCode, String displayName) {
+		MetaSurogateDisplay temp = new MetaSurogateDisplay();
+		temp.setTableCode(tableCode);
+		temp.setIdColumnName(pkCode);
+		temp.getDisplayColumnCode().add(displayCode);
+		temp.getDisplayColumnName().add(displayName);
+		joinColumn.add(temp);
+
+		try {
+			cmbForJoin = new JComboBox<ComboBoxPair>(Lookup.getComboBoxEntity(tableCode, pkCode, displayCode));
+			cmbForJoin.setName(pkName);
+			return cmbForJoin;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	protected void setupTable() {
 		tableModel.setWhereStmt(childWhere);
 		tblGrid.setModel(tableModel);
@@ -141,6 +163,16 @@ public abstract class GenericForm extends JDialog {
 			}
 		}
 		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(0));
+		try {
+			tableModel.open();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if (tblGrid.getRowCount() > 0) {
+			tblGrid.getSelectionModel().setSelectionInterval(0, 0);
+		} else {
+			setMode(Constants.MODE_ADD);
+		}
 	}
 
 	public void initPanels() {

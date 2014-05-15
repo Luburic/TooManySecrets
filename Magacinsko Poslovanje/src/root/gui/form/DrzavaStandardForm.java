@@ -55,15 +55,9 @@ public class DrzavaStandardForm extends GenericForm {
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new NaseljenoMestoAction());
 		btnNextForm = new NextFormButton(this, popup);
-		// btnNextForm = new JButton(new NextFormAction(this, popup));
 		toolBar.add(btnNextForm);
 
 		setupTable();
-		try {
-			tableModel.open();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		setLocationRelativeTo(MainFrame.getInstance());
 	}
 

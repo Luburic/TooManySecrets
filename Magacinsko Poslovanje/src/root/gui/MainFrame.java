@@ -13,6 +13,8 @@ import javax.swing.JOptionPane;
 import root.dbConnection.DBConnection;
 import root.gui.action.dialog.DrzaveAction;
 import root.gui.action.dialog.NaseljenoMestoAction;
+import root.gui.action.dialog.PreduzeceAction;
+import root.gui.action.dialog.RadnikAction;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 3706293806794500307L;
@@ -52,11 +54,10 @@ public class MainFrame extends JFrame {
 
 		JMenu orgSemaMenu = new JMenu("Organizaciona sema");
 		orgSemaMenu.setMnemonic(KeyEvent.VK_O);
-		JMenuItem drzaveMI = new JMenuItem(new DrzaveAction());
-		orgSemaMenu.add(drzaveMI);
-		JMenuItem mestoMI = new JMenuItem(new NaseljenoMestoAction());
-		orgSemaMenu.add(mestoMI);
-
+		orgSemaMenu.add(new JMenuItem(new DrzaveAction()));
+		orgSemaMenu.add(new JMenuItem(new NaseljenoMestoAction()));
+		orgSemaMenu.add(new JMenuItem(new PreduzeceAction()));
+		orgSemaMenu.add(new JMenuItem(new RadnikAction()));
 		menuBar.add(orgSemaMenu);
 	}
 }

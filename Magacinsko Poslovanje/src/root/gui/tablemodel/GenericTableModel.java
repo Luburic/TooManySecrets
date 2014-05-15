@@ -121,9 +121,10 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		}
 
 		if (outsideColumns != null) {
-			StringBuilder sb = new StringBuilder(" JOIN ");
+			StringBuilder sb = new StringBuilder();
 			Iterator<MetaSurogateDisplay> outsideIterator = outsideColumns.iterator();
 			while (outsideIterator.hasNext()) {
+				sb.append(" JOIN ");
 				MetaSurogateDisplay msd = outsideIterator.next();
 				sb.append(msd.getTableCode());
 				String foreignKey = msd.getIdColumnName();

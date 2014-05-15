@@ -24,13 +24,14 @@ public class Lookup {
 		return naziv;
 	}
 
-	public static Vector<ComboBoxPair> getDrzave() throws SQLException {
+	public static Vector<ComboBoxPair> getComboBoxEntity(String tableCode, String pk, String neededColumn)
+			throws SQLException {
 		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
-				"SELECT id_drzave, naziv_drzave FROM Drzava");
+				"SELECT " + pk + ", " + neededColumn + " FROM " + tableCode);
 		ResultSet rset = stmt.executeQuery();
 		Vector<ComboBoxPair> retVal = new Vector<ComboBoxPair>();
 		while (rset.next()) {
-			retVal.add(new ComboBoxPair(rset.getInt("id_drzave"), rset.getString("naziv_drzave")));
+			retVal.add(new ComboBoxPair(rset.getInt(pk), rset.getString(neededColumn)));
 		}
 		rset.close();
 		stmt.close();
