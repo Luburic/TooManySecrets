@@ -286,6 +286,7 @@ public abstract class GenericForm extends JDialog {
 				ComboBoxPair selected = (ComboBoxPair) comboBox.getSelectedItem();
 				tableModel.getOutsideColumns().get(relatedTabelCount).getDisplayColumnValue().add(selected.toString());
 				newRow.add(selected.getId());
+				relatedTabelCount++;
 			}
 		}
 		for (Component cp : dataPanel.getComponents()) {

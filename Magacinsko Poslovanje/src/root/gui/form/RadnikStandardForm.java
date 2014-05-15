@@ -41,7 +41,7 @@ public class RadnikStandardForm extends GenericForm {
 		JLabel lblMesto = new JLabel("Mesto:");
 		tfIme.setName("ime");
 		tfPrezime.setName("prezime");
-		tfAdresa.setName("jmbg");
+		tfJmbg.setName("jmbg");
 		tfAdresa.setName("adresa");
 
 		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
