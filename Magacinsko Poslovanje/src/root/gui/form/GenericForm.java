@@ -28,7 +28,6 @@ import root.gui.action.HelpAction;
 import root.gui.action.LastAction;
 import root.gui.action.NextAction;
 import root.gui.action.PickupAction;
-import root.gui.action.PopupAction;
 import root.gui.action.PreviousAction;
 import root.gui.action.RefreshAction;
 import root.gui.action.RollbackAction;
@@ -57,8 +56,7 @@ public abstract class GenericForm extends JDialog {
 		return returning;
 	}
 
-	// ime forme koja je selektovana next mehanizmom(popupAction->nextFormAction)
-	protected String selectedForm;
+	private String childWhere;
 
 	// da li se desilo otvaranje child forme
 	protected boolean childAction = false;
@@ -69,7 +67,7 @@ public abstract class GenericForm extends JDialog {
 
 	protected GenericTableModel tableModel;
 
-	public GenericForm(JComboBox<ComboBoxPair> returning) {
+	public GenericForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		setLayout(new MigLayout("fill"));
 		setSize(new Dimension(600, 400));
 		setLocationRelativeTo(MainFrame.getInstance());
@@ -77,6 +75,7 @@ public abstract class GenericForm extends JDialog {
 		initToolbar();
 		initPanels();
 		this.returning = returning;
+		this.childWhere = childWhere;
 	}
 
 	public void initToolbar() {
@@ -119,13 +118,11 @@ public abstract class GenericForm extends JDialog {
 
 		toolBar.addSeparator();
 
-		btnNextForm = new JButton(new PopupAction(this));
-		toolBar.add(btnNextForm);
-
 		add(toolBar, "dock north");
 	}
 
 	protected void setupTable() {
+		tableModel.setWhereStmt(childWhere);
 		tblGrid.setModel(tableModel);
 		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
@@ -313,14 +310,6 @@ public abstract class GenericForm extends JDialog {
 
 	public void setTblGrid(JTable tblGrid) {
 		this.tblGrid = tblGrid;
-	}
-
-	public String getSelectedForm() {
-		return selectedForm;
-	}
-
-	public void setSelectedForm(String selectedForm) {
-		this.selectedForm = selectedForm;
 	}
 
 	// svaki naslednik setuje mod na svoj nacin ?

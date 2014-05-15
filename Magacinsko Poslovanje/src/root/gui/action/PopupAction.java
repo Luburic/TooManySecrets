@@ -1,28 +1,18 @@
 package root.gui.action;
 
 import java.awt.event.ActionEvent;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
 
-import root.dbConnection.DBConnection;
+import root.gui.form.GenericForm;
 
 public class PopupAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
-	private JDialog standardForm;
 
-	//private DrzavaStandardForm drzavaForm;
-	private JTable tblGrid = new JTable();
-	//private DrzaveTableModel tableModel;
+	private GenericForm standardForm;
 
-	public PopupAction(JDialog standardForm) {
+	public PopupAction(GenericForm standardForm) {
 		putValue(SMALL_ICON, new ImageIcon("img/nextform.gif"));
 		putValue(SHORT_DESCRIPTION, "Sledeća forma");
 		this.standardForm = standardForm;

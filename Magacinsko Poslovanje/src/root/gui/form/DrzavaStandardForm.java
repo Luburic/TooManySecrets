@@ -3,12 +3,18 @@ package root.gui.form;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.MainFrame;
+import root.gui.action.NextFormAction;
+import root.gui.action.dialog.NaseljenoMestoAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ColumnList;
 import root.util.ComboBoxPair;
@@ -22,8 +28,8 @@ public class DrzavaStandardForm extends GenericForm {
 	private JTextField tfSifraDrzave = new JTextField(3);
 	private JTextField tfNazivDrzave = new JTextField(20);
 
-	public DrzavaStandardForm(JComboBox<ComboBoxPair> returning) {
-		super(returning);
+	public DrzavaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
+		super(returning, childWhere);
 		setTitle("Države");
 		tfSifraDrzave.setName("šifra države");
 		tfNazivDrzave.setName("naziv države");
@@ -48,6 +54,14 @@ public class DrzavaStandardForm extends GenericForm {
 		dataPanel.add(tfSifraDrzave, "wrap");
 		dataPanel.add(lblNaziv);
 		dataPanel.add(tfNazivDrzave, "pushx");
+
+		List<String> nextForms = new ArrayList<String>();
+		nextForms.add("Mesto");
+		JPopupMenu popup = new JPopupMenu();
+		popup.add(new NaseljenoMestoAction());
+		btnNextForm = new JButton(new NextFormAction(this, popup));
+		toolBar.add(btnNextForm);
+
 		setupTable();
 		try {
 			tableModel.open();

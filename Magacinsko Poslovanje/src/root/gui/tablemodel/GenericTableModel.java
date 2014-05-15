@@ -27,7 +27,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 	private String whereStmt = "";
 	private String orderBy = "";
 
-	// private String openAsChildQuery = "";
+	private String whereClause = "";
 	private List<MetaSurogateDisplay> outsideColumns;
 
 	public List<MetaSurogateDisplay> getOutsideColumns() {
@@ -39,8 +39,26 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 	}
 
 	private String tableCode;
+
+	public String getTableCode() {
+		return tableCode;
+	}
+
+	public void setTableCode(String tableCode) {
+		this.tableCode = tableCode;
+	}
+
 	private Collection<MetaColumn> columns;
 	private String primaryKey;
+
+	public String getPrimaryKey() {
+		return primaryKey;
+	}
+
+	public void setPrimaryKey(String primaryKey) {
+		this.primaryKey = primaryKey;
+	}
+
 	private int columnForSorting = 1;
 
 	public int getColumnForSorting() {
@@ -56,6 +74,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		this.tableCode = tableCode;
 		this.columns = columns;
 		this.primaryKey = columns.iterator().next().getCode();
+		this.setWhereClause(" WHERE " + this.tableCode + "." + this.primaryKey + "=");
 	}
 
 	@Override
@@ -439,5 +458,13 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public String getWhereClause() {
+		return whereClause;
+	}
+
+	public void setWhereClause(String whereClause) {
+		this.whereClause = whereClause;
 	}
 }

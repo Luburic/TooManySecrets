@@ -29,8 +29,8 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 	protected JTextField tfSifraMesta = new JTextField(5);
 	protected JTextField tfNazivMesta = new JTextField(20);
 
-	public NaseljenoMestoStandardForm(JComboBox<ComboBoxPair> returning) {
-		super(returning);
+	public NaseljenoMestoStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
+		super(returning, childWhere);
 		setTitle("Naseljena mesta");
 
 		// Next mehanizam ce da proveri da li postoji columnlist i koliko ima clanova. Ako ima jedan odmah generisi
@@ -46,18 +46,24 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		try {
 			cmbDrzava = new JComboBox<ComboBoxPair>(Lookup.getDrzave());
 			cmbDrzava.setName("id države");
-			cmbDrzava.addItemListener(new ItemListener() {
-				@Override
-				public void itemStateChanged(ItemEvent e) {
-					drzavaZoom.setId(((ComboBoxPair) e.getItem()).getId());
-				}
-			});
+			if (childWhere.equals("")) {
+				cmbDrzava.addItemListener(new ItemListener() {
+					@Override
+					public void itemStateChanged(ItemEvent e) {
+						drzavaZoom.setId(((ComboBoxPair) e.getItem()).getId());
+					}
+				});
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		drzavaZoom = new ZoomFormAction(new DrzavaStandardForm(cmbDrzava));
-		drzavaZoom.setId(((ComboBoxPair) cmbDrzava.getSelectedItem()).getId());
-		btnZoom.addActionListener(drzavaZoom);
+		if (childWhere.equals("")) {
+			drzavaZoom = new ZoomFormAction(new DrzavaStandardForm(cmbDrzava, ""));
+			drzavaZoom.setId(((ComboBoxPair) cmbDrzava.getSelectedItem()).getId());
+			btnZoom.addActionListener(drzavaZoom);
+		} else {
+			cmbDrzava.setEnabled(false);
+		}
 
 		dataPanel.add(lblSifra);
 		dataPanel.add(tfSifraMesta, "wrap, gapx 15px");
