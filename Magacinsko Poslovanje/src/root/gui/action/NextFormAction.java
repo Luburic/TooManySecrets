@@ -42,6 +42,6 @@ public class NextFormAction extends AbstractAction {
 				return;
 			}
 		}
-		popup.show();
+
 	}
 }

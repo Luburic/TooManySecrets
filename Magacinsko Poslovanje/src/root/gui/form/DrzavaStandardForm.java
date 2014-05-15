@@ -3,17 +3,14 @@ package root.gui.form;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.MainFrame;
-import root.gui.action.NextFormAction;
+import root.gui.action.NextFormButton;
 import root.gui.action.dialog.NaseljenoMestoAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ColumnList;
@@ -55,11 +52,10 @@ public class DrzavaStandardForm extends GenericForm {
 		dataPanel.add(lblNaziv);
 		dataPanel.add(tfNazivDrzave, "pushx");
 
-		List<String> nextForms = new ArrayList<String>();
-		nextForms.add("Mesto");
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new NaseljenoMestoAction());
-		btnNextForm = new JButton(new NextFormAction(this, popup));
+		btnNextForm = new NextFormButton(this, popup);
+		// btnNextForm = new JButton(new NextFormAction(this, popup));
 		toolBar.add(btnNextForm);
 
 		setupTable();
