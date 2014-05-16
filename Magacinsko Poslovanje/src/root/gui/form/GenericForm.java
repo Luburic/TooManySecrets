@@ -352,7 +352,6 @@ public abstract class GenericForm extends JDialog {
 		this.tblGrid = tblGrid;
 	}
 
-	// svaki naslednik setuje mod na svoj nacin ?
 	public void setMode(int mode) {
 		this.mode = mode;
 
@@ -434,5 +433,17 @@ public abstract class GenericForm extends JDialog {
 			}
 		}
 
+	}
+
+	public void prepareDialogForZoom(GenericForm dialog, Integer id) {
+		dialog.getBtnPickup().setEnabled(true);
+		int n = dialog.getTblGrid().getModel().getRowCount();
+		for (int i = 0; i < n; i++) {
+			if (id == dialog.getTblGrid().getModel().getValueAt(i, 0)) {
+				dialog.getTblGrid().getSelectionModel().setSelectionInterval(i, i);
+				break;
+			}
+		}
+		dialog.setVisible(true);
 	}
 }

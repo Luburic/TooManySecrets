@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import root.dbConnection.DBConnection;
 import root.gui.action.dialog.DrzaveAction;
 import root.gui.action.dialog.GodinaAction;
+import root.gui.action.dialog.GrupaArtiklaAction;
 import root.gui.action.dialog.NaseljenoMestoAction;
 import root.gui.action.dialog.PreduzeceAction;
 import root.gui.action.dialog.RadnikAction;
@@ -60,6 +61,7 @@ public class MainFrame extends JFrame {
 		orgSemaMenu.add(new JMenuItem(new PreduzeceAction()));
 		orgSemaMenu.add(new JMenuItem(new RadnikAction()));
 		orgSemaMenu.add(new JMenuItem(new GodinaAction()));
+		orgSemaMenu.add(new JMenuItem(new GrupaArtiklaAction()));
 		menuBar.add(orgSemaMenu);
 	}
 }

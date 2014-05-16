@@ -87,33 +87,27 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 				MetaColumn column = iterator.next();
 				String name = column.getCode();
 				if (name.contains("version") && outsideColumns != null) {
-					if (outsideColumns != null) {
-						Iterator<MetaSurogateDisplay> outsideIterator = outsideColumns.iterator();
-						while (outsideIterator.hasNext()) {
-							Iterator<String> insideIterator = outsideIterator.next().getDisplayColumnCode().iterator();
-							while (insideIterator.hasNext()) {
-								sb.append(insideIterator.next() + ", ");
+					Iterator<MetaSurogateDisplay> outsideIterator = outsideColumns.iterator();
+					while (outsideIterator.hasNext()) {
+						MetaSurogateDisplay msd = outsideIterator.next();
+						Iterator<String> insideIterator = msd.getDisplayColumnCode().iterator();
+						while (insideIterator.hasNext()) {
+							if (!tableCode.equals(msd.getTableCode())) {
+								sb.append(msd.getTableCode() + "." + insideIterator.next() + ", ");
+							} else {
+								sb.append(msd.getTableCode() + "2." + insideIterator.next() + ", ");
 							}
 						}
-						sb.append(name);
 					}
-					sb.append(" FROM " + tableCode);
+					sb.append(tableCode + "1." + name + " FROM " + tableCode + " " + tableCode + "1");
 					break;
 				}
-				if (column.isPartOfFK() && outsideColumns != null) {
-					Iterator<MetaSurogateDisplay> itar = outsideColumns.iterator();
-					while (itar.hasNext()) {
-						MetaSurogateDisplay temp = itar.next();
-						if (temp.getIdColumnName().equals(name)) {
-							sb.append(temp.getTableCode() + ".");
-						}
-					}
-				}
-				sb.append(name);
+
+				sb.append(tableCode + "1." + name);
 				if (iterator.hasNext()) {
 					sb.append(", ");
 				} else {
-					sb.append(" FROM " + tableCode);
+					sb.append(" FROM " + tableCode + " " + tableCode + "1");
 					break;
 				}
 			}
@@ -126,15 +120,21 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			while (outsideIterator.hasNext()) {
 				sb.append(" JOIN ");
 				MetaSurogateDisplay msd = outsideIterator.next();
-				sb.append(msd.getTableCode());
-				String foreignKey = msd.getIdColumnName();
-				sb.append(" ON " + tableCode + "." + foreignKey + " = " + msd.getTableCode() + "." + foreignKey);
+				if (!msd.getTableCode().equals(tableCode)) {
+					sb.append(msd.getTableCode());
+					String foreignKey = msd.getIdColumnName();
+					sb.append(" ON " + tableCode + "1." + foreignKey + " = " + msd.getTableCode() + "." + foreignKey);
+				} else {
+					sb.append(msd.getTableCode() + " " + msd.getTableCode() + "2");
+					String foreignKey = msd.getIdColumnName();
+					sb.append(" ON " + tableCode + "1." + foreignKey + " = " + msd.getTableCode() + "2." + primaryKey);
+				}
 			}
 			joinQuery = sb.toString();
 		}
 
 		if (orderBy.equals("")) {
-			orderBy = " ORDER BY " + columns.iterator().next().getCode();
+			orderBy = " ORDER BY " + tableCode + "1." + primaryKey;
 		}
 		System.out.println(basicQuery + joinQuery + whereStmt + orderBy);
 		fillData(basicQuery + joinQuery + whereStmt + orderBy);
@@ -289,9 +289,8 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		if (rowsAffected > 0) {
 			setValueAt(version, index, getColumnCount() - 1);
 			for (int i = 0; i < colNames.length; i++) {
-				// preskoci primarni i strane kljuceve kako bi proverili tipove; k nam je broj stranih kljuceva
-				if (i + k < columns.size()) {
-					MetaColumn col = (MetaColumn) columns.toArray()[i + k];
+				if (i + 1 < columns.size()) {
+					MetaColumn col = (MetaColumn) columns.toArray()[i + 1];
 					if (col.getJClassName().equals("java.lang.Boolean")) {
 						if (colNames[i].equals("1")) {
 							setValueAt("Da", index, i + 1);

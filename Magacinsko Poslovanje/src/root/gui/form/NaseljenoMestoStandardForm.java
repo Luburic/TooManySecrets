@@ -1,7 +1,7 @@
 package root.gui.form;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -10,7 +10,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
-import root.gui.action.ZoomFormAction;
 import root.gui.action.dialog.PreduzeceAction;
 import root.gui.action.dialog.RadnikAction;
 import root.gui.tablemodel.TableModelCreator;
@@ -20,7 +19,6 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
 
 	private JButton btnZoom = new JButton("...");
-	private ZoomFormAction drzavaZoom;
 
 	protected JComboBox<ComboBoxPair> cmbDrzava;
 	protected JTextField tfSifraMesta = new JTextField(5);
@@ -38,17 +36,16 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 
 		cmbDrzava = super.setupJoins(cmbDrzava, "Drzava", "id_drzave", "id države", "naziv_drzave", "naziv države");
 		if (childWhere.equals("")) {
-			cmbDrzava.addItemListener(new ItemListener() {
+			btnZoom.addActionListener(new ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent e) {
-					drzavaZoom.setId(((ComboBoxPair) e.getItem()).getId());
+				public void actionPerformed(ActionEvent e) {
+					int id = 0;
+					if (cmbDrzava.getSelectedItem() != null) {
+						id = ((ComboBoxPair) cmbDrzava.getSelectedItem()).getId();
+					}
+					prepareDialogForZoom(new DrzavaStandardForm(cmbDrzava, ""), id);
 				}
 			});
-			drzavaZoom = new ZoomFormAction(new DrzavaStandardForm(cmbDrzava, ""));
-			if (cmbDrzava.getItemCount() > 0) {
-				drzavaZoom.setId(((ComboBoxPair) cmbDrzava.getSelectedItem()).getId());
-			}
-			btnZoom.addActionListener(drzavaZoom);
 		} else {
 			cmbDrzava.setEnabled(false);
 		}

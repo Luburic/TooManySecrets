@@ -1,7 +1,7 @@
 package root.gui.form;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -10,7 +10,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
-import root.gui.action.ZoomFormAction;
 import root.gui.action.dialog.GodinaAction;
 import root.gui.action.dialog.RadnikAction;
 import root.gui.tablemodel.TableModelCreator;
@@ -20,7 +19,6 @@ public class PreduzeceStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
 
 	private JButton btnZoom = new JButton("...");
-	private ZoomFormAction mestoZoom;
 
 	protected JComboBox<ComboBoxPair> cmbMesto;
 
@@ -42,18 +40,16 @@ public class PreduzeceStandardForm extends GenericForm {
 
 		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta");
 		if (childWhere.equals("")) {
-			cmbMesto.addItemListener(new ItemListener() {
+			btnZoom.addActionListener(new ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent e) {
-					mestoZoom.setId(((ComboBoxPair) e.getItem()).getId());
+				public void actionPerformed(ActionEvent e) {
+					int id = 0;
+					if (cmbMesto.getSelectedItem() != null) {
+						id = ((ComboBoxPair) cmbMesto.getSelectedItem()).getId();
+					}
+					prepareDialogForZoom(new GrupaArtiklaStandardForm(cmbMesto, ""), id);
 				}
 			});
-
-			mestoZoom = new ZoomFormAction(new NaseljenoMestoStandardForm(cmbMesto, ""));
-			if (cmbMesto.getItemCount() > 0) {
-				mestoZoom.setId(((ComboBoxPair) cmbMesto.getSelectedItem()).getId());
-			}
-			btnZoom.addActionListener(mestoZoom);
 		} else {
 			cmbMesto.setEnabled(false);
 		}

@@ -1,14 +1,13 @@
 package root.gui.form;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import root.gui.action.ZoomFormAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 
@@ -17,8 +16,6 @@ public class RadnikStandardForm extends GenericForm {
 
 	private JButton btnZoomMesto = new JButton("...");
 	private JButton btnZoomPreduzece = new JButton("...");
-	private ZoomFormAction mestoZoom;
-	private ZoomFormAction preduzeceZoom;
 
 	protected JComboBox<ComboBoxPair> cmbPreduzece;
 	protected JComboBox<ComboBoxPair> cmbMesto;
@@ -48,32 +45,30 @@ public class RadnikStandardForm extends GenericForm {
 		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta");
 
 		if (!childWhere.contains("id_preduzeca")) {
-			cmbPreduzece.addItemListener(new ItemListener() {
+			btnZoomPreduzece.addActionListener(new ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent e) {
-					preduzeceZoom.setId(((ComboBoxPair) e.getItem()).getId());
+				public void actionPerformed(ActionEvent e) {
+					int id = 0;
+					if (cmbPreduzece.getSelectedItem() != null) {
+						id = ((ComboBoxPair) cmbPreduzece.getSelectedItem()).getId();
+					}
+					prepareDialogForZoom(new PreduzeceStandardForm(cmbPreduzece, ""), id);
 				}
 			});
-			preduzeceZoom = new ZoomFormAction(new PreduzeceStandardForm(cmbPreduzece, ""));
-			if (cmbPreduzece.getItemCount() > 0) {
-				preduzeceZoom.setId(((ComboBoxPair) cmbPreduzece.getSelectedItem()).getId());
-			}
-			btnZoomPreduzece.addActionListener(preduzeceZoom);
 		} else {
 			cmbPreduzece.setEnabled(false);
 		}
 		if (!childWhere.contains("id_mesta")) {
-			cmbMesto.addItemListener(new ItemListener() {
+			btnZoomMesto.addActionListener(new ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent e) {
-					mestoZoom.setId(((ComboBoxPair) e.getItem()).getId());
+				public void actionPerformed(ActionEvent e) {
+					int id = 0;
+					if (cmbMesto.getSelectedItem() != null) {
+						id = ((ComboBoxPair) cmbMesto.getSelectedItem()).getId();
+					}
+					prepareDialogForZoom(new NaseljenoMestoStandardForm(cmbMesto, ""), id);
 				}
 			});
-			mestoZoom = new ZoomFormAction(new NaseljenoMestoStandardForm(cmbMesto, ""));
-			if (cmbMesto.getItemCount() > 0) {
-				mestoZoom.setId(((ComboBoxPair) cmbMesto.getSelectedItem()).getId());
-			}
-			btnZoomMesto.addActionListener(mestoZoom);
 		} else {
 			cmbMesto.setEnabled(false);
 		}

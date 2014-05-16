@@ -1,7 +1,7 @@
 package root.gui.form;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -11,7 +11,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
-import root.gui.action.ZoomFormAction;
 import root.gui.action.dialog.PreduzeceAction;
 import root.gui.action.dialog.RadnikAction;
 import root.gui.tablemodel.TableModelCreator;
@@ -21,7 +20,6 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
 
 	private JButton btnZoom = new JButton("...");
-	private ZoomFormAction preduzeceZoom;
 
 	protected JComboBox<ComboBoxPair> cmbPreduzece;
 
@@ -41,17 +39,16 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
 				"naziv preduzeća");
 		if (childWhere.equals("")) {
-			cmbPreduzece.addItemListener(new ItemListener() {
+			btnZoom.addActionListener(new ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent e) {
-					preduzeceZoom.setId(((ComboBoxPair) e.getItem()).getId());
+				public void actionPerformed(ActionEvent e) {
+					int id = 0;
+					if (cmbPreduzece.getSelectedItem() != null) {
+						id = ((ComboBoxPair) cmbPreduzece.getSelectedItem()).getId();
+					}
+					prepareDialogForZoom(new PreduzeceStandardForm(cmbPreduzece, ""), id);
 				}
 			});
-			preduzeceZoom = new ZoomFormAction(new PreduzeceStandardForm(cmbPreduzece, ""));
-			if (cmbPreduzece.getItemCount() > 0) {
-				preduzeceZoom.setId(((ComboBoxPair) cmbPreduzece.getSelectedItem()).getId());
-			}
-			btnZoom.addActionListener(preduzeceZoom);
 		} else {
 			cmbPreduzece.setEnabled(false);
 		}
