@@ -13,14 +13,11 @@ import root.gui.MainFrame;
 import root.gui.action.NextFormButton;
 import root.gui.action.dialog.NaseljenoMestoAction;
 import root.gui.tablemodel.TableModelCreator;
-import root.util.ColumnList;
 import root.util.ComboBoxPair;
 import root.util.Lookup;
 
 public class DrzavaStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
-
-	private ColumnList drzavaColumnList;
 
 	private JTextField tfSifraDrzave = new JTextField(3);
 	private JTextField tfNazivDrzave = new JTextField(20);
@@ -59,14 +56,5 @@ public class DrzavaStandardForm extends GenericForm {
 
 		setupTable();
 		setLocationRelativeTo(MainFrame.getInstance());
-	}
-
-	public ColumnList getDrzavaColumnList() {
-		return drzavaColumnList;
-
-	}
-
-	public void setDrzavaColumnList(ColumnList drzavaColumnList) {
-		this.drzavaColumnList = drzavaColumnList;
 	}
 }

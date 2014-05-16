@@ -17,13 +17,12 @@ public class RadnikStandardForm extends GenericForm {
 
 	private JButton btnZoomMesto = new JButton("...");
 	private JButton btnZoomPreduzece = new JButton("...");
-	private String qsifra;
 	private ZoomFormAction mestoZoom;
 	private ZoomFormAction preduzeceZoom;
 
 	protected JComboBox<ComboBoxPair> cmbPreduzece;
 	protected JComboBox<ComboBoxPair> cmbMesto;
-	// naseljenoMesto
+
 	protected JTextField tfIme = new JTextField(30);
 	protected JTextField tfPrezime = new JTextField(30);
 	protected JTextField tfJmbg = new JTextField(13);
@@ -108,13 +107,4 @@ public class RadnikStandardForm extends GenericForm {
 		tableModel.setColumnForSorting(2);
 		super.setupTable();
 	}
-
-	public String getQsifra() {
-		return qsifra;
-	}
-
-	public void setQsifra(String qsifra) {
-		this.qsifra = qsifra;
-	}
-
 }

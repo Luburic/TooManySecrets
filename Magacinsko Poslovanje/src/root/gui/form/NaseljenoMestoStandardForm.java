@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import root.gui.action.NextFormButton;
 import root.gui.action.ZoomFormAction;
 import root.gui.action.dialog.PreduzeceAction;
+import root.gui.action.dialog.RadnikAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 
@@ -19,11 +20,9 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
 
 	private JButton btnZoom = new JButton("...");
-	private String qsifra;
 	private ZoomFormAction drzavaZoom;
 
 	protected JComboBox<ComboBoxPair> cmbDrzava;
-	// naseljenoMesto
 	protected JTextField tfSifraMesta = new JTextField(5);
 	protected JTextField tfNazivMesta = new JTextField(20);
 
@@ -67,6 +66,7 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new PreduzeceAction());
+		popup.add(new RadnikAction());
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
@@ -79,13 +79,4 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		tableModel.setColumnForSorting(2);
 		super.setupTable();
 	}
-
-	public String getQsifra() {
-		return qsifra;
-	}
-
-	public void setQsifra(String qsifra) {
-		this.qsifra = qsifra;
-	}
-
 }

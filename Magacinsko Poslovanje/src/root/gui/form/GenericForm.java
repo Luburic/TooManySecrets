@@ -52,8 +52,6 @@ public abstract class GenericForm extends JDialog {
 
 	protected JPanel dataPanel;
 
-	protected ColumnList columnList;
-
 	protected JComboBox<ComboBoxPair> returning;
 
 	public JComboBox<ComboBoxPair> getReturning() {
