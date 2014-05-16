@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -291,6 +292,14 @@ public abstract class GenericForm extends JDialog {
 			if (cp instanceof JTextField) {
 				JTextField textField = (JTextField) cp;
 				newRow.add(textField.getText().trim());
+			} else if (cp instanceof JCheckBox) {
+				// Treba sync metodu
+				JCheckBox checkBox = (JCheckBox) cp;
+				if (checkBox.isSelected()) {
+					newRow.add("1");
+				} else {
+					newRow.add("0");
+				}
 			}
 		}
 	}
@@ -362,6 +371,9 @@ public abstract class GenericForm extends JDialog {
 					textField.requestFocus();
 					needFocus = false;
 				}
+			} else if (cp instanceof JCheckBox) {
+				JCheckBox checkBox = (JCheckBox) cp;
+				checkBox.setSelected(false);
 			}
 		}
 	}
@@ -393,24 +405,29 @@ public abstract class GenericForm extends JDialog {
 			}
 
 			for (Component cp : dataPanel.getComponents()) {
-				if (cp instanceof JTextField) {
-					JTextField textField = (JTextField) cp;
-					if (textField.getName() != null && textField.getName().equals(cname)) {
+				if (cp.getName() != null && cp.getName().equals(cname)) {
+					if (cp instanceof JTextField) {
+						JTextField textField = (JTextField) cp;
 						if (value != null) {
 							textField.setText(value.toString());
 						} else {
 							textField.setText("");
 						}
-					}
-				} else if (cp instanceof JComboBox<?>) {
-					@SuppressWarnings("unchecked")
-					JComboBox<ComboBoxPair> cmb = (JComboBox<ComboBoxPair>) cp;
-					if (cmb.getName() != null && cmb.getName().equals(cname)) {
+					} else if (cp instanceof JComboBox<?>) {
+						@SuppressWarnings("unchecked")
+						JComboBox<ComboBoxPair> cmb = (JComboBox<ComboBoxPair>) cp;
 						for (int i = 0; i < cmb.getModel().getSize(); i++) {
 							if (cmb.getItemAt(i).getId() == value) {
 								cmb.setSelectedIndex(i);
 								break;
 							}
+						}
+					} else if (cp instanceof JCheckBox) {
+						JCheckBox checkBox = (JCheckBox) cp;
+						if (value.toString().equals("Da")) {
+							checkBox.setSelected(true);
+						} else {
+							checkBox.setSelected(false);
 						}
 					}
 				}

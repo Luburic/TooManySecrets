@@ -150,7 +150,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		while (rset.next()) {
 			Object[] rowForInsert = new Object[rset.getMetaData().getColumnCount()];
 			for (int i = 0; i < columnCount; i++) {
-				if (rset.getMetaData().getColumnType(i + 1) == Types.BOOLEAN) {
+				if (rset.getMetaData().getColumnType(i + 1) == Types.BIT) {
 					if (rset.getString(i + 1).equals("1")) {
 						rowForInsert[i] = "Da";
 					} else {
@@ -199,7 +199,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 				errorMessage = Constants.ERROR_RECORD_WAS_CHANGED;
 				for (int i = 0; i < columnCount; i++) {
 					Object newValue;
-					if (rset.getMetaData().getColumnType(i + 1) == Types.BOOLEAN) {
+					if (rset.getMetaData().getColumnType(i + 1) == Types.BIT) {
 						if (rset.getString(i + 1).equals("1")) {
 							newValue = "Da";
 						} else {
@@ -267,8 +267,9 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		if (outsideColumns != null) {
 			k = outsideColumns.size();
 		}
-		for (int i = 0; i < colNames.length - k; i++)
+		for (int i = 0; i < colNames.length - k; i++) {
 			stmt.setString(i + 1 + k, (String) colNames[i + k]);
+		}
 		// Za strane kljuceve
 		for (int i = 0; i < k; i++) {
 			stmt.setInt(i + 1, (int) colNames[i]);
@@ -279,7 +280,6 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		stmt.setInt(colNames.length + 1, version);
 		// Za where od primarnog
 		stmt.setInt(colNames.length + 2, (int) getValueAt(index, 0));
-		// Ovde sam stao
 
 		int rowsAffected = stmt.executeUpdate();
 		stmt.close();
@@ -289,7 +289,21 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		if (rowsAffected > 0) {
 			setValueAt(version, index, getColumnCount() - 1);
 			for (int i = 0; i < colNames.length; i++) {
-				setValueAt(colNames[i], index, i + 1);
+				// preskoci primarni i strane kljuceve kako bi proverili tipove; k nam je broj stranih kljuceva
+				if (i + k < columns.size()) {
+					MetaColumn col = (MetaColumn) columns.toArray()[i + k];
+					if (col.getJClassName().equals("java.lang.Boolean")) {
+						if (colNames[i].equals("1")) {
+							setValueAt("Da", index, i + 1);
+						} else {
+							setValueAt("Ne", index, i + 1);
+						}
+					} else {
+						setValueAt(colNames[i], index, i + 1);
+					}
+				} else {
+					setValueAt(colNames[i], index, i + 1);
+				}
 			}
 			if (outsideColumns != null) {
 				for (int i = 0; i < outsideColumns.size(); i++) {
@@ -356,8 +370,6 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		stmt.setInt(colNames.length + 1, 1);
 
 		System.out.println(sb.toString());
-		// Ovaj object insertion treba prepraviti da radi sa povezanim tabelama. Isto vazi i za optimisticko
-		// zakljucavanje (ali videcemo to na kurvaka)
 		int rowsAffected = stmt.executeUpdate();
 		if (rowsAffected > 0) {
 			stmt.getGeneratedKeys().next();
