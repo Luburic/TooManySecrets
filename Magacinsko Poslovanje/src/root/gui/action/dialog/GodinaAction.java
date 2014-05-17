@@ -13,8 +13,8 @@ public class GodinaAction extends DialogAction {
 	public GodinaAction() {
 		KeyStroke ctrlMKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlMKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Poslovna godina");
-		putValue(NAME, "Poslovna godina");
+		putValue(SHORT_DESCRIPTION, "Poslovne godine");
+		putValue(NAME, "Poslovne godine");
 	}
 
 	@Override

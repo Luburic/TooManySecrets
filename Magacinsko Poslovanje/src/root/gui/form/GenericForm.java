@@ -288,7 +288,8 @@ public abstract class GenericForm extends JDialog {
 				@SuppressWarnings("unchecked")
 				JComboBox<ComboBoxPair> comboBox = (JComboBox<ComboBoxPair>) cp;
 				ComboBoxPair selected = (ComboBoxPair) comboBox.getSelectedItem();
-				tableModel.getOutsideColumns().get(relatedTabelCount).getDisplayColumnValue().add(selected.toString());
+				tableModel.getOutsideColumns().get(relatedTabelCount).getDisplayColumnValue()
+						.set(0, selected.toString());
 				newRow.add(selected.getId());
 				relatedTabelCount++;
 			}

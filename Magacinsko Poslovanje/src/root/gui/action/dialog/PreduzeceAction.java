@@ -13,8 +13,8 @@ public class PreduzeceAction extends DialogAction {
 	public PreduzeceAction() {
 		KeyStroke ctrlMKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlMKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Preduzeće");
-		putValue(NAME, "Preduzeće");
+		putValue(SHORT_DESCRIPTION, "Preduzeća");
+		putValue(NAME, "Preduzeća");
 	}
 
 	@Override

@@ -13,8 +13,8 @@ public class GrupaArtiklaAction extends DialogAction {
 	public GrupaArtiklaAction() {
 		KeyStroke ctrlMKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlMKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Grupa artikla");
-		putValue(NAME, "Grupa artikla");
+		putValue(SHORT_DESCRIPTION, "Grupe artikla");
+		putValue(NAME, "Grupe artikla");
 	}
 
 	@Override

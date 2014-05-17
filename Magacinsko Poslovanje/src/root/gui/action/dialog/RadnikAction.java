@@ -13,8 +13,8 @@ public class RadnikAction extends DialogAction {
 	public RadnikAction() {
 		KeyStroke ctrlMKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlMKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Radnik");
-		putValue(NAME, "Radnik");
+		putValue(SHORT_DESCRIPTION, "Radnici");
+		putValue(NAME, "Radnici");
 	}
 
 	@Override

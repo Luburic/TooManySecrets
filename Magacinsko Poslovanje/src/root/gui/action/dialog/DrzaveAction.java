@@ -13,8 +13,8 @@ public class DrzaveAction extends DialogAction {
 	public DrzaveAction() {
 		KeyStroke ctrlDKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlDKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Drzave");
-		putValue(NAME, "Drzave");
+		putValue(SHORT_DESCRIPTION, "Države");
+		putValue(NAME, "Države");
 	}
 
 	@Override

@@ -9,8 +9,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 
 import root.dbConnection.DBConnection;
+import root.gui.action.dialog.ArtikalAction;
 import root.gui.action.dialog.DrzaveAction;
 import root.gui.action.dialog.GodinaAction;
 import root.gui.action.dialog.GrupaArtiklaAction;
@@ -42,6 +44,7 @@ public class MainFrame extends JFrame {
 
 		this.setSize(500, 500);
 		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.setVisible(true);
 	}
 
@@ -62,6 +65,7 @@ public class MainFrame extends JFrame {
 		orgSemaMenu.add(new JMenuItem(new RadnikAction()));
 		orgSemaMenu.add(new JMenuItem(new GodinaAction()));
 		orgSemaMenu.add(new JMenuItem(new GrupaArtiklaAction()));
+		orgSemaMenu.add(new JMenuItem(new ArtikalAction()));
 		menuBar.add(orgSemaMenu);
 	}
 }

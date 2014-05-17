@@ -13,8 +13,8 @@ public class NaseljenoMestoAction extends DialogAction {
 	public NaseljenoMestoAction() {
 		KeyStroke ctrlMKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlMKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Naseljeno mesto");
-		putValue(NAME, "Naseljeno mesto");
+		putValue(SHORT_DESCRIPTION, "Naseljena mesta");
+		putValue(NAME, "Naseljena mesta");
 	}
 
 	@Override

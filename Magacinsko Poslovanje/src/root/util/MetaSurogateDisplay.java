@@ -17,6 +17,10 @@ public class MetaSurogateDisplay {
 	private List<String> displayColumnName = new ArrayList<String>();
 	private List<String> displayColumnCode = new ArrayList<String>();
 
+	public MetaSurogateDisplay() {
+		displayColumnValue.add("");
+	}
+
 	public Integer getId() {
 		return id;
 	}
