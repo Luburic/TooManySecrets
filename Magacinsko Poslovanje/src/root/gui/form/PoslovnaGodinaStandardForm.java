@@ -37,7 +37,7 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		chkZakljucena.setName("zaključena");
 
 		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
-				"naziv preduzeća");
+				"naziv preduzeća", false);
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override

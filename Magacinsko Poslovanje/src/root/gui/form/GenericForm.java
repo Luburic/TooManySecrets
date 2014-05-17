@@ -124,7 +124,7 @@ public abstract class GenericForm extends JDialog {
 	}
 
 	protected JComboBox<ComboBoxPair> setupJoins(JComboBox<ComboBoxPair> cmbForJoin, String tableCode, String pkCode,
-			String pkName, String displayCode, String displayName) {
+			String pkName, String displayCode, String displayName, boolean renamed) {
 		MetaSurogateDisplay temp = new MetaSurogateDisplay();
 		temp.setTableCode(tableCode);
 		temp.setIdColumnName(pkCode);
@@ -133,7 +133,12 @@ public abstract class GenericForm extends JDialog {
 		joinColumn.add(temp);
 
 		try {
-			cmbForJoin = new JComboBox<ComboBoxPair>(Lookup.getComboBoxEntity(tableCode, pkCode, displayCode));
+			if (renamed) {
+				cmbForJoin = new JComboBox<ComboBoxPair>(Lookup.getComboBoxEntity(tableCode, pkCode.substring(4),
+						displayCode));
+			} else {
+				cmbForJoin = new JComboBox<ComboBoxPair>(Lookup.getComboBoxEntity(tableCode, pkCode, displayCode));
+			}
 			cmbForJoin.setName(pkName);
 			return cmbForJoin;
 		} catch (SQLException e) {
@@ -293,7 +298,6 @@ public abstract class GenericForm extends JDialog {
 				JTextField textField = (JTextField) cp;
 				newRow.add(textField.getText().trim());
 			} else if (cp instanceof JCheckBox) {
-				// Treba sync metodu
 				JCheckBox checkBox = (JCheckBox) cp;
 				if (checkBox.isSelected()) {
 					newRow.add("1");

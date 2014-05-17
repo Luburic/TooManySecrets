@@ -38,7 +38,7 @@ public class PreduzeceStandardForm extends GenericForm {
 		tfBrojTelefona.setName("broj telefona preduzeća");
 		tfAdresa.setName("adresa preduzeća");
 
-		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta");
+		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta", false);
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override

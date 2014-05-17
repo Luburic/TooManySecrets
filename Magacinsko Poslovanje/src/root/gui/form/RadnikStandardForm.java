@@ -41,8 +41,8 @@ public class RadnikStandardForm extends GenericForm {
 		tfAdresa.setName("adresa");
 
 		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
-				"naziv preduzeća");
-		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta");
+				"naziv preduzeća", false);
+		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta", false);
 
 		if (!childWhere.contains("id_preduzeca")) {
 			btnZoomPreduzece.addActionListener(new ActionListener() {

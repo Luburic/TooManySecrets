@@ -30,9 +30,9 @@ public class GrupaArtiklaStandardForm extends GenericForm {
 		JLabel lblNaziv = new JLabel("Naziv grupe:");
 		JLabel lblGrupa = new JLabel("Nadgrupa:");
 		tfNazivGrupe.setName("naziv grupe");
-
-		cmbGrupa = super
-				.setupJoins(cmbGrupa, "Grupa_artikla", "Gru_id_grupe", "id grupe", "naziv_grupe", "naziv grupe");
+		cmbGrupa = super.setupJoins(cmbGrupa, "Grupa_artikla", "Gru_id_grupe", "Gru_id grupe", "naziv_grupe",
+				"naziv nadgrupe", true);
+		cmbGrupa.insertItemAt(new ComboBoxPair(0, ""), 0);
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override

@@ -34,7 +34,8 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		tfNazivMesta.setName("naziv mesta");
 		tfSifraMesta.setName("zip kod");
 
-		cmbDrzava = super.setupJoins(cmbDrzava, "Drzava", "id_drzave", "id države", "naziv_drzave", "naziv države");
+		cmbDrzava = super.setupJoins(cmbDrzava, "Drzava", "id_drzave", "id države", "naziv_drzave", "naziv države",
+				false);
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override

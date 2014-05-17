@@ -118,13 +118,14 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			StringBuilder sb = new StringBuilder();
 			Iterator<MetaSurogateDisplay> outsideIterator = outsideColumns.iterator();
 			while (outsideIterator.hasNext()) {
-				sb.append(" JOIN ");
 				MetaSurogateDisplay msd = outsideIterator.next();
 				if (!msd.getTableCode().equals(tableCode)) {
+					sb.append(" JOIN ");
 					sb.append(msd.getTableCode());
 					String foreignKey = msd.getIdColumnName();
 					sb.append(" ON " + tableCode + "1." + foreignKey + " = " + msd.getTableCode() + "." + foreignKey);
 				} else {
+					sb.append(" LEFT JOIN ");
 					sb.append(msd.getTableCode() + " " + msd.getTableCode() + "2");
 					String foreignKey = msd.getIdColumnName();
 					sb.append(" ON " + tableCode + "1." + foreignKey + " = " + msd.getTableCode() + "2." + primaryKey);
