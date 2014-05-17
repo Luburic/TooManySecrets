@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     15-May-14 2:35:33 PM                         */
+/* Created on:     17-May-14 6:08:15 PM                         */
 /*==============================================================*/
 
 
@@ -615,7 +615,7 @@ create table Organizaciona_jedinica (
    id_preduzeca         int                  not null,
    naziv_jedinice       varchar(30)          not null,
    magacin              bit                  not null,
-   org_jedinica_verzion int                  not null,
+   org_jedinica_version int                  not null,
    constraint PK_ORGANIZACIONA_JEDINICA primary key nonclustered (id_jedinice)
 )
 go

@@ -162,7 +162,7 @@ public abstract class GenericForm extends JDialog {
 		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(tblGrid.getColumnCount() - 1));
 		if (tableModel.getOutsideColumns() != null) {
 			int n = tableModel.getOutsideColumns().size();
-			for (int i = 1; i <= n; i++) {
+			for (int i = n; i > 0; i--) {
 				tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(i));
 			}
 		}
