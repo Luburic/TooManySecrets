@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http:/www.toomanysecrets.com/banke"
+    targetNamespace="http:/www.toomanysecrets.com/banke" elementFormDefault="qualified">
+
+    <xs:element name="registeredBanks">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="bank"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="bank">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="organisationName" type="xs:string"/>
+                <xs:element name="postcode" type="xs:string"/>
+                <xs:element name="country" type="xs:string"/>
+                <xs:element name="email">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:pattern value="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element maxOccurs="unbounded" name="certificate" type="xs:base64Binary"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+            <xs:attribute name="swiftCode" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:length value="8"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
