@@ -2,6 +2,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?PowerDesigner AppLocale="UTF16" ID="{315CAB1B-1165-45FE-9214-7460E051CD10}" Label="" LastModificationDate="1400412443" Name="Magacinsko Poslovanje" Objects="250" Symbols="51" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" signature="CDM_DATA_MODEL_XML" version="15.0.0.2613"?>
 =======
 <?PowerDesigner AppLocale="UTF16" ID="{315CAB1B-1165-45FE-9214-7460E051CD10}" Label="" LastModificationDate="1399712365" Name="Magacinsko Poslovanje" Objects="250" Symbols="51" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" signature="CDM_DATA_MODEL_XML" version="15.0.0.2613"?>
@@ -9,6 +10,9 @@
 =======
 <?PowerDesigner AppLocale="UTF16" ID="{315CAB1B-1165-45FE-9214-7460E051CD10}" Label="" LastModificationDate="1400157157" Name="Magacinsko Poslovanje" Objects="250" Symbols="51" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" signature="CDM_DATA_MODEL_XML" version="15.0.0.2613"?>
 >>>>>>> parent of 23c13d8... Work in progress za listu predefinisanih vrednosti.
+=======
+<?PowerDesigner AppLocale="UTF16" ID="{315CAB1B-1165-45FE-9214-7460E051CD10}" Label="" LastModificationDate="1399712365" Name="Magacinsko Poslovanje" Objects="250" Symbols="51" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" signature="CDM_DATA_MODEL_XML" version="15.0.0.2613"?>
+>>>>>>> parent of 3451ba2... Ubačen artikal, organizaciona jedinica (magacin) i krenut popisni dokument, ali tu treba da se radi
 =======
 <?PowerDesigner AppLocale="UTF16" ID="{315CAB1B-1165-45FE-9214-7460E051CD10}" Label="" LastModificationDate="1399712365" Name="Magacinsko Poslovanje" Objects="250" Symbols="51" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" signature="CDM_DATA_MODEL_XML" version="15.0.0.2613"?>
 >>>>>>> parent of 3451ba2... Ubačen artikal, organizaciona jedinica (magacin) i krenut popisni dokument, ali tu treba da se radi
@@ -1839,6 +1843,7 @@ Shadow=0</a:DisplayPreferences>
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <a:Rect>((41572,19877), (52115,21923))</a:Rect>
 <a:ListOfPoints>((52115,20677),(41572,20677))</a:ListOfPoints>
 =======
@@ -1847,6 +1852,9 @@ Shadow=0</a:DisplayPreferences>
 >>>>>>> 395560a06b76939e80eaecfd590e2ae9007c99ab
 =======
 <a:Rect>((41370,19877), (52115,21973))</a:Rect>
+=======
+<a:Rect>((41370,19877), (52115,21923))</a:Rect>
+>>>>>>> parent of 3451ba2... Ubačen artikal, organizaciona jedinica (magacin) i krenut popisni dokument, ali tu treba da se radi
 =======
 <a:Rect>((41370,19877), (52115,21923))</a:Rect>
 >>>>>>> parent of 3451ba2... Ubačen artikal, organizaciona jedinica (magacin) i krenut popisni dokument, ali tu treba da se radi

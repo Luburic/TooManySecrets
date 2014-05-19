@@ -3,6 +3,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Created on:     18-May-14 1:27:45 PM                         */
 =======
 /* Created on:     15-May-14 2:35:33 PM                         */
@@ -10,6 +11,9 @@
 =======
 /* Created on:     17-May-14 6:08:15 PM                         */
 >>>>>>> parent of 23c13d8... Work in progress za listu predefinisanih vrednosti.
+=======
+/* Created on:     15-May-14 2:35:33 PM                         */
+>>>>>>> parent of 3451ba2... Ubačen artikal, organizaciona jedinica (magacin) i krenut popisni dokument, ali tu treba da se radi
 =======
 /* Created on:     15-May-14 2:35:33 PM                         */
 >>>>>>> parent of 3451ba2... Ubačen artikal, organizaciona jedinica (magacin) i krenut popisni dokument, ali tu treba da se radi
