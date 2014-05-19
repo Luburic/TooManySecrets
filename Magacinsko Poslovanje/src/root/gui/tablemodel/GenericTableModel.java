@@ -292,6 +292,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			for (int i = 0; i < colNames.length; i++) {
 				if (i + 1 < columns.size()) {
 					MetaColumn col = (MetaColumn) columns.toArray()[i + 1];
+					// ###############################
 					if (col.getJClassName().equals("java.lang.Boolean")) {
 						if (colNames[i].equals("1")) {
 							setValueAt("Da", index, i + 1);

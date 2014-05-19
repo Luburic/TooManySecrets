@@ -1,22 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 /* Created on:     18-May-14 1:27:45 PM                         */
-=======
-/* Created on:     15-May-14 2:35:33 PM                         */
->>>>>>> 395560a06b76939e80eaecfd590e2ae9007c99ab
-=======
-/* Created on:     17-May-14 6:08:15 PM                         */
->>>>>>> parent of 23c13d8... Work in progress za listu predefinisanih vrednosti.
-=======
-/* Created on:     15-May-14 2:35:33 PM                         */
->>>>>>> parent of 3451ba2... Ubačen artikal, organizaciona jedinica (magacin) i krenut popisni dokument, ali tu treba da se radi
-=======
-/* Created on:     15-May-14 2:35:33 PM                         */
->>>>>>> parent of 3451ba2... Ubačen artikal, organizaciona jedinica (magacin) i krenut popisni dokument, ali tu treba da se radi
 /*==============================================================*/
 
 
@@ -631,7 +615,7 @@ create table Organizaciona_jedinica (
    id_preduzeca         int                  not null,
    naziv_jedinice       varchar(30)          not null,
    magacin              bit                  not null,
-   org_jedinica_verzion int                  not null,
+   org_jedinica_version int                  not null,
    constraint PK_ORGANIZACIONA_JEDINICA primary key nonclustered (id_jedinice)
 )
 go
@@ -660,8 +644,8 @@ create table Popisni_dokument (
    id_jedinice          int                  not null,
    id_poslovne_godine   int                  not null,
    broj_popisnog_dokumenta int                  not null,
-   datum_otvaranja      datetime             not null,
-   datum_knjizenja      datetime             null,
+   datum_otvaranja      char(10)             not null,
+   datum_knjizenja      char(10)             null,
    status_popisnog      char(1)              not null
       constraint CKC_STATUS_POPISNOG_POPISNI_ check (status_popisnog in ('F','P')),
    popisni_version      int                  not null,
@@ -771,8 +755,8 @@ create table Prometni_dokument (
    Org_id_jedinice      int                  not null,
    id_poslovnog_partnera int                  null,
    broj_prometnog_dokumenta int                  not null,
-   datum_prometnog      datetime             not null,
-   datum_knjizenja_prometnog datetime             null,
+   datum_prometnog      char(10)             not null,
+   datum_knjizenja_prometnog char(10)             null,
    status_prometnog     char(1)              not null
       constraint CKC_STATUS_PROMETNOG_PROMETNI check (status_prometnog in ('F','P')),
    prometni_version     int                  not null,

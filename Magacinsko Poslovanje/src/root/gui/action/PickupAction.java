@@ -23,8 +23,11 @@ public class PickupAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Integer id = (Integer) standardForm.getTblGrid().getModel()
-				.getValueAt(standardForm.getTblGrid().getSelectedRow(), 0);
+		int index = standardForm.getTblGrid().getSelectedRow();
+		if (index == -1) {
+			return;
+		}
+		Integer id = (Integer) standardForm.getTblGrid().getModel().getValueAt(index, 0);
 		int n = standardForm.getReturning().getModel().getSize();
 		for (int i = 0; i < n; i++) {
 			if (((ComboBoxPair) standardForm.getReturning().getItemAt(i)).getId() == id) {
