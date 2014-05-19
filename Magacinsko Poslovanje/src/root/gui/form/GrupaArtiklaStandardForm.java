@@ -10,7 +10,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
-import root.gui.action.dialog.ArtikalAction;
+import root.gui.action.dialog.PreduzeceAction;
+import root.gui.action.dialog.RadnikAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 
@@ -56,7 +57,8 @@ public class GrupaArtiklaStandardForm extends GenericForm {
 		dataPanel.add(btnZoom);
 
 		JPopupMenu popup = new JPopupMenu();
-		popup.add(new ArtikalAction());
+		popup.add(new PreduzeceAction());
+		popup.add(new RadnikAction());
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
