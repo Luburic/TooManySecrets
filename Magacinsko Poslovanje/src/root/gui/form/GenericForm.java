@@ -3,10 +3,7 @@ package root.gui.form;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +22,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import root.gui.MainFrame;
 import root.gui.action.AddAction;
 import root.gui.action.CommitAction;
@@ -309,11 +305,6 @@ public abstract class GenericForm extends JDialog {
 				} else {
 					newRow.add("0");
 				}
-			} else if (cp instanceof JDatePickerImpl) {
-				JDatePickerImpl datePicker = (JDatePickerImpl) cp;
-				Date date = (Date) datePicker.getJDateInstantPanel().getModel().getValue();
-				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-				newRow.add(formatter.format(date));
 			}
 		}
 	}
@@ -442,12 +433,6 @@ public abstract class GenericForm extends JDialog {
 						} else {
 							checkBox.setSelected(false);
 						}
-					} else if (cp instanceof JDatePickerImpl) {
-						JDatePickerImpl datePicker = (JDatePickerImpl) cp;
-						String date = value.toString();
-						String[] dates = date.split("\\-");
-						datePicker.getModel().setDate(Integer.parseInt(dates[0]), Integer.parseInt(dates[0]),
-								Integer.parseInt(dates[0]));
 					}
 				}
 			}
