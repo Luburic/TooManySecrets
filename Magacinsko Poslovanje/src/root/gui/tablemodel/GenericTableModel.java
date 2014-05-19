@@ -357,7 +357,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 		for (int i = 0; i < colNames.length; i++)
 			sb.append("?, ");
-		// Za verziju
+		// Za verziju!
 		sb.append("?)");
 
 		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sb.toString(),
