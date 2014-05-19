@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.toomanysecrets.com/tipovi"
+    targetNamespace="http://www.toomanysecrets.com/tipovi" elementFormDefault="qualified"
+    xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">
+
+    <xs:import namespace="http://www.w3.org/2001/04/xmlenc#" schemaLocation="xenc-schema.xsd"/>
+    <xs:element name="presek">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="xenc:EncryptedData"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
