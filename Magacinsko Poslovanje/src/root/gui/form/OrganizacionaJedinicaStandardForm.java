@@ -83,7 +83,7 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		dataPanel.add(btnZoomOrgJedinica, "wrap, gapx 15px");
 
 		dataPanel.add(lblPreduzece);
-		dataPanel.add(cmbPreduzece, "gapx 15px");
+		dataPanel.add(cmbPreduzece);
 		dataPanel.add(btnZoomPreduzece);
 
 		JPopupMenu popup = new JPopupMenu();
