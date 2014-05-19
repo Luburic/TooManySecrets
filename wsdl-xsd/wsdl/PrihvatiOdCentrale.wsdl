@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+    targetNamespace="http://www.toomanysecrets.com/prihvatiCentraluServis"
+    xmlns:ws="http://www.toomanysecrets.com/prihvatiCentraluServis"
+    xmlns:external="http://www.toomanysecrets.com/tipovi"
+   
+    name = "PrihvatiOdCentrale"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   >
+    
+    
+    
+    
+    <wsdl:types>
+        <xs:schema targetNamespace="http://www.toomanysecrets.com/prihvatiCentraluTip">
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT900Crypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT910Crypt.xsd" />
+            
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT102Crypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT103Crypt.xsd" />
+        </xs:schema>
+    </wsdl:types>
+    
+    
+    
+        <wsdl:message name="rtgsRequest">
+            <wsdl:part name="rtgs" element="external:MT103"/>
+        </wsdl:message>
+        
+        
+        <wsdl:message name="kliringRequest">
+            <wsdl:part name="kliring" element="external:MT102"/>
+        </wsdl:message>
+        
+        <wsdl:message name="odobrenjeRequest">
+            <wsdl:part name="odobrenje" element="external:MT910"/>
+        </wsdl:message>
+    
+    
+     <wsdl:message name="zaduzenjeRequest">
+         <wsdl:part name="zaduzenje" element="external:MT900"/>
+     </wsdl:message>
+    
+    
+    <wsdl:portType name="PrihvatiCentraluPortType">
+        <!--one way-->
+        <wsdl:operation name="PrihvatiOdobrenje">
+            <wsdl:input name="odobrenjeInput" message="ws:odobrenjeRequest"/>
+        </wsdl:operation>
+        
+        <!--one way-->
+        <wsdl:operation name="PrihvatiZaduzenje">
+            <wsdl:input name="zaduzenjeInput" message="ws:zaduzenjeRequest"/>
+        </wsdl:operation>
+        
+        
+        <!--one way-->
+        <wsdl:operation name="PrihvatiRtgs">
+            <wsdl:input name="rtgsInput" message="ws:rtgsRequest"/>
+        </wsdl:operation>
+        
+        
+        <!--one way-->
+        <wsdl:operation name="PrihvatiKliring">
+            <wsdl:input name="kliringInput" message="ws:kliringRequest"/>
+        </wsdl:operation>
+        
+        
+    </wsdl:portType>
+    
+    <wsdl:binding name="PrihvatiCentraluBinding" type="ws:PrihvatiCentraluPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        
+        <wsdl:operation name="PrihvatiOdobrenje">
+            <wsdl:input name="odobrenjeInput">
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+        
+        
+        <wsdl:operation name="PrihvatiZaduzenje">
+            <wsdl:input name="zaduzenjeInput">
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+        
+        
+        <wsdl:operation name="PrihvatiRtgs">
+            <wsdl:input name="rtgsInput">
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+        
+       
+        <wsdl:operation name="PrihvatiKliring">
+            <wsdl:input name="kliringInput">
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+        
+    </wsdl:binding>
+    
+    
+    <wsdl:service name="PrihvatiOdCentrale">
+        <wsdl:port name="PrihvatiOdCentralePort" binding="ws:PrihvatiCentraluBinding">
+            <soap:address location="http://localhost:8080/PrihvatiOdCentrale"/>
+        </wsdl:port>
+    </wsdl:service>
+    
+</wsdl:definitions>

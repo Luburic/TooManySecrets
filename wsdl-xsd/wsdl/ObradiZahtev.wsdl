@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+    targetNamespace="http://www.toomanysecrets.com/zahteviServis"
+    xmlns:ws="http://www.toomanysecrets.com/zahteviServis"
+    xmlns:external="http://www.toomanysecrets.com/tipovi"
+   
+    name = "ObradiZahtev"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   >
+    
+    <wsdl:types>
+        <xs:schema targetNamespace="http://www.toomanysecrets.com/zahteviTip">
+           
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/NalogCrypt.xsd"/>
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT900Crypt.xsd" />
+        
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT102Crypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT103Crypt.xsd" />
+            
+        
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/ZahtevZaIzvodCrypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/PresekCrypt.xsd" />   
+        </xs:schema>
+    </wsdl:types>
+    
+    <!--zahtev firme-->
+    <wsdl:message name="nalogRequest">
+        <wsdl:part name="nalog" element="external:nalog"/>
+    </wsdl:message>
+    
+    <!--zahtev firme-->
+    <wsdl:message name="izvodRequest">
+        <wsdl:part name="izvod" element="external:zahtevZaIzvod"/>
+    </wsdl:message>
+   
+    <!--odgovor firmi-->
+    <wsdl:message name="presekResponse">
+        <wsdl:part name="presek" element="external:presek"/>
+    </wsdl:message>
+    
+    
+   
+    <!--kao zahtev za cb-->
+    <wsdl:message name="rtgsResponse">
+        <wsdl:part name="rtgs" element="external:MT103"/>
+    </wsdl:message>
+    
+    <!--kao zahtev za cb-->
+    <wsdl:message name="kliringResponse">
+        <wsdl:part name="kliring" element="external:MT102"/>
+    </wsdl:message>
+    
+    <!--kao odgovor od cb-->
+    <wsdl:message name="zaduzenjeRequest">
+        <wsdl:part name="zaduzenje" element="external:MT900"/>
+    </wsdl:message>
+    
+    
+    <wsdl:message name="notifikacija">
+        <wsdl:part name="notif" type="xs:string"/>
+    </wsdl:message>
+    
+    
+    
+    <wsdl:portType name="ObradiZahtevPortType">
+       
+        <!-- request-response -->
+        <wsdl:operation name="PrihvatiNalog">
+            <wsdl:input name="nalogInput" message="ws:nalogRequest"/>
+            <wsdl:output name="strOutput" message="ws:notifikacija"/>
+        </wsdl:operation>
+        
+        
+        <!-- request-response -->
+        <wsdl:operation name="PrihvatiZahtevZaIzvod">
+            <wsdl:input name="izvodInput" message="ws:izvodRequest"/>
+            <wsdl:output name="presekOutput" message="ws:presekResponse"/>
+        </wsdl:operation>
+        
+        
+        <!-- solicit-response -->
+        <wsdl:operation name="ProslediRtgs">
+            <wsdl:output name="rtgsOutput" message="ws:rtgsResponse"/>
+            <wsdl:input name="rzaduzenjeInput" message="ws:zaduzenjeRequest"/>
+        </wsdl:operation>
+        
+        <!-- solicit-response -->
+        <wsdl:operation name="ProslediKliring">
+            <wsdl:output name="kliringOutput" message="ws:kliringResponse"/>
+            <wsdl:input name="kzaduzenjeInput" message="ws:zaduzenjeRequest"/>
+        </wsdl:operation>
+        
+        
+        
+        
+        
+    </wsdl:portType>
+    
+
+    <wsdl:binding name="ObradiZahtevBinding" type="ws:ObradiZahtevPortType">
+        
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+       
+        <wsdl:operation name="PrihvatiNalog">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="nalogInput"><soap:body use="literal"/></wsdl:input>
+            <wsdl:output name="strOutput"><soap:body use="literal"/></wsdl:output>
+        </wsdl:operation>
+        
+        
+        <wsdl:operation name="PrihvatiZahtevZaIzvod">
+            <wsdl:input name="izvodInput"> <soap:body use="literal"/></wsdl:input>
+            <wsdl:output name="presekOutput"> <soap:body use="literal"/></wsdl:output> 
+        </wsdl:operation>
+        
+        
+        <wsdl:operation name="ProslediRtgs">
+            <wsdl:input name="rzaduzenjeInput"><soap:body use="literal"/></wsdl:input>
+            <wsdl:output name="rtgsOutput"><soap:body use="literal"/></wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="ProslediKliring">
+            
+            <wsdl:input name="kzaduzenjeInput">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            
+            <wsdl:output name="kliringOutput">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        
+    </wsdl:binding>
+    
+    
+    <wsdl:service name="ObradiZahtev">
+        <wsdl:port name="ObradiZahtevPort" binding="ws:ObradiZahtevBinding">
+            <soap:address location="http://localhost:8080/ObradiZahtev"/>
+        </wsdl:port>
+        
+    </wsdl:service>
+    
+    
+</wsdl:definitions>

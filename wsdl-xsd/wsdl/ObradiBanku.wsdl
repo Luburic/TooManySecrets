@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+    targetNamespace="http://www.toomanysecrets.com/obradiBankuServis"
+    xmlns:ws="http://www.toomanysecrets.com/obradiBankuServis"
+    xmlns:external="http://www.toomanysecrets.com/tipovi"
+    
+    name = "ObradiBanku"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  >
+    
+    <wsdl:types>
+        <xs:schema targetNamespace="http://www.toomanysecrets.com/obradiBankuTip">
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/NalogCrypt.xsd"/>
+            
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT900Crypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT910Crypt.xsd" />
+            
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT102Crypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT103Crypt.xsd" />
+            
+            
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/ZahtevZaIzvodCrypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/PresekCrypt.xsd" />   
+        </xs:schema>
+    </wsdl:types>
+    
+    
+        <wsdl:message name="rtgsRequest">
+            <wsdl:part name="rtgs" element="external:MT103"/>
+        </wsdl:message>
+        
+        <wsdl:message name="kliringRequest">
+            <wsdl:part name="kliring" element="external:MT102"/>
+        </wsdl:message>
+        
+        <wsdl:message name="zaduzenjeResponse">
+            <wsdl:part name="zaduzenje" element="external:MT900"/>
+        </wsdl:message>
+    
+        <wsdl:message name="odobrenjeResponse">
+            <wsdl:part name="odobrenje" element="external:MT910"/>
+        </wsdl:message>
+    
+    
+        <wsdl:portType name="ObradiBankuPortType">
+            
+            <!-- request-response -->
+            <wsdl:operation name="PosaljiRtgsZaduzenje">
+                <wsdl:input name="rtgsInput" message="ws:rtgsRequest"/>
+                <wsdl:output name="rtgsZaduzenjeOutput" message="ws:zaduzenjeResponse"/>
+            </wsdl:operation>
+           
+
+			 <!-- request-response -->
+            <wsdl:operation name="PosaljiKliringZaduzenje">
+                <wsdl:input name="kliringInput" message="ws:kliringRequest"/>
+                <wsdl:output name="kliringZaduzenjeOutput" message="ws:zaduzenjeResponse"/>
+            </wsdl:operation>
+
+
+		   
+            <!-- notification -->
+            <wsdl:operation name="PosaljiRtgs">
+                <wsdl:output name="rtgsOutput" message="ws:rtgsRequest"/>
+            </wsdl:operation>
+           
+            <!--notification -->
+            <wsdl:operation name="PosaljiKliring">
+                <wsdl:output name="kliringOutput" message="ws:kliringRequest"/>
+            </wsdl:operation>
+            
+            
+            <!--notification -->
+            <wsdl:operation name="PosaljiOdobrenje">
+                <wsdl:output name="odobrenjeOutput" message="ws:odobrenjeResponse"/>
+            </wsdl:operation>
+            
+        </wsdl:portType>
+    
+    
+    
+        <wsdl:binding name="ObradiBankuBinding" type="ws:ObradiBankuPortType">
+            <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+            
+            <wsdl:operation name="PosaljiRtgsZaduzenje">
+                <wsdl:input name="rtgsInput">
+                    <soap:body use="literal"/>
+                </wsdl:input>
+                
+                <wsdl:output name="rtgsZaduzenjeOutput">
+                    <soap:body use="literal"/>
+                </wsdl:output>
+            </wsdl:operation>
+            
+            <wsdl:operation name="PosaljiKliringZaduzenje">
+                <wsdl:input name="kliringInput">
+                    <soap:body use="literal"/>
+                </wsdl:input>
+                
+                <wsdl:output name="kliringZaduzenjeOutput">
+                    <soap:body use="literal"/>
+                </wsdl:output>
+            </wsdl:operation>
+            
+            <wsdl:operation name="PosaljiKliring">
+                <wsdl:output name="kliringOutput">
+                    <soap:body use="literal"/>
+                </wsdl:output>
+            </wsdl:operation>
+            
+            <wsdl:operation name="PosaljiRtgs">
+                <wsdl:output name="rtgsOutput">
+                    <soap:body use="literal"/>
+                </wsdl:output>
+            </wsdl:operation>
+            
+            <wsdl:operation name="PosaljiOdobrenje">
+                <wsdl:output name="odobrenjeOutput"><soap:body use="literal"/></wsdl:output>
+            </wsdl:operation>
+            
+            
+        </wsdl:binding>
+    
+    
+        <wsdl:service name="ObradiBanku">
+            <wsdl:port name="ObradiBankuPort" binding="ws:ObradiBankuBinding">
+                <soap:address location="http://localhost:8080/ObradiBanku"/>
+            </wsdl:port>
+        </wsdl:service>
+    
+    
+    
+</wsdl:definitions>
