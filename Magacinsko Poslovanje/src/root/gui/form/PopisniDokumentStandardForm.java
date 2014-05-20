@@ -20,7 +20,7 @@ import root.util.DateLabelFormatter;
 
 public class PopisniDokumentStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
-	// Org jedinica i poslovna godina
+
 	private JButton btnZoomPoslovnaGodina = new JButton("...");
 	private JButton btnZoomOrgJedinica = new JButton("...");
 	protected JComboBox<ComboBoxPair> cmbOrgJedinica;

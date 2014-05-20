@@ -21,6 +21,7 @@ import root.gui.action.dialog.OrganizacionaJedinicaAction;
 import root.gui.action.dialog.PopisniDokumentAction;
 import root.gui.action.dialog.PreduzeceAction;
 import root.gui.action.dialog.RadnikAction;
+import root.gui.action.dialog.StavkaPopisaAction;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 3706293806794500307L;
@@ -70,6 +71,7 @@ public class MainFrame extends JFrame {
 		orgSemaMenu.add(new JMenuItem(new ArtikalAction()));
 		orgSemaMenu.add(new JMenuItem(new OrganizacionaJedinicaAction()));
 		orgSemaMenu.add(new JMenuItem(new PopisniDokumentAction()));
+		orgSemaMenu.add(new JMenuItem(new StavkaPopisaAction()));
 		menuBar.add(orgSemaMenu);
 	}
 }
