@@ -26,26 +26,22 @@
    
    
     <!-- kao zahtev prema banci -->
-    <wsdl:message name="izvodResponse">
+    <wsdl:message name="izvodRequest">
         <wsdl:part name="izvod" element="external:zahtevZaIzvod"/>
     </wsdl:message>
     
     <!-- kao odgovor banke -->
-    <wsdl:message name="presekRequest">
+    <wsdl:message name="presekResponse">
         <wsdl:part name="presek" element="external:presek"/>
     </wsdl:message>
     
     
     
-    <!-- primanje fakture-->
+   
     <wsdl:message name="fakturaRequest">
         <wsdl:part name="fakturaReq" element="external:faktura"/>
     </wsdl:message>
     
-    <!-- slanje fakture -->
-    <wsdl:message name="fakturaResponse">
-        <wsdl:part name="fakturaResp" element="external:faktura"/>
-    </wsdl:message>
     
     <wsdl:message name="notifikacija">
         <wsdl:part name="notif" type="xs:string"/>
@@ -57,14 +53,14 @@
         
         <!-- solicit-response -->
         <wsdl:operation name="ZatraziPresek">
-            <wsdl:output name="izvodOutput" message="ws:izvodResponse"/>
-            <wsdl:input name="presekInput" message="ws:presekRequest"/>
+            <wsdl:output name="izvodOutput" message="ws:izvodRequest"/>
+            <wsdl:input name="presekInput" message="ws:presekResponse"/>
            
         </wsdl:operation>
         
         <!-- solicit-response -->
         <wsdl:operation name="PosaljiFakturu">
-            <wsdl:output name="fakturaOutput" message="ws:fakturaResponse"/>
+            <wsdl:output name="fakturaOutput" message="ws:fakturaRequest"/>
             <wsdl:input name="strInput" message="ws:notifikacija"/>
         </wsdl:operation>
         
@@ -103,7 +99,7 @@
     
     <wsdl:service name="FirmaServis">
         <wsdl:port name="FirmaPort" binding="ws:FirmaBinding">
-            <soap:address location="http://localhost:8080/FirmaServis"/>
+            <soap:address location="http://localhost:8080/FirmaPort"/>
         </wsdl:port>
         
     </wsdl:service>
