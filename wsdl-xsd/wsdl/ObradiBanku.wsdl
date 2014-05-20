@@ -43,7 +43,7 @@
             <wsdl:part name="zaduzenje" element="external:MT900"/>
         </wsdl:message>
     
-        <wsdl:message name="odobrenjeResponse">
+        <wsdl:message name="odobrenjeRequest">
             <wsdl:part name="odobrenje" element="external:MT910"/>
         </wsdl:message>
     
@@ -78,7 +78,7 @@
             
             <!--notification -->
             <wsdl:operation name="PosaljiOdobrenje">
-                <wsdl:output name="odobrenjeOutput" message="ws:odobrenjeResponse"/>
+                <wsdl:output name="odobrenjeOutput" message="ws:odobrenjeRequest"/>
             </wsdl:operation>
             
         </wsdl:portType>
@@ -130,7 +130,7 @@
     
         <wsdl:service name="ObradiBanku">
             <wsdl:port name="ObradiBankuPort" binding="ws:ObradiBankuBinding">
-                <soap:address location="http://localhost:8080/ObradiBanku"/>
+                <soap:address location="http://localhost:8080/ObradiBankuPort"/>
             </wsdl:port>
         </wsdl:service>
     

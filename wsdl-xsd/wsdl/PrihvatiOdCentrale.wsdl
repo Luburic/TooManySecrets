@@ -43,20 +43,12 @@
         </wsdl:message>
     
     
-     <wsdl:message name="zaduzenjeRequest">
-         <wsdl:part name="zaduzenje" element="external:MT900"/>
-     </wsdl:message>
     
     
     <wsdl:portType name="PrihvatiCentraluPortType">
         <!--one way-->
         <wsdl:operation name="PrihvatiOdobrenje">
             <wsdl:input name="odobrenjeInput" message="ws:odobrenjeRequest"/>
-        </wsdl:operation>
-        
-        <!--one way-->
-        <wsdl:operation name="PrihvatiZaduzenje">
-            <wsdl:input name="zaduzenjeInput" message="ws:zaduzenjeRequest"/>
         </wsdl:operation>
         
         
@@ -84,12 +76,6 @@
         </wsdl:operation>
         
         
-        <wsdl:operation name="PrihvatiZaduzenje">
-            <wsdl:input name="zaduzenjeInput">
-                <soap:body use="literal"/>
-            </wsdl:input>
-        </wsdl:operation>
-        
         
         <wsdl:operation name="PrihvatiRtgs">
             <wsdl:input name="rtgsInput">
@@ -109,7 +95,7 @@
     
     <wsdl:service name="PrihvatiOdCentrale">
         <wsdl:port name="PrihvatiOdCentralePort" binding="ws:PrihvatiCentraluBinding">
-            <soap:address location="http://localhost:8080/PrihvatiOdCentrale"/>
+            <soap:address location="http://localhost:8080/PrihvatiOdCentralePort"/>
         </wsdl:port>
     </wsdl:service>
     

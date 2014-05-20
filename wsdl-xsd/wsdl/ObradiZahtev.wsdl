@@ -47,17 +47,17 @@
     
    
     <!--kao zahtev za cb-->
-    <wsdl:message name="rtgsResponse">
+    <wsdl:message name="rtgsRequest">
         <wsdl:part name="rtgs" element="external:MT103"/>
     </wsdl:message>
     
     <!--kao zahtev za cb-->
-    <wsdl:message name="kliringResponse">
+    <wsdl:message name="kliringRequest">
         <wsdl:part name="kliring" element="external:MT102"/>
     </wsdl:message>
     
     <!--kao odgovor od cb-->
-    <wsdl:message name="zaduzenjeRequest">
+    <wsdl:message name="zaduzenjeResponse">
         <wsdl:part name="zaduzenje" element="external:MT900"/>
     </wsdl:message>
     
@@ -86,14 +86,14 @@
         
         <!-- solicit-response -->
         <wsdl:operation name="ProslediRtgs">
-            <wsdl:output name="rtgsOutput" message="ws:rtgsResponse"/>
-            <wsdl:input name="rzaduzenjeInput" message="ws:zaduzenjeRequest"/>
+            <wsdl:output name="rtgsOutput" message="ws:rtgsRequest"/>
+            <wsdl:input name="rzaduzenjeInput" message="ws:zaduzenjeResponse"/>
         </wsdl:operation>
         
         <!-- solicit-response -->
         <wsdl:operation name="ProslediKliring">
-            <wsdl:output name="kliringOutput" message="ws:kliringResponse"/>
-            <wsdl:input name="kzaduzenjeInput" message="ws:zaduzenjeRequest"/>
+            <wsdl:output name="kliringOutput" message="ws:kliringRequest"/>
+            <wsdl:input name="kzaduzenjeInput" message="ws:zaduzenjeResponse"/>
         </wsdl:operation>
         
         
@@ -141,7 +141,7 @@
     
     <wsdl:service name="ObradiZahtev">
         <wsdl:port name="ObradiZahtevPort" binding="ws:ObradiZahtevBinding">
-            <soap:address location="http://localhost:8080/ObradiZahtev"/>
+            <soap:address location="http://localhost:8080/ObradiZahtevPort"/>
         </wsdl:port>
         
     </wsdl:service>
