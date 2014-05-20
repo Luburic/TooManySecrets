@@ -24,6 +24,7 @@ import root.gui.action.dialog.PoslovniPartnerAction;
 import root.gui.action.dialog.PreduzeceAction;
 import root.gui.action.dialog.RadnikAction;
 import root.gui.action.dialog.StavkaPopisaAction;
+import root.gui.action.dialog.VrstaPrometaAction;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 3706293806794500307L;
@@ -76,6 +77,7 @@ public class MainFrame extends JFrame {
 		orgSemaMenu.add(new JMenuItem(new StavkaPopisaAction()));
 		orgSemaMenu.add(new JMenuItem(new MagacinskaKarticaAction()));
 		orgSemaMenu.add(new JMenuItem(new PoslovniPartnerAction()));
+		orgSemaMenu.add(new JMenuItem(new VrstaPrometaAction()));
 		menuBar.add(orgSemaMenu);
 	}
 }
