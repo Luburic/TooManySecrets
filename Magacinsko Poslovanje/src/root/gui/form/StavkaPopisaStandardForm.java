@@ -27,7 +27,7 @@ public class StavkaPopisaStandardForm extends GenericForm {
 
 	public StavkaPopisaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
-		setTitle("Popisni dokumenti");
+		setTitle("Stavka popisnog dokumenta");
 
 		JLabel lblPopisanaKolicina = new JLabel("Popisana količina: ");
 		JLabel lblKolicinaPoKnjigama = new JLabel("Količina po knjigama: ");
