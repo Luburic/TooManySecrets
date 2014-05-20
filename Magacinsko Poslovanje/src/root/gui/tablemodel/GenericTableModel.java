@@ -410,14 +410,23 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		while (left <= right) {
 			mid = (left + right) / 2;
 
-			String aSifra = (String) getValueAt(mid, columnForSorting);
+			if (getValueAt(mid, columnForSorting) instanceof String) {
+				String aSifra = (String) getValueAt(mid, columnForSorting);
 
-			if (SortUtils.getLatCyrCollator().compare((String) colNames[0].toString(), aSifra) > 0)
-				left = mid + 1;
-			else if (SortUtils.getLatCyrCollator().compare((String) colNames[0].toString(), aSifra) < 0)
-				right = mid - 1;
-			else
-				break;
+				if (SortUtils.getLatCyrCollator().compare((String) colNames[0].toString(), aSifra) > 0)
+					left = mid + 1;
+				else if (SortUtils.getLatCyrCollator().compare((String) colNames[0].toString(), aSifra) < 0)
+					right = mid - 1;
+				else
+					break;
+			} else {
+				Integer iSifra = (Integer) getValueAt(mid, columnForSorting);
+				if (iSifra < (Integer) colNames[0]) {
+					left = mid + 1;
+				} else {
+					right = mid - 1;
+				}
+			}
 		}
 
 		Object[] rowForInsert = new Object[colNames.length];

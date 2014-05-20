@@ -312,8 +312,12 @@ public abstract class GenericForm extends JDialog {
 			} else if (cp instanceof JDatePickerImpl) {
 				JDatePickerImpl datePicker = (JDatePickerImpl) cp;
 				Date date = (Date) datePicker.getJDateInstantPanel().getModel().getValue();
-				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-				newRow.add(formatter.format(date));
+				String dateString = "";
+				if (date != null) {
+					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+					dateString = formatter.format(date);
+				}
+				newRow.add(dateString);
 			}
 		}
 	}
@@ -375,7 +379,7 @@ public abstract class GenericForm extends JDialog {
 		}
 	}
 
-	private void clearFields(boolean needFocus) {
+	protected void clearFields(boolean needFocus) {
 		for (Component cp : dataPanel.getComponents()) {
 			if (cp instanceof JTextField) {
 				JTextField textField = (JTextField) cp;
@@ -445,9 +449,14 @@ public abstract class GenericForm extends JDialog {
 					} else if (cp instanceof JDatePickerImpl) {
 						JDatePickerImpl datePicker = (JDatePickerImpl) cp;
 						String date = value.toString();
-						String[] dates = date.split("\\-");
-						datePicker.getModel().setDate(Integer.parseInt(dates[0]), Integer.parseInt(dates[0]),
-								Integer.parseInt(dates[0]));
+						if (date.contains("-")) {
+							String[] dates = date.split("\\-");
+							datePicker
+									.getJDateInstantPanel()
+									.getModel()
+									.setDate(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]) - 1,
+											Integer.parseInt(dates[2]));
+						}
 					}
 				}
 			}

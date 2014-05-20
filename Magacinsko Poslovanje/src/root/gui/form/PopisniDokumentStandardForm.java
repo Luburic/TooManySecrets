@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
@@ -29,7 +28,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 	protected JTextField tfBrojPopisnogDokumenta = new JTextField(5);
 	protected JDatePickerImpl dateDatumOtvaranja;
 	protected JDatePickerImpl dateDatumKnjizenja;
-	protected JCheckBox chkStatusPopisnog = new JCheckBox();
+	protected JTextField tfStatusPopisnog = new JTextField(3);
 
 	public PopisniDokumentStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
@@ -53,7 +52,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		tfBrojPopisnogDokumenta.setName("broj popisnog dokumenta");
 		dateDatumOtvaranja.setName("datum otvaranja");
 		dateDatumKnjizenja.setName("datum knjiženja");
-		chkStatusPopisnog.setName("status popisnog");
+		tfStatusPopisnog.setName("status popisnog");
 		// ######### Ovde će mi trebati posebna lookup funkcija za magacine (sa where).
 		cmbOrgJedinica = super.setupJoins(cmbOrgJedinica, "Organizaciona_jedinica", "id_jedinice", "id jedinice",
 				"naziv_jedinice", "naziv jedinice", false);
@@ -99,7 +98,8 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		dataPanel.add(dateDatumKnjizenja, "wrap, gapx 15px");
 
 		dataPanel.add(lblStatus);
-		dataPanel.add(chkStatusPopisnog, "wrap, gapx 15px");
+		tfStatusPopisnog.setEditable(false);
+		dataPanel.add(tfStatusPopisnog, "wrap, gapx 15px");
 
 		dataPanel.add(lblMagacin);
 		dataPanel.add(cmbOrgJedinica);
@@ -122,5 +122,11 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		tableModel = TableModelCreator.createTableModel("Popisni dokument", joinColumn);
 		tableModel.setColumnForSorting(2);
 		super.setupTable();
+	}
+
+	@Override
+	protected void clearFields(boolean needFocus) {
+		super.clearFields(needFocus);
+		tfStatusPopisnog.setText("F");
 	}
 }
