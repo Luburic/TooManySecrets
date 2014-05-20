@@ -20,6 +20,7 @@ import root.gui.action.dialog.MagacinskaKarticaAction;
 import root.gui.action.dialog.NaseljenoMestoAction;
 import root.gui.action.dialog.OrganizacionaJedinicaAction;
 import root.gui.action.dialog.PopisniDokumentAction;
+import root.gui.action.dialog.PoslovniPartnerAction;
 import root.gui.action.dialog.PreduzeceAction;
 import root.gui.action.dialog.RadnikAction;
 import root.gui.action.dialog.StavkaPopisaAction;
@@ -74,6 +75,7 @@ public class MainFrame extends JFrame {
 		orgSemaMenu.add(new JMenuItem(new PopisniDokumentAction()));
 		orgSemaMenu.add(new JMenuItem(new StavkaPopisaAction()));
 		orgSemaMenu.add(new JMenuItem(new MagacinskaKarticaAction()));
+		orgSemaMenu.add(new JMenuItem(new PoslovniPartnerAction()));
 		menuBar.add(orgSemaMenu);
 	}
 }

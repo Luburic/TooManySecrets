@@ -299,25 +299,27 @@ public abstract class GenericForm extends JDialog {
 			}
 		}
 		for (Component cp : dataPanel.getComponents()) {
-			if (cp instanceof JTextField) {
-				JTextField textField = (JTextField) cp;
-				newRow.add(textField.getText().trim());
-			} else if (cp instanceof JCheckBox) {
-				JCheckBox checkBox = (JCheckBox) cp;
-				if (checkBox.isSelected()) {
-					newRow.add("1");
-				} else {
-					newRow.add("0");
+			if (cp.getName() != null) {
+				if (cp instanceof JTextField) {
+					JTextField textField = (JTextField) cp;
+					newRow.add(textField.getText().trim());
+				} else if (cp instanceof JCheckBox) {
+					JCheckBox checkBox = (JCheckBox) cp;
+					if (checkBox.isSelected()) {
+						newRow.add("1");
+					} else {
+						newRow.add("0");
+					}
+				} else if (cp instanceof JDatePickerImpl) {
+					JDatePickerImpl datePicker = (JDatePickerImpl) cp;
+					Date date = (Date) datePicker.getJDateInstantPanel().getModel().getValue();
+					String dateString = "";
+					if (date != null) {
+						DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+						dateString = formatter.format(date);
+					}
+					newRow.add(dateString);
 				}
-			} else if (cp instanceof JDatePickerImpl) {
-				JDatePickerImpl datePicker = (JDatePickerImpl) cp;
-				Date date = (Date) datePicker.getJDateInstantPanel().getModel().getValue();
-				String dateString = "";
-				if (date != null) {
-					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-					dateString = formatter.format(date);
-				}
-				newRow.add(dateString);
 			}
 		}
 	}
