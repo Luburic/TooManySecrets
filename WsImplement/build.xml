@@ -6,10 +6,30 @@
 	<property name="src.dir" value="${basedir}/src"/>
 	<property name="lib.dir" value="${basedir}/lib"/>
 	<property name="dist.dir" value="${basedir}/dist"/>
+	<property name="data.dir" value="${basedir}/data"/>
 	<property name="gen.dir" value="${basedir}/gen"/>
 	<property name="webinf.dir" value="${basedir}/WEB-INF"/>
 	<property name="wsdl.dir" value="${webinf.dir}/wsdl"/>
 	<property name="shema.dir" value="${webinf.dir}/shema"/>
+	
+	<!--Task za generisanje objektnog modela na osnovu XSD seme -->
+		<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+		  <classpath>
+		    <fileset dir="${lib.dir}" includes="*.jar" />
+		  </classpath>
+		</taskdef>
+		
+		<!--Task za generisanje XSD seme na osnovu objektnog modela -->
+		<taskdef name="schemagen" classname="com.sun.tools.jxc.SchemaGenTask">
+		  <classpath>
+		    <fileset dir="${lib.dir}" includes="*.jar" />
+		  </classpath>
+		</taskdef>
+	
+	<target name="generate_java" depends="init">
+			<xjc schema="${data.dir}/FakturaRaw.xsd" destdir="${gen.dir}"/>
+	</target>
+	
 	
 	<target name="check-war-name" unless="war.name">
 		<fail>

@@ -2,6 +2,7 @@ package ws.style.message;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ResourceBundle;
 
 import javax.ejb.Stateless;
 import javax.xml.parsers.DocumentBuilder;
@@ -35,7 +36,8 @@ public class FakturaProvider  implements Provider<DOMSource>{
 
 	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/firmaServis";
 	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
-	
+	public static final String SCHEME_PATH = "http://localhost:8080/firma/services/Faktura?xsd=../shema/FakturaRaw.xsd";
+
 	
 	public FakturaProvider() {
 		// TODO Auto-generated constructor stub
@@ -43,8 +45,36 @@ public class FakturaProvider  implements Provider<DOMSource>{
 	
 	@Override
 	public DOMSource invoke(DOMSource request) {
+		DOMSource response = null;
 		
-        return new DOMSource();
+    	try {
+    		//ResourceBundle firmaBundle = ResourceBundle.getBundle("firmaA");
+    		//String nazivFirme = firmaBundle.getString("naziv");
+    		
+			//serijalizacija DOM-a na ekran
+    		System.out.println("\nInvoking HelloMessageProvider\n");
+			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			StreamResult result = new StreamResult(System.out);
+			transformer.transform(request, result);
+			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
+			System.out.println("\n");
+			
+			
+			
+    	} catch (TransformerConfigurationException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (DOMException e) {
+			e.printStackTrace();
+		} catch (TransformerFactoryConfigurationError e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
+        return response;
 	}
 
 	
