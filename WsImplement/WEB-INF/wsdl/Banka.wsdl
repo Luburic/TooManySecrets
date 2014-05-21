@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+    targetNamespace="http://www.toomanysecrets.com/bankaServis"
+    xmlns:ws="http://www.toomanysecrets.com/bankaServis"
+    xmlns:external="http://www.toomanysecrets.com/tipovi"
+   
+    name = "Banka"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   >
+    
+    
+    
+    
+    <wsdl:types>
+        <xs:schema targetNamespace="http://www.toomanysecrets.com/prihvatiCentraluTip">
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT900Crypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT910Crypt.xsd" />
+            
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT102Crypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT103Crypt.xsd" />
+        
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/NalogCrypt.xsd"/>
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/ZahtevZaIzvodCrypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/PresekCrypt.xsd" />   
+        
+        </xs:schema>
+   
+    
+    
+    </wsdl:types>
+          
+         
+           <wsdl:message name="rtgsRequest">
+               <wsdl:part name="rtgs" element="external:MT103"/>
+           </wsdl:message>
+        
+           
+          <wsdl:message name="kliringRequest">
+              <wsdl:part name="kliring" element="external:MT102"/>
+          </wsdl:message>
+          
+         
+          <wsdl:message name="odobrenjeRequest">
+              <wsdl:part name="odobrenje" element="external:MT910"/>
+          </wsdl:message>
+          
+         
+          <wsdl:message name="zaduzenjeRequest">
+              <wsdl:part name="zaduzenje" element="external:MT900"/>
+          </wsdl:message>
+    
+    
+    
+        
+        
+         <wsdl:message name="nalogRequest">
+             <wsdl:part name="nalog" element="external:nalog"/>
+         </wsdl:message>
+    
+      
+         <wsdl:message name="notifikacija">
+             <wsdl:part name="notif" type="xs:string"/>
+         </wsdl:message>
+         
+        
+         <wsdl:message name="izvodRequest">
+             <wsdl:part name="izvod" element="external:zahtevZaIzvod"/>
+         </wsdl:message>
+         
+        
+         <wsdl:message name="presekResponse">
+             <wsdl:part name="presek" element="external:presek"/>
+         </wsdl:message>
+        
+        
+       
+          <wsdl:message name="zaduzenjeResponse">
+              <wsdl:part name="zaduzenje" element="external:MT900"/>
+          </wsdl:message>
+    
+    
+    
+    <wsdl:portType name="BankaPortType">
+        <!--one way-->
+        <wsdl:operation name="PrihvatiOdobrenje">
+            <wsdl:input name="odobrenjeInput" message="ws:odobrenjeRequest"/>
+        </wsdl:operation>
+        
+        <!--one way-->
+        <wsdl:operation name="PrihvatiZaduzenje">
+            <wsdl:input name="zaduzenjeInput" message="ws:zaduzenjeRequest"/>
+        </wsdl:operation>
+        
+        <!--one way-->
+        <wsdl:operation name="PrihvatiRtgs">
+            <wsdl:input name="rtgsInput" message="ws:rtgsRequest"/>
+        </wsdl:operation>
+        
+        <!--one way-->
+        <wsdl:operation name="PrihvatiKliring">
+            <wsdl:input name="kliringInput" message="ws:kliringRequest"/>
+        </wsdl:operation>
+        
+        
+        
+        
+        
+        <!-- request-response -->
+        <wsdl:operation name="PrihvatiNalog">
+            <wsdl:input name="nalogInput" message="ws:nalogRequest"/>
+            <wsdl:output name="strOutput" message="ws:notifikacija"/>
+        </wsdl:operation>
+        
+        <!-- request-response -->
+        <wsdl:operation name="PrihvatiZahtevZaIzvod">
+            <wsdl:input name="izvodInput" message="ws:izvodRequest"/>
+            <wsdl:output name="presekOutput" message="ws:presekResponse"/>
+        </wsdl:operation>
+        
+        
+        
+        
+        
+        <!-- request-response -->
+        <wsdl:operation name="PosaljiRtgsZaduzenje">
+            <wsdl:input name="centralaRtgsInput" message="ws:rtgsRequest"/>
+            <wsdl:output name="centralaRtgsZaduzenjeOutput" message="ws:zaduzenjeResponse"/>
+        </wsdl:operation>
+        
+        
+        <!-- request-response -->
+        <wsdl:operation name="PosaljiKliringZaduzenje">
+            <wsdl:input name="centralaKliringInput" message="ws:kliringRequest"/>
+            <wsdl:output name="centralaKliringZaduzenjeOutput" message="ws:zaduzenjeResponse"/>
+        </wsdl:operation>
+        
+        
+    </wsdl:portType>
+    
+    <wsdl:binding name="BankaBinding" type="ws:BankaPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        
+        <wsdl:operation name="PrihvatiOdobrenje">
+            <wsdl:input name="odobrenjeInput">
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+        
+        <wsdl:operation name="PrihvatiZaduzenje">
+            <wsdl:input name="zaduzenjeInput">
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+        
+        
+        <wsdl:operation name="PrihvatiRtgs">
+            <wsdl:input name="rtgsInput">
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+        
+       
+        <wsdl:operation name="PrihvatiKliring">
+            <wsdl:input name="kliringInput">
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+        
+        
+        <wsdl:operation name="PrihvatiNalog">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="nalogInput"><soap:body use="literal"/></wsdl:input>
+            <wsdl:output name="strOutput"><soap:body use="literal"/></wsdl:output>
+        </wsdl:operation>
+        
+        
+        <wsdl:operation name="PrihvatiZahtevZaIzvod">
+            <wsdl:input name="izvodInput"> <soap:body use="literal"/></wsdl:input>
+            <wsdl:output name="presekOutput"> <soap:body use="literal"/></wsdl:output> 
+        </wsdl:operation>
+        
+        
+        
+        <wsdl:operation name="PosaljiRtgsZaduzenje">
+            <wsdl:input name="centralaRtgsInput"> <soap:body use="literal"/></wsdl:input>
+            <wsdl:output name="centralaRtgsZaduzenjeOutput"> <soap:body use="literal"/></wsdl:output> 
+        </wsdl:operation>
+        
+        
+        <wsdl:operation name="PosaljiKliringZaduzenje">
+            <wsdl:input name="centralaKliringInput"> <soap:body use="literal"/></wsdl:input>
+            <wsdl:output name="centralaKliringZaduzenjeOutput"> <soap:body use="literal"/></wsdl:output> 
+        </wsdl:operation>
+        
+    </wsdl:binding>
+    
+    
+    <wsdl:service name="BankaServis">
+        <wsdl:port name="NalogPort" binding="ws:BankaBinding">
+            <soap:address location="http://localhost:8080/NalogPort"/>
+        </wsdl:port>
+        
+         <wsdl:port name="IzvodPort" binding="ws:BankaBinding">
+            <soap:address location="http://localhost:8080/IzvodPort"/>
+        </wsdl:port>
+        
+        
+    </wsdl:service>
+    
+</wsdl:definitions>
