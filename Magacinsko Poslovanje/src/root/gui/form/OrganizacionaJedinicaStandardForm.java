@@ -92,13 +92,13 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
-		setupTable();
+		setupTable(null);
 	}
 
 	@Override
-	public void setupTable() {
+	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Organizaciona jedinica", joinColumn);
 		tableModel.setColumnForSorting(3);
-		super.setupTable();
+		super.setupTable(customQuery);
 	}
 }

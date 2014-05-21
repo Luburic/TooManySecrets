@@ -18,9 +18,7 @@ import rs.mgifos.mosquito.model.MetaTable;
 public class TableModelCreator {
 	/**
 	 * Putem ove metode se može jednostavno formirati tabela iz meta podataka koji su u modelu. Ukoliko je potrebno da
-	 * tabela sadrži neke kolone iz spoja, trebaju se sve kolone proslediti kao argument za colNames. Takođe je potrebno
-	 * u tom slučaju proslediti custom SQL naredbu table modelu, jer podrazumevano ponašanje je da izvuče samo atribute
-	 * iz te tabele.
+	 * tabela sadrži neke kolone iz spoja, trebaju se sve kolone proslediti kao argument.
 	 */
 	@SuppressWarnings("unchecked")
 	public static GenericTableModel createTableModel(String tableName, List<MetaSurogateDisplay> additionalColumns) {

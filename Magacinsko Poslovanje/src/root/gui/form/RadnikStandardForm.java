@@ -93,13 +93,13 @@ public class RadnikStandardForm extends GenericForm {
 		dataPanel.add(cmbMesto);
 		dataPanel.add(btnZoomMesto, "wrap, gapx 15px");
 
-		setupTable();
+		setupTable(null);
 	}
 
 	@Override
-	public void setupTable() {
+	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Radnik", joinColumn);
 		tableModel.setColumnForSorting(2);
-		super.setupTable();
+		super.setupTable(customQuery);
 	}
 }

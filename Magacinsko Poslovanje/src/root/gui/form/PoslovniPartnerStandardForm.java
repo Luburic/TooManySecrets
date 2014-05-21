@@ -96,14 +96,14 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 		tfVrsta.setVisible(false);
 		dataPanel.add(tfVrsta);
 
-		setupTable();
+		setupTable(null);
 	}
 
 	@Override
-	public void setupTable() {
+	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Poslovni partner", joinColumn);
 		tableModel.setColumnForSorting(2);
-		super.setupTable();
+		super.setupTable(customQuery);
 	}
 
 	@Override

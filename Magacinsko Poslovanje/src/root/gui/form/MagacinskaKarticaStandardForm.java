@@ -142,13 +142,13 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
-		setupTable();
+		setupTable(null);
 	}
 
 	@Override
-	public void setupTable() {
+	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Magacinska kartica", joinColumn);
 		tableModel.setColumnForSorting(2);
-		super.setupTable();
+		super.setupTable(customQuery);
 	}
 }

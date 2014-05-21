@@ -38,7 +38,7 @@ public class VrstaPrometaStandardForm extends GenericForm {
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
-		setupTable();
+		setupTable(null);
 		setLocationRelativeTo(MainFrame.getInstance());
 	}
 }

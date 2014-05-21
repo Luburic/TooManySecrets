@@ -65,7 +65,7 @@ public abstract class GenericForm extends JDialog {
 
 	protected List<MetaSurogateDisplay> joinColumn = new ArrayList<MetaSurogateDisplay>();
 
-	private String childWhere;
+	protected String childWhere;
 
 	protected JTable tblGrid = new JTable();
 
@@ -151,7 +151,7 @@ public abstract class GenericForm extends JDialog {
 		return null;
 	}
 
-	protected void setupTable() {
+	protected void setupTable(String customQuery) {
 		tableModel.setWhereStmt(childWhere);
 		tblGrid.setModel(tableModel);
 		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -172,7 +172,11 @@ public abstract class GenericForm extends JDialog {
 		}
 		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(0));
 		try {
-			tableModel.open();
+			if (customQuery == null) {
+				tableModel.open();
+			} else {
+				tableModel.fillData(customQuery);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

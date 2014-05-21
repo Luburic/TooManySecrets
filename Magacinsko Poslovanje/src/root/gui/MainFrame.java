@@ -22,6 +22,7 @@ import root.gui.action.dialog.OrganizacionaJedinicaAction;
 import root.gui.action.dialog.PopisniDokumentAction;
 import root.gui.action.dialog.PoslovniPartnerAction;
 import root.gui.action.dialog.PreduzeceAction;
+import root.gui.action.dialog.PrometniDokumentAction;
 import root.gui.action.dialog.RadnikAction;
 import root.gui.action.dialog.StavkaPopisaAction;
 import root.gui.action.dialog.VrstaPrometaAction;
@@ -78,6 +79,7 @@ public class MainFrame extends JFrame {
 		orgSemaMenu.add(new JMenuItem(new MagacinskaKarticaAction()));
 		orgSemaMenu.add(new JMenuItem(new PoslovniPartnerAction()));
 		orgSemaMenu.add(new JMenuItem(new VrstaPrometaAction()));
+		orgSemaMenu.add(new JMenuItem(new PrometniDokumentAction()));
 		menuBar.add(orgSemaMenu);
 	}
 }
