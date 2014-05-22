@@ -21,6 +21,8 @@ public class DeleteAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		standardForm.removeRow();
+		if (standardForm.allowDeletion()) {
+			standardForm.removeRow();
+		}
 	}
 }

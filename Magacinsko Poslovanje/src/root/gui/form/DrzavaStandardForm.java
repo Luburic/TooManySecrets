@@ -136,7 +136,6 @@ public class DrzavaStandardForm extends GenericForm {
 
 	@Override
 	public boolean allowDeletion() {
-
-		return false;
+		return allowDeletion("Mesto");
 	}
 }

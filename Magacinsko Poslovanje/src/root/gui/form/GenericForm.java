@@ -488,18 +488,24 @@ public abstract class GenericForm extends JDialog {
 
 	public abstract boolean verification();
 
-	public boolean allowDeletion() {
-		Integer id = (Integer) tblGrid.getValueAt(tblGrid.getSelectedRow(), 0);
+	public abstract boolean allowDeletion();
 
-		String sqlSelect = "SELECT id_drzave FROM " + "WHERE";
+	protected boolean allowDeletion(String... tabele) {
+		Integer id = (Integer) tableModel.getValueAt(tblGrid.getSelectedRow(), 0);
 
 		try {
-			for (int i = 0; i < 3; i++) {
-				PreparedStatement statement = DBConnection.getConnection().prepareStatement(sqlSelect);
+			for (String tabela : tabele) {
+				PreparedStatement statement = DBConnection.getConnection().prepareStatement(
+						"SELECT " + tableModel.getPrimaryKey() + " FROM " + tabela + " WHERE "
+								+ tableModel.getPrimaryKey() + " = " + id);
 				ResultSet rset = statement.executeQuery();
+				if (rset.next()) {
+					return false;
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return true;
 	}
 }
