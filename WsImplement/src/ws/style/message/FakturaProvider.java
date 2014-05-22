@@ -8,13 +8,8 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.ejb.Stateless;
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,7 +32,6 @@ import javax.xml.ws.WebServiceProvider;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import beans.faktura.Faktura;
 
@@ -53,7 +47,11 @@ public class FakturaProvider  implements Provider<DOMSource>{
 	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/firmaServis";
 	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
 	public static final String SCHEME_PATH = "http://localhost:8080/firma/services/Faktura?xsd=../shema/FakturaRaw.xsd";
-	private DOMSource response;
+	
+	
+	public static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+	public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+	private Document message;
 	
 	public FakturaProvider() {
 		// TODO Auto-generated constructor stub
@@ -61,11 +59,11 @@ public class FakturaProvider  implements Provider<DOMSource>{
 	
 	@Override
 	public DOMSource invoke(DOMSource request) {
-		response = null;
+		DOMSource response = null;
 		
     	try {
-    		ResourceBundle firmaBundle = ResourceBundle.getBundle("firmaA");
-    		String nazivFirme = firmaBundle.getString("naziv");
+    		//ResourceBundle firmaBundle = ResourceBundle.getBundle("firmaA");
+    		//String nazivFirme = firmaBundle.getString("naziv");
     		
 			//serijalizacija DOM-a na ekran
     		System.out.println("\nInvoking FakturaProvider\n");
@@ -76,24 +74,27 @@ public class FakturaProvider  implements Provider<DOMSource>{
 			System.out.println("\n");
 			
 			
-			JAXBContext context = JAXBContext.newInstance("beans.faktura");
+			/*JAXBContext context = JAXBContext.newInstance("beans.faktura");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = schemaFactory.newSchema(new URL(SCHEME_PATH));
-			unmarshaller.setSchema(schema);
+			unmarshaller.setSchema(schema);*/
 			
+			/*
 			if(!validateSchema(document)){
-				response = createResponse("Dokument nije validan po šemi.");
-				return response;
+				Document doc = createResponse("Dokument nije validan po semi.");
+				return new DOMSource(doc);
 			}
 			Faktura faktura = (Faktura) unmarshaller.unmarshal(document);
 
 
 			if(!validateContent(faktura)) {
-				return response;
+				return new DOMSource(message);
 			}
+			*/
 			
+		
 			//snimanje u bazu...
 			
     	} catch (TransformerConfigurationException e) {
@@ -106,54 +107,47 @@ public class FakturaProvider  implements Provider<DOMSource>{
 			e.printStackTrace();
 		} catch (TransformerException e) {
 			e.printStackTrace();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        return response;
+      
+    	return new DOMSource(createResponse("ok"));
 	}
 
 	
-	 private Document buildNotification(String notification) {
+	 private Document createResponse(String notification) {
 			
 			DocumentBuilder documentBuilder = getDocumentBuilder();
 			Document doc = documentBuilder.newDocument();
 			
-			/*
-			 * KREIRA SE XML
-			 * 
-			 * <ns1:strOutput xmlns:ns1=TARGET_NAMESPACE>
-			 * 		OK/FAIL
+		     /* <ns1:notif xmlns:ns1=TARGET_NAMESPACE>
+			 * 		OK..FAIL
 			 * </ns1:strOutput>
 			 * 
 			 * 
 			 */
 			
-			Element rootEl = doc.createElementNS(TARGET_NAMESPACE, "ns1:strOutput");
+			Element rootEl = doc.createElementNS(TARGET_NAMESPACE, "ns1:notif");
 			rootEl.setAttributeNS(NAMESPACE_SPEC_NS, "xmlns:ns1", TARGET_NAMESPACE);
 			doc.appendChild(rootEl);
-			
 			rootEl.appendChild(doc.createTextNode(notification));
 			
 			return doc;
 		}
 	
 	
+	 
 	private DocumentBuilder getDocumentBuilder() {
 		try {
 			// Setup document builder
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			docBuilderFactory.setNamespaceAware(true);
-
+			// validacija XML scheme
+			docBuilderFactory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
 			DocumentBuilder builder = docBuilderFactory.newDocumentBuilder();
 			return builder;
 		} catch (ParserConfigurationException e) {
@@ -180,16 +174,11 @@ public class FakturaProvider  implements Provider<DOMSource>{
 	}
 	
 	
-	public static void printDocument(Document doc, OutputStream out)
+	public void printDocument(Document doc, OutputStream out)
 			throws IOException, TransformerException {
 		
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		
-		//transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-		//transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-		//transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-		//transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 		transformer.transform(new DOMSource(doc), new StreamResult(new OutputStreamWriter(out, "UTF-8")));
 	}
 	
@@ -211,36 +200,7 @@ public class FakturaProvider  implements Provider<DOMSource>{
     }
 	
 	
-	private DOMSource createResponse(String message) {
-
-		
-			DOMSource response = null;
-			try {
-				DocumentBuilder documentBuilder = getDocumentBuilder();
-				Document document = documentBuilder.newDocument();
-
-				Element notif = document.createElementNS(TARGET_NAMESPACE, "notif");
-
-				notif.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-				notif.setAttribute("xsi:schemaLocation",
-								"http://www.informatika.ftn.uns.ac.rs/12750/fakturaService http://localhost:8080/firma/services/Faktura?xsd=../shema/FakturaRaw.xsd");
-				document.appendChild(notif);
-
-				Element responseContent = document.createElement("responseContent");
-				responseContent.setTextContent(message);
-				responseContent.setAttribute("xmlns", "");
-
-				notif.appendChild(responseContent);
-
-				response = new DOMSource(document);
-			} catch (DOMException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			return response;
-		
-	}
+	
 	
 	public boolean validateContent(Faktura fak) {
 		boolean flag = true;
@@ -264,19 +224,19 @@ public class FakturaProvider  implements Provider<DOMSource>{
 			//tempPorez = stavka.getPorez().doubleValue();
 
 			if (tempKolicina * tempJedinicnaCena != tempVrednost) {
-				response = createResponse("GREŠKA: Vrednost stavke "+ stavka.getRedniBroj()+ ". ne odgovara proizvodu kolièine i jediniène cene.");
+				message = createResponse("GREŠKA: Vrednost stavke "+ stavka.getRedniBroj()+ ". ne odgovara proizvodu kolièine i jediniène cene.");
 				flag = false;
 				return flag;
 			}
 
 			else if (tempVrednost * tempProcenatRabata / 100 != tempIznosRabata) {
-				response = createResponse( "GREŠKA: Vrednost rabata stavke "+ stavka.getRedniBroj()+ ". ne odgovara procentu rabata ukupne vrednosti.");
+				message = createResponse( "GREŠKA: Vrednost rabata stavke "+ stavka.getRedniBroj()+ ". ne odgovara procentu rabata ukupne vrednosti.");
 				flag = false;
 				return flag;
 			}
 
 			else if (tempUmanjenoZaRabat != tempVrednost - tempIznosRabata) {
-				response = createResponse("GREŠKA: Vrednost umanjena za rabat stavke "+ stavka.getRedniBroj()+ ". ne odgovara ukupnoj vrednosti umanjenoj za rabat.");
+				message = createResponse("GREŠKA: Vrednost umanjena za rabat stavke "+ stavka.getRedniBroj()+ ". ne odgovara ukupnoj vrednosti umanjenoj za rabat.");
 				
 				flag = false;
 				return flag;
@@ -297,43 +257,43 @@ public class FakturaProvider  implements Provider<DOMSource>{
 		vrednostUsluga = fak.getZaglavlje().getVrednostUsluga().doubleValue();
 
 		if (ukupnoRobeIUsluge != vrednostRobe + vrednostUsluga) {
-			response = createResponse("GREŠKA: Ukupna vrednost robe i usluga u zaglavlju se ne slaže sa zbirom vrednosti robe i usluga iz zaglavlja.");
+			message = createResponse("GREŠKA: Ukupna vrednost robe i usluga u zaglavlju se ne slaže sa zbirom vrednosti robe i usluga iz zaglavlja.");
 			flag = false;
 			return flag;
 		}
 
 		else if (ukupnoRobeIUsluge != ukupnoStavke) {
-			response = createResponse("GREŠKA: Ukupna vrednost robe i usluga u zaglavlju je razlièita od zbira vrednosti stavki.");
+			message = createResponse("GREŠKA: Ukupna vrednost robe i usluga u zaglavlju je razlièita od zbira vrednosti stavki.");
 			flag = false;
 			return flag;
 		}
 
 		else if (zaUplatu != ukupnoRobeIUsluge - ukupanRabat + ukupanPorez) {
-			response = createResponse("GREŠKA: Iznos za uplatu se ne slaže sa ukupnom vrednošæu robe sa porezom umanjene za rabat.");
+			message = createResponse("GREŠKA: Iznos za uplatu se ne slaže sa ukupnom vrednošæu robe sa porezom umanjene za rabat.");
 			flag = false;
 			return flag;
 		}
 
 		else if (zaUplatu != zaUplatuStavke) {
-			response = createResponse("GREŠKA: Iznos za uplatu iz zaglavlja se ne slaže sa zbirom stavki posle odbijanja rabata i dodavanja poreza.");
+			message = createResponse("GREŠKA: Iznos za uplatu iz zaglavlja se ne slaže sa zbirom stavki posle odbijanja rabata i dodavanja poreza.");
 			flag = false;
 			return flag;
 		}
 
 		else if (ukupanPorez != ukupanPorezStavke) {
-			response = createResponse("GREŠKA: Ukupan porez iz zaglavlja se ne slaže sa zbirom poreza iz stavki.");
+			message = createResponse("GREŠKA: Ukupan porez iz zaglavlja se ne slaže sa zbirom poreza iz stavki.");
 			flag = false;
 			return flag;
 		}
 
 		else if (ukupanRabat != ukupanRabatStavke) {
-			response = createResponse("GREŠKA: Ukupan rabat iz zaglavlja se ne slaže sa zbirom rabata iz stavki.");
+			message = createResponse("GREŠKA: Ukupan rabat iz zaglavlja se ne slaže sa zbirom rabata iz stavki.");
 			flag = false;
 			return flag;
 		}
 
 		
-		response = createResponse("Faktura je popunjena bez grešaka.");
+		message = createResponse("Faktura je popunjena bez grešaka.");
 		return flag;
 	}
 

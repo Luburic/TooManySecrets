@@ -17,10 +17,11 @@
    
    
     <wsdl:types>
-        <xs:schema targetNamespace="http://www.toomanysecrets.com/firmaTip">
+        <xs:schema targetNamespace="http://www.toomanysecrets.com/firmaServis">
             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema//FakturaRaw.xsd" />
             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/ZahtevZaIzvodCrypt.xsd" />
             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/PresekCrypt.xsd" />    
+        	<xs:element name="notif" type="xs:string"/>
         </xs:schema>
     </wsdl:types>
    
@@ -31,7 +32,7 @@
     
     
     <wsdl:message name="notifikacija">
-        <wsdl:part name="notif" type="xs:string"/>
+        <wsdl:part name="notif" element="ws:notif"/>
     </wsdl:message>
     
     
@@ -52,8 +53,16 @@
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
       
         <wsdl:operation name="PrimiFakturu">
-            <wsdl:input name="fakturaInput"><soap:body use="literal"/></wsdl:input>
-            <wsdl:output name="strOutput"><soap:body use="literal"/></wsdl:output>
+       
+          <soap:operation soapAction="" style="document"/>
+           
+            <wsdl:input name="fakturaInput">
+            	<soap:body use="literal"/>
+            </wsdl:input>
+           		
+           	 <wsdl:output name="strOutput">
+            	<soap:body use="literal"/>
+           	</wsdl:output>
         </wsdl:operation>
         
     </wsdl:binding>
