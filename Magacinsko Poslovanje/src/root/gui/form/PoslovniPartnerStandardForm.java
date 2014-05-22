@@ -134,4 +134,16 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 			chkDobavljac.setSelected(false);
 		}
 	}
+
+	@Override
+	public boolean verification() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean allowDeletion() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

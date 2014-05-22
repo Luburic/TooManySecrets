@@ -41,4 +41,16 @@ public class VrstaPrometaStandardForm extends GenericForm {
 		setupTable(null);
 		setLocationRelativeTo(MainFrame.getInstance());
 	}
+
+	@Override
+	public boolean verification() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean allowDeletion() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

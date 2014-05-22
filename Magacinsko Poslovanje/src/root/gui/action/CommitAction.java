@@ -26,10 +26,14 @@ public class CommitAction extends AbstractAction {
 
 		switch (mode) {
 		case Constants.MODE_ADD:
-			standardForm.addRow();
+			if (standardForm.verification()) {
+				standardForm.addRow();
+			}
 			break;
 		case Constants.MODE_EDIT:
-			standardForm.updateRow();
+			if (standardForm.verification()) {
+				standardForm.updateRow();
+			}
 			break;
 		case Constants.MODE_SEARCH:
 			break;

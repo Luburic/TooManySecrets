@@ -101,4 +101,16 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		tableModel.setColumnForSorting(3);
 		super.setupTable(customQuery);
 	}
+
+	@Override
+	public boolean verification() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean allowDeletion() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

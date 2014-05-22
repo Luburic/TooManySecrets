@@ -2,6 +2,8 @@ package root.gui.form;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -21,11 +23,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import root.dbConnection.DBConnection;
 import root.gui.MainFrame;
 import root.gui.action.AddAction;
 import root.gui.action.CommitAction;
@@ -78,6 +82,8 @@ public abstract class GenericForm extends JDialog {
 		setSize(new Dimension(600, 400));
 		setLocationRelativeTo(MainFrame.getInstance());
 		setModal(true);
+		tblGrid.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tblGrid.getTableHeader().setReorderingAllowed(false);
 		initToolbar();
 		initPanels();
 		this.returning = returning;
@@ -258,14 +264,13 @@ public abstract class GenericForm extends JDialog {
 	public void addRow() {
 
 		try {
-			GenericTableModel dtm = (GenericTableModel) tblGrid.getModel();
 			int index = 0;
 
 			LinkedList<Object> newRow = new LinkedList<Object>();
 
 			getDataAndAddToRow(newRow);
 
-			index = dtm.insertRow(newRow.toArray());
+			index = tableModel.insertRow(newRow.toArray());
 			tblGrid.setRowSelectionInterval(index, index);
 			setMode(Constants.MODE_ADD);
 
@@ -277,13 +282,11 @@ public abstract class GenericForm extends JDialog {
 	public void updateRow() {
 
 		try {
-			GenericTableModel dtm = (GenericTableModel) tblGrid.getModel();
-
 			LinkedList<Object> newRow = new LinkedList<Object>();
 
 			getDataAndAddToRow(newRow);
 
-			dtm.updateRow(newRow.toArray(), tblGrid.getSelectedRow());
+			tableModel.updateRow(newRow.toArray(), tblGrid.getSelectedRow());
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(this, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
@@ -377,6 +380,7 @@ public abstract class GenericForm extends JDialog {
 	}
 
 	public void setMode(int mode) {
+		btnCommit.setEnabled(true);
 		this.mode = mode;
 
 		switch (mode) {
@@ -480,5 +484,22 @@ public abstract class GenericForm extends JDialog {
 			}
 		}
 		dialog.setVisible(true);
+	}
+
+	public abstract boolean verification();
+
+	public boolean allowDeletion() {
+		Integer id = (Integer) tblGrid.getValueAt(tblGrid.getSelectedRow(), 0);
+
+		String sqlSelect = "SELECT id_drzave FROM " + "WHERE";
+
+		try {
+			for (int i = 0; i < 3; i++) {
+				PreparedStatement statement = DBConnection.getConnection().prepareStatement(sqlSelect);
+				ResultSet rset = statement.executeQuery();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

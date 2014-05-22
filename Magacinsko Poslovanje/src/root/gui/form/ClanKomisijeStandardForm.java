@@ -100,4 +100,16 @@ public class ClanKomisijeStandardForm extends GenericForm {
 
 		// radio button
 	}
+
+	@Override
+	public boolean verification() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean allowDeletion() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
