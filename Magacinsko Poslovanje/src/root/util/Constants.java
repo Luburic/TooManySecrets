@@ -10,6 +10,7 @@ public class Constants {
 
 	public static final String VALIDATION_BROJ = "Dato polje zahteva unos isključivo cifri.";
 	public static final String VALIDATION_SIFRA = "Karakteri moraju da budu od A-Z.";
+	public static final String VALIDATION_CHECKBOX = "Potrebno je čekirat bar jednu stavku.";
 	public static final String VALIDATION_MANDATORY_FIELD = "Ovo polje je obavezno za unos.";
 	public static final String VALIDATION_OUT_OF_RANGE = "Vrednost unosa mora biti u opsegu ";
 	public static final String VALIDATION_DATE_OUT_OF_RANGE = "Datum mora biti u periodu od ";
