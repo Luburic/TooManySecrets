@@ -81,11 +81,13 @@ public class FakturaProvider  implements Provider<DOMSource>{
 			Schema schema = schemaFactory.newSchema(new URL(SCHEME_PATH));
 			unmarshaller.setSchema(schema);*/
 			
-			/*
+			
 			if(!validateSchema(document)){
 				Document doc = createResponse("Dokument nije validan po semi.");
 				return new DOMSource(doc);
 			}
+			
+			/*
 			Faktura faktura = (Faktura) unmarshaller.unmarshal(document);
 
 
