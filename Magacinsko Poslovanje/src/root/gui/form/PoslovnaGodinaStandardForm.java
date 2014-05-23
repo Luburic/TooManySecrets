@@ -1,5 +1,6 @@
 package root.gui.form;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,10 +12,12 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
-import root.gui.action.dialog.PreduzeceAction;
-import root.gui.action.dialog.RadnikAction;
+import root.gui.action.dialog.MagacinskaKarticaAction;
+import root.gui.action.dialog.PopisniDokumentAction;
+import root.gui.action.dialog.PrometniDokumentAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
+import root.util.verification.JTextFieldLimit;
 
 public class PoslovnaGodinaStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
@@ -25,6 +28,8 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 
 	protected JTextField tfGodina = new JTextField(4);
 	protected JCheckBox chkZakljucena = new JCheckBox();
+	protected JLabel lblGreska1 = new JLabel();
+	protected JLabel lblGreska2 = new JLabel();
 
 	public PoslovnaGodinaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
@@ -35,6 +40,11 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		JLabel lblPreduzece = new JLabel("Preduzeće:");
 		tfGodina.setName("godina");
 		chkZakljucena.setName("zaključena");
+		chkZakljucena.setEnabled(false);
+
+		tfGodina.setDocument(new JTextFieldLimit(4));
+		lblGreska1.setForeground(Color.red);
+		lblGreska2.setForeground(Color.red);
 
 		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
 				"naziv preduzeća", false);
@@ -65,8 +75,9 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		dataPanel.add(btnZoom);
 
 		JPopupMenu popup = new JPopupMenu();
-		popup.add(new PreduzeceAction()); // IZMENA###########
-		popup.add(new RadnikAction());
+		popup.add(new MagacinskaKarticaAction());
+		popup.add(new PrometniDokumentAction());
+		popup.add(new PopisniDokumentAction());
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 

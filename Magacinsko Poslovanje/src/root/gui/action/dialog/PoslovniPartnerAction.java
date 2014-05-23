@@ -13,8 +13,8 @@ public class PoslovniPartnerAction extends DialogAction {
 	public PoslovniPartnerAction() {
 		KeyStroke ctrlMKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlMKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Poslovni partner");
-		putValue(NAME, "Poslovni partner");
+		putValue(SHORT_DESCRIPTION, "Poslovni partneri");
+		putValue(NAME, "Poslovni partneri");
 	}
 
 	@Override

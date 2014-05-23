@@ -286,7 +286,11 @@ public abstract class GenericForm extends JDialog {
 
 			getDataAndAddToRow(newRow);
 
-			tableModel.updateRow(newRow.toArray(), tblGrid.getSelectedRow());
+			int i = tblGrid.getSelectedRow();
+
+			tableModel.updateRow(newRow.toArray(), i);
+
+			tblGrid.getSelectionModel().setSelectionInterval(i, i);
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(this, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
