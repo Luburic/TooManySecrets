@@ -99,7 +99,7 @@ public class RadnikStandardForm extends GenericForm {
 	@Override
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Radnik", joinColumn);
-		tableModel.setColumnForSorting(2);
+		tableModel.setColumnForSorting(3);
 		super.setupTable(customQuery);
 	}
 

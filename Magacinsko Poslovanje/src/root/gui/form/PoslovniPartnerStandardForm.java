@@ -3,6 +3,8 @@ package root.gui.form;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
@@ -13,8 +15,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import root.gui.action.NextFormButton;
 import root.gui.action.dialog.PrometniDokumentAction;
@@ -128,15 +128,15 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 				}
 			}
 		});
-		chkDobavljac.addChangeListener(new ChangeListener() {
+		chkDobavljac.addItemListener(new ItemListener() {
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				lblGreska5.setText("");
 			}
 		});
-		chkKupac.addChangeListener(new ChangeListener() {
+		chkKupac.addItemListener(new ItemListener() {
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				lblGreska5.setText("");
 			}
 		});
@@ -179,7 +179,7 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 	@Override
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Poslovni partner", joinColumn);
-		tableModel.setColumnForSorting(2);
+		tableModel.setColumnForSorting(3);
 		super.setupTable(customQuery);
 	}
 

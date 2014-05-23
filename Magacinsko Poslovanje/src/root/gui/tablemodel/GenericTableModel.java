@@ -135,7 +135,8 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		}
 
 		if (orderBy.equals("")) {
-			orderBy = " ORDER BY " + tableCode + "1." + primaryKey;
+			MetaColumn mc = (MetaColumn) columns.toArray()[columnForSorting];
+			orderBy = " ORDER BY " + tableCode + "1." + mc.getCode();
 		}
 		System.out.println(basicQuery + joinQuery + whereStmt + orderBy);
 		fillData(basicQuery + joinQuery + whereStmt + orderBy);
@@ -381,7 +382,16 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			Object[] insertion = new Object[colNames.length + 2 + k];
 			insertion[0] = stmt.getGeneratedKeys().getInt(1);
 			for (int i = 0; i < colNames.length; i++) {
-				insertion[i + 1] = colNames[i];
+				MetaColumn mc = (MetaColumn) columns.toArray()[i + k];
+				if (mc.getJClassName().equals("java.lang.Boolean")) {
+					if (colNames[i].equals(1)) {
+						insertion[i + 1] = "Da";
+					} else {
+						insertion[i + 1] = "Ne";
+					}
+				} else {
+					insertion[i + 1] = colNames[i];
+				}
 			} // Ovde je za sada hardkodovano da ce uvek biti jedna povezana kolona za prikaz, ali je stavljena lista u
 				// slucaju da kasnije bude potrebno par kolona.
 			if (outsideColumns != null) {
@@ -413,15 +423,15 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			if (getValueAt(mid, columnForSorting) instanceof String) {
 				String aSifra = (String) getValueAt(mid, columnForSorting);
 
-				if (SortUtils.getLatCyrCollator().compare((String) colNames[0].toString(), aSifra) > 0)
+				if (SortUtils.getLatCyrCollator().compare((String) colNames[columnForSorting].toString(), aSifra) > 0)
 					left = mid + 1;
-				else if (SortUtils.getLatCyrCollator().compare((String) colNames[0].toString(), aSifra) < 0)
+				else if (SortUtils.getLatCyrCollator().compare((String) colNames[columnForSorting].toString(), aSifra) < 0)
 					right = mid - 1;
 				else
 					break;
 			} else {
 				Integer iSifra = (Integer) getValueAt(mid, columnForSorting);
-				if (iSifra < (Integer) colNames[0]) {
+				if (iSifra < (Integer) colNames[columnForSorting]) {
 					left = mid + 1;
 				} else {
 					right = mid - 1;
@@ -437,18 +447,6 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		insertRow(left, rowForInsert);
 
 		return left;
-	}
-
-	public static void main(String[] args) {
-		GenericTableModel gtm = TableModelCreator.createTableModel("Mesto", null);
-
-		try {
-			gtm.updateRow(new String[] { "Test1", "Test2" }, 1);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			DBConnection.close();
-		}
-		DBConnection.close();
 	}
 
 	public String getBasicQuery() {
