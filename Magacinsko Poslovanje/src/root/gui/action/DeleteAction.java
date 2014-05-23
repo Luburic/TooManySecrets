@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import root.gui.form.GenericForm;
 
@@ -22,7 +23,16 @@ public class DeleteAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (standardForm.allowDeletion()) {
-			standardForm.removeRow();
+			if (JOptionPane.showConfirmDialog(standardForm, "Da li ste sigurni da želite da obrišete dati slog?",
+					"Brišete slog", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				standardForm.removeRow();
+			}
+		} else {
+			JOptionPane
+					.showMessageDialog(
+							standardForm,
+							"Dati slog se ne može obrisati jer se za njega vezuju slogovi drugih tabela. Saznajte koji putem Next mehanizma.",
+							"Zabranjeno brisanje povezanog sloga!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

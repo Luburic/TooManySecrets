@@ -121,7 +121,7 @@ public class DrzavaStandardForm extends GenericForm {
 			tfSifraDrzave.requestFocus();
 			return false;
 		}
-		if (VerificationMethods.containsValidCharacters(tfSifraDrzave.getText())) {
+		if (!VerificationMethods.containsValidCharacters(tfSifraDrzave.getText())) {
 			lblGreska.setText(Constants.VALIDATION_SIFRA);
 			tfSifraDrzave.requestFocus();
 			return false;
