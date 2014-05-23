@@ -8,6 +8,7 @@ public class Constants {
 	public static final int MODE_ADD = 2;
 	public static final int MODE_SEARCH = 3;
 
+	public static final String VALIDATION_BROJ = "Dato polje zahteva unos isključivo cifri.";
 	public static final String VALIDATION_SIFRA = "Karakteri moraju da budu od A-Z.";
 	public static final String VALIDATION_MANDATORY_FIELD = "Ovo polje je obavezno za unos.";
 	public static final String VALIDATION_OUT_OF_RANGE = "Vrednost unosa mora biti u opsegu ";

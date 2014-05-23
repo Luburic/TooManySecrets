@@ -11,4 +11,16 @@ public class VerificationMethods {
 		}
 		return true;
 	}
+
+	public static boolean containsNumbers(String fieldValue) {
+		try {
+			Integer number = Integer.parseInt(fieldValue);
+			if (number > 0) {
+				return true;
+			}
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return false;
+	}
 }

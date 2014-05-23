@@ -66,7 +66,6 @@ public class DrzavaStandardForm extends GenericForm {
 				int k = e.getKeyChar();
 				if (k != 8) {
 					lblGreska.setText("");
-					tfSifraDrzave.setBackground(Color.white);
 				}
 				if ((k < 65 || k > 122 || (k > 90 && k < 97)) && k != 8) {
 					lblGreska.setText(Constants.VALIDATION_SIFRA);
@@ -86,7 +85,6 @@ public class DrzavaStandardForm extends GenericForm {
 				int k = e.getKeyChar();
 				if (k != 8) {
 					lblGreska2.setText("");
-					tfNazivDrzave.setBackground(Color.white);
 				}
 			}
 		});
@@ -94,6 +92,7 @@ public class DrzavaStandardForm extends GenericForm {
 		JLabel lblSifra = new JLabel("Šifra države*:");
 		JLabel lblNaziv = new JLabel("Naziv države*:");
 		lblGreska.setForeground(Color.red);
+		lblGreska2.setForeground(Color.red);
 
 		dataPanel.add(lblSifra);
 		tfSifraDrzave.setDocument(new JTextFieldLimit(3));
