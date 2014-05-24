@@ -10,10 +10,15 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import util.NSPrefixMapper;
 import beans.faktura.Faktura;
 import beans.faktura.Faktura.Zaglavlje;
 import firma.gui.MainFrame;
@@ -299,12 +304,29 @@ public class FakturaDialog extends JDialog {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				Faktura fakturaZaSlanje = fd.getFaktura();
-				//marshal u xml, snimanje u bazu ?
+				
+				try {
+					Faktura fakturaZaSlanje = fd.getFaktura();
+					
+					JAXBContext context = JAXBContext.newInstance("beans.faktura");
+					//Klasa za transformisanje objektnog modela u XML
+					Marshaller marshaller = context.createMarshaller();
+					//na ovaj naci se setuje koji prefiks se koristi za koji namespace
+					marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new NSPrefixMapper());
+					marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+					marshaller.marshal(fakturaZaSlanje, System.out);
+				} catch (PropertyException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (JAXBException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
 				JOptionPane.showMessageDialog(null,"Uspesno kreirana faktura.", "Kreiranje fakture",JOptionPane.INFORMATION_MESSAGE);
-
 				setVisible(false);
+			
 			}
 		});
 
