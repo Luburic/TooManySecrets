@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.math.BigDecimal;
 
 import javax.swing.JButton;
@@ -92,21 +91,21 @@ public class FakturaDialog extends JDialog {
 	private JButton btnCancel = new JButton("Otkazi");
 	private JButton btnStv = new JButton("Dodaj stavku");
 	private JButton btnZav = new JButton("Zavrsi");
-	
+
 	private Faktura faktura;
 	private FakturaDialog fd;
 
 	private Marshaller marshaller;
-	
+
 	public FakturaDialog(MainFrame instance) {
 		super(instance);
 		fd = this;
-		
-		if(fd.getFaktura()==null){
+
+		if (fd.getFaktura() == null) {
 			btnStv.setEnabled(false);
 			btnZav.setEnabled(false);
 		}
-		
+
 		setTitle("Popunjavanje fakture");
 		setResizable(false);
 		setSize(new Dimension(400, 300));
@@ -146,7 +145,7 @@ public class FakturaDialog extends JDialog {
 		add(tfBrRac, "wrap");
 
 		add(lbDatRac);
-		//tfDatRac.setMinimumSize(new Dimension(40, 20));
+		// tfDatRac.setMinimumSize(new Dimension(40, 20));
 		add(tfDatRac);
 
 		add(lbVrRob);
@@ -185,12 +184,10 @@ public class FakturaDialog extends JDialog {
 		tfDatVal.setMinimumSize(new Dimension(80, 20));
 		add(tfDatVal, "wrap");
 
-		
-		add(btnStv,"gapleft 70");
+		add(btnStv, "gapleft 70");
 		add(btnZav);
-		
-		
-		add(btnOk,"gapleft 10");
+
+		add(btnOk, "gapleft 10");
 		add(btnCancel);
 
 		pack();
@@ -217,6 +214,61 @@ public class FakturaDialog extends JDialog {
 					return;
 				}
 
+				
+				if (("").equals(tfNazivDob.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos naziva dobavljaca!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfNazivDob.requestFocus();
+					return;
+				}
+
+				if (("").equals(tfAdrDob.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos adrese dobavljaca!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfAdrDob.requestFocus();
+					return;
+				}
+				
+				
+				if (("").equals(tfPibDob.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos pib-a dobavljaca!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfPibDob.requestFocus();
+					return;
+				}
+				
+				
+				if (("").equals(tfNazKup.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos naziva kupca!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfNazKup.requestFocus();
+					return;
+				}
+
+				if (("").equals(tfAdrKup.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos adrese kupca!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfAdrKup.requestFocus();
+					return;
+				}
+
+				
+				
+				if (("").equals(tfPibKup.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos pib-a kupca!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfPibKup.requestFocus();
+					return;
+				}
+				
+				
+				
 				if (("").equals(tfBrRac.getText())) {
 					JOptionPane.showMessageDialog(null,
 							"Obavezan unos broja racuna!", "Greska",
@@ -236,14 +288,156 @@ public class FakturaDialog extends JDialog {
 					tfBrRac.requestFocus();
 					return;
 				}
+				
+				
+				if (("").equals(tfDatRac.getJFormattedTextField().getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos datuma racuna!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfDatRac.requestFocus();
+					return;
+				}
+				
+				
+				
+				
+				
+				
+
+				
+			
+
+				if (("").equals(tfVrRob.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos vrednosti robe!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfVrRob.requestFocus();
+					return;
+				}
+
+				BigDecimal vr =null;
+				try {
+					vr= BigDecimal.valueOf(new Double(tfVrRob.getText()));
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null,
+							"Nevalidna vrednost robe!",
+							"Greska", JOptionPane.ERROR_MESSAGE);
+					tfVrRob.requestFocus();
+					return;
+				}
+				
+				
+				if (("").equals(tfVrUsl.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos vrednosti usluge!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfVrUsl.requestFocus();
+					return;
+				}
+				
+				BigDecimal vu =null;
+				try {
+					vu= BigDecimal.valueOf(new Double(tfVrUsl.getText()));
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null,
+							"Nevalidna vrednost usluge!",
+							"Greska", JOptionPane.ERROR_MESSAGE);
+					tfVrUsl.requestFocus();
+					return;
+				}
+				/***/
+				
+
+				if (("").equals(tfUkupRU.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos ukupne robe/usluge!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfUkupRU.requestFocus();
+					return;
+				}
+				
+				BigDecimal uru =null;
+				try {
+					uru= BigDecimal.valueOf(new Double(tfUkupRU.getText()));
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null,
+							"Nevalidna vrednost za ukupano robe i usluge!",
+							"Greska", JOptionPane.ERROR_MESSAGE);
+					tfUkupRU.requestFocus();
+					return;
+				}
+				/***/
+				
+
+				if (("").equals(tfUkupRab.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos ukupnog rabata!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfUkupRab.requestFocus();
+					return;
+				}
+				
+				/***/
+				BigDecimal um =null;
+				try {
+					um= BigDecimal.valueOf(new Double(tfUkupRab.getText()));
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null,
+							"Nevalidna vrednost za ukupan rabat!",
+							"Greska", JOptionPane.ERROR_MESSAGE);
+					tfUkupRab.requestFocus();
+					return;
+				}
+
+				if (("").equals(tfUkuPor.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos ukupnog poreza!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfUkuPor.requestFocus();
+					return;
+				}
+				BigDecimal up =null;
+				try {
+					up = BigDecimal.valueOf(new Double(tfUkuPor.getText()));
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null,
+							"Nevalidna vrednost za ukupan porez!",
+							"Greska", JOptionPane.ERROR_MESSAGE);
+					tfUkuPor.requestFocus();
+					return;
+				}
+
+				/***/
+				
+				if (("").equals(tfOznVal.getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos oznake valute!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfOznVal.requestFocus();
+					return;
+				}
 
 				if (("").equals(tfIznUpl.getText())) {
 					JOptionPane.showMessageDialog(null,
-							"Obavezan unos iznosa za uplatu!", "Greska",
+							"Obavezan unos iznosa uplate!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfIznUpl.requestFocus();
 					return;
 				}
+				
+				BigDecimal iz =null;
+				try {
+					iz = BigDecimal.valueOf(new Double(tfIznUpl.getText()));
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null,
+							"Nevalidna vrednost iznosa uplate!",
+							"Greska", JOptionPane.ERROR_MESSAGE);
+					tfIznUpl.requestFocus();
+					return;
+				}
+				/***/
+				
+				
 
 				if (("").equals(tfUplRac.getText())) {
 					JOptionPane.showMessageDialog(null,
@@ -252,40 +446,39 @@ public class FakturaDialog extends JDialog {
 					tfUplRac.requestFocus();
 					return;
 				}
-				/*
-				 * if(("").equals(tfDatRac.getJFormattedTextField().getText())){
-				 * JOptionPane.showMessageDialog(null,
-				 * "Obavezan unos datuma racuna!"
-				 * ,"Greska",JOptionPane.ERROR_MESSAGE);
-				 * tfDatRac.requestFocus(); return; }
-				 */
 
-				// ostale validacije..
+				
+				if (("").equals(tfDatVal.getJFormattedTextField().getText())) {
+					JOptionPane.showMessageDialog(null,
+							"Obavezan unos datuma valute!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfDatVal.requestFocus();
+					return;
+				}
+
 
 				Zaglavlje zaglavlje = new Zaglavlje();
 
 				zaglavlje.setAdresaDobavljaca(tfAdrDob.getText());
 				zaglavlje.setAdresaKupca(tfAdrKup.getText());
 				zaglavlje.setBrojRacuna(brRac);
+				zaglavlje.setVrednostRobe(vr);
 				// zaglavlje.setDatumRacuna(tfDatRac.getJFormattedTextField().getText());
 				// kaze stole bice string
 				// zaglavlje.setDatumValute(tfDatVal.getJFormattedTextField().getText());
 				// stole kaze
 				zaglavlje.setIdPoruke(tfIdPor.getText());
-
-				zaglavlje.setIznosZaUplatu(new BigDecimal(tfIznUpl.getText()));
+				zaglavlje.setIznosZaUplatu(iz);
 				zaglavlje.setNazivDobavljaca(tfNazivDob.getText());
 				zaglavlje.setNazivKupca(tfNazKup.getText());
 				zaglavlje.setOznakaValute(tfOznVal.getText());
 				zaglavlje.setPibDobavljaca(tfPibDob.getText());
 				zaglavlje.setPibKupca(tfPibKup.getText());
-
-				zaglavlje.setUkupanPorez(new BigDecimal(tfUkuPor.getText()));
-				zaglavlje.setUkupanRabat(new BigDecimal(tfUkupRab.getText()));
-				zaglavlje.setUkupnoRobaIUsluge(new BigDecimal(tfUkupRU
-						.getText()));
-				zaglavlje.setVrednostRobe(new BigDecimal(tfVrRob.getText()));
-				zaglavlje.setVrednostUsluga(new BigDecimal(tfVrUsl.getText()));
+				zaglavlje.setUkupanPorez(up);
+				zaglavlje.setUkupanRabat(um);
+				zaglavlje.setUkupnoRobaIUsluge(uru);
+				
+				zaglavlje.setVrednostUsluga(vu);
 				zaglavlje.setUplataNaRacun(tfUplRac.getText());
 
 				faktura = new Faktura();
@@ -294,32 +487,36 @@ public class FakturaDialog extends JDialog {
 
 			}
 		});
-		
-		
-		
+
 		btnStv.addActionListener(new ActionListener() {
-			//faktura != null
+			// faktura != null
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new StavkaDialog(fd).setVisible(true);
 			}
 		});
-		
+
 		btnZav.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				try {
 					Faktura fakturaZaSlanje = fd.getFaktura();
-					
-					JAXBContext context = JAXBContext.newInstance("beans.faktura");
-					//Klasa za transformisanje objektnog modela u XML
+
+					JAXBContext context = JAXBContext
+							.newInstance("beans.faktura");
+					// Klasa za transformisanje objektnog modela u XML
 					marshaller = context.createMarshaller();
-					//na ovaj naci se setuje koji prefiks se koristi za koji namespace
-					marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new NSPrefixMapper());
-					marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-					marshaller.marshal(fakturaZaSlanje,new File("./FakturaTest/Faktura2.xml"));
+					// na ovaj naci se setuje koji prefiks se koristi za koji
+					// namespace
+					marshaller.setProperty(
+							"com.sun.xml.bind.namespacePrefixMapper",
+							new NSPrefixMapper());
+					marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+							Boolean.TRUE);
+					marshaller.marshal(fakturaZaSlanje, new File(
+							"./FakturaTest/Faktura2.xml"));
 				} catch (PropertyException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -327,13 +524,16 @@ public class FakturaDialog extends JDialog {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			
-				// * ovo ce se pozvati negde iz gui-a za konkretnu fakturu,kao operacija [posalji fakturu] za izabranu firmu
+
+				// ovo ce se pozvati negde iz gui-a za konkretnu fakturu,kao
+				// operacija [posalji fakturu] za izabranu firmu
 				FakturaClient.testIt("./FakturaTest/Faktura2.xml");
-		
-				JOptionPane.showMessageDialog(null,"Uspesno kreirana(i poslata*) faktura.", "Kreiranje fakture",JOptionPane.INFORMATION_MESSAGE);
+
+				JOptionPane.showMessageDialog(null,
+						"Uspesno kreirana(i poslata*) faktura.",
+						"Kreiranje fakture", JOptionPane.INFORMATION_MESSAGE);
 				setVisible(false);
-			
+
 			}
 		});
 
@@ -370,8 +570,5 @@ public class FakturaDialog extends JDialog {
 	public void setBtnZav(JButton btnZav) {
 		this.btnZav = btnZav;
 	}
-	
-	
-	
 
 }

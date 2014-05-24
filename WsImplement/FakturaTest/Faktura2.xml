@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <faktura xmlns="http://www.toomanysecrets.com/tipovi">
-    <zaglavlje idPoruke="123">
-        <nazivDobavljaca>123</nazivDobavljaca>
-        <adresaDobavljaca>123</adresaDobavljaca>
-        <pibDobavljaca>123</pibDobavljaca>
-        <nazivKupca>123</nazivKupca>
-        <adresaKupca>123</adresaKupca>
-        <pibKupca>123</pibKupca>
-        <brojRacuna>123</brojRacuna>
-        <vrednostRobe>123</vrednostRobe>
-        <vrednostUsluga>123</vrednostUsluga>
-        <ukupnoRobaIUsluge>123</ukupnoRobaIUsluge>
-        <ukupanRabat>123</ukupanRabat>
-        <ukupanPorez>123</ukupanPorez>
-        <oznakaValute>123</oznakaValute>
-        <iznosZaUplatu>123</iznosZaUplatu>
-        <uplataNaRacun>123</uplataNaRacun>
+    <zaglavlje idPoruke="54">
+        <nazivDobavljaca>54</nazivDobavljaca>
+        <adresaDobavljaca>54</adresaDobavljaca>
+        <pibDobavljaca>54</pibDobavljaca>
+        <nazivKupca>54</nazivKupca>
+        <adresaKupca>54</adresaKupca>
+        <pibKupca>54</pibKupca>
+        <brojRacuna>54</brojRacuna>
+        <vrednostRobe>23.4</vrednostRobe>
+        <vrednostUsluga>13.0</vrednostUsluga>
+        <ukupnoRobaIUsluge>34.0</ukupnoRobaIUsluge>
+        <ukupanRabat>2.0</ukupanRabat>
+        <ukupanPorez>3.0</ukupanPorez>
+        <oznakaValute>d</oznakaValute>
+        <iznosZaUplatu>3.0</iznosZaUplatu>
+        <uplataNaRacun>ff</uplataNaRacun>
     </zaglavlje>
-    <stavka redniBroj="0"/>
+    <stavka redniBroj="3">
+        <nazivRobeIliUsluge>e3</nazivRobeIliUsluge>
+        <kolicina>4.0</kolicina>
+        <jedinicaMere>f</jedinicaMere>
+        <jedinicnaCena>2.0</jedinicnaCena>
+        <vrednost>43.0</vrednost>
+        <procenatRabata>2.0</procenatRabata>
+        <iznosRabata>34.0</iznosRabata>
+        <umanjenoZaRabat>3.0</umanjenoZaRabat>
+        <ukupanPorez>34.0</ukupanPorez>
+    </stavka>
 </faktura>

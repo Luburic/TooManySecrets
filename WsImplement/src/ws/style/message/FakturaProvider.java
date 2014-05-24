@@ -126,13 +126,6 @@ public class FakturaProvider  implements Provider<DOMSource>{
 			DocumentBuilder documentBuilder = getDocumentBuilder();
 			Document doc = documentBuilder.newDocument();
 			
-		     /* <ns1:notif xmlns:ns1=TARGET_NAMESPACE>
-			 * 		OK..FAIL
-			 * </ns1:strOutput>
-			 * 
-			 * 
-			 */
-			
 			Element rootEl = doc.createElementNS(TARGET_NAMESPACE, "ns1:notif");
 			rootEl.setAttributeNS(NAMESPACE_SPEC_NS, "xmlns:ns1", TARGET_NAMESPACE);
 			doc.appendChild(rootEl);

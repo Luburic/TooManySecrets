@@ -104,29 +104,6 @@
 	
 	<target name="generate-code">
 		<echo level="info" message="Generating code using java2ws..."/>
-		<!--
-		<java2ws sei.class="yu.ac.ns.ftn.informatika.ws.style.rpc.HelloRPC" 
-	    		 port.name="HelloRPCPort" 
-	    	     service.name="HelloRPCService" 
-	    	     wsdl.file="${wsdl.dir}/HelloRPC.wsdl"/>
-		
-		<java2ws sei.class="yu.ac.ns.ftn.informatika.ws.style.doc.bare.HelloDocBare" 
-			     port.name="HelloDocBarePort" 
-			     service.name="HelloDocBareService" 
-			     wsdl.file="${wsdl.dir}/HelloDocBare.wsdl"/>
-		
-		<java2ws sei.class="yu.ac.ns.ftn.informatika.ws.style.doc.wrap.HelloDocWrapped" 
-			     port.name="HelloDocWrappedPort" 
-			     service.name="HelloDocWrappedService" 
-			     wsdl.file="${wsdl.dir}/wsdl/HelloDocWrapped.wsdl"/>
-		
-	
-		<java2ws sei.class="yu.ac.ns.ftn.informatika.ws.style.message.HelloMessageProvider" 
-			     port.name="HelloMessagePort" 
-			     service.name="HelloMessageService" 
-			     wsdl.file="${wsdl.dir}/HelloMessage.wsdl"
-			   	/>
-		 -->
 	</target>
 	
 	<target name="compile" depends="init">

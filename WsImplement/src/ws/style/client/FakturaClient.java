@@ -43,7 +43,7 @@ public class FakturaClient {
 				Dispatch<DOMSource> dispatch = service.createDispatch(portName, DOMSource.class, Service.Mode.PAYLOAD);
 			
 				Document doc = buildRequest(path);
-
+				
 				if (doc != null) {
 				
 				DOMSource response = dispatch.invoke(new DOMSource(doc));
@@ -100,6 +100,7 @@ public class FakturaClient {
 				// Setup document builder
 				DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 				docBuilderFactory.setNamespaceAware(true);
+				
 				// validacija XML scheme
 				docBuilderFactory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
 				DocumentBuilder builder = docBuilderFactory.newDocumentBuilder();
