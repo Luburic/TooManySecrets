@@ -301,7 +301,9 @@ public class FakturaDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				Faktura fakturaZaSlanje = fd.getFaktura();
-				//marshal u xml
+				//marshal u xml, snimanje u bazu ?
+				JOptionPane.showMessageDialog(null,"Uspesno kreirana faktura.", "Kreiranje fakture",JOptionPane.INFORMATION_MESSAGE);
+
 				setVisible(false);
 			}
 		});

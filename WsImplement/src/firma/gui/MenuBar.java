@@ -15,7 +15,7 @@ import firma.gui.actions.NalogAction;
 @SuppressWarnings("serial")
 public class MenuBar extends JMenuBar {
 	
-	private JMenu slanje;
+	private JMenu novo;
 	private JMenuItem posaljiFakturu;
 	private JMenuItem posaljiNalog;
 	private JMenuItem posaljiZizvod;
@@ -34,7 +34,7 @@ public class MenuBar extends JMenuBar {
 	
 	public MenuBar() {
 		
-		slanje = new JMenu("Novo slanje");
+		novo = new JMenu("Novo");
 		posaljiFakturu = new JMenuItem(new FakturaAction());
 		posaljiNalog = new JMenuItem(new NalogAction());
 		posaljiZizvod = new JMenuItem(new IzvodAction());
@@ -52,12 +52,12 @@ public class MenuBar extends JMenuBar {
 				
 			}
 		});
-		slanje.add(posaljiFakturu);
-		slanje.add(posaljiNalog);
-		slanje.add(posaljiZizvod);
-		slanje.addSeparator();
-		slanje.add(close);
-		add(slanje);
+		novo.add(posaljiFakturu);
+		novo.add(posaljiNalog);
+		novo.add(posaljiZizvod);
+		novo.addSeparator();
+		novo.add(close);
+		add(novo);
 		
 		
 		
