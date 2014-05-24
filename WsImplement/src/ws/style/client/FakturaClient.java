@@ -32,7 +32,7 @@ public class FakturaClient {
 	public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 	
 	
-	 public void testIt() {
+	 public static void testIt(String path) {
 		 //Kreiranje web servisa (dispatcher-a)
 			try {
 				URL wsdlLocation = new URL("http://localhost:8080/ws_style/services/Faktura?wsdl");
@@ -42,8 +42,7 @@ public class FakturaClient {
 				Service service = Service.create(wsdlLocation, serviceName);
 				Dispatch<DOMSource> dispatch = service.createDispatch(portName, DOMSource.class, Service.Mode.PAYLOAD);
 			
-				
-				Document doc = buildRequest("./FakturaTest/Faktura.xml");
+				Document doc = buildRequest(path);
 
 				if (doc != null) {
 				
@@ -74,7 +73,7 @@ public class FakturaClient {
 		 	
 	 }
 	 
-	 private Document buildRequest(String path)  {
+	 private static Document buildRequest(String path)  {
 			
 			DocumentBuilder documentBuilder = getDocumentBuilder();
 			Document doc = null;
@@ -96,7 +95,7 @@ public class FakturaClient {
 	 
 	 
 	 
-	 private DocumentBuilder getDocumentBuilder() {
+	 private static DocumentBuilder getDocumentBuilder() {
 			try {
 				// Setup document builder
 				DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -111,10 +110,10 @@ public class FakturaClient {
 			}
 		}
 	
-	 
+	/* 
 	 public static void main(String[] args) {
 		
 		FakturaClient client = new FakturaClient();
 		client.testIt();
-    }
+    }*/
 }

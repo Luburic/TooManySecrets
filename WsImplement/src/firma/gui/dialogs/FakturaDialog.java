@@ -3,6 +3,8 @@ package firma.gui.dialogs;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 
 import javax.swing.JButton;
@@ -19,6 +21,7 @@ import net.miginfocom.swing.MigLayout;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import util.NSPrefixMapper;
+import ws.style.client.FakturaClient;
 import beans.faktura.Faktura;
 import beans.faktura.Faktura.Zaglavlje;
 import firma.gui.MainFrame;
@@ -93,6 +96,8 @@ public class FakturaDialog extends JDialog {
 	private Faktura faktura;
 	private FakturaDialog fd;
 
+	private Marshaller marshaller;
+	
 	public FakturaDialog(MainFrame instance) {
 		super(instance);
 		fd = this;
@@ -310,11 +315,11 @@ public class FakturaDialog extends JDialog {
 					
 					JAXBContext context = JAXBContext.newInstance("beans.faktura");
 					//Klasa za transformisanje objektnog modela u XML
-					Marshaller marshaller = context.createMarshaller();
+					marshaller = context.createMarshaller();
 					//na ovaj naci se setuje koji prefiks se koristi za koji namespace
 					marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new NSPrefixMapper());
 					marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-					marshaller.marshal(fakturaZaSlanje, System.out);
+					marshaller.marshal(fakturaZaSlanje,new File("./FakturaTest/Faktura2.xml"));
 				} catch (PropertyException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -322,9 +327,11 @@ public class FakturaDialog extends JDialog {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
-				
-				JOptionPane.showMessageDialog(null,"Uspesno kreirana faktura.", "Kreiranje fakture",JOptionPane.INFORMATION_MESSAGE);
+			
+				// * ovo ce se pozvati negde iz gui-a za konkretnu fakturu,kao operacija [posalji fakturu] za izabranu firmu
+				FakturaClient.testIt("./FakturaTest/Faktura2.xml");
+		
+				JOptionPane.showMessageDialog(null,"Uspesno kreirana(i poslata*) faktura.", "Kreiranje fakture",JOptionPane.INFORMATION_MESSAGE);
 				setVisible(false);
 			
 			}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<faktura xmlns="http://www.toomanysecrets.com/tipovi">
+    <zaglavlje idPoruke="123">
+        <nazivDobavljaca>123</nazivDobavljaca>
+        <adresaDobavljaca>123</adresaDobavljaca>
+        <pibDobavljaca>123</pibDobavljaca>
+        <nazivKupca>123</nazivKupca>
+        <adresaKupca>123</adresaKupca>
+        <pibKupca>123</pibKupca>
+        <brojRacuna>123</brojRacuna>
+        <vrednostRobe>123</vrednostRobe>
+        <vrednostUsluga>123</vrednostUsluga>
+        <ukupnoRobaIUsluge>123</ukupnoRobaIUsluge>
+        <ukupanRabat>123</ukupanRabat>
+        <ukupanPorez>123</ukupanPorez>
+        <oznakaValute>123</oznakaValute>
+        <iznosZaUplatu>123</iznosZaUplatu>
+        <uplataNaRacun>123</uplataNaRacun>
+    </zaglavlje>
+    <stavka redniBroj="0"/>
+</faktura>
