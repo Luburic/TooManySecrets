@@ -15,17 +15,26 @@ import firma.gui.actions.NalogAction;
 @SuppressWarnings("serial")
 public class MenuBar extends JMenuBar {
 	
-	private JMenu firma;
-	private JMenuItem firmaInfo;
+	private JMenu slanje;
 	private JMenuItem posaljiFakturu;
 	private JMenuItem posaljiNalog;
 	private JMenuItem posaljiZizvod;
 	private JMenuItem close;
-
+	
+	private JMenu kreirano;
+	private JMenuItem kreiraneFakture;
+	private JMenuItem kreiraniNalozi;
+	private JMenuItem kreiraniIzvodi;
+	
+	private JMenu primljeno;
+	private JMenuItem primljeneFakture;
+	private JMenuItem primljeniNalozi;
+	private JMenuItem primljeniIzvodi;
+	
 	
 	public MenuBar() {
 		
-		firma = new JMenu("Servisi");
+		slanje = new JMenu("Novo slanje");
 		posaljiFakturu = new JMenuItem(new FakturaAction());
 		posaljiNalog = new JMenuItem(new NalogAction());
 		posaljiZizvod = new JMenuItem(new IzvodAction());
@@ -43,15 +52,53 @@ public class MenuBar extends JMenuBar {
 				
 			}
 		});
+		slanje.add(posaljiFakturu);
+		slanje.add(posaljiNalog);
+		slanje.add(posaljiZizvod);
+		slanje.addSeparator();
+		slanje.add(close);
+		add(slanje);
 		
-		firma.add(posaljiFakturu);
-		firma.add(posaljiNalog);
-		firma.add(posaljiZizvod);
-		firma.addSeparator();
-		firma.add(close);
-		add(firma);
 		
 		
+		kreirano = new JMenu("Kreirano");
+		
+		kreiraneFakture = new JMenuItem();
+		kreiraniNalozi = new JMenuItem();
+		kreiraniIzvodi = new JMenuItem();
+		
+		
+		kreiraneFakture.setText("Fakture");
+		kreiraniNalozi.setText("Nalozi");
+		kreiraniIzvodi.setText("Izvodi");
+		
+		kreirano.add(kreiraneFakture);
+		kreirano.add(kreiraniNalozi);
+		kreirano.add(kreiraniIzvodi);
+		add(kreirano);
+		
+		
+		
+		
+		
+		
+		primljeno = new JMenu("Primljeno");
+		
+		primljeneFakture = new JMenuItem();
+		primljeniNalozi = new JMenuItem();
+		primljeniIzvodi = new JMenuItem();
+		
+		
+		primljeneFakture.setText("Fakture");
+		primljeniNalozi.setText("Nalozi");
+		primljeniIzvodi.setText("Izvodi");
+		
+		primljeno.add(primljeneFakture);
+		primljeno.add(primljeniNalozi);
+		primljeno.add(primljeniIzvodi);
+		add(primljeno);
+		
+	
 	}
 	
 

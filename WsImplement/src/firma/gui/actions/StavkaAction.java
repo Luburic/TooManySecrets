@@ -4,15 +4,15 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import beans.faktura.Faktura;
+import firma.gui.dialogs.FakturaDialog;
 import firma.gui.dialogs.StavkaDialog;
 
 @SuppressWarnings("serial")
 public class StavkaAction extends AbstractAction{
 
-	private Faktura parent;
+	private FakturaDialog parent;
 	
-	public StavkaAction(Faktura parent) {
+	public StavkaAction(FakturaDialog parent) {
 		putValue(SHORT_DESCRIPTION, "Kreiranje stavke zaglavlja fkture");
 		this.parent = parent;
 	}

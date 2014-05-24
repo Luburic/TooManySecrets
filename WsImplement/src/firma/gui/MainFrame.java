@@ -16,7 +16,7 @@ public class MainFrame extends JFrame {
 
 	private MainFrame(){
 
-		setSize(new Dimension(800,600));
+		setSize(new Dimension(700,500));
 		setLocationRelativeTo(null);
 		setTitle("Firma klijent");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);

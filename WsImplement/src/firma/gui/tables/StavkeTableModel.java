@@ -12,7 +12,7 @@ public class StavkeTableModel extends AbstractTableModel{
 	static final public String[] colHeaders = new String []{
 		"Redni broj",
 		"Roba/Usluge", 
-		"kolicina",
+		"Kolicina",
 		"Jedinica mere",
 		"Jedinicna cena",
 		"Vrednost",
