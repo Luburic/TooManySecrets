@@ -47,11 +47,11 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 		super(returning, childWhere);
 		setTitle("Poslovni partneri");
 
-		JLabel lblIme = new JLabel("Ime:");
-		JLabel lblVrsta = new JLabel("Vrsta:");
-		JLabel lblAdresa = new JLabel("Adresa:");
-		JLabel lblPreduzece = new JLabel("Preduzeće:");
-		JLabel lblMesto = new JLabel("Mesto:");
+		JLabel lblIme = new JLabel("Ime*:");
+		JLabel lblVrsta = new JLabel("Vrsta*:");
+		JLabel lblAdresa = new JLabel("Adresa*:");
+		JLabel lblPreduzece = new JLabel("Preduzeće*:");
+		JLabel lblMesto = new JLabel("Mesto*:");
 		tfNaziv.setName("naziv poslovnog partnera");
 		tfVrsta.setName("vrsta poslovnog partnera");
 		tfAdresa.setName("adresa poslovnog partnera");

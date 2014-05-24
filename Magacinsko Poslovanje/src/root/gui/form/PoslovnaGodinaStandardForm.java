@@ -48,9 +48,9 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		super(returning, childWhere);
 		setTitle("Poslovna godina");
 
-		JLabel lblGodina = new JLabel("Godina:");
+		JLabel lblGodina = new JLabel("Godina*:");
 		JLabel lblZakljucena = new JLabel("Zaključena:");
-		JLabel lblPreduzece = new JLabel("Preduzeće:");
+		JLabel lblPreduzece = new JLabel("Preduzeće*:");
 		tfGodina.setName("godina");
 		chkZakljucena.setName("zaključena");
 		chkZakljucena.setEnabled(false);

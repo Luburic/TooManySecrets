@@ -13,14 +13,13 @@ public class VerificationMethods {
 	}
 
 	public static boolean containsNumbers(String fieldValue) {
-		try {
-			Integer number = Integer.parseInt(fieldValue);
-			if (number > 0) {
-				return true;
+		int n = fieldValue.length();
+		for (int i = 0; i < n; i++) {
+			char c = fieldValue.charAt(i);
+			if (c < '0' || c > '9') {
+				return false;
 			}
-		} catch (NumberFormatException e) {
-			return false;
 		}
-		return false;
+		return true;
 	}
 }
