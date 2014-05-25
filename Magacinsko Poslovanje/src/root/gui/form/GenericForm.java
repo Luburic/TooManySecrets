@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -405,6 +406,13 @@ public abstract class GenericForm extends JDialog {
 			} else if (cp instanceof JCheckBox) {
 				JCheckBox checkBox = (JCheckBox) cp;
 				checkBox.setSelected(false);
+			} else if (cp instanceof JDatePickerImpl) {
+				JDatePickerImpl datePicker = (JDatePickerImpl) cp;
+				datePicker
+						.getJDateInstantPanel()
+						.getModel()
+						.setDate(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH),
+								Calendar.getInstance().get(Calendar.DATE));
 			}
 		}
 	}
@@ -465,11 +473,8 @@ public abstract class GenericForm extends JDialog {
 						String date = value.toString();
 						if (date.contains("-")) {
 							String[] dates = date.split("\\-");
-							datePicker
-									.getJDateInstantPanel()
-									.getModel()
-									.setDate(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]) - 1,
-											Integer.parseInt(dates[2]));
+							datePicker.getModel().setDate(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]) - 1,
+									Integer.parseInt(dates[2]));
 						}
 					}
 				}

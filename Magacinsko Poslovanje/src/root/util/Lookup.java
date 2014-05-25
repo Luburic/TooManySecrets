@@ -37,4 +37,17 @@ public class Lookup {
 		stmt.close();
 		return retVal;
 	}
+
+	public static Vector<ComboBoxPair> getMagacini() throws SQLException {
+		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
+				"SELECT id_jedinice, naziv_jedinice FROM Organizaciona_jedinica WHERE magacin=1");
+		ResultSet rset = stmt.executeQuery();
+		Vector<ComboBoxPair> retVal = new Vector<ComboBoxPair>();
+		while (rset.next()) {
+			retVal.add(new ComboBoxPair(rset.getInt(1), rset.getString(2)));
+		}
+		rset.close();
+		stmt.close();
+		return retVal;
+	}
 }
