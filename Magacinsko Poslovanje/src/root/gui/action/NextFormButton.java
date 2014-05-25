@@ -23,7 +23,7 @@ public class NextFormButton extends JButton {
 			public void mousePressed(MouseEvent e) {
 				GenericTableModel tableModel = (GenericTableModel) standardForm.getTblGrid().getModel();
 				int index = standardForm.getTblGrid().getSelectedRow();
-				// ako nije nista selektovano
+
 				if (index < 0)
 					return;
 				Integer id = (int) tableModel.getValueAt(index, 0);

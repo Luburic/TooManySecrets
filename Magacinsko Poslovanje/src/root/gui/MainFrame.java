@@ -71,7 +71,7 @@ public class MainFrame extends JFrame {
 		orgSemaMenu.add(new JMenuItem(new PreduzeceAction()));
 		orgSemaMenu.add(new JMenuItem(new RadnikAction()));
 		orgSemaMenu.add(new JMenuItem(new GodinaAction()));
-		orgSemaMenu.add(new JMenuItem(new GrupaArtiklaAction()));
+		orgSemaMenu.add(new JMenuItem(new GrupaArtiklaAction(false)));
 		orgSemaMenu.add(new JMenuItem(new ArtikalAction()));
 		orgSemaMenu.add(new JMenuItem(new OrganizacionaJedinicaAction()));
 		orgSemaMenu.add(new JMenuItem(new PopisniDokumentAction()));

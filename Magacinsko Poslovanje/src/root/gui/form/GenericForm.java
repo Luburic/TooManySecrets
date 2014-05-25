@@ -498,10 +498,18 @@ public abstract class GenericForm extends JDialog {
 		Integer id = (Integer) tableModel.getValueAt(tblGrid.getSelectedRow(), 0);
 
 		try {
+			PreparedStatement statement = null;
 			for (String tabela : tabele) {
-				PreparedStatement statement = DBConnection.getConnection().prepareStatement(
-						"SELECT " + tableModel.getPrimaryKey() + " FROM " + tabela + " WHERE "
-								+ tableModel.getPrimaryKey() + " = " + id);
+
+				if (tableModel.getTableCode().equals(tabela)) {
+					statement = DBConnection.getConnection().prepareStatement(
+							"SELECT " + tableModel.getPrimaryKey() + " FROM " + tabela + " WHERE "
+									+ tabela.substring(0, 3) + "_" + tableModel.getPrimaryKey() + " = " + id);
+				} else {
+					statement = DBConnection.getConnection().prepareStatement(
+							"SELECT " + tableModel.getPrimaryKey() + " FROM " + tabela + " WHERE "
+									+ tableModel.getPrimaryKey() + " = " + id);
+				}
 				ResultSet rset = statement.executeQuery();
 				if (rset.next()) {
 					return false;
