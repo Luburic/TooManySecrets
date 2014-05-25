@@ -135,7 +135,7 @@ public class RadnikStandardForm extends GenericForm {
 		cmbMesto.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (cmbPreduzece.getSelectedIndex() != -1) {
+				if (cmbMesto.getSelectedIndex() != -1) {
 					lblGreska6.setText("");
 				}
 			}
@@ -143,7 +143,7 @@ public class RadnikStandardForm extends GenericForm {
 		cmbPreduzece.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (cmbMesto.getSelectedIndex() != -1) {
+				if (cmbPreduzece.getSelectedIndex() != -1) {
 					lblGreska4.setText("");
 				}
 			}

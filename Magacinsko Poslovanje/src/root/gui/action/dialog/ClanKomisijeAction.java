@@ -13,8 +13,8 @@ public class ClanKomisijeAction extends DialogAction {
 	public ClanKomisijeAction() {
 		KeyStroke ctrlDKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlDKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Države");
-		putValue(NAME, "Države");
+		putValue(SHORT_DESCRIPTION, "Članovi komisija");
+		putValue(NAME, "Članovi komisija");
 	}
 
 	@Override

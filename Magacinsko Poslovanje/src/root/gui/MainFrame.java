@@ -13,6 +13,7 @@ import javax.swing.WindowConstants;
 
 import root.dbConnection.DBConnection;
 import root.gui.action.dialog.ArtikalAction;
+import root.gui.action.dialog.ClanKomisijeAction;
 import root.gui.action.dialog.DrzaveAction;
 import root.gui.action.dialog.GodinaAction;
 import root.gui.action.dialog.GrupaArtiklaAction;
@@ -80,6 +81,7 @@ public class MainFrame extends JFrame {
 		orgSemaMenu.add(new JMenuItem(new PoslovniPartnerAction()));
 		orgSemaMenu.add(new JMenuItem(new VrstaPrometaAction()));
 		orgSemaMenu.add(new JMenuItem(new PrometniDokumentAction()));
+		orgSemaMenu.add(new JMenuItem(new ClanKomisijeAction()));
 		menuBar.add(orgSemaMenu);
 	}
 }
