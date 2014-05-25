@@ -72,6 +72,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbOrgJedinica.setEnabled(false);
+			btnZoomOrgJedinica.setVisible(false);
 		}
 		if (!childWhere.contains("id_poslovne_godine")) {
 			btnZoomPoslovnaGodina.addActionListener(new ActionListener() {
@@ -86,6 +87,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbGodina.setEnabled(false);
+			btnZoomPoslovnaGodina.setVisible(false);
 		}
 
 		dataPanel.add(lblBrojPopisnog);

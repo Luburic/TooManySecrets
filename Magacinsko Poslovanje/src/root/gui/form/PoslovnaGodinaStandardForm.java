@@ -74,6 +74,7 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPreduzece.setEnabled(false);
+			btnZoom.setVisible(false);
 		}
 
 		tfGodina.addKeyListener(new KeyAdapter() {

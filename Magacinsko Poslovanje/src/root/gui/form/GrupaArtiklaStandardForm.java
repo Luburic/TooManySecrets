@@ -55,6 +55,7 @@ public class GrupaArtiklaStandardForm extends GenericForm {
 			});
 		} else {
 			cmbGrupa.setEnabled(false);
+			btnZoom.setVisible(false);
 		}
 
 		tfNazivGrupe.addKeyListener(new KeyAdapter() {

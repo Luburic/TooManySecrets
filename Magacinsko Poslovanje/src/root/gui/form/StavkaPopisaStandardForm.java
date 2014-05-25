@@ -57,6 +57,7 @@ public class StavkaPopisaStandardForm extends GenericForm {
 			});
 		} else {
 			cmbArtikal.setEnabled(false);
+			btnZoomArtikal.setVisible(false);
 		}
 		if (!childWhere.contains("id_popisnog_dokumenta")) {
 			btnZoomPopisniDokument.addActionListener(new ActionListener() {
@@ -71,6 +72,7 @@ public class StavkaPopisaStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPopisniDokument.setEnabled(false);
+			btnZoomPopisniDokument.setVisible(false);
 		}
 
 		dataPanel.add(lblArtikal);

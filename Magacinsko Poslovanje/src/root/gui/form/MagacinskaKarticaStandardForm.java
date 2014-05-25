@@ -73,7 +73,8 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 				}
 			});
 		} else {
-			cmbArtikal.setEnabled(false);
+			cmbGodina.setEnabled(false);
+			btnZoomGodina.setVisible(false);
 		}
 		if (!childWhere.contains("id_artikla")) {
 			btnZoomArtikal.addActionListener(new ActionListener() {
@@ -88,8 +89,9 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 			});
 		} else {
 			cmbArtikal.setEnabled(false);
+			btnZoomArtikal.setVisible(false);
 		}
-		if (!childWhere.contains("id_popisnog_dokumenta")) {
+		if (!childWhere.contains("id_organizacione_jedinice")) {
 			btnZoomOrgJedinica.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -97,11 +99,12 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 					if (cmbOrgJedinica.getSelectedItem() != null) {
 						id = ((ComboBoxPair) cmbOrgJedinica.getSelectedItem()).getId();
 					}
-					prepareDialogForZoom(new PopisniDokumentStandardForm(cmbOrgJedinica, ""), id);
+					prepareDialogForZoom(new OrganizacionaJedinicaStandardForm(cmbOrgJedinica, ""), id);
 				}
 			});
 		} else {
 			cmbOrgJedinica.setEnabled(false);
+			btnZoomOrgJedinica.setVisible(false);
 		}
 
 		dataPanel.add(lblGodina);

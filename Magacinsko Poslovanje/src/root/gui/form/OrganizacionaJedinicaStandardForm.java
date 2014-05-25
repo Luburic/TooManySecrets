@@ -56,6 +56,7 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPreduzece.setEnabled(false);
+			btnZoomPreduzece.setVisible(false);
 		}
 		if (!childWhere.contains("id_jedinice")) {
 			btnZoomOrgJedinica.addActionListener(new ActionListener() {
@@ -70,6 +71,7 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 			});
 		} else {
 			cmbOrgJedinica.setEnabled(false);
+			btnZoomOrgJedinica.setVisible(false);
 		}
 
 		dataPanel.add(lblNaziv);

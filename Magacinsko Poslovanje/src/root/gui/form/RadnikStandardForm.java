@@ -82,6 +82,7 @@ public class RadnikStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPreduzece.setEnabled(false);
+			btnZoomPreduzece.setVisible(false);
 		}
 		if (!childWhere.contains("id_mesta")) {
 			btnZoomMesto.addActionListener(new ActionListener() {
@@ -96,6 +97,7 @@ public class RadnikStandardForm extends GenericForm {
 			});
 		} else {
 			cmbMesto.setEnabled(false);
+			btnZoomMesto.setVisible(false);
 		}
 
 		tfIme.addKeyListener(new KeyAdapter() {

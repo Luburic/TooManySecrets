@@ -88,6 +88,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbOrgJedinicaIz.setEnabled(false);
+			btnZoomOrgJedinicaIz.setVisible(false);
 		}
 		if (!childWhere.contains("Org_id_jedinice")) {
 			btnZoomOrgJedinicaU.addActionListener(new ActionListener() {
@@ -102,6 +103,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbOrgJedinicaU.setEnabled(false);
+			btnZoomOrgJedinicaU.setVisible(false);
 		}
 		if (!childWhere.contains("id_poslovne_godine")) {
 			btnZoomPoslovnaGodina.addActionListener(new ActionListener() {
@@ -116,6 +118,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbGodina.setEnabled(false);
+			btnZoomPoslovnaGodina.setVisible(false);
 		}
 		if (!childWhere.contains("id_prometa")) {
 			btnZoomVrstaPrometa.addActionListener(new ActionListener() {
@@ -130,6 +133,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbVrstaPrometa.setEnabled(false);
+			btnZoomVrstaPrometa.setVisible(false);
 		}
 		if (!childWhere.contains("id_poslovnog_partnera")) {
 			btnZoomPoslovniPartner.addActionListener(new ActionListener() {
@@ -144,6 +148,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPoslovniPartner.setEnabled(false);
+			btnZoomPoslovniPartner.setVisible(false);
 		}
 		dataPanel.add(lblGodina);
 		dataPanel.add(cmbGodina);

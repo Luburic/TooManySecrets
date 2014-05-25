@@ -69,6 +69,7 @@ public class PreduzeceStandardForm extends GenericForm {
 			});
 		} else {
 			cmbMesto.setEnabled(false);
+			btnZoom.setVisible(false);
 		}
 
 		tfNaziv.addKeyListener(new KeyAdapter() {

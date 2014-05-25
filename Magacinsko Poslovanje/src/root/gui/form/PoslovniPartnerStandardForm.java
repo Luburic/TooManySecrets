@@ -80,6 +80,7 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPreduzece.setEnabled(false);
+			btnZoomPreduzece.setVisible(false);
 		}
 		if (!childWhere.contains("id_mesta")) {
 			btnZoomMesto.addActionListener(new ActionListener() {
@@ -94,6 +95,7 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 			});
 		} else {
 			cmbMesto.setEnabled(false);
+			btnZoomMesto.setVisible(false);
 		}
 
 		tfNaziv.addKeyListener(new KeyAdapter() {

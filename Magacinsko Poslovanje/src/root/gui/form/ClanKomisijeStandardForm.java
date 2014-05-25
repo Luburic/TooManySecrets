@@ -49,6 +49,7 @@ public class ClanKomisijeStandardForm extends GenericForm {
 			});
 		} else {
 			cmbRadnik.setEnabled(false);
+			btnZoomRadnik.setVisible(false);
 		}
 		if (!childWhere.contains("id_popisnog_dokumenta")) {
 			btnZoomPopisniDokument.addActionListener(new ActionListener() {
@@ -63,6 +64,7 @@ public class ClanKomisijeStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPopisniDokument.setEnabled(false);
+			btnZoomPopisniDokument.setVisible(false);
 		}
 
 		dataPanel.add(lblRadnik);

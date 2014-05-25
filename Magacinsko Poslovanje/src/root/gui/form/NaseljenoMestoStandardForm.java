@@ -64,6 +64,7 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 			});
 		} else {
 			cmbDrzava.setEnabled(false);
+			btnZoom.setVisible(false);
 		}
 
 		tfSifraMesta.addKeyListener(new KeyAdapter() {
