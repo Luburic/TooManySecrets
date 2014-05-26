@@ -22,4 +22,16 @@ public class VerificationMethods {
 		}
 		return true;
 	}
+
+	public static boolean isDecimal(String text) {
+		try {
+			Double d = Double.parseDouble(text);
+			if (d < 0) {
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return false;
+	}
 }

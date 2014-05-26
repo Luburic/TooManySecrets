@@ -13,12 +13,13 @@ public class PickupAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 
 	private GenericForm standardForm;
+	private Integer nameColumnIndex;
 
-	public PickupAction(GenericForm standardForm) {
+	public PickupAction(GenericForm standardForm, Integer nameColumnIndex) {
 		putValue(SMALL_ICON, new ImageIcon("img/zoom-pickup.gif"));
 		putValue(SHORT_DESCRIPTION, "Zoom pickup");
 		this.standardForm = standardForm;
-
+		this.nameColumnIndex = nameColumnIndex;
 	}
 
 	@Override
@@ -34,6 +35,19 @@ public class PickupAction extends AbstractAction {
 				standardForm.getReturning().setSelectedIndex(i);
 				break;
 			}
+			if (i == n - 1) {
+				ComboBoxPair cbp = new ComboBoxPair(id, standardForm.getTblGrid().getModel()
+						.getValueAt(index, nameColumnIndex));
+				standardForm.getReturning().insertItemAt(cbp, n);
+				standardForm.getReturning().setSelectedIndex(n);
+				break;
+			}
+		}
+		if (n == 0) {
+			ComboBoxPair cbp = new ComboBoxPair(id, standardForm.getTblGrid().getModel()
+					.getValueAt(index, nameColumnIndex));
+			standardForm.getReturning().insertItemAt(cbp, n);
+			standardForm.getReturning().setSelectedIndex(n);
 		}
 		standardForm.setVisible(false);
 	}

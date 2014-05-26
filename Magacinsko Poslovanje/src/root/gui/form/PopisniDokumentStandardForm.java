@@ -21,6 +21,7 @@ import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import root.dbConnection.DBConnection;
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.ZakljuciPopisniAction;
 import root.gui.action.dialog.ClanKomisijeAction;
 import root.gui.action.dialog.StavkaPopisaAction;
@@ -75,14 +76,14 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		tfStatusPopisnog.setName("status popisnog");
 
 		super.setupJoins(cmbOrgJedinica, "Organizaciona_jedinica", "id_jedinice", "id jedinice", "naziv_jedinice",
-				"naziv jedinice", false);
+				"naziv jedinice", false, " WHERE magacin = 1");
 		try {
 			cmbOrgJedinica = new JComboBox<>(Lookup.getMagacini());
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
 		cmbGodina = super.setupJoins(cmbGodina, "Poslovna_godina", "id_poslovne_godine", "id poslovne godine",
-				"godina", "godina", false);
+				"godina", "godina", false, " WHERE zakljucena = 0");
 
 		if (!childWhere.contains("id_jedinice")) {
 			btnZoomOrgJedinica.addActionListener(new ActionListener() {
@@ -247,5 +248,12 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 3));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

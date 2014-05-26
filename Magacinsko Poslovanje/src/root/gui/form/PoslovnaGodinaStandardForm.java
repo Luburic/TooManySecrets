@@ -20,6 +20,7 @@ import javax.swing.event.ListSelectionListener;
 
 import root.dbConnection.DBConnection;
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.ZakljuciGodinuAction;
 import root.gui.action.dialog.MagacinskaKarticaAction;
 import root.gui.action.dialog.PopisniDokumentAction;
@@ -60,7 +61,7 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		lblGreska2.setForeground(Color.red);
 
 		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
-				"naziv preduzeća", false);
+				"naziv preduzeća", false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override
@@ -193,5 +194,12 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 2));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

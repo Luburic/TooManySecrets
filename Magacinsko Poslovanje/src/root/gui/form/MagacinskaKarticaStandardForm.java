@@ -10,6 +10,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.dialog.ArtikalAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
@@ -55,11 +56,11 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		tfVrednostIzlaza.setName("vrednost izlaza");
 
 		cmbGodina = super.setupJoins(cmbGodina, "Poslovna_godina", "id_poslovne_godine", "id poslovne godine",
-				"godina", "godina", false);
+				"godina", "godina", false, " WHERE zakljucena = 0");
 		cmbArtikal = super.setupJoins(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
-				"naziv artikla", false);
+				"naziv artikla", false, "");
 		cmbOrgJedinica = super.setupJoins(cmbOrgJedinica, "Organizaciona_jedinica", "id_jedinice", "id jedinice",
-				"naziv_jedinice", "naziv jedinice", false);
+				"naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 
 		if (!childWhere.contains("id_poslovne_godine")) {
 			btnZoomGodina.addActionListener(new ActionListener() {
@@ -165,5 +166,12 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 	public boolean allowDeletion() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 0));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

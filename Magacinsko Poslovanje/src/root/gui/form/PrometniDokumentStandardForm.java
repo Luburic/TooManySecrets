@@ -13,6 +13,7 @@ import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.dialog.ArtikalAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
@@ -65,15 +66,16 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		// ######### Ovde će mi trebati posebna lookup funkcija za magacine (sa where).
 
 		cmbGodina = super.setupJoins(cmbGodina, "Poslovna_godina", "id_poslovne_godine", "id poslovne godine",
-				"godina", "godina", false);
+				"godina", "godina", false, " WHERE zakljucena = 0");
 		cmbOrgJedinicaIz = super.setupJoins(cmbOrgJedinicaIz, "Organizaciona_jedinica", "id_jedinice", "id jedinice",
-				"naziv_jedinice", "naziv jedinice", false);
+				"naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 		cmbVrstaPrometa = super.setupJoins(cmbVrstaPrometa, "Vrsta_prometa", "id_prometa", "id prometa",
-				"naziv_prometa", "naziv prometa", false);
+				"naziv_prometa", "naziv prometa", false, "");
 		cmbOrgJedinicaU = super.setupJoins(cmbOrgJedinicaU, "Organizaciona_jedinica", "id_jedinice", "id jedinice",
-				"naziv_jedinice", "naziv jedinice", false);
+				"naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 		cmbPoslovniPartner = super.setupJoins(cmbPoslovniPartner, "Poslovni_partner", "id_poslovnog_partnera",
-				"id poslovnog partnera", "naziv_poslovnog_partnera", "naziv poslovnog partnera", false);
+				"id poslovnog partnera", "naziv_poslovnog_partnera", "naziv poslovnog partnera", false,
+				" WHERE magacin = 1");
 
 		if (!childWhere.contains("id_jedinice")) {
 			btnZoomOrgJedinicaIz.addActionListener(new ActionListener() {
@@ -217,5 +219,12 @@ public class PrometniDokumentStandardForm extends GenericForm {
 	public boolean allowDeletion() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 6));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

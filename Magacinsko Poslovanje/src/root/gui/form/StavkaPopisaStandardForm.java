@@ -10,6 +10,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.dialog.ArtikalAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
@@ -40,9 +41,9 @@ public class StavkaPopisaStandardForm extends GenericForm {
 		tfProsecnaCenaPopisa.setName("prosečna cena popis");
 
 		cmbArtikal = super.setupJoins(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
-				"naziv artikla", false);
+				"naziv artikla", false, "");
 		cmbPopisniDokument = super.setupJoins(cmbPopisniDokument, "Popisni_dokument", "id_popisnog_dokumenta",
-				"id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta", false);
+				"id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta", false, "");
 
 		if (!childWhere.contains("id_artikla")) {
 			btnZoomArtikal.addActionListener(new ActionListener() {
@@ -117,5 +118,12 @@ public class StavkaPopisaStandardForm extends GenericForm {
 	public boolean allowDeletion() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 2));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

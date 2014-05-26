@@ -13,6 +13,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.dialog.ArtikalAction;
 import root.gui.action.dialog.GrupaArtiklaAction;
 import root.gui.tablemodel.TableModelCreator;
@@ -40,8 +41,9 @@ public class GrupaArtiklaStandardForm extends GenericForm {
 		lblGreska1.setForeground(Color.red);
 
 		cmbGrupa = super.setupJoins(cmbGrupa, "Grupa_artikla", "Gru_id_grupe", "Gru_id grupe", "naziv_grupe",
-				"naziv nadgrupe", true);
+				"naziv nadgrupe", true, "");
 		cmbGrupa.insertItemAt(new ComboBoxPair(0, ""), 0);
+		cmbGrupa.setSelectedIndex(0);
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override
@@ -105,5 +107,12 @@ public class GrupaArtiklaStandardForm extends GenericForm {
 	@Override
 	public boolean allowDeletion() {
 		return allowDeletion("Artikal", "Grupa_artikla");
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 2));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

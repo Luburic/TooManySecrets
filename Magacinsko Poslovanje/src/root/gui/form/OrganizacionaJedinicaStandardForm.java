@@ -11,6 +11,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.dialog.PreduzeceAction;
 import root.gui.action.dialog.RadnikAction;
 import root.gui.tablemodel.TableModelCreator;
@@ -39,10 +40,10 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		chkMagacin.setName("magacin");
 
 		cmbOrgJedinica = super.setupJoins(cmbOrgJedinica, "Organizaciona_jedinica", "Org_id_jedinice",
-				"Org_id jedinice", "naziv_jedinice", "naziv nadsektora", true);
+				"Org_id jedinice", "naziv_jedinice", "naziv nadsektora", true, "");
 		cmbOrgJedinica.insertItemAt(new ComboBoxPair(0, ""), 0);
 		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
-				"naziv preduzeća", false);
+				"naziv preduzeća", false, "");
 		if (!childWhere.contains("id_preduzeca")) {
 			btnZoomPreduzece.addActionListener(new ActionListener() {
 				@Override
@@ -114,5 +115,12 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 	public boolean allowDeletion() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 3));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

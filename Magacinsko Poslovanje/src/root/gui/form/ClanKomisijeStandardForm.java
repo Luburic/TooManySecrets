@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import root.gui.action.PickupAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
@@ -43,9 +44,9 @@ public class ClanKomisijeStandardForm extends GenericForm {
 		lblGreska1.setForeground(Color.red);
 		lblGreska2.setForeground(Color.red);
 
-		cmbRadnik = super.setupJoins(cmbRadnik, "Radnik", "id_radnika", "id radnika", "jmbg", "jmbg", false);
+		cmbRadnik = super.setupJoins(cmbRadnik, "Radnik", "id_radnika", "id radnika", "jmbg", "jmbg", false, "");
 		cmbPopisniDokument = super.setupJoins(cmbPopisniDokument, "Popisni_dokument", "id_popisnog_dokumenta",
-				"id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta", false);
+				"id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta", false, "");
 
 		if (!childWhere.contains("id_radnika")) {
 			btnZoomRadnik.addActionListener(new ActionListener() {
@@ -172,5 +173,12 @@ public class ClanKomisijeStandardForm extends GenericForm {
 	@Override
 	public boolean allowDeletion() {
 		return true;
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 0));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

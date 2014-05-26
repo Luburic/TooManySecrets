@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     18-May-14 1:27:45 PM                         */
+/* Created on:     26-May-14 2:51:31 PM                         */
 /*==============================================================*/
 
 
@@ -450,6 +450,9 @@ create table Artikal (
    id_artikla           int                  identity,
    id_grupe             int                  not null,
    sifra_artikla        char(8)              not null,
+   pakovanje            decimal(2,2)         not null,
+   jedinica_mere        char(3)              not null
+      constraint CKC_JEDINICA_MERE_ARTIKAL check (jedinica_mere in ('t','kg','g','kom')),
    naziv_artikla        varchar(30)          not null,
    artikal_version      int                  not null,
    constraint PK_ARTIKAL primary key nonclustered (id_artikla)
@@ -646,8 +649,8 @@ create table Popisni_dokument (
    broj_popisnog_dokumenta int                  not null,
    datum_otvaranja      char(10)             not null,
    datum_knjizenja      char(10)             null,
-   status_popisnog      char(1)              not null
-      constraint CKC_STATUS_POPISNOG_POPISNI_ check (status_popisnog in ('F','P')),
+   status_popisnog      char(20)             not null
+      constraint CKC_STATUS_POPISNOG_POPISNI_ check (status_popisnog in ('u fazi formiranja','proknjizen','storniran')),
    popisni_version      int                  not null,
    constraint PK_POPISNI_DOKUMENT primary key nonclustered (id_popisnog_dokumenta)
 )
@@ -757,8 +760,8 @@ create table Prometni_dokument (
    broj_prometnog_dokumenta int                  not null,
    datum_prometnog      char(10)             not null,
    datum_knjizenja_prometnog char(10)             null,
-   status_prometnog     char(1)              not null
-      constraint CKC_STATUS_PROMETNOG_PROMETNI check (status_prometnog in ('F','P')),
+   status_prometnog     char(20)             not null
+      constraint CKC_STATUS_PROMETNOG_PROMETNI check (status_prometnog in ('u fazi formiranja','proknjizen','storniran')),
    prometni_version     int                  not null,
    constraint PK_PROMETNI_DOKUMENT primary key nonclustered (id_prometnog_dokumenta)
 )

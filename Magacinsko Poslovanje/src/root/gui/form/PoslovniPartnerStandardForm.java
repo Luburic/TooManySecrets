@@ -17,6 +17,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.dialog.PrometniDokumentAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
@@ -64,8 +65,8 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 		lblGreska5.setForeground(Color.red);
 
 		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
-				"naziv preduzeća", false);
-		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta", false);
+				"naziv preduzeća", false, "");
+		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta", false, "");
 
 		if (!childWhere.contains("id_preduzeca")) {
 			btnZoomPreduzece.addActionListener(new ActionListener() {
@@ -247,5 +248,12 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 	@Override
 	public boolean allowDeletion() {
 		return allowDeletion("Prometni_dokument");
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 3));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

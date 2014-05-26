@@ -13,6 +13,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.dialog.GodinaAction;
 import root.gui.action.dialog.OrganizacionaJedinicaAction;
 import root.gui.action.dialog.PoslovniPartnerAction;
@@ -55,7 +56,7 @@ public class PreduzeceStandardForm extends GenericForm {
 		lblGreska2.setForeground(Color.red);
 		lblGreska3.setForeground(Color.red);
 
-		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta", false);
+		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta", false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override
@@ -153,5 +154,12 @@ public class PreduzeceStandardForm extends GenericForm {
 	@Override
 	public boolean allowDeletion() {
 		return allowDeletion("Poslovna_godina", "Radnik", "Magacin", "Organizaciona_jedinica");
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 2));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

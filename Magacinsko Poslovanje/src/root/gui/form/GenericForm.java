@@ -39,7 +39,6 @@ import root.gui.action.FirstAction;
 import root.gui.action.HelpAction;
 import root.gui.action.LastAction;
 import root.gui.action.NextAction;
-import root.gui.action.PickupAction;
 import root.gui.action.PreviousAction;
 import root.gui.action.RefreshAction;
 import root.gui.action.RollbackAction;
@@ -100,9 +99,7 @@ public abstract class GenericForm extends JDialog {
 		btnRefresh = new JButton(new RefreshAction());
 		toolBar.add(btnRefresh);
 
-		btnPickup = new JButton(new PickupAction(this));
-		toolBar.add(btnPickup);
-		btnPickup.setEnabled(false);
+		initPickup();
 
 		btnHelp = new JButton(new HelpAction());
 		toolBar.add(btnHelp);
@@ -134,8 +131,10 @@ public abstract class GenericForm extends JDialog {
 		add(toolBar, "dock north");
 	}
 
+	protected abstract void initPickup();
+
 	protected JComboBox<ComboBoxPair> setupJoins(JComboBox<ComboBoxPair> cmbForJoin, String tableCode, String pkCode,
-			String pkName, String displayCode, String displayName, boolean renamed) {
+			String pkName, String displayCode, String displayName, boolean renamed, String whereClause) {
 		MetaSurogateDisplay temp = new MetaSurogateDisplay();
 		temp.setTableCode(tableCode);
 		temp.setIdColumnName(pkCode);
@@ -146,9 +145,10 @@ public abstract class GenericForm extends JDialog {
 		try {
 			if (renamed) {
 				cmbForJoin = new JComboBox<ComboBoxPair>(Lookup.getComboBoxEntity(tableCode, pkCode.substring(4),
-						displayCode));
+						displayCode, whereClause));
 			} else {
-				cmbForJoin = new JComboBox<ComboBoxPair>(Lookup.getComboBoxEntity(tableCode, pkCode, displayCode));
+				cmbForJoin = new JComboBox<ComboBoxPair>(Lookup.getComboBoxEntity(tableCode, pkCode, displayCode,
+						whereClause));
 			}
 			cmbForJoin.setName(pkName);
 			return cmbForJoin;
@@ -300,7 +300,7 @@ public abstract class GenericForm extends JDialog {
 	protected void getDataAndAddToRow(LinkedList<Object> newRow) {
 		int relatedTabelCount = 0;
 		for (Component cp : dataPanel.getComponents()) {
-			if (cp instanceof JComboBox<?>) {
+			if (cp instanceof JComboBox<?> && cp.getName() != null) {
 				@SuppressWarnings("unchecked")
 				JComboBox<ComboBoxPair> comboBox = (JComboBox<ComboBoxPair>) cp;
 				ComboBoxPair selected = (ComboBoxPair) comboBox.getSelectedItem();

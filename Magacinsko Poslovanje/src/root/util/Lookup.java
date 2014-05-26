@@ -24,10 +24,10 @@ public class Lookup {
 		return naziv;
 	}
 
-	public static Vector<ComboBoxPair> getComboBoxEntity(String tableCode, String pk, String neededColumn)
-			throws SQLException {
+	public static Vector<ComboBoxPair> getComboBoxEntity(String tableCode, String pk, String neededColumn,
+			String whereClause) throws SQLException {
 		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
-				"SELECT " + pk + ", " + neededColumn + " FROM " + tableCode);
+				"SELECT " + pk + ", " + neededColumn + " FROM " + tableCode + " " + whereClause);
 		ResultSet rset = stmt.executeQuery();
 		Vector<ComboBoxPair> retVal = new Vector<ComboBoxPair>();
 		while (rset.next()) {

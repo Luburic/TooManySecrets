@@ -7,6 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
@@ -14,6 +15,7 @@ import javax.swing.JTextField;
 
 import root.gui.MainFrame;
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.dialog.NaseljenoMestoAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
@@ -136,5 +138,12 @@ public class DrzavaStandardForm extends GenericForm {
 	@Override
 	public boolean allowDeletion() {
 		return allowDeletion("Mesto");
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 2));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

@@ -13,6 +13,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
+import root.gui.action.PickupAction;
 import root.gui.action.dialog.PoslovniPartnerAction;
 import root.gui.action.dialog.PreduzeceAction;
 import root.gui.action.dialog.RadnikAction;
@@ -50,7 +51,7 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		lblGreska3.setForeground(Color.red);
 
 		cmbDrzava = super.setupJoins(cmbDrzava, "Drzava", "id_drzave", "id države", "naziv_drzave", "naziv države",
-				false);
+				false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override
@@ -150,5 +151,12 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 	@Override
 	public boolean allowDeletion() {
 		return allowDeletion("Radnik", "Preduzece", "Poslovni_partner");
+	}
+
+	@Override
+	protected void initPickup() {
+		btnPickup = new JButton(new PickupAction(this, 3));
+		toolBar.add(btnPickup);
+		btnPickup.setEnabled(false);
 	}
 }

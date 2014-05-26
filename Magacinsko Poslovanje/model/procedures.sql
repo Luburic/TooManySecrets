@@ -21,6 +21,7 @@ GO
 CREATE PROCEDURE ZakljuciGodinu
 (
 	@Id int
+	@RetVal int OUTPUT
 )
 AS
 DECLARE @count int
@@ -33,6 +34,25 @@ IF(@count = 0)
   END
 ELSE
   BEGIN
-    UPDATE Poslovna_godina SET zakljucena = '1' WHERE id_poslovne_godine =@Id
+	SELECT @count = COUNT(*) FROM Poslovna_godina WHERE zakljucena = '0' AND id_poslovne_godine <> @Id
+	IF(@count = 0)
+		BEGIN
+			PRINT 'Mora se otvoriti nova poslovna godina pre nego što se stara može zaključiti.'
+			@RetVal = 1
+		END
+	ELSE
+		BEGIN
+			SELECT @count = COUNT(*) FROM Poslovna_godina god JOIN Popisni_dokument pop ON god.id_poslovne_godine = pop.id_poslovne_godine
+			JOIN Prometni_dokument pro ON god.id_poslovne_godine = pro.id_poslovne_godine WHERE id_poslovne_godine = @Id AND (pop.status_popisnog = 'U fazi formiranja' OR pro.status_prometnog = 'U fazi formiranja')
+			IF(@count = 0)
+				BEGIN
+					PRINT 'U godini koja se zaključuje ne sme biti dokumenata u fazi formiranja.'
+					@RetVal = 2
+				END
+			ELSE
+				BEGIN
+					UPDATE Poslovna_godina SET zakljucena = '1' WHERE id_poslovne_godine =@Id
+				END
+		END
   END
 GO
