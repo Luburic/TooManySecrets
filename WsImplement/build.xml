@@ -11,6 +11,8 @@
 	<property name="webinf.dir" value="${basedir}/WEB-INF"/>
 	<property name="wsdl.dir" value="${webinf.dir}/wsdl"/>
 	<property name="shema.dir" value="${webinf.dir}/shema"/>
+	<property name="keystores.dir" value="${basedir}/keystores"/>
+	
 	
 	<!--Task za generisanje objektnog modela na osnovu XSD seme -->
 		<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
@@ -133,12 +135,15 @@
 			</classes>
 			<lib dir="${lib.dir}">
 				<include name="spring-*.jar"/>
+				<include name="bcprov-jdk16-141.jar"/>
 			</lib>
 			<webinf dir="${webinf.dir}">
 				<include name="wsdl/**"/>
 				<include name="shema/**"/>
+				<include name="keystores/**"/>
 				<include name="cxf-servlet.xml"/>
 			</webinf>
+			<fileset dir="." includes="keystores/**"/>
 		</war>
 	</target>
 

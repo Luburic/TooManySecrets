@@ -18,7 +18,9 @@
    
     <wsdl:types>
         <xs:schema targetNamespace="http://www.toomanysecrets.com/firmaServis">
-            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema//FakturaRaw.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/FakturaCrypt.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/FakturaRaw.xsd" />
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/FakturaSigned.xsd" />
             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/ZahtevZaIzvodCrypt.xsd" />
             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/PresekCrypt.xsd" />    
         	<xs:element name="notif" type="xs:string"/>

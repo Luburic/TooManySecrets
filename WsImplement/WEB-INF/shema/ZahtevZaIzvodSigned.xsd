@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.toomanysecrets.com/tipovi"
     targetNamespace="http://www.toomanysecrets.com/tipovi" elementFormDefault="qualified"
-    xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb" 
+    jxb:version="2.0">
 
     <xs:import namespace="http://www.w3.org/2000/09/xmldsig#"
         schemaLocation="xmldsig-core-schema.xsd"/>
@@ -17,7 +19,19 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
-                <xs:element name="datum" type="xs:date"/>
+                <xs:element name="datum">
+                	<xs:simpleType>
+						<xs:annotation>
+							<xs:appinfo>
+								<jxb:javaType name="java.util.Date" parseMethod="util.MyDatatypeConverter.parseDate" printMethod="util.MyDatatypeConverter.printDate" />
+							</xs:appinfo>
+						</xs:annotation>
+						<xs:restriction base="xs:date">
+							<xs:minInclusive value="1900-01-01" />
+							<xs:maxInclusive value="2200-01-01" />
+						</xs:restriction>
+					</xs:simpleType>
+                </xs:element>
                 <xs:element name="redniBrojPreseka">
                     <xs:simpleType>
                         <xs:restriction base="xs:int">
@@ -25,7 +39,7 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
-                <xs:element name="timestamp" type="xs:dateTime"/>
+                <xs:element name="timestamp" type="xs:string"/>
                 <xs:element name="redniBrojPoruke" type="xs:int"/>
                 <xs:element ref="ds:Signature"/>
             </xs:sequence>

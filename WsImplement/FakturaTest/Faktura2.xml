@@ -1,31 +1,30 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<faktura xmlns="http://www.toomanysecrets.com/tipovi">
-    <zaglavlje idPoruke="54">
-        <nazivDobavljaca>54</nazivDobavljaca>
-        <adresaDobavljaca>54</adresaDobavljaca>
-        <pibDobavljaca>54</pibDobavljaca>
-        <nazivKupca>54</nazivKupca>
-        <adresaKupca>54</adresaKupca>
-        <pibKupca>54</pibKupca>
-        <brojRacuna>54</brojRacuna>
-        <vrednostRobe>23.4</vrednostRobe>
-        <vrednostUsluga>13.0</vrednostUsluga>
-        <ukupnoRobaIUsluge>34.0</ukupnoRobaIUsluge>
-        <ukupanRabat>2.0</ukupanRabat>
-        <ukupanPorez>3.0</ukupanPorez>
-        <oznakaValute>d</oznakaValute>
-        <iznosZaUplatu>3.0</iznosZaUplatu>
-        <uplataNaRacun>ff</uplataNaRacun>
+<?xml version="1.0" encoding="UTF-8"?><faktura xmlns="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <zaglavlje idPoruke="1">
+        <nazivDobavljaca>1</nazivDobavljaca>
+        <adresaDobavljaca>1</adresaDobavljaca>
+        <pibDobavljaca>1</pibDobavljaca>
+        <nazivKupca>1</nazivKupca>
+        <adresaKupca>1</adresaKupca>
+        <pibKupca>11</pibKupca>
+        <brojRacuna>1</brojRacuna>
+        <vrednostRobe>1.0</vrednostRobe>
+        <vrednostUsluga>1.0</vrednostUsluga>
+        <ukupnoRobaIUsluge>11.0</ukupnoRobaIUsluge>
+        <ukupanRabat>1.0</ukupanRabat>
+        <ukupanPorez>1.0</ukupanPorez>
+        <oznakaValute>1</oznakaValute>
+        <iznosZaUplatu>11.0</iznosZaUplatu>
+        <uplataNaRacun>1</uplataNaRacun>
     </zaglavlje>
-    <stavka redniBroj="3">
-        <nazivRobeIliUsluge>e3</nazivRobeIliUsluge>
-        <kolicina>4.0</kolicina>
-        <jedinicaMere>f</jedinicaMere>
-        <jedinicnaCena>2.0</jedinicnaCena>
-        <vrednost>43.0</vrednost>
-        <procenatRabata>2.0</procenatRabata>
-        <iznosRabata>34.0</iznosRabata>
-        <umanjenoZaRabat>3.0</umanjenoZaRabat>
-        <ukupanPorez>34.0</ukupanPorez>
+    <stavka redniBroj="11">
+        <nazivRobeIliUsluge>1</nazivRobeIliUsluge>
+        <kolicina>1.0</kolicina>
+        <jedinicaMere>1</jedinicaMere>
+        <jedinicnaCena>1.0</jedinicnaCena>
+        <vrednost>1.0</vrednost>
+        <procenatRabata>1.0</procenatRabata>
+        <iznosRabata>1.0</iznosRabata>
+        <umanjenoZaRabat>1.0</umanjenoZaRabat>
+        <ukupanPorez>11.0</ukupanPorez>
     </stavka>
 </faktura>
