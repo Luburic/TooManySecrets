@@ -1,7 +1,10 @@
 package root.gui.form;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -12,10 +15,14 @@ import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
-import root.gui.action.dialog.PreduzeceAction;
-import root.gui.action.dialog.RadnikAction;
+import root.gui.action.dialog.MagacinskaKarticaAction;
+import root.gui.action.dialog.OrganizacionaJedinicaAction;
+import root.gui.action.dialog.PopisniDokumentAction;
+import root.gui.action.dialog.PrometniDokumentAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
+import root.util.Constants;
+import root.util.verification.JTextFieldLimit;
 
 public class OrganizacionaJedinicaStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
@@ -27,21 +34,27 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 	protected JComboBox<ComboBoxPair> cmbOrgJedinica;
 	protected JTextField tfNaziv = new JTextField(20);
 	protected JCheckBox chkMagacin = new JCheckBox();
+	private final JLabel lblGreska1 = new JLabel();
+	private final JLabel lblGreska2 = new JLabel();
 
 	public OrganizacionaJedinicaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
 		setTitle("Organizacione jedinice");
 
-		JLabel lblNaziv = new JLabel("Naziv jedinice:");
+		JLabel lblNaziv = new JLabel("Naziv jedinice*:");
 		JLabel lblMagacin = new JLabel("Magacin:");
 		JLabel lblOrgJedinica = new JLabel("Nadsektor:");
-		JLabel lblPreduzece = new JLabel("Preduzeće:");
+		JLabel lblPreduzece = new JLabel("Preduzeće*:");
 		tfNaziv.setName("naziv jedinice");
 		chkMagacin.setName("magacin");
+		tfNaziv.setDocument(new JTextFieldLimit(20));
+		lblGreska1.setForeground(Color.red);
+		lblGreska2.setForeground(Color.red);
 
 		cmbOrgJedinica = super.setupJoins(cmbOrgJedinica, "Organizaciona_jedinica", "Org_id_jedinice",
 				"Org_id jedinice", "naziv_jedinice", "naziv nadsektora", true, "");
 		cmbOrgJedinica.insertItemAt(new ComboBoxPair(0, ""), 0);
+		cmbOrgJedinica.setSelectedIndex(0);
 		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
 				"naziv preduzeća", false, "");
 		if (!childWhere.contains("id_preduzeca")) {
@@ -75,8 +88,26 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 			btnZoomOrgJedinica.setVisible(false);
 		}
 
+		tfNaziv.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (e.getKeyChar() != 8) {
+					lblGreska1.setText("");
+				}
+			}
+		});
+		cmbPreduzece.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (cmbPreduzece.getSelectedIndex() != -1) {
+					lblGreska2.setText("");
+				}
+			}
+		});
+
 		dataPanel.add(lblNaziv);
-		dataPanel.add(tfNaziv, "wrap, gapx 15px");
+		dataPanel.add(tfNaziv);
+		dataPanel.add(lblGreska1, "wrap, gapx 15px");
 
 		dataPanel.add(lblMagacin);
 		dataPanel.add(chkMagacin, "wrap,gapx 15px, span 3");
@@ -88,10 +119,13 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		dataPanel.add(lblPreduzece);
 		dataPanel.add(cmbPreduzece);
 		dataPanel.add(btnZoomPreduzece);
+		dataPanel.add(lblGreska2, "wrap, gapx 15px");
 
 		JPopupMenu popup = new JPopupMenu();
-		popup.add(new PreduzeceAction());
-		popup.add(new RadnikAction());
+		popup.add(new MagacinskaKarticaAction());
+		popup.add(new PopisniDokumentAction());
+		popup.add(new PrometniDokumentAction());
+		popup.add(new OrganizacionaJedinicaAction());
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
@@ -107,14 +141,22 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 
 	@Override
 	public boolean verification() {
-		// TODO Auto-generated method stub
-		return false;
+		if (tfNaziv.getText().equals("")) {
+			lblGreska1.setText(Constants.VALIDATION_MANDATORY_FIELD);
+			tfNaziv.requestFocus();
+			return false;
+		}
+		if (cmbPreduzece.getSelectedIndex() == -1) {
+			lblGreska2.setText(Constants.VALIDATION_MANDATORY_FIELD);
+			cmbPreduzece.requestFocus();
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public boolean allowDeletion() {
-		// TODO Auto-generated method stub
-		return false;
+		return allowDeletion("Magacinska_kartica", "Organizaciona_jedinica", "Prometni_dokument", "Popisni_dokument");
 	}
 
 	@Override
