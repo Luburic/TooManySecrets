@@ -195,7 +195,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 	@Override
 	protected void clearFields(boolean needFocus) {
 		super.clearFields(needFocus);
-		tfStatusPopisnog.setText("F");
+		tfStatusPopisnog.setText("u fazi formiranja");
 	}
 
 	@Override
@@ -239,7 +239,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			stmt.execute();
 			int i = tblGrid.getSelectedRow();
 			tableModel.setValueAt(now, i, 5);
-			tableModel.setValueAt("P", i, 6);
+			tableModel.setValueAt("proknjizen", i, 6);
 			tableModel.fireTableDataChanged();
 			tblGrid.getSelectionModel().setSelectionInterval(i, i);
 			sync();

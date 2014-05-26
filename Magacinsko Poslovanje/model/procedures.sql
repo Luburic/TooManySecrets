@@ -14,7 +14,7 @@ IF(@count = 0)
   END
 ELSE
   BEGIN
-    UPDATE Popisni_dokument SET status_popisnog = 'P', datum_knjizenja=@Datum WHERE id_popisnog_dokumenta=@Id
+    UPDATE Popisni_dokument SET status_popisnog = 'proknjizen', datum_knjizenja=@Datum WHERE id_popisnog_dokumenta=@Id
   END
 GO
 
@@ -43,7 +43,7 @@ ELSE
 	ELSE
 		BEGIN
 			SELECT @count = COUNT(*) FROM Poslovna_godina god JOIN Popisni_dokument pop ON god.id_poslovne_godine = pop.id_poslovne_godine
-			JOIN Prometni_dokument pro ON god.id_poslovne_godine = pro.id_poslovne_godine WHERE id_poslovne_godine = @Id AND (pop.status_popisnog = 'U fazi formiranja' OR pro.status_prometnog = 'U fazi formiranja')
+			JOIN Prometni_dokument pro ON god.id_poslovne_godine = pro.id_poslovne_godine WHERE id_poslovne_godine = @Id AND (pop.status_popisnog = 'u fazi formiranja' OR pro.status_prometnog = 'u fazi formiranja')
 			IF(@count = 0)
 				BEGIN
 					PRINT 'U godini koja se zaključuje ne sme biti dokumenata u fazi formiranja.'
