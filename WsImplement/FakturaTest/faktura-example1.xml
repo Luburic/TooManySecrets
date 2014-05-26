@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faktura xmlns="http://www.toomanysecrets.com/tipovi"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.toomanysecrets.com/tipovi file:/E:/faculty/E2%20cetvrta%20godina/workspace%20kepler/XWSBSEP/WEB-INF/xsdSchemas/FakturaRaw.xsd">
+    <zaglavlje idPoruke="idPoruke1">
+        <nazivDobavljaca>nazivDobavljaca0</nazivDobavljaca>
+        <adresaDobavljaca>adresaDobavljaca0</adresaDobavljaca>
+        <pibDobavljaca>pibDobavlja</pibDobavljaca>
+        <nazivKupca>nazivKupca0</nazivKupca>
+        <adresaKupca>adresaKupca0</adresaKupca>
+        <pibKupca>pibKupca0</pibKupca>
+        <brojRacuna>0</brojRacuna>
+        <datumRacuna>2006-05-04</datumRacuna>
+        <vrednostRobe>0.00</vrednostRobe>
+        <vrednostUsluga>0.00</vrednostUsluga>
+        <ukupnoRobaIUsluge>0.00</ukupnoRobaIUsluge>
+        <ukupanRabat>0.00</ukupanRabat>
+        <ukupanPorez>0.00</ukupanPorez>
+        <oznakaValute>ozn</oznakaValute>
+        <iznosZaUplatu>0.00</iznosZaUplatu>
+        <uplataNaRacun>000000000000000000</uplataNaRacun>
+        <datumValute>2006-05-04</datumValute>
+    </zaglavlje>
+    <stavka redniBroj="0">
+        <nazivRobeIliUsluge>nazivRobeIliUsluge0</nazivRobeIliUsluge>
+        <kolicina>0.00</kolicina>
+        <jedinicaMere>jedini</jedinicaMere>
+        <jedinicnaCena>0.00</jedinicnaCena>
+        <vrednost>0.00</vrednost>
+        <procenatRabata>0.00</procenatRabata>
+        <iznosRabata>0.00</iznosRabata>
+        <umanjenoZaRabat>0.00</umanjenoZaRabat>
+        <ukupanPorez>0.00</ukupanPorez>
+    </stavka>
+    <stavka redniBroj="0">
+        <nazivRobeIliUsluge>nazivRobeIliUsluge1</nazivRobeIliUsluge>
+        <kolicina>0.00</kolicina>
+        <jedinicaMere>jedini</jedinicaMere>
+        <jedinicnaCena>0.00</jedinicnaCena>
+        <vrednost>0.00</vrednost>
+        <procenatRabata>0.00</procenatRabata>
+        <iznosRabata>0.00</iznosRabata>
+        <umanjenoZaRabat>0.00</umanjenoZaRabat>
+        <ukupanPorez>0.00</ukupanPorez>
+    </stavka>
+</faktura>

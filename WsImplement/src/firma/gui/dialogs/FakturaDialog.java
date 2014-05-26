@@ -19,7 +19,13 @@ import javax.xml.bind.PropertyException;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import security.SecurityClass;
 import util.NSPrefixMapper;
+import util.Validation;
 import ws.style.client.FakturaClient;
 import beans.faktura.Faktura;
 import beans.faktura.Faktura.Zaglavlje;
@@ -517,6 +523,13 @@ public class FakturaDialog extends JDialog {
 							Boolean.TRUE);
 					marshaller.marshal(fakturaZaSlanje, new File(
 							"./FakturaTest/Faktura2.xml"));
+					
+					Document doc = Validation.buildDocumentWithoutValidation("./FakturaTest/Faktura2.xml");
+					Element faktura = (Element) doc.getElementsByTagName("faktura").item(0);
+					faktura.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+					//faktura.setAttribute("xsi:schemaLocation", "http://www.toomanysecrets.com/tipovi file:/http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaRaw.xsd");
+					SecurityClass sc = new SecurityClass();
+					sc.saveDocument(doc, "./FakturaTest/Faktura2.xml");
 				} catch (PropertyException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -527,7 +540,8 @@ public class FakturaDialog extends JDialog {
 
 				// ovo ce se pozvati negde iz gui-a za konkretnu fakturu,kao
 				// operacija [posalji fakturu] za izabranu firmu
-				FakturaClient.testIt("./FakturaTest/Faktura2.xml");
+				// isto ce se informacije o firmi (password i putanja i tako to citati iz nekog properties fajla pa ce se prosledjivati testIt metodi)
+				FakturaClient.testIt("firmaa", "firmaa", "./WEB-INF/keystores/firmaa.jks", "firmaa","./FakturaTest/Faktura2.xml");
 
 				JOptionPane.showMessageDialog(null,
 						"Uspesno kreirana(i poslata*) faktura.",

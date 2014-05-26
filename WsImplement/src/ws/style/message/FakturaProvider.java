@@ -2,11 +2,14 @@ package ws.style.message;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -21,9 +24,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 import javax.xml.ws.Provider;
 import javax.xml.ws.Service;
 import javax.xml.ws.ServiceMode;
@@ -33,6 +33,8 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import security.SecurityClass;
+import util.Validation;
 import beans.faktura.Faktura;
 
 
@@ -42,12 +44,11 @@ import beans.faktura.Faktura;
 					serviceName = "FirmaServis",
 					targetNamespace = "http://www.toomanysecrets.com/firmaServis",
 					wsdlLocation = "WEB-INF/wsdl/Firma.wsdl")
-public class FakturaProvider  implements Provider<DOMSource>{
+public class FakturaProvider  implements Provider<DOMSource> {
 
 	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/firmaServis";
 	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
-	public static final String SCHEME_PATH = "http://localhost:8080/firma/services/Faktura?xsd=../shema/FakturaRaw.xsd";
-	
+	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
 	
 	public static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 	public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
@@ -59,7 +60,6 @@ public class FakturaProvider  implements Provider<DOMSource>{
 	
 	@Override
 	public DOMSource invoke(DOMSource request) {
-		DOMSource response = null;
 		
     	try {
     		//ResourceBundle firmaBundle = ResourceBundle.getBundle("firmaA");
@@ -81,12 +81,58 @@ public class FakturaProvider  implements Provider<DOMSource>{
 			Schema schema = schemaFactory.newSchema(new URL(SCHEME_PATH));
 			unmarshaller.setSchema(schema);*/
 			
-			
-			if(!validateSchema(document)){
-				Document doc = createResponse("Dokument nije validan po semi.");
-				return new DOMSource(doc);
+			SecurityClass security = new SecurityClass();
+			Reader reader = Validation.createReader(document);
+			Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaCrypt.xsd","http://localhost:8080/ws_style/services/Faktura?xsd=xenc-schema.xsd"});
+			if( doc == null ) {
+				Document crypt = createResponse("Dokument nije validan po Crypt semi.");
+				return new DOMSource(crypt);
 			}
 			
+			//treba da provalim kako da dobijem tu putanju posto za url nece da ga nadje :(
+			String path = "C:\\apache-tomee-plus-1.5.0\\webapps\\ws_style\\keystores\\firmaa.jks";
+			
+			System.out.println("Pre dekriptovanja");
+			Validation.transform(doc);
+			//onaj properties file kojie je zakomentarisan na pocetku try bloka ce ovde uskociti
+			Document decrypt = security.decrypt(doc, security.readPrivateKey("firmaa", "firmaa", path, "firmaa"));
+			Reader reader1 = Validation.createReader(decrypt);
+			decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaSigned.xsd","http://localhost:8080/ws_style/services/Faktura?xsd=xmldsig-core-schema.xsd"});
+			if( decrypt == null ) {
+				Document signed = createResponse("Dokument nije validan po Signed semi.");
+				return new DOMSource(signed);
+			}
+			System.out.println("Posle dekriptovanja");
+			Validation.transform(decrypt);
+			
+			if(!security.verifySignature(decrypt)) {
+				Document wSigned = createResponse("Dokument nije dobro potpisan.");
+				return new DOMSource(wSigned);
+			}
+			
+			//ovde ce ici provera za timestamp
+			Element timestamp = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
+			String dateString = timestamp.getTextContent();
+			//skidanje taga
+			timestamp.getParentNode().removeChild(timestamp);
+			
+			//ovde ce ici provera za redni broj poruke
+			Element redniBrojPoruke = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
+			//skidanje taga
+			redniBrojPoruke.getParentNode().removeChild(redniBrojPoruke);
+			
+			//skidanje taga
+			Element signature = (Element) decrypt.getElementsByTagName("ds:Signature").item(0);
+			signature.getParentNode().removeChild(signature);
+			System.out.println("Posle skidanja tagova************************************************************");
+			Validation.transform(decrypt);
+			
+			Reader reader2 = Validation.createReader(decrypt);
+			decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaRaw.xsd"});
+			if( decrypt == null ) {
+				Document raw = createResponse("Dokument nije validan po Raw semi.");
+				return new DOMSource(raw);
+			}
 			/*
 			Faktura faktura = (Faktura) unmarshaller.unmarshal(document);
 
@@ -178,7 +224,7 @@ public class FakturaProvider  implements Provider<DOMSource>{
 	}
 	
 	
-	private boolean validateSchema(Document document){
+	/*private boolean validateSchema(Document document){
     	try{
 	    	SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 	    	Schema schema = factory.newSchema(new URL(SCHEME_PATH));
@@ -192,7 +238,7 @@ public class FakturaProvider  implements Provider<DOMSource>{
     	}
     	
     	return true;
-    }
+    }*/
 	
 	
 	
@@ -219,19 +265,19 @@ public class FakturaProvider  implements Provider<DOMSource>{
 			//tempPorez = stavka.getPorez().doubleValue();
 
 			if (tempKolicina * tempJedinicnaCena != tempVrednost) {
-				message = createResponse("GREŠKA: Vrednost stavke "+ stavka.getRedniBroj()+ ". ne odgovara proizvodu kolièine i jediniène cene.");
+				message = createResponse("GREï¿½KA: Vrednost stavke "+ stavka.getRedniBroj()+ ". ne odgovara proizvodu koliï¿½ine i jediniï¿½ne cene.");
 				flag = false;
 				return flag;
 			}
 
 			else if (tempVrednost * tempProcenatRabata / 100 != tempIznosRabata) {
-				message = createResponse( "GREŠKA: Vrednost rabata stavke "+ stavka.getRedniBroj()+ ". ne odgovara procentu rabata ukupne vrednosti.");
+				message = createResponse( "GREï¿½KA: Vrednost rabata stavke "+ stavka.getRedniBroj()+ ". ne odgovara procentu rabata ukupne vrednosti.");
 				flag = false;
 				return flag;
 			}
 
 			else if (tempUmanjenoZaRabat != tempVrednost - tempIznosRabata) {
-				message = createResponse("GREŠKA: Vrednost umanjena za rabat stavke "+ stavka.getRedniBroj()+ ". ne odgovara ukupnoj vrednosti umanjenoj za rabat.");
+				message = createResponse("GREï¿½KA: Vrednost umanjena za rabat stavke "+ stavka.getRedniBroj()+ ". ne odgovara ukupnoj vrednosti umanjenoj za rabat.");
 				
 				flag = false;
 				return flag;
@@ -252,43 +298,43 @@ public class FakturaProvider  implements Provider<DOMSource>{
 		vrednostUsluga = fak.getZaglavlje().getVrednostUsluga().doubleValue();
 
 		if (ukupnoRobeIUsluge != vrednostRobe + vrednostUsluga) {
-			message = createResponse("GREŠKA: Ukupna vrednost robe i usluga u zaglavlju se ne slaže sa zbirom vrednosti robe i usluga iz zaglavlja.");
+			message = createResponse("GREï¿½KA: Ukupna vrednost robe i usluga u zaglavlju se ne slaï¿½e sa zbirom vrednosti robe i usluga iz zaglavlja.");
 			flag = false;
 			return flag;
 		}
 
 		else if (ukupnoRobeIUsluge != ukupnoStavke) {
-			message = createResponse("GREŠKA: Ukupna vrednost robe i usluga u zaglavlju je razlièita od zbira vrednosti stavki.");
+			message = createResponse("GREï¿½KA: Ukupna vrednost robe i usluga u zaglavlju je razliï¿½ita od zbira vrednosti stavki.");
 			flag = false;
 			return flag;
 		}
 
 		else if (zaUplatu != ukupnoRobeIUsluge - ukupanRabat + ukupanPorez) {
-			message = createResponse("GREŠKA: Iznos za uplatu se ne slaže sa ukupnom vrednošæu robe sa porezom umanjene za rabat.");
+			message = createResponse("GREï¿½KA: Iznos za uplatu se ne slaï¿½e sa ukupnom vrednoï¿½ï¿½u robe sa porezom umanjene za rabat.");
 			flag = false;
 			return flag;
 		}
 
 		else if (zaUplatu != zaUplatuStavke) {
-			message = createResponse("GREŠKA: Iznos za uplatu iz zaglavlja se ne slaže sa zbirom stavki posle odbijanja rabata i dodavanja poreza.");
+			message = createResponse("GREï¿½KA: Iznos za uplatu iz zaglavlja se ne slaï¿½e sa zbirom stavki posle odbijanja rabata i dodavanja poreza.");
 			flag = false;
 			return flag;
 		}
 
 		else if (ukupanPorez != ukupanPorezStavke) {
-			message = createResponse("GREŠKA: Ukupan porez iz zaglavlja se ne slaže sa zbirom poreza iz stavki.");
+			message = createResponse("GREï¿½KA: Ukupan porez iz zaglavlja se ne slaï¿½e sa zbirom poreza iz stavki.");
 			flag = false;
 			return flag;
 		}
 
 		else if (ukupanRabat != ukupanRabatStavke) {
-			message = createResponse("GREŠKA: Ukupan rabat iz zaglavlja se ne slaže sa zbirom rabata iz stavki.");
+			message = createResponse("GREï¿½KA: Ukupan rabat iz zaglavlja se ne slaï¿½e sa zbirom rabata iz stavki.");
 			flag = false;
 			return flag;
 		}
 
 		
-		message = createResponse("Faktura je popunjena bez grešaka.");
+		message = createResponse("Faktura je popunjena bez greï¿½aka.");
 		return flag;
 	}
 
