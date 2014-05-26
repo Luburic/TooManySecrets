@@ -18,7 +18,7 @@ public class MainFrame extends JFrame {
 
 		setSize(new Dimension(700,500));
 		setLocationRelativeTo(null);
-		setTitle("Firma klijent");
+		setTitle("Firma");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		setUpMenu();

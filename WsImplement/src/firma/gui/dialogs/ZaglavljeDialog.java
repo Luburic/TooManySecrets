@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.StringTokenizer;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -20,10 +22,12 @@ import net.miginfocom.swing.MigLayout;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 
+import org.basex.query.value.item.Str;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import security.SecurityClass;
+import util.MyDatatypeConverter;
 import util.NSPrefixMapper;
 import util.Validation;
 import ws.style.client.FakturaClient;
@@ -32,7 +36,7 @@ import beans.faktura.Faktura.Zaglavlje;
 import firma.gui.MainFrame;
 
 @SuppressWarnings("serial")
-public class FakturaDialog extends JDialog {
+public class ZaglavljeDialog extends JDialog {
 
 	private JLabel lbIdPor = new JLabel("Id poruke:");
 	private JLabel lbNazivDob = new JLabel("Naziv dobavljaca:");
@@ -99,11 +103,11 @@ public class FakturaDialog extends JDialog {
 	private JButton btnZav = new JButton("Zavrsi");
 
 	private Faktura faktura;
-	private FakturaDialog fd;
+	private ZaglavljeDialog fd;
 
 	private Marshaller marshaller;
 
-	public FakturaDialog(MainFrame instance) {
+	public ZaglavljeDialog(MainFrame instance) {
 		super(instance);
 		fd = this;
 
@@ -469,10 +473,24 @@ public class FakturaDialog extends JDialog {
 				zaglavlje.setAdresaKupca(tfAdrKup.getText());
 				zaglavlje.setBrojRacuna(brRac);
 				zaglavlje.setVrednostRobe(vr);
-				// zaglavlje.setDatumRacuna(tfDatRac.getJFormattedTextField().getText());
-				// kaze stole bice string
-				// zaglavlje.setDatumValute(tfDatVal.getJFormattedTextField().getText());
-				// stole kaze
+				
+				
+				StringTokenizer st = new StringTokenizer(tfDatRac.getJFormattedTextField().getText(), ".");
+				String dd = st.nextToken();	
+				String mm = st.nextToken();
+				String yyyy = st.nextToken();
+				
+				zaglavlje.setDatumRacuna(MyDatatypeConverter.parseDate(yyyy+"-"+mm+"-"+dd));
+				
+				
+				
+				StringTokenizer stt = new StringTokenizer(tfDatVal.getJFormattedTextField().getText(), ".");
+				String ddd = stt.nextToken();
+				String mmm = stt.nextToken();
+				String yyyyy = stt.nextToken();
+				zaglavlje.setDatumValute(MyDatatypeConverter.parseDate(yyyyy+"-"+mmm+"-"+ddd));
+				
+				
 				zaglavlje.setIdPoruke(tfIdPor.getText());
 				zaglavlje.setIznosZaUplatu(iz);
 				zaglavlje.setNazivDobavljaca(tfNazivDob.getText());

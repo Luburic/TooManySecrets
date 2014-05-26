@@ -51,11 +51,11 @@ public class StavkaDialog extends JDialog{
 	
 	private JButton btnOk = new JButton("Potvrdi");
 	private JButton btnCancel = new JButton("Otkazi");
-	private FakturaDialog fd;
+	private ZaglavljeDialog fd;
 	
 	
 	
-	public StavkaDialog(FakturaDialog dialog) {
+	public StavkaDialog(ZaglavljeDialog dialog) {
 		// TODO Auto-generated constructor stub
 		super();
 		this.fd = dialog;

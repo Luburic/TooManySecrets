@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?><faktura xmlns="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/tipovi http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaSigned.xsd">
-    <zaglavlje idPoruke="1">
-        <nazivDobavljaca>1</nazivDobavljaca>
-        <adresaDobavljaca>1</adresaDobavljaca>
-        <pibDobavljaca>1</pibDobavljaca>
-        <nazivKupca>1</nazivKupca>
-        <adresaKupca>1</adresaKupca>
-        <pibKupca>11</pibKupca>
-        <brojRacuna>1</brojRacuna>
-        <vrednostRobe>1.0</vrednostRobe>
-        <vrednostUsluga>1.0</vrednostUsluga>
-        <ukupnoRobaIUsluge>11.0</ukupnoRobaIUsluge>
-        <ukupanRabat>1.0</ukupanRabat>
-        <ukupanPorez>1.0</ukupanPorez>
-        <oznakaValute>1</oznakaValute>
-        <iznosZaUplatu>11.0</iznosZaUplatu>
-        <uplataNaRacun>1</uplataNaRacun>
+    <zaglavlje idPoruke="55">
+        <nazivDobavljaca>5</nazivDobavljaca>
+        <adresaDobavljaca>5</adresaDobavljaca>
+        <pibDobavljaca>5</pibDobavljaca>
+        <nazivKupca>5</nazivKupca>
+        <adresaKupca>5</adresaKupca>
+        <pibKupca>5</pibKupca>
+        <brojRacuna>5</brojRacuna>
+        <datumRacuna>2014-05-04</datumRacuna>
+        <vrednostRobe>5.0</vrednostRobe>
+        <vrednostUsluga>5.0</vrednostUsluga>
+        <ukupnoRobaIUsluge>5.0</ukupnoRobaIUsluge>
+        <ukupanRabat>5.0</ukupanRabat>
+        <ukupanPorez>5.0</ukupanPorez>
+        <oznakaValute>5</oznakaValute>
+        <iznosZaUplatu>5.0</iznosZaUplatu>
+        <uplataNaRacun>5</uplataNaRacun>
+        <datumValute>2014-05-28</datumValute>
     </zaglavlje>
-    <stavka redniBroj="11">
-        <nazivRobeIliUsluge>1</nazivRobeIliUsluge>
-        <kolicina>1.0</kolicina>
-        <jedinicaMere>1</jedinicaMere>
-        <jedinicnaCena>1.0</jedinicnaCena>
-        <vrednost>1.0</vrednost>
-        <procenatRabata>1.0</procenatRabata>
-        <iznosRabata>1.0</iznosRabata>
-        <umanjenoZaRabat>1.0</umanjenoZaRabat>
-        <ukupanPorez>11.0</ukupanPorez>
+    <stavka redniBroj="6">
+        <nazivRobeIliUsluge>6</nazivRobeIliUsluge>
+        <kolicina>6.0</kolicina>
+        <jedinicaMere>6</jedinicaMere>
+        <jedinicnaCena>6.0</jedinicnaCena>
+        <vrednost>6.0</vrednost>
+        <procenatRabata>6.0</procenatRabata>
+        <iznosRabata>6.0</iznosRabata>
+        <umanjenoZaRabat>6.0</umanjenoZaRabat>
+        <ukupanPorez>6.0</ukupanPorez>
     </stavka>
-<timestamp>Mon May 26 04:25:55 CEST 2014</timestamp><redniBrojPoruke>0</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<timestamp>Mon May 26 21:14:05 CEST 2014</timestamp><redniBrojPoruke>0</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -37,13 +39,13 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>YVc3onrDNHxnxw0Iqj6wZ0vJcYg=</ds:DigestValue>
+<ds:DigestValue>7cMuww/rqGaGFxdX3ObBfxQMi1Y=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-QGu+QY51ysqMme68OKLkRI6O1A4KSi+I2ACJwQOPZFgCVvV/FBnNp5+L7pWtmC4BZN3H0z9gevtG
-OQd4s6oceG2N0jwF+mCzcoLq66HOPYCUINCCmNZuFs8Mjo5nPZxb6AwEX81uESOqkwoNbZWsYO1+
-YH5coJXQVQG5qfe65h8=
+G36aCAe314/ifs4AXTZ5v6D2ig+zQbE0ya6g+rAtWxD/EnhwdW0omCVwp+EldxxqVOoXdLV1uoi1
+SBwR3pixkzDxhQvS283Hi0O6FltBm9yZbGbTCEnpQ3fle4ybZe3nOGvZT5lrazZUCHd04cYlRMLK
+UcTnZqcS4mGmwpR1OTk=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>

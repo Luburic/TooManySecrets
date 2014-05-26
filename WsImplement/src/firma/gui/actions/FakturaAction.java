@@ -7,7 +7,7 @@ import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import firma.gui.MainFrame;
-import firma.gui.dialogs.FakturaDialog;
+import firma.gui.dialogs.ZaglavljeDialog;
 
 @SuppressWarnings("serial")
 public class FakturaAction extends AbstractAction{
@@ -21,7 +21,7 @@ public class FakturaAction extends AbstractAction{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		FakturaDialog fakturaDialog = new FakturaDialog(MainFrame.getInstance());
+		ZaglavljeDialog fakturaDialog = new ZaglavljeDialog(MainFrame.getInstance());
 		fakturaDialog.setVisible(true);
 	}
 

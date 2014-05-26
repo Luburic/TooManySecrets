@@ -20,12 +20,7 @@ public class MenuBar extends JMenuBar {
 	private JMenuItem posaljiNalog;
 	private JMenuItem posaljiZizvod;
 	private JMenuItem close;
-	
-	private JMenu kreirano;
-	private JMenuItem kreiraneFakture;
-	private JMenuItem kreiraniNalozi;
-	private JMenuItem kreiraniIzvodi;
-	
+
 	private JMenu primljeno;
 	private JMenuItem primljeneFakture;
 	private JMenuItem primljeniNalozi;
@@ -58,29 +53,7 @@ public class MenuBar extends JMenuBar {
 		novo.addSeparator();
 		novo.add(close);
 		add(novo);
-		
-		
-		
-		kreirano = new JMenu("Kreirano");
-		
-		kreiraneFakture = new JMenuItem();
-		kreiraniNalozi = new JMenuItem();
-		kreiraniIzvodi = new JMenuItem();
-		
-		
-		kreiraneFakture.setText("Fakture");
-		kreiraniNalozi.setText("Nalozi");
-		kreiraniIzvodi.setText("Izvodi");
-		
-		kreirano.add(kreiraneFakture);
-		kreirano.add(kreiraniNalozi);
-		kreirano.add(kreiraniIzvodi);
-		add(kreirano);
-		
-		
-		
-		
-		
+	
 		
 		primljeno = new JMenu("Primljeno");
 		
