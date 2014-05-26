@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><faktura xmlns="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/tipovi http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaSigned.xsd">
+    <zaglavlje idPoruke="idPoruke1">
+        <nazivDobavljaca>nazivDobavljaca0</nazivDobavljaca>
+        <adresaDobavljaca>adresaDobavljaca0</adresaDobavljaca>
+        <pibDobavljaca>pibDobavlja</pibDobavljaca>
+        <nazivKupca>nazivKupca0</nazivKupca>
+        <adresaKupca>adresaKupca0</adresaKupca>
+        <pibKupca>pibKupca0</pibKupca>
+        <brojRacuna>0</brojRacuna>
+        <datumRacuna>2006-05-04</datumRacuna>
+        <vrednostRobe>0.00</vrednostRobe>
+        <vrednostUsluga>0.00</vrednostUsluga>
+        <ukupnoRobaIUsluge>0.00</ukupnoRobaIUsluge>
+        <ukupanRabat>0.00</ukupanRabat>
+        <ukupanPorez>0.00</ukupanPorez>
+        <oznakaValute>ozn</oznakaValute>
+        <iznosZaUplatu>0.00</iznosZaUplatu>
+        <uplataNaRacun>000000000000000000</uplataNaRacun>
+        <datumValute>2006-05-04</datumValute>
+    </zaglavlje>
+    <stavka redniBroj="0">
+        <nazivRobeIliUsluge>nazivRobeIliUsluge0</nazivRobeIliUsluge>
+        <kolicina>0.00</kolicina>
+        <jedinicaMere>jedini</jedinicaMere>
+        <jedinicnaCena>0.00</jedinicnaCena>
+        <vrednost>0.00</vrednost>
+        <procenatRabata>0.00</procenatRabata>
+        <iznosRabata>0.00</iznosRabata>
+        <umanjenoZaRabat>0.00</umanjenoZaRabat>
+        <ukupanPorez>0.00</ukupanPorez>
+    </stavka>
+    <stavka redniBroj="0">
+        <nazivRobeIliUsluge>nazivRobeIliUsluge1</nazivRobeIliUsluge>
+        <kolicina>0.00</kolicina>
+        <jedinicaMere>jedini</jedinicaMere>
+        <jedinicnaCena>0.00</jedinicnaCena>
+        <vrednost>0.00</vrednost>
+        <procenatRabata>0.00</procenatRabata>
+        <iznosRabata>0.00</iznosRabata>
+        <umanjenoZaRabat>0.00</umanjenoZaRabat>
+        <ukupanPorez>0.00</ukupanPorez>
+    </stavka>
+<timestamp>Mon May 26 03:41:54 CEST 2014</timestamp><redniBrojPoruke>0</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<ds:Reference URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>hxUeZ14tUG2/hBurOjS7fHVXZ44=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+ZBdbFnWPjzQ1Cvx2rYqFiw+/0eSH4lW4vRbUYCoN33ctasKrFRhpRvmRsp4IDJGerABhTwpcw/Xu
+wvz5K3Ve9If/r984Wq15KopEIGqZk4ZZ6VYy2v7k11WidjdscCxXntd2zv8hFsAL3CPZoJEuaMxK
+O+oyIdbem/rR8wb+9qo=
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+he0nIlTyqgmOjdLL7Ly+SOib1o+EtfMfoXm0hYl2MxxAe/iiCUR205jEL1ZDgcbaG5ZAPWprX9mi
+cWHijrtdhvCc6CRt0xI52fDwggKjLdD9aqhXeAKfr1WHnWijo8onYpaKpINPMr4l/6dvUUaltPAJ
+egjXLJ+LFgu0SfQIM00=
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+<ds:X509Data>
+<ds:X509Certificate>
+MIICizCCAfSgAwIBAgIBIjANBgkqhkiG9w0BAQUFADCBiTETMBEGCgmSJomT8ixkAQEMAzEwMDEg
+MB4GCSqGSIb3DQEJARYRY2JhbmthQGNiYW5rYS5jb20xDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwF
+MTEwMDAxGDAWBgNVBAoMD0NlbnRyYWxuYSBiYW5rYTEYMBYGA1UEAwwPQ2VudHJhbG5hIGJhbmth
+MB4XDTE0MDUyMjE4MDUyNVoXDTE1MDUyMjE4MDUyNVowgYwxDzANBgNVBAMMBkZpcm1hQTEPMA0G
+A1UECgwGRmlybWFBMQ8wDQYDVQQLDAZGaXJtYUExDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwFMTEw
+MDAxHzAdBgkqhkiG9w0BCQEWEGZpcm1hYUBnbWFpbC5jb20xGDAWBgoJkiaJk/IsZAEBDAhGSVJN
+U1IxMTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAhe0nIlTyqgmOjdLL7Ly+SOib1o+EtfMf
+oXm0hYl2MxxAe/iiCUR205jEL1ZDgcbaG5ZAPWprX9micWHijrtdhvCc6CRt0xI52fDwggKjLdD9
+aqhXeAKfr1WHnWijo8onYpaKpINPMr4l/6dvUUaltPAJegjXLJ+LFgu0SfQIM00CAwEAATANBgkq
+hkiG9w0BAQUFAAOBgQA9Ogutt6qjgHBtSo0X1l6+siTqdQT3OP4Am26sMyO37N9LnyclJwVq3kuC
+P3g8BpFSFC6HKrVxE3BIZfKMaZxohfpYMA9dUgEBWojlJfor4UccFXkBLOYrs4GOucJeKgwgrktA
+cqf57EIenRifV3zJjU3eWmD+eRA4Fv5dc5XLVw==
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+</ds:Signature></faktura>
