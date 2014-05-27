@@ -124,7 +124,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 				}
 			}
 		});
-		datePanel.addActionListener(new ActionListener() {
+		dateDatumOtvaranja.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {

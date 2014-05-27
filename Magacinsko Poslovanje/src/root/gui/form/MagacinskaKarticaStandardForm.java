@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
@@ -176,26 +175,12 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 
 	@Override
 	public boolean verification() {
-		int n = tableModel.getRowCount();
-		Integer id_artikla = ((ComboBoxPair) cmbArtikal.getSelectedItem()).getId();
-		Integer id_magacina = ((ComboBoxPair) cmbOrgJedinica.getSelectedItem()).getId();
-		Integer id_godine = ((ComboBoxPair) cmbGodina.getSelectedItem()).getId();
-
-		for (int i = 0; i < n; i++) {
-			if (tableModel.getValueAt(i, 1).equals(id_godine) && tableModel.getValueAt(i, 2).equals(id_artikla)
-					&& tableModel.getValueAt(i, 3).equals(id_magacina)) {
-				tblGrid.getSelectionModel().setSelectionInterval(i, i);
-				JOptionPane.showConfirmDialog(this,
-						"Magacinska kartica za dati artikal u datom magacinu i godini već postoji");
-				return false;
-			}
-		}
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean allowDeletion() {
-		return allowDeletion("Analtika_magacinske_kartice");
+		return false;
 	}
 
 	@Override

@@ -42,8 +42,6 @@ public class StavkaPopisaStandardForm extends GenericForm {
 		tfPopisanaKolicina.setDocument(new JTextFieldLimit(12));
 		tfKolicinaPoKnjigama.setEditable(false);
 		tfProsecnaCenaPopisa.setEditable(false);
-		cmbArtikal.setEnabled(false);
-		cmbPopisniDokument.setEnabled(false);
 		lblGreska1.setForeground(Color.red);
 
 		tfPopisanaKolicina.setName("popisana količina");
@@ -55,6 +53,8 @@ public class StavkaPopisaStandardForm extends GenericForm {
 		cmbPopisniDokument = super.setupJoins(cmbPopisniDokument, "Popisni_dokument", "id_popisnog_dokumenta",
 				"id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta", false, "");
 
+		cmbArtikal.setEnabled(false);
+		cmbPopisniDokument.setEnabled(false);
 		if (!childWhere.contains("id_artikla")) {
 			btnZoomArtikal.addActionListener(new ActionListener() {
 				@Override
@@ -96,8 +96,8 @@ public class StavkaPopisaStandardForm extends GenericForm {
 		});
 
 		dataPanel.add(lblArtikal);
-		dataPanel.add(cmbArtikal, "gapx 15px");
-		dataPanel.add(btnZoomArtikal, "gapx 15px");
+		dataPanel.add(cmbArtikal);
+		dataPanel.add(btnZoomArtikal, "wrap, gapx 15px");
 
 		dataPanel.add(lblBrojPopisnog);
 		dataPanel.add(cmbPopisniDokument);
@@ -127,12 +127,12 @@ public class StavkaPopisaStandardForm extends GenericForm {
 	public boolean verification() {
 		if (tfPopisanaKolicina.getText().equals("")) {
 			lblGreska1.setText(Constants.VALIDATION_MANDATORY_FIELD);
-			tfKolicinaPoKnjigama.requestFocus();
+			tfPopisanaKolicina.requestFocus();
 			return false;
 		}
-		if (!VerificationMethods.containsNumbers(tfKolicinaPoKnjigama.getText().trim())) {
+		if (!VerificationMethods.containsNumbers(tfPopisanaKolicina.getText().trim())) {
 			lblGreska1.setText(Constants.VALIDATION_BROJ);
-			tfKolicinaPoKnjigama.requestFocus();
+			tfPopisanaKolicina.requestFocus();
 			return false;
 		}
 		return true;
