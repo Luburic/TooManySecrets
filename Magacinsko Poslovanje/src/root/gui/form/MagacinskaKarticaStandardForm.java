@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
@@ -54,6 +55,12 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		tfVrednostPocetnog.setName("vrednost početnog stanja");
 		tfVrednostUlaza.setName("vrednost ulaza");
 		tfVrednostIzlaza.setName("vrednost izlaza");
+		tfKolicinaIzlaza.setEditable(false);
+		tfKolicinaUlaza.setEditable(false);
+		tfKolicinaPocetnog.setEditable(false);
+		tfVrednostIzlaza.setEditable(false);
+		tfVrednostUlaza.setEditable(false);
+		tfVrednostPocetnog.setEditable(false);
 
 		cmbGodina = super.setupJoins(cmbGodina, "Poslovna_godina", "id_poslovne_godine", "id poslovne godine",
 				"godina", "godina", false, " WHERE zakljucena = 0");
@@ -142,7 +149,7 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		dataPanel.add(tfVrednostIzlaza, "wrap, gapx 15px");
 
 		JPopupMenu popup = new JPopupMenu();
-		popup.add(new ArtikalAction());
+		popup.add(new ArtikalAction());// #####Treba analitika magacinske kartice ovde
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
@@ -157,15 +164,38 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 	}
 
 	@Override
+	protected void clearFields(boolean needFocus) {
+		super.clearFields(needFocus);
+		tfKolicinaIzlaza.setText("0");
+		tfKolicinaUlaza.setText("0");
+		tfKolicinaPocetnog.setText("0");
+		tfVrednostIzlaza.setText("0");
+		tfVrednostUlaza.setText("0");
+		tfVrednostPocetnog.setText("0");
+	}
+
+	@Override
 	public boolean verification() {
-		// TODO Auto-generated method stub
-		return false;
+		int n = tableModel.getRowCount();
+		Integer id_artikla = ((ComboBoxPair) cmbArtikal.getSelectedItem()).getId();
+		Integer id_magacina = ((ComboBoxPair) cmbOrgJedinica.getSelectedItem()).getId();
+		Integer id_godine = ((ComboBoxPair) cmbGodina.getSelectedItem()).getId();
+
+		for (int i = 0; i < n; i++) {
+			if (tableModel.getValueAt(i, 1).equals(id_godine) && tableModel.getValueAt(i, 2).equals(id_artikla)
+					&& tableModel.getValueAt(i, 3).equals(id_magacina)) {
+				tblGrid.getSelectionModel().setSelectionInterval(i, i);
+				JOptionPane.showConfirmDialog(this,
+						"Magacinska kartica za dati artikal u datom magacinu i godini već postoji");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public boolean allowDeletion() {
-		// TODO Auto-generated method stub
-		return false;
+		return allowDeletion("Analtika_magacinske_kartice");
 	}
 
 	@Override

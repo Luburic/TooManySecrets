@@ -74,8 +74,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		cmbOrgJedinicaU = super.setupJoins(cmbOrgJedinicaU, "Organizaciona_jedinica", "id_jedinice", "id jedinice",
 				"naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 		cmbPoslovniPartner = super.setupJoins(cmbPoslovniPartner, "Poslovni_partner", "id_poslovnog_partnera",
-				"id poslovnog partnera", "naziv_poslovnog_partnera", "naziv poslovnog partnera", false,
-				" WHERE magacin = 1");
+				"id poslovnog partnera", "naziv_poslovnog_partnera", "naziv poslovnog partnera", false, "");
 
 		if (!childWhere.contains("id_jedinice")) {
 			btnZoomOrgJedinicaIz.addActionListener(new ActionListener() {
