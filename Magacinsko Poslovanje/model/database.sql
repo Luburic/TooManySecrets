@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     26-May-14 2:51:31 PM                         */
+/* Created on:     27-May-14 11:03:59 AM                        */
 /*==============================================================*/
 
 
@@ -451,8 +451,7 @@ create table Artikal (
    id_grupe             int                  not null,
    sifra_artikla        char(8)              not null,
    pakovanje            decimal(2,2)         not null,
-   jedinica_mere        char(3)              not null
-      constraint CKC_JEDINICA_MERE_ARTIKAL check (jedinica_mere in ('t','kg','g','kom')),
+   jedinica_mere        char(3)              not null,
    naziv_artikla        varchar(30)          not null,
    artikal_version      int                  not null,
    constraint PK_ARTIKAL primary key nonclustered (id_artikla)
@@ -846,7 +845,7 @@ create table Stavka_popisa (
    id_stavke_popisa     int                  identity,
    id_artikla           int                  not null,
    id_popisnog_dokumenta int                  not null,
-   popisana_kolicina    numeric(12)          not null,
+   popisana_kolicina    numeric(12)          null,
    kolicina_po_knjigama numeric(12)          not null,
    prosecna_cena_popis  decimal(15,2)        not null,
    stavka_popisa_version int                  not null,

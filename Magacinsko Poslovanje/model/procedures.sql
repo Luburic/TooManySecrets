@@ -2,6 +2,7 @@ CREATE PROCEDURE ProknjiziPopis
 (
 	@Id int,
 	@Datum char(10)
+	@RetVal int OUTPUT
 )
 AS
 DECLARE @count int
@@ -14,7 +15,17 @@ IF(@count = 0)
   END
 ELSE
   BEGIN
-    UPDATE Popisni_dokument SET status_popisnog = 'proknjizen', datum_knjizenja=@Datum WHERE id_popisnog_dokumenta=@Id
+	SELECT @count = COUNT(*) FROM Stavka_popisa WHERE id_popisnog_dokumenta = @Id AND popisana_kolicina = NULL
+	IF(@count = 0)
+		BEGIN
+			@RetVal = 1
+			PRINT 'Popisni dokument se može proknjižiti samo kada se unesu sve količine artikla.'
+		END
+	ELSE
+		BEGIN
+			@RetVal = 0
+			UPDATE Popisni_dokument SET status_popisnog = 'proknjizen', datum_knjizenja=@Datum WHERE id_popisnog_dokumenta=@Id
+		END
   END
 GO
 
@@ -51,6 +62,7 @@ ELSE
 				END
 			ELSE
 				BEGIN
+					@RetVal = 0
 					UPDATE Poslovna_godina SET zakljucena = '1' WHERE id_poslovne_godine =@Id
 				END
 		END
