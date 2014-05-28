@@ -29,7 +29,6 @@ import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
 import root.util.DateLabelFormatter;
-import root.util.Lookup;
 import root.util.verification.JTextFieldLimit;
 
 public class PopisniDokumentStandardForm extends GenericForm {
@@ -75,13 +74,8 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		tfDatumKnjizenja.setName("datum knjiženja");
 		tfStatusPopisnog.setName("status popisnog");
 
-		super.setupJoins(cmbOrgJedinica, "Organizaciona_jedinica", "id_jedinice", "id jedinice", "naziv_jedinice",
-				"naziv jedinice", false, " WHERE magacin = 1");
-		try {
-			cmbOrgJedinica = new JComboBox<>(Lookup.getMagacini());
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
+		cmbOrgJedinica = super.setupJoins(cmbOrgJedinica, "Organizaciona_jedinica", "id_jedinice", "id jedinice",
+				"naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 		cmbGodina = super.setupJoins(cmbGodina, "Poslovna_godina", "id_poslovne_godine", "id poslovne godine",
 				"godina", "godina", false, " WHERE zakljucena = 0");
 

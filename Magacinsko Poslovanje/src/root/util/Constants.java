@@ -23,6 +23,10 @@ public class Constants {
 	public static final String ERROR_RECORD_WAS_DELETED = "Slog je obrisan od strane drugog korisnika.";
 	public static final String ERROR_RECORD_WAS_CHANGED = "Slog je promenjen od strane drugog korisnika. Pogledajte njegovu trenutnu vrednost.";
 
+	public static Integer idGodine = 0;
+	public static Integer idPreduzeca = 0;
+	public static boolean godinaZakljucena = false;
+
 	public static int MODE;
 
 	private static User currentUser;

@@ -38,13 +38,14 @@ public class Lookup {
 		return retVal;
 	}
 
-	public static Vector<ComboBoxPair> getMagacini() throws SQLException {
+	public static boolean getGodinaZakljucena(Integer idGodine) throws SQLException {
 		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
-				"SELECT id_jedinice, naziv_jedinice FROM Organizaciona_jedinica WHERE magacin=1");
+				"SELECT zakljucena FROM Poslovna_godina WHERE id_poslovne_godine = " + idGodine);
 		ResultSet rset = stmt.executeQuery();
-		Vector<ComboBoxPair> retVal = new Vector<ComboBoxPair>();
-		while (rset.next()) {
-			retVal.add(new ComboBoxPair(rset.getInt(1), rset.getString(2)));
+		boolean retVal = false;
+		rset.next();
+		if (rset.getByte(1) == 1) {
+			retVal = true;
 		}
 		rset.close();
 		stmt.close();

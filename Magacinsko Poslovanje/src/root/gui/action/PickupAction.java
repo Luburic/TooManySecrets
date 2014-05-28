@@ -49,6 +49,6 @@ public class PickupAction extends AbstractAction {
 			standardForm.getReturning().insertItemAt(cbp, n);
 			standardForm.getReturning().setSelectedIndex(n);
 		}
-		standardForm.setVisible(false);
+		standardForm.dispose();
 	}
 }

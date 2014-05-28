@@ -163,17 +163,6 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 	}
 
 	@Override
-	protected void clearFields(boolean needFocus) {
-		super.clearFields(needFocus);
-		tfKolicinaIzlaza.setText("0");
-		tfKolicinaUlaza.setText("0");
-		tfKolicinaPocetnog.setText("0");
-		tfVrednostIzlaza.setText("0");
-		tfVrednostUlaza.setText("0");
-		tfVrednostPocetnog.setText("0");
-	}
-
-	@Override
 	public boolean verification() {
 		return false;
 	}
