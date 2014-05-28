@@ -57,8 +57,8 @@ public class StavkaPrometaStandardForm extends GenericForm {
 
 		cmbArtikal = super.setupJoins(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
 				"naziv artikla", false, "");
-		cmbPrometniDokument = super.setupJoins(cmbPrometniDokument, "Popisni_dokument", "id_popisnog_dokumenta",
-				"id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta", false, "");
+		cmbPrometniDokument = super.setupJoins(cmbPrometniDokument, "Prometni_dokument", "id_prometnog_dokumenta",
+				"id prometnog dokumenta", "broj_prometnog_dokumenta", "broj prometnog dokumenta", false, "");
 
 		cmbArtikal.setEnabled(false);
 		cmbPrometniDokument.setEnabled(false);
@@ -77,7 +77,7 @@ public class StavkaPrometaStandardForm extends GenericForm {
 			cmbArtikal.setEnabled(false);
 			btnZoomArtikal.setVisible(false);
 		}
-		if (!childWhere.contains("id_popisnog_dokumenta")) {
+		if (!childWhere.contains("id_prometnog_dokumenta")) {
 			btnZoomPopisniDokument.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {

@@ -17,6 +17,7 @@ import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
 import root.gui.action.dialog.MagacinskaKarticaAction;
 import root.gui.action.dialog.StavkaPopisaAction;
+import root.gui.action.dialog.StavkaPrometaAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
@@ -147,7 +148,7 @@ public class ArtikalStandardForm extends GenericForm {
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new MagacinskaKarticaAction());
 		popup.add(new StavkaPopisaAction());
-		popup.add(new StavkaPopisaAction());// Stavka prometa kada bude kreirana ide ovde
+		popup.add(new StavkaPrometaAction());
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 

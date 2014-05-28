@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
+import root.gui.action.dialog.AnalitikaMagacinskeKarticeAction;
 import root.gui.action.dialog.PrometniDokumentAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
@@ -71,7 +72,7 @@ public class VrstaPrometaStandardForm extends GenericForm {
 
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new PrometniDokumentAction());
-		popup.add(new PrometniDokumentAction());// Analitika ovde treba
+		popup.add(new AnalitikaMagacinskeKarticeAction());
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 

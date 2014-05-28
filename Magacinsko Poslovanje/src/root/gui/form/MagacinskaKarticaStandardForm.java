@@ -11,7 +11,7 @@ import javax.swing.JTextField;
 
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
-import root.gui.action.dialog.ArtikalAction;
+import root.gui.action.dialog.AnalitikaMagacinskeKarticeAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 
@@ -148,7 +148,7 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		dataPanel.add(tfVrednostIzlaza, "wrap, gapx 15px");
 
 		JPopupMenu popup = new JPopupMenu();
-		popup.add(new ArtikalAction());// #####Treba analitika magacinske kartice ovde
+		popup.add(new AnalitikaMagacinskeKarticeAction());
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 

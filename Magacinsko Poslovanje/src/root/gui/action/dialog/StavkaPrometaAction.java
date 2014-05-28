@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.KeyStroke;
 
-import root.gui.form.StavkaPopisaStandardForm;
+import root.gui.form.StavkaPrometaStandardForm;
 
 public class StavkaPrometaAction extends DialogAction {
 	private static final long serialVersionUID = 1L;
@@ -19,8 +19,8 @@ public class StavkaPrometaAction extends DialogAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		StavkaPopisaStandardForm form = null;
-		form = new StavkaPopisaStandardForm(null, getWhereClause());
+		StavkaPrometaStandardForm form = null;
+		form = new StavkaPrometaStandardForm(null, getWhereClause());
 		form.setVisible(true);
 	}
 

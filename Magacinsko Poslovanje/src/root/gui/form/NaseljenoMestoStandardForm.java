@@ -39,7 +39,7 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		super(returning, childWhere);
 		setTitle("Naseljena mesta");
 
-		JLabel lblSifra = new JLabel("Šifra mesta*:");
+		JLabel lblSifra = new JLabel("Zip kod*:");
 		JLabel lblNaziv = new JLabel("Naziv mesta*:");
 		JLabel lblDrzava = new JLabel("Država*:");
 		tfNazivMesta.setName("naziv mesta");
