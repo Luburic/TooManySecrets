@@ -1,29 +1,12 @@
 package ws.style.message;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.ws.Provider;
 import javax.xml.ws.Service;
 import javax.xml.ws.ServiceMode;
@@ -34,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import security.SecurityClass;
+import util.DocumentTransform;
 import util.Validation;
 import beans.faktura.Faktura;
 
@@ -50,8 +34,7 @@ public class FakturaProvider  implements Provider<DOMSource> {
 	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
 	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
 	
-	public static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-	public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+	
 	private Document message;
 	
 	public FakturaProvider() {
@@ -68,8 +51,8 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			//serijalizacija DOM-a na ekran
     		System.out.println("\nInvoking FakturaProvider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
-			Document document = convertToDocument(request);
-			printDocument(document, System.out);
+			Document document =DocumentTransform.convertToDocument(request);
+			DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
@@ -93,7 +76,9 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			String path = "C:\\apache-tomee-plus-1.5.0\\webapps\\ws_style\\keystores\\firmaa.jks";
 			
 			System.out.println("Pre dekriptovanja");
-			Validation.transform(doc);
+			DocumentTransform.printDocument(doc);
+			
+			
 			//onaj properties file kojie je zakomentarisan na pocetku try bloka ce ovde uskociti
 			Document decrypt = security.decrypt(doc, security.readPrivateKey("firmaa", "firmaa", path, "firmaa"));
 			Reader reader1 = Validation.createReader(decrypt);
@@ -103,7 +88,7 @@ public class FakturaProvider  implements Provider<DOMSource> {
 				return new DOMSource(signed);
 			}
 			System.out.println("Posle dekriptovanja");
-			Validation.transform(decrypt);
+			DocumentTransform.printDocument(decrypt);
 			
 			if(!security.verifySignature(decrypt)) {
 				Document wSigned = createResponse("Dokument nije dobro potpisan.");
@@ -125,7 +110,7 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			Element signature = (Element) decrypt.getElementsByTagName("ds:Signature").item(0);
 			signature.getParentNode().removeChild(signature);
 			System.out.println("Posle skidanja tagova************************************************************");
-			Validation.transform(decrypt);
+			DocumentTransform.printDocument(decrypt);
 			
 			Reader reader2 = Validation.createReader(decrypt);
 			decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaRaw.xsd"});
@@ -145,21 +130,11 @@ public class FakturaProvider  implements Provider<DOMSource> {
 		
 			//snimanje u bazu...
 			
-    	} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
+    	} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (DOMException e) {
 			e.printStackTrace();
 		} catch (TransformerFactoryConfigurationError e) {
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
       
@@ -169,7 +144,7 @@ public class FakturaProvider  implements Provider<DOMSource> {
 	
 	 private Document createResponse(String notification) {
 			
-			DocumentBuilder documentBuilder = getDocumentBuilder();
+			DocumentBuilder documentBuilder = DocumentTransform.getDocumentBuilder();
 			Document doc = documentBuilder.newDocument();
 			
 			Element rootEl = doc.createElementNS(TARGET_NAMESPACE, "ns1:notif");
@@ -181,47 +156,6 @@ public class FakturaProvider  implements Provider<DOMSource> {
 		}
 	
 	
-	 
-	private DocumentBuilder getDocumentBuilder() {
-		try {
-			// Setup document builder
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-			docBuilderFactory.setNamespaceAware(true);
-			// validacija XML scheme
-			docBuilderFactory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
-			DocumentBuilder builder = docBuilderFactory.newDocumentBuilder();
-			return builder;
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
- 
-	public Document convertToDocument(DOMSource request) {
-	    Document r = null;
-	    try{
-	    	DocumentBuilder db = getDocumentBuilder();
-	    	Transformer transformer = TransformerFactory.newInstance().newTransformer();
-	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        StreamResult result = new StreamResult(baos);
-	        transformer.transform(request, result);
-	        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-	        r = db.parse(bais);
-	    }catch(Exception e){
-	        e.printStackTrace();
-	    }
-	    return r;
-	}
-	
-	
-	public void printDocument(Document doc, OutputStream out)
-			throws IOException, TransformerException {
-		
-		Transformer transformer = TransformerFactory.newInstance().newTransformer();
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.transform(new DOMSource(doc), new StreamResult(new OutputStreamWriter(out, "UTF-8")));
-	}
 	
 	
 	/*private boolean validateSchema(Document document){

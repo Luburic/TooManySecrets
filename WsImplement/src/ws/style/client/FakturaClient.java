@@ -77,8 +77,8 @@ public class FakturaClient {
 		 	
 	 }
 	 
-	 /*public static void main(String[] args) {
+	 public static void main(String[] args) {
 
 		FakturaClient.testIt("firmaa", "firmaa", "./WEB-INF/keystores/firmaa.jks", "firmaa","./FakturaTest/faktura-example1.xml");
-    }*/
+    }
 }

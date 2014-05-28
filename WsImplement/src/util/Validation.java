@@ -164,33 +164,6 @@ public class Validation {
 
 	}
 	
-	public static void transform(Document document) {
-		
-		try {
-			
-			//Kreira se TransformerFactory
-			TransformerFactory tFactory = TransformerFactory.newInstance();
-			//Kreiramo transformer
-			Transformer transformer = tFactory.newTransformer();
-			//uvlacenje
-			transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2");
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			//Posto je ulaz za transformaciju DOM kreiramo DOMSource
-			DOMSource source = new DOMSource(document);
-			//Izlaz je std.out, odnosno stream
-			StreamResult result = new StreamResult(System.out);
-			//Vrsi se transformacija
-			transformer.transform(source, result);
-
-		} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
-		} catch (TransformerFactoryConfigurationError e) {
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	
 	static class MyErrorHandler implements ErrorHandler {
 		

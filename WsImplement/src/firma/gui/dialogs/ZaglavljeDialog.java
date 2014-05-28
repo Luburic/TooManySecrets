@@ -556,8 +556,7 @@ public class ZaglavljeDialog extends JDialog {
 					e1.printStackTrace();
 				}
 
-				// ovo ce se pozvati negde iz gui-a za konkretnu fakturu,kao
-				// operacija [posalji fakturu] za izabranu firmu
+				
 				// isto ce se informacije o firmi (password i putanja i tako to citati iz nekog properties fajla pa ce se prosledjivati testIt metodi)
 				FakturaClient.testIt("firmaa", "firmaa", "./WEB-INF/keystores/firmaa.jks", "firmaa","./FakturaTest/Faktura2.xml");
 
