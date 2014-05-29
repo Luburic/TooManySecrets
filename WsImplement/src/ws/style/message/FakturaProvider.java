@@ -130,6 +130,7 @@ public class FakturaProvider  implements Provider<DOMSource> {
 		
 			//snimanje u bazu...
 			
+			
     	} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (DOMException e) {

@@ -16,12 +16,13 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class DocumentTransform {
 	
 	public static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 	public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
-	
+	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
 	
 	public static DocumentBuilder getDocumentBuilder() {
 		try {
@@ -82,5 +83,20 @@ public class DocumentTransform {
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	
+	public static Document createNotificationResponse(String notification,String TARGET_NAMESPACE) {
+		
+		DocumentBuilder documentBuilder = DocumentTransform.getDocumentBuilder();
+		Document doc = documentBuilder.newDocument();
+		
+		Element rootEl = doc.createElementNS(TARGET_NAMESPACE, "ns1:notif");
+		rootEl.setAttributeNS(NAMESPACE_SPEC_NS, "xmlns:ns1", TARGET_NAMESPACE);
+		doc.appendChild(rootEl);
+		rootEl.appendChild(doc.createTextNode(notification));
+		
+		return doc;
 	}
 }

@@ -13,8 +13,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.Dispatch;
@@ -96,23 +94,20 @@ public class NalogProvider  implements Provider<DOMSource>{
 				return new DOMSource(createResponse("Dokument nije dobro potpisan."));
 				
 			
+			DOMSource timestampOK= Validation.validateTimestamp(TARGET_NAMESPACE, decrypted, "",0);
+			
+			if(timestampOK==null)
+				return new DOMSource(createResponse("Dokument ne odgovara prema vremenu primanja."));
 			
 			
-			Element timestamp = (Element) decrypted.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
-			String dateString = timestamp.getTextContent();
-			//provera ok
-			timestamp.getParentNode().removeChild(timestamp);
+			decrypted = DocumentTransform.convertToDocument(timestampOK);
 			
-			
-			
-			Element redniBrojPoruke = (Element) decrypted.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
-			//provera ok
-			redniBrojPoruke.getParentNode().removeChild(redniBrojPoruke);
 			
 			Element signature = (Element) decrypted.getElementsByTagName("ds:Signature").item(0);
-			//provera ok
+			//if(databaseSign = signature)
+				//return new DOMSource(createResponse("Potpis dokumenta ne odgovara.");
 			signature.getParentNode().removeChild(signature);
-			
+		
 			
 			Reader reader2 = Validation.createReader(decrypted);
 			decrypted = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/ws_style/services/Nalog?xsd=../shema/NalogRaw.xsd"});
@@ -167,7 +162,7 @@ public class NalogProvider  implements Provider<DOMSource>{
 				String password="";
 				String keystoreFile="";
 				String keystorePassword="";
-				Document signed = security.addTimestampAndSign(alias, password, keystoreFile, keystorePassword, inputFile, outputFile, 0, " http://localhost:8080/ws_style/services/Banka?xsd=../shema/MT103Signed.xsd", "mt103");
+				Document signed = security.addTimestampAndSign(alias, password, keystoreFile, keystorePassword, inputFile, outputFile, 0, " http://localhost:8080/ws_style/services/Banka?xsd=../shema/MT103Signed.xsd", "MT103");
 				
 				if( signed == null )
 					return new DOMSource(createResponse("Greska u potpisivanju."));
@@ -175,7 +170,7 @@ public class NalogProvider  implements Provider<DOMSource>{
 				Document encrypted = null;
 				
 				
-				encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificate(alias, password, keystoreFile, keystorePassword),NAMESPACE_XSD, "mt103");
+				encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificate(alias, password, keystoreFile, keystorePassword),NAMESPACE_XSD, "MT103");
 				
 				if(encrypted == null)
 					return new DOMSource(createResponse("Greska u enkripciji."));
@@ -194,11 +189,12 @@ public class NalogProvider  implements Provider<DOMSource>{
 					Service service = Service.create(wsdlLocation, serviceName);
 					Dispatch<DOMSource> dispatch = service.createDispatch(portName, DOMSource.class, Service.Mode.PAYLOAD);
 				
-					DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 					
 					
 					//obrada odgovora od centrale 
+					DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 					
+					//......................
 					Document rdocument =DocumentTransform.convertToDocument(response);
 
 					Reader reader3 = Validation.createReader(rdocument);
@@ -226,16 +222,18 @@ public class NalogProvider  implements Provider<DOMSource>{
 					
 					
 				
-					Element timestamp2 = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
-					String dateString2 = timestamp2.getTextContent();
 					
-					timestamp2.getParentNode().removeChild(timestamp2);
+					DOMSource timestampOK2= Validation.validateTimestamp(TARGET_NAMESPACE, decrypt, "",0);
+					if(timestampOK2==null)
+						return new DOMSource(createResponse("Dokument ne odgovara prema vremenu primanja."));
 					
-					Element redniBrojPoruke2 = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
-					redniBrojPoruke2.getParentNode().removeChild(redniBrojPoruke2);
 					
-					//skidanje taga
+					decrypt = DocumentTransform.convertToDocument(timestampOK2);
+					
+					
 					Element signature2 = (Element) decrypt.getElementsByTagName("ds:Signature").item(0);
+					//if(databaseSign = signature)
+						//return new DOMSource(createResponse("Potpis dokumenta ne odgovara.");
 					signature2.getParentNode().removeChild(signature2);
 				
 					Reader reader5 = Validation.createReader(decrypt);

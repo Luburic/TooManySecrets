@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.StringTokenizer;
 
 import javax.swing.JButton;
@@ -22,7 +21,6 @@ import net.miginfocom.swing.MigLayout;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 
-import org.basex.query.value.item.Str;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

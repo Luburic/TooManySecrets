@@ -24,6 +24,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -36,6 +37,7 @@ import org.xml.sax.SAXParseException;
 public class Validation {
 
 	public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
 	
 	private static int errorCount = 0;
 
@@ -127,6 +129,33 @@ public class Validation {
 		}
 		return document;
 	}
+	
+	
+	
+	
+	
+	
+	public static DOMSource validateTimestamp(String TARGET_NAMESPACE, Document decrypted, String dbDate, int dbCounter) {
+		
+		
+		Element timestamp = (Element) decrypted.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
+		String dateString = timestamp.getTextContent();
+		//if(dbDate i dateString)
+			//return new DOMSource(null);
+			
+		timestamp.getParentNode().removeChild(timestamp);
+		
+		
+		
+		Element redniBrojPoruke = (Element) decrypted.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
+		//if(dbRbr i redniBrojPoruke)
+			//return new DOMSource(null);
+		redniBrojPoruke.getParentNode().removeChild(redniBrojPoruke);
+		
+		return new DOMSource(decrypted);
+	}
+	
+	
 
 	public static Reader createReader(Node node) {
 
