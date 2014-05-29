@@ -76,11 +76,8 @@ public class NalogProvider  implements Provider<DOMSource>{
 			
 			Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/ws_style/services/Nalog?xsd=../shema/NalogCrypt.xsd","http://localhost:8080/ws_style/services/Nalog?xsd=xenc-schema.xsd"});
 			
-			if( doc == null ) {
-				Document response = createResponse("Dokument nije validan po Crypt semi.");
-				return new DOMSource(response);
-				
-			}
+			if( doc == null ) 
+				return new DOMSource( createResponse("Dokument nije validan po Crypt semi."));
 			
 			String path = "C:\\apache-tomee-plus-1.5.0\\webapps\\ws_style\\keystores\\firmaa.jks";
 
@@ -90,17 +87,15 @@ public class NalogProvider  implements Provider<DOMSource>{
 			
 			decrypted = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/ws_style/services/Nalog?xsd=../shema/NalogSigned.xsd","http://localhost:8080/ws_style/services/Nalog?xsd=xmldsig-core-schema.xsd"});
 			
-			if( decrypted == null ) {
-				Document response = createResponse("Dokument nije validan po Signed semi.");
-				return new DOMSource(response);
+			if( decrypted == null )
+				return new DOMSource(createResponse("Dokument nije validan po Signed semi."));
 				
-			}
+		
 			
-			if(!security.verifySignature(decrypted)) {
-				Document response = createResponse("Dokument nije dobro potpisan.");
-				return new DOMSource(response);
+			if(!security.verifySignature(decrypted)) 
+				return new DOMSource(createResponse("Dokument nije dobro potpisan."));
 				
-			}
+			
 			
 			
 			Element timestamp = (Element) decrypted.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
@@ -121,11 +116,9 @@ public class NalogProvider  implements Provider<DOMSource>{
 			
 			Reader reader2 = Validation.createReader(decrypted);
 			decrypted = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/ws_style/services/Nalog?xsd=../shema/NalogRaw.xsd"});
-			if( decrypted == null ) {
-				Document raw = createResponse("Dokument nije validan po Raw semi.");
-				return new DOMSource(raw);
-				
-			}
+			
+			if( decrypted == null ) 
+				return new DOMSource(createResponse("Dokument nije validan po Raw semi."));
 			
 			
 			
@@ -136,18 +129,18 @@ public class NalogProvider  implements Provider<DOMSource>{
 			//unmarshaller.setSchema(schema);
 		
 			Nalog nalog= (Nalog) unmarshaller.unmarshal(decrypted);
-			if(!validateContent(nalog)) {
-				Document response = createResponse("Dokument nije validan sadrzaju.");
-				return new DOMSource(response);
-				
-			}
+			
+			if(!validateContent(nalog))
+				return new DOMSource(createResponse("Dokument nije validan sadrzaju."));
 			
 			
 			
+			
+			
+			//sada se ovaj provider ponasa kao klijent prema centrali
 		
 			
 			BigDecimal limit = new BigDecimal(250000.00);
-			
 			int res =nalog.getIznos().compareTo(limit);
 			
 			
@@ -165,8 +158,7 @@ public class NalogProvider  implements Provider<DOMSource>{
 				Element mt = (Element) docum.getElementsByTagName("MT103").item(0);
 				mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 				
-				SecurityClass sc = new SecurityClass();
-				sc.saveDocument(docum, "./MT103Test/MT103.xml");
+				security.saveDocument(docum, "./MT103Test/MT103.xml");
 				String inputFile =  "./MT103Test/MT103.xml";
 				
 				//potpisivanje od banke
@@ -203,8 +195,61 @@ public class NalogProvider  implements Provider<DOMSource>{
 					Dispatch<DOMSource> dispatch = service.createDispatch(portName, DOMSource.class, Service.Mode.PAYLOAD);
 				
 					DOMSource response = dispatch.invoke(new DOMSource(encrypted));
-					//poruka o zaduzenje response
+					
+					
+					//obrada odgovora od centrale 
+					
+					Document rdocument =DocumentTransform.convertToDocument(response);
+
+					Reader reader3 = Validation.createReader(rdocument);
+					
+					Document doc2 = Validation.buildDocumentWithValidation(reader3,new String[]{ "http://localhost:8080/ws_style/services/Banka?xsd=../shema/ZaduzenjeCrypt.xsd","http://localhost:8080/ws_style/services/Banka?xsd=xenc-schema.xsd"});
+					
+					if( doc2 == null ) 
+						return new DOMSource(createResponse("Dokument nije validan po Crypt semi."));
+					
+					//treba da provalim kako da dobijem tu putanju posto za url nece da ga nadje :(
+					String path2 = "C:\\apache-tomee-plus-1.5.0\\webapps\\ws_style\\keystores\\bankaa.jks";
+					
+					
+					
+					Document decrypt = security.decrypt(doc, security.readPrivateKey("bankaa", "bankaa", path2, "bankaa"));
+					Reader reader4 = Validation.createReader(decrypt);
+					decrypt = Validation.buildDocumentWithValidation(reader4, new String[]{ "http://localhost:8080/ws_style/services/Banka?xsd=../shema/ZaduzenjeSigned.xsd","http://localhost:8080/ws_style/services/Banka?xsd=xmldsig-core-schema.xsd"});
+					
+					if( decrypt == null ) 
+						return new DOMSource(createResponse("Dokument nije validan po Signed semi."));
+					
+					
+					if(!security.verifySignature(decrypt)) 
+						return new DOMSource(createResponse("Dokument nije dobro potpisan."));
+					
+					
+				
+					Element timestamp2 = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
+					String dateString2 = timestamp2.getTextContent();
+					
+					timestamp2.getParentNode().removeChild(timestamp2);
+					
+					Element redniBrojPoruke2 = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
+					redniBrojPoruke2.getParentNode().removeChild(redniBrojPoruke2);
+					
+					//skidanje taga
+					Element signature2 = (Element) decrypt.getElementsByTagName("ds:Signature").item(0);
+					signature2.getParentNode().removeChild(signature2);
+				
+					Reader reader5 = Validation.createReader(decrypt);
+					decrypt = Validation.buildDocumentWithValidation(reader5, new String[]{ "http://localhost:8080/ws_style/services/Banka?xsd=../shema/ZaduzenjeRaw.xsd"});
+					
+					if( decrypt == null )
+						return new DOMSource(createResponse("Dokument nije validan po Raw semi."));
+					
+					
 					//skini pare sa racuna firme
+					
+					//snimi u bazu
+					
+					
 					return new DOMSource(createResponse("Uspesno poslat i obradjen nalog."));
 					
 				}

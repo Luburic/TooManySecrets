@@ -67,10 +67,10 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			SecurityClass security = new SecurityClass();
 			Reader reader = Validation.createReader(document);
 			Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaCrypt.xsd","http://localhost:8080/ws_style/services/Faktura?xsd=xenc-schema.xsd"});
-			if( doc == null ) {
-				Document crypt = createResponse("Dokument nije validan po Crypt semi.");
-				return new DOMSource(crypt);
-			}
+			
+			if( doc == null )
+				return new DOMSource(createResponse("Dokument nije validan po Crypt semi."));
+			
 			
 			//treba da provalim kako da dobijem tu putanju posto za url nece da ga nadje :(
 			String path = "C:\\apache-tomee-plus-1.5.0\\webapps\\ws_style\\keystores\\firmaa.jks";
@@ -83,17 +83,17 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			Document decrypt = security.decrypt(doc, security.readPrivateKey("firmaa", "firmaa", path, "firmaa"));
 			Reader reader1 = Validation.createReader(decrypt);
 			decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaSigned.xsd","http://localhost:8080/ws_style/services/Faktura?xsd=xmldsig-core-schema.xsd"});
-			if( decrypt == null ) {
-				Document signed = createResponse("Dokument nije validan po Signed semi.");
-				return new DOMSource(signed);
-			}
+			
+			if( decrypt == null )
+				return new DOMSource(createResponse("Dokument nije validan po Signed semi."));
+			
+			
 			System.out.println("Posle dekriptovanja");
 			DocumentTransform.printDocument(decrypt);
 			
-			if(!security.verifySignature(decrypt)) {
-				Document wSigned = createResponse("Dokument nije dobro potpisan.");
-				return new DOMSource(wSigned);
-			}
+			if(!security.verifySignature(decrypt)) 
+				return new DOMSource(createResponse("Dokument nije dobro potpisan."));
+			
 			
 			//ovde ce ici provera za timestamp
 			Element timestamp = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
@@ -114,10 +114,10 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			
 			Reader reader2 = Validation.createReader(decrypt);
 			decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaRaw.xsd"});
-			if( decrypt == null ) {
-				Document raw = createResponse("Dokument nije validan po Raw semi.");
-				return new DOMSource(raw);
-			}
+			
+			if( decrypt == null )
+				return new DOMSource(createResponse("Dokument nije validan po Raw semi."));
+			
 			/*
 			Faktura faktura = (Faktura) unmarshaller.unmarshal(document);
 
