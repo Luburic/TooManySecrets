@@ -111,10 +111,10 @@
         
         
         
-        <!-- request-response -->
+        <!--  -->
         <wsdl:operation name="PrihvatiNalog">
             <wsdl:input name="nalogInput" message="ws:nalogRequest"/>
-            <wsdl:output name="strOutput" message="ws:notifikacija"/>
+            <!--wsdl:output name="strOutput" message="ws:notifikacija"/-->
         </wsdl:operation>
         
         <!-- request-response -->
@@ -174,9 +174,9 @@
         
         
         <wsdl:operation name="PrihvatiNalog">
-            <soap:operation soapAction=""/>
+            <soap:operation soapAction="" style="document"/>
             <wsdl:input name="nalogInput"><soap:body use="literal"/></wsdl:input>
-            <wsdl:output name="strOutput"><soap:body use="literal"/></wsdl:output>
+            <!-- wsdl:output name="strOutput"><soap:body use="literal"/></wsdl:output-->
         </wsdl:operation>
         
         
@@ -210,6 +210,11 @@
             <soap:address location="http://localhost:8080/IzvodPort"/>
         </wsdl:port>
         
+        
+        
+         <wsdl:port name="MT103Port" binding="ws:BankaBinding">
+            <soap:address location="http://localhost:8080/MT103Port"/>
+        </wsdl:port>
         
     </wsdl:service>
     

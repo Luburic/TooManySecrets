@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
 
 import security.SecurityClass;
 
+
 public class NalogClient {
 
 	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/bankaServis";
@@ -35,8 +36,8 @@ public class NalogClient {
 			
 			URL wsdlLocation = new URL("http://localhost:8080/ws_style/services/Banka?wsdl");
 		
-			QName serviceName = new QName("http://www.toomanysecrets.com/firmaServis", "BankaServis");
-			QName portName = new QName("http://www.toomanysecrets.com/firmaServis", "NalogPort");
+			QName serviceName = new QName("http://www.toomanysecrets.com/bankaServis", "BankaServis");
+			QName portName = new QName("http://www.toomanysecrets.com/bankaServis", "NalogPort");
 			
 			
 			Service service = Service.create(wsdlLocation, serviceName);
@@ -55,7 +56,11 @@ public class NalogClient {
 				security.saveDocument(encrypted, inputFile.substring(0, inputFile.length()-4) + "-crypted.xml");
 			}
 			
-			if(encrypted != null) {
+			if(encrypted == null)
+					return;
+
+			
+				
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 				
 				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
@@ -64,22 +69,21 @@ public class NalogClient {
 	            StreamResult result = new StreamResult(System.out);
 	            transformer.transform(response, result);
 	            System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-			}
-			
-			
+	            
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (TransformerConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			
 			} catch (TransformerFactoryConfigurationError e) {
+				e.printStackTrace();
+				
+			} catch (TransformerConfigurationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (TransformerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
 	 
 	 }
 	
@@ -87,7 +91,7 @@ public class NalogClient {
 	public static void main(String[] args) {
 		NalogClient cl = new NalogClient();
 		cl.testIt("firmaa", "firmaa", "./WEB-INF/keystores/firmaa.jks", "firmaa","./NalogTest/Nalog.xml");
-
+		
 	}
 
 }

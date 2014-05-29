@@ -30,7 +30,7 @@ public class FakturaClient {
 	
 	
 	 public static void testIt(String alias, String password, String keystoreFile, String keystorePassword, String inputFile) {
-		 //Kreiranje web servisa (dispatcher-a)
+		
 			try {
 				URL wsdlLocation = new URL("http://localhost:8080/ws_style/services/Faktura?wsdl");
 				QName serviceName = new QName("http://www.toomanysecrets.com/firmaServis", "FirmaServis");
@@ -44,6 +44,7 @@ public class FakturaClient {
 				String outputFile = inputFile.substring(0, inputFile.length()-4) + "-signed.xml";
 				
 				Document forCrypt = security.addTimestampAndSign(alias, password, keystoreFile, keystorePassword, inputFile, outputFile, 0, " http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaSigned.xsd", "faktura");
+				
 				if( forCrypt != null ) {
 					forCrypt = security.encrypt(forCrypt, SecurityClass.generateDataEncryptionKey(), security.readCertificate(alias, password, keystoreFile, keystorePassword),NAMESPACE_XSD, "faktura");
 					security.saveDocument(forCrypt, inputFile.substring(0, inputFile.length()-4) + "-crypted.xml");
@@ -58,9 +59,11 @@ public class FakturaClient {
 			            StreamResult result = new StreamResult(System.out);
 			            transformer.transform(response, result);
 			            System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-					}
+					} else 
+						System.out.println("Greska u kriptovanju.");
 				}
-				//ne postoji dokument
+				else 
+					System.out.println("Greska u potpisivanju.");
 				
 			} catch (MalformedURLException e) {
 				e.printStackTrace();

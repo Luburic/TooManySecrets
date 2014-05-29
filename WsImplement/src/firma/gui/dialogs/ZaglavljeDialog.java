@@ -548,6 +548,17 @@ public class ZaglavljeDialog extends JDialog {
 					//faktura.setAttribute("xsi:schemaLocation", "http://www.toomanysecrets.com/tipovi file:/http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaRaw.xsd");
 					SecurityClass sc = new SecurityClass();
 					sc.saveDocument(doc, "./FakturaTest/Faktura2.xml");
+					
+					
+					// isto ce se informacije o firmi (password i putanja i tako to citati iz nekog properties fajla pa ce se prosledjivati testIt metodi)
+					FakturaClient.testIt("firmaa", "firmaa", "./WEB-INF/keystores/firmaa.jks", "firmaa","./FakturaTest/Faktura2.xml");
+
+					JOptionPane.showMessageDialog(null,
+							"Uspesno kreirana(i poslata*) faktura.",
+							"Kreiranje fakture", JOptionPane.INFORMATION_MESSAGE);
+					setVisible(false);
+					
+					
 				} catch (PropertyException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -557,14 +568,6 @@ public class ZaglavljeDialog extends JDialog {
 				}
 
 				
-				// isto ce se informacije o firmi (password i putanja i tako to citati iz nekog properties fajla pa ce se prosledjivati testIt metodi)
-				FakturaClient.testIt("firmaa", "firmaa", "./WEB-INF/keystores/firmaa.jks", "firmaa","./FakturaTest/Faktura2.xml");
-
-				JOptionPane.showMessageDialog(null,
-						"Uspesno kreirana(i poslata*) faktura.",
-						"Kreiranje fakture", JOptionPane.INFORMATION_MESSAGE);
-				setVisible(false);
-
 			}
 		});
 
