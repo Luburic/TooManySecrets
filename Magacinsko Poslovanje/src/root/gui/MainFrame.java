@@ -30,7 +30,6 @@ import root.gui.action.dialog.PreduzeceAction;
 import root.gui.action.dialog.PreduzeceGodinaAction;
 import root.gui.action.dialog.PrometniDokumentAction;
 import root.gui.action.dialog.RadnikAction;
-import root.gui.action.dialog.StavkaPopisaAction;
 import root.gui.action.dialog.VrstaPrometaAction;
 import root.util.Constants;
 
@@ -60,7 +59,7 @@ public class MainFrame extends JFrame {
 
 		setUpFrame();
 
-		this.setSize(430, 430);
+		this.setSize(600, 600);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.setVisible(true);
@@ -90,31 +89,56 @@ public class MainFrame extends JFrame {
 		if (Constants.idPreduzeca != 0) {
 			orgSemaMenu.add(new JMenuItem(new RadnikAction()));
 			orgSemaMenu.add(new JMenuItem(new OrganizacionaJedinicaAction()));
-
-			orgSemaMenu.add(new JMenuItem(new GrupaArtiklaAction(false)));
-			orgSemaMenu.add(new JMenuItem(new ArtikalAction()));
-			orgSemaMenu.add(new JMenuItem(new PopisniDokumentAction()));
-			orgSemaMenu.add(new JMenuItem(new StavkaPopisaAction()));
-			orgSemaMenu.add(new JMenuItem(new MagacinskaKarticaAction()));
 			orgSemaMenu.add(new JMenuItem(new PoslovniPartnerAction()));
-			orgSemaMenu.add(new JMenuItem(new VrstaPrometaAction()));
-			orgSemaMenu.add(new JMenuItem(new PrometniDokumentAction()));
-			orgSemaMenu.add(new JMenuItem(new ClanKomisijeAction()));
+
+			JMenu artikliMenu = new JMenu("Magacinske kartice i artikli");
+			artikliMenu.setMnemonic(KeyEvent.VK_A);
+			artikliMenu.add(new JMenuItem(new GrupaArtiklaAction(false)));
+			artikliMenu.add(new JMenuItem(new ArtikalAction()));
+			artikliMenu.add(new JMenuItem(new MagacinskaKarticaAction()));
+			menuBar.add(artikliMenu);
+
+			JMenu prometMenu = new JMenu("Promet");
+			prometMenu.setMnemonic(KeyEvent.VK_P);
+			prometMenu.add(new JMenuItem(new VrstaPrometaAction()));
+			prometMenu.add(new JMenuItem(new PrometniDokumentAction()));
+			menuBar.add(prometMenu);
+
+			JMenu popisMenu = new JMenu("Popis");
+			popisMenu.setMnemonic(KeyEvent.VK_O);
+			popisMenu.add(new JMenuItem(new PopisniDokumentAction()));
+			popisMenu.add(new JMenuItem(new ClanKomisijeAction()));
+			menuBar.add(popisMenu);
+
+			JButton btnMagacinska = new JButton(new MagacinskaKarticaAction());
+			JButton btnPrometni = new JButton(new PrometniDokumentAction());
+			JButton btnPopisni = new JButton(new PopisniDokumentAction());
+			JButton btnArtikli = new JButton(new ArtikalAction());
+
+			btnMagacinska.setPreferredSize(new Dimension(250, 250));
+			btnPrometni.setPreferredSize(new Dimension(250, 250));
+			btnPopisni.setPreferredSize(new Dimension(250, 250));
+			btnArtikli.setPreferredSize(new Dimension(250, 250));
+
+			this.add(btnMagacinska, "pad 50 50 -50 -50, dock center");
+			this.add(btnPrometni, "wrap, pad 50 50 -50 -50, dock center");
+			this.add(btnPopisni, "pad 50 50 -50 -50, dock center");
+			this.add(btnArtikli, "pad 50 50 -50 -50, dock center");
 		} else {
 			JButton btnDrzava = new JButton(new DrzaveAction());
 			JButton btnMesto = new JButton(new NaseljenoMestoAction());
 			JButton btnPreduzece = new JButton(new PreduzeceAction());
 			JButton btnGodina = new JButton(new GodinaAction());
 
-			btnDrzava.setPreferredSize(new Dimension(200, 200));
-			btnMesto.setPreferredSize(new Dimension(200, 200));
-			btnPreduzece.setPreferredSize(new Dimension(200, 200));
-			btnGodina.setPreferredSize(new Dimension(200, 200));
+			btnDrzava.setPreferredSize(new Dimension(250, 250));
+			btnMesto.setPreferredSize(new Dimension(250, 250));
+			btnPreduzece.setPreferredSize(new Dimension(250, 250));
+			btnGodina.setPreferredSize(new Dimension(250, 250));
 
-			this.add(btnDrzava, "pad 15 15 -15 -15, dock center");
-			this.add(btnMesto, "wrap, pad 15 15 -15 -15, dock center");
-			this.add(btnPreduzece, "pad 15 15 -15 -15, dock center");
-			this.add(btnGodina, "pad 15 15 -15 -15, dock center");
+			this.add(btnDrzava, "pad 50 50 -50 -50, dock center");
+			this.add(btnMesto, "wrap, pad 50 50 -50 -50, dock center");
+			this.add(btnPreduzece, "pad 50 50 -50 -50, dock center");
+			this.add(btnGodina, "pad 50 50 -50 -50, dock center");
 		}
 		JMenu podesavanjaMenu = new JMenu("Podešavanja");
 		podesavanjaMenu.add(new PreduzeceGodinaAction());
