@@ -50,8 +50,8 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		lblGreska2.setForeground(Color.red);
 		lblGreska3.setForeground(Color.red);
 
-		cmbDrzava = super.setupJoinsWithComboBox(cmbDrzava, "Drzava", "id_drzave", "id države", "naziv_drzave", "naziv države",
-				false, "");
+		cmbDrzava = super.setupJoinsWithComboBox(cmbDrzava, "Drzava", "id_drzave", "id države", "naziv_drzave",
+				"naziv države", false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override
@@ -108,8 +108,10 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new PreduzeceAction());
-		popup.add(new RadnikAction());
-		popup.add(new PoslovniPartnerAction());
+		if (Constants.idPreduzeca != 0) {
+			popup.add(new RadnikAction());
+			popup.add(new PoslovniPartnerAction());
+		}
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 

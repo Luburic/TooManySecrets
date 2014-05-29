@@ -56,7 +56,8 @@ public class PreduzeceStandardForm extends GenericForm {
 		lblGreska2.setForeground(Color.red);
 		lblGreska3.setForeground(Color.red);
 
-		cmbMesto = super.setupJoinsWithComboBox(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta", false, "");
+		cmbMesto = super.setupJoinsWithComboBox(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta",
+				"naziv mesta", false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override
@@ -115,10 +116,12 @@ public class PreduzeceStandardForm extends GenericForm {
 		dataPanel.add(lblGreska3, "gapx 15px");
 
 		JPopupMenu popup = new JPopupMenu();
-		popup.add(new RadnikAction());
 		popup.add(new GodinaAction());
-		popup.add(new OrganizacionaJedinicaAction());
-		popup.add(new PoslovniPartnerAction());
+		if (Constants.idPreduzeca != 0) {
+			popup.add(new RadnikAction());
+			popup.add(new OrganizacionaJedinicaAction());
+			popup.add(new PoslovniPartnerAction());
+		}
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 		setupTable(null);

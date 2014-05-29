@@ -117,14 +117,16 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		dataPanel.add(btnZoom);
 		dataPanel.add(lblGreska2, "gapx 15px");
 
-		toolBar.add(btnZakljuci);
-		toolBar.addSeparator();
-		JPopupMenu popup = new JPopupMenu();
-		popup.add(new MagacinskaKarticaAction());
-		popup.add(new PrometniDokumentAction());
-		popup.add(new PopisniDokumentAction());
-		btnNextForm = new NextFormButton(this, popup);
-		toolBar.add(btnNextForm);
+		if (Constants.idPreduzeca != 0) {
+			toolBar.add(btnZakljuci);
+			toolBar.addSeparator();
+			JPopupMenu popup = new JPopupMenu();
+			popup.add(new MagacinskaKarticaAction());
+			popup.add(new PrometniDokumentAction());
+			popup.add(new PopisniDokumentAction());
+			btnNextForm = new NextFormButton(this, popup);
+			toolBar.add(btnNextForm);
+		}
 
 		setupTable(null);
 
