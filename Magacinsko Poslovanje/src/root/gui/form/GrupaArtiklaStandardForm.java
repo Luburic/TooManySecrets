@@ -40,7 +40,7 @@ public class GrupaArtiklaStandardForm extends GenericForm {
 		tfNazivGrupe.setDocument(new JTextFieldLimit(20));
 		lblGreska1.setForeground(Color.red);
 
-		cmbGrupa = super.setupJoins(cmbGrupa, "Grupa_artikla", "Gru_id_grupe", "Gru_id grupe", "naziv_grupe",
+		cmbGrupa = super.setupJoinsWithComboBox(cmbGrupa, "Grupa_artikla", "Gru_id_grupe", "Gru_id grupe", "naziv_grupe",
 				"naziv nadgrupe", true, "");
 		cmbGrupa.insertItemAt(new ComboBoxPair(0, ""), 0);
 		cmbGrupa.setSelectedIndex(0);

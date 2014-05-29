@@ -133,8 +133,8 @@ public abstract class GenericForm extends JDialog {
 
 	protected abstract void initPickup();
 
-	protected JComboBox<ComboBoxPair> setupJoins(JComboBox<ComboBoxPair> cmbForJoin, String tableCode, String pkCode,
-			String pkName, String displayCode, String displayName, boolean renamed, String whereClause) {
+	protected JComboBox<ComboBoxPair> setupJoinsWithComboBox(JComboBox<ComboBoxPair> cmbForJoin, String tableCode,
+			String pkCode, String pkName, String displayCode, String displayName, boolean renamed, String whereClause) {
 		MetaSurogateDisplay temp = new MetaSurogateDisplay();
 		temp.setTableCode(tableCode);
 		temp.setIdColumnName(pkCode);
@@ -158,8 +158,19 @@ public abstract class GenericForm extends JDialog {
 		return null;
 	}
 
+	protected void setupJoins(String tableCode, String pkCode, String displayCode, String displayName) {
+		MetaSurogateDisplay temp = new MetaSurogateDisplay();
+		temp.setTableCode(tableCode);
+		temp.setIdColumnName(pkCode);
+		temp.getDisplayColumnCode().add(displayCode);
+		temp.getDisplayColumnName().add(displayName);
+		joinColumn.add(temp);
+	}
+
 	protected void setupTable(String customQuery) {
-		tableModel.setWhereStmt(childWhere);
+		if (tableModel.getWhereStmt().equals("")) {
+			tableModel.setWhereStmt(childWhere);
+		}
 		tblGrid.setModel(tableModel);
 		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override

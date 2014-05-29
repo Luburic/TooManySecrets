@@ -6,13 +6,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
 
 import net.miginfocom.swing.MigLayout;
 import root.dbConnection.DBConnection;
@@ -38,6 +43,7 @@ public class MainFrame extends JFrame {
 
 	private static MainFrame instance = null;
 	private JMenuBar menuBar;
+	private JLabel statusLabel = new JLabel();
 
 	private MainFrame() {
 		MigLayout migLayout = new MigLayout("wrap 2");
@@ -56,6 +62,14 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
+
+		JPanel statusPanel = new JPanel();
+		statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+		add(statusPanel, "dock south");
+		statusPanel.setPreferredSize(new Dimension(getWidth(), 16));
+		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		statusPanel.add(statusLabel);
 
 		setUpFrame();
 
@@ -87,6 +101,8 @@ public class MainFrame extends JFrame {
 		orgSemaMenu.add(new JMenuItem(new GodinaAction()));
 		menuBar.add(orgSemaMenu);
 		if (Constants.idPreduzeca != 0) {
+			statusLabel.setText("Preduzeće: " + Constants.nazivPreduzeca + "  |  Poslovna godina: " + Constants.godina);
+
 			orgSemaMenu.add(new JMenuItem(new RadnikAction()));
 			orgSemaMenu.add(new JMenuItem(new OrganizacionaJedinicaAction()));
 			orgSemaMenu.add(new JMenuItem(new PoslovniPartnerAction()));
@@ -125,6 +141,9 @@ public class MainFrame extends JFrame {
 			this.add(btnPopisni, "pad 50 50 -50 -50, dock center");
 			this.add(btnArtikli, "pad 50 50 -50 -50, dock center");
 		} else {
+			statusLabel
+					.setText("Režim osnovne administracije  |  Promena režima se vrši u meniu Podešavanja -> Promena režima");
+
 			JButton btnDrzava = new JButton(new DrzaveAction());
 			JButton btnMesto = new JButton(new NaseljenoMestoAction());
 			JButton btnPreduzece = new JButton(new PreduzeceAction());

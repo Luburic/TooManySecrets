@@ -48,9 +48,9 @@ public class StavkaPopisaStandardForm extends GenericForm {
 		tfKolicinaPoKnjigama.setName("količina po knjigama");
 		tfProsecnaCenaPopisa.setName("prosečna cena popis");
 
-		cmbArtikal = super.setupJoins(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
+		cmbArtikal = super.setupJoinsWithComboBox(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
 				"naziv artikla", false, "");
-		cmbPopisniDokument = super.setupJoins(cmbPopisniDokument, "Popisni_dokument", "id_popisnog_dokumenta",
+		cmbPopisniDokument = super.setupJoinsWithComboBox(cmbPopisniDokument, "Popisni_dokument", "id_popisnog_dokumenta",
 				"id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta", false, "");
 
 		cmbArtikal.setEnabled(false);

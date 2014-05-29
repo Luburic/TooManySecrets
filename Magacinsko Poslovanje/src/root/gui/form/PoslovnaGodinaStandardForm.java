@@ -60,8 +60,17 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		lblGreska1.setForeground(Color.red);
 		lblGreska2.setForeground(Color.red);
 
-		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
-				"naziv preduzeća", false, "");
+		if (Constants.idPreduzeca == 0) {
+			cmbPreduzece = super.setupJoinsWithComboBox(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća",
+					"naziv_preduzeca", "naziv preduzeća", false, "");
+		} else {
+			super.setupJoins("Preduzece", "id_preduzeca", "naziv_preduzeca", "naziv preduzeća");
+			cmbPreduzece = new JComboBox<ComboBoxPair>();
+			cmbPreduzece.insertItemAt(new ComboBoxPair(Constants.idPreduzeca, Constants.nazivPreduzeca), 0);
+			cmbPreduzece.setSelectedIndex(0);
+			cmbPreduzece.setEnabled(false);
+			btnZoom.setVisible(false);
+		}
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override
@@ -138,6 +147,13 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Poslovna godina", joinColumn);
 		tableModel.setColumnForSorting(2);
+		if (Constants.idPreduzeca != 0) {
+			if (childWhere.equals("")) {
+				tableModel.setWhereStmt(" WHERE Poslovna_godina1.id_preduzeca = " + Constants.idPreduzeca);
+			} else {
+				tableModel.setWhereStmt(childWhere + " AND Poslovna_godina1.id_preduzeca = " + Constants.idPreduzeca);
+			}
+		}
 		super.setupTable(customQuery);
 		int i = tblGrid.getSelectedRow();
 		if (i != -1) {

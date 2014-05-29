@@ -51,12 +51,21 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		lblGreska1.setForeground(Color.red);
 		lblGreska2.setForeground(Color.red);
 
-		cmbOrgJedinica = super.setupJoins(cmbOrgJedinica, "Organizaciona_jedinica", "Org_id_jedinice",
+		cmbOrgJedinica = super.setupJoinsWithComboBox(cmbOrgJedinica, "Organizaciona_jedinica", "Org_id_jedinice",
 				"Org_id jedinice", "naziv_jedinice", "naziv nadsektora", true, "");
 		cmbOrgJedinica.insertItemAt(new ComboBoxPair(0, ""), 0);
 		cmbOrgJedinica.setSelectedIndex(0);
-		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
-				"naziv preduzeća", false, "");
+		if (Constants.idPreduzeca == 0) {
+			cmbPreduzece = super.setupJoinsWithComboBox(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća",
+					"naziv_preduzeca", "naziv preduzeća", false, "");
+		} else {
+			super.setupJoins("Preduzece", "id_preduzeca", "naziv_preduzeca", "naziv preduzeća");
+			cmbPreduzece = new JComboBox<ComboBoxPair>();
+			cmbPreduzece.insertItemAt(new ComboBoxPair(Constants.idPreduzeca, Constants.nazivPreduzeca), 0);
+			cmbPreduzece.setSelectedIndex(0);
+			cmbPreduzece.setEnabled(false);
+			btnZoomPreduzece.setVisible(false);
+		}
 		if (!childWhere.contains("id_preduzeca")) {
 			btnZoomPreduzece.addActionListener(new ActionListener() {
 				@Override
@@ -136,6 +145,14 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Organizaciona jedinica", joinColumn);
 		tableModel.setColumnForSorting(3);
+		if (Constants.idPreduzeca != 0) {
+			if (childWhere.equals("")) {
+				tableModel.setWhereStmt(" WHERE Organizaciona_jedinica1.id_preduzeca = " + Constants.idPreduzeca);
+			} else {
+				tableModel.setWhereStmt(childWhere + " AND Organizaciona_jedinica1.id_preduzeca = "
+						+ Constants.idPreduzeca);
+			}
+		}
 		super.setupTable(customQuery);
 	}
 

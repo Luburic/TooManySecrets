@@ -24,7 +24,7 @@ public class PreFrame extends JDialog {
 	private JLabel lblGodina = new JLabel("Poslovna godina:");
 	private JComboBox<ComboBoxPair> cmbGodina;
 	private JButton jbOK = new JButton("Prosledi");
-	private JButton jbTrial = new JButton("Režim unosa preduzeća");
+	private JButton jbTrial = new JButton("Režim osnovne administracije");
 	private JButton jbCancel = new JButton("Odustani");
 
 	private PreFrame() {
@@ -85,12 +85,14 @@ public class PreFrame extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Constants.idGodine = ((ComboBoxPair) cmbGodina.getSelectedItem()).getId();
+				Constants.godina = ((ComboBoxPair) cmbGodina.getSelectedItem()).getCmbShow();
 				try {
 					Constants.godinaZakljucena = Lookup.getGodinaZakljucena(Constants.idGodine);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
 				Constants.idPreduzeca = ((ComboBoxPair) cmbPreduzece.getSelectedItem()).getId();
+				Constants.nazivPreduzeca = ((ComboBoxPair) cmbPreduzece.getSelectedItem()).getCmbShow();
 				MainFrame.getInstance().setUpFrame();
 				setVisible(false);
 			}
@@ -98,6 +100,9 @@ public class PreFrame extends JDialog {
 		jbTrial.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				cmbGodina.setSelectedIndex(0);
+				cmbPreduzece.setSelectedIndex(0);
+				jbOK.setEnabled(false);
 				Constants.idGodine = 0;
 				Constants.idPreduzeca = 0;
 				MainFrame.getInstance().setUpFrame();

@@ -14,6 +14,7 @@ import root.gui.action.PickupAction;
 import root.gui.action.dialog.AnalitikaMagacinskeKarticeAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
+import root.util.Constants;
 
 public class MagacinskaKarticaStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
@@ -61,12 +62,16 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		tfVrednostUlaza.setEditable(false);
 		tfVrednostPocetnog.setEditable(false);
 
-		cmbGodina = super.setupJoins(cmbGodina, "Poslovna_godina", "id_poslovne_godine", "id poslovne godine",
-				"godina", "godina", false, " WHERE zakljucena = 0");
-		cmbArtikal = super.setupJoins(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
+		super.setupJoins("Poslovna_godina", "id_poslovne_godine", "godina", "godina");
+		cmbGodina = new JComboBox<ComboBoxPair>();
+		cmbGodina.insertItemAt(new ComboBoxPair(Constants.idGodine, Constants.godina), 0);
+		cmbGodina.setSelectedIndex(0);
+		cmbGodina.setEnabled(false);
+		btnZoomGodina.setVisible(false);
+		cmbArtikal = super.setupJoinsWithComboBox(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
 				"naziv artikla", false, "");
-		cmbOrgJedinica = super.setupJoins(cmbOrgJedinica, "Organizaciona_jedinica", "id_jedinice", "id jedinice",
-				"naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
+		cmbOrgJedinica = super.setupJoinsWithComboBox(cmbOrgJedinica, "Organizaciona_jedinica", "id_jedinice",
+				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 
 		if (!childWhere.contains("id_poslovne_godine")) {
 			btnZoomGodina.addActionListener(new ActionListener() {
@@ -159,6 +164,14 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Magacinska kartica", joinColumn);
 		tableModel.setColumnForSorting(2);
+		if (Constants.idGodine != 0) {
+			if (childWhere.equals("")) {
+				tableModel.setWhereStmt(" WHERE Magacinska_kartica1.id_poslovne_godine = " + Constants.idGodine);
+			} else {
+				tableModel.setWhereStmt(childWhere + " AND Magacinska_kartica1.id_poslovne_godine = "
+						+ Constants.idGodine);
+			}
+		}
 		super.setupTable(customQuery);
 	}
 

@@ -50,7 +50,7 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		lblGreska2.setForeground(Color.red);
 		lblGreska3.setForeground(Color.red);
 
-		cmbDrzava = super.setupJoins(cmbDrzava, "Drzava", "id_drzave", "id države", "naziv_drzave", "naziv države",
+		cmbDrzava = super.setupJoinsWithComboBox(cmbDrzava, "Drzava", "id_drzave", "id države", "naziv_drzave", "naziv države",
 				false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {

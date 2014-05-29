@@ -79,18 +79,23 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		lblGreska4.setForeground(Color.red);
 		lblGreska5.setForeground(Color.red);
 
-		cmbGodina = super.setupJoins(cmbGodina, "Poslovna_godina", "id_poslovne_godine", "id poslovne godine",
-				"godina", "godina", false, " WHERE zakljucena = 0");
-		cmbOrgJedinicaIz = super.setupJoins(cmbOrgJedinicaIz, "Organizaciona_jedinica", "id_jedinice", "id jedinice",
-				"naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
-		cmbVrstaPrometa = super.setupJoins(cmbVrstaPrometa, "Vrsta_prometa", "id_prometa", "id prometa",
+		super.setupJoins("Poslovna_godina", "id_poslovne_godine", "godina", "godina");
+		cmbGodina = new JComboBox<ComboBoxPair>();
+		cmbGodina.insertItemAt(new ComboBoxPair(Constants.idGodine, Constants.godina), 0);
+		cmbGodina.setSelectedIndex(0);
+		cmbGodina.setEnabled(false);
+		btnZoomPoslovnaGodina.setVisible(false);
+		cmbOrgJedinicaIz = super.setupJoinsWithComboBox(cmbOrgJedinicaIz, "Organizaciona_jedinica", "id_jedinice",
+				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
+		cmbVrstaPrometa = super.setupJoinsWithComboBox(cmbVrstaPrometa, "Vrsta_prometa", "id_prometa", "id prometa",
 				"naziv_prometa", "naziv prometa", false, "");
-		cmbOrgJedinicaU = super.setupJoins(cmbOrgJedinicaU, "Organizaciona_jedinica", "id_jedinice", "id jedinice",
-				"naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
+		cmbOrgJedinicaU = super.setupJoinsWithComboBox(cmbOrgJedinicaU, "Organizaciona_jedinica", "id_jedinice",
+				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 		cmbOrgJedinicaU.insertItemAt(new ComboBoxPair(0, ""), 0);
 		cmbOrgJedinicaU.setSelectedIndex(0);
-		cmbPoslovniPartner = super.setupJoins(cmbPoslovniPartner, "Poslovni_partner", "id_poslovnog_partnera",
-				"id poslovnog partnera", "naziv_poslovnog_partnera", "naziv poslovnog partnera", false, "");
+		cmbPoslovniPartner = super.setupJoinsWithComboBox(cmbPoslovniPartner, "Poslovni_partner",
+				"id_poslovnog_partnera", "id poslovnog partnera", "naziv_poslovnog_partnera",
+				"naziv poslovnog partnera", false, "");
 		cmbPoslovniPartner.insertItemAt(new ComboBoxPair(0, ""), 0);
 		cmbPoslovniPartner.setSelectedIndex(0);
 
@@ -290,7 +295,14 @@ public class PrometniDokumentStandardForm extends GenericForm {
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Prometni dokument", joinColumn);
 		tableModel.setColumnForSorting(2);
-
+		if (Constants.idGodine != 0) {
+			if (childWhere.equals("")) {
+				tableModel.setWhereStmt(" WHERE Prometni_dokument1.id_poslovne_godine = " + Constants.idGodine);
+			} else {
+				tableModel.setWhereStmt(childWhere + " AND Prometni_dokument1.id_poslovne_godine = "
+						+ Constants.idGodine);
+			}
+		}
 		super.setupTable(customQuery);
 	}
 

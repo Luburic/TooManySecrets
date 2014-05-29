@@ -63,7 +63,7 @@ public class ArtikalStandardForm extends GenericForm {
 		lblGreska4.setForeground(Color.red);
 		lblGreska5.setForeground(Color.red);
 
-		cmbGrupa = super.setupJoins(cmbGrupa, "Grupa_artikla", "id_grupe", "id grupe", "naziv_grupe", "naziv grupe",
+		cmbGrupa = super.setupJoinsWithComboBox(cmbGrupa, "Grupa_artikla", "id_grupe", "id grupe", "naziv_grupe", "naziv grupe",
 				false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {

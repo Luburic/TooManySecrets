@@ -55,9 +55,9 @@ public class StavkaPrometaStandardForm extends GenericForm {
 		tfCenaPrometa.setName("cena prometa");
 		tfVrednostPrometa.setName("vrednost prometa");
 
-		cmbArtikal = super.setupJoins(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
+		cmbArtikal = super.setupJoinsWithComboBox(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
 				"naziv artikla", false, "");
-		cmbPrometniDokument = super.setupJoins(cmbPrometniDokument, "Prometni_dokument", "id_prometnog_dokumenta",
+		cmbPrometniDokument = super.setupJoinsWithComboBox(cmbPrometniDokument, "Prometni_dokument", "id_prometnog_dokumenta",
 				"id prometnog dokumenta", "broj_prometnog_dokumenta", "broj prometnog dokumenta", false, "");
 
 		cmbArtikal.setEnabled(false);

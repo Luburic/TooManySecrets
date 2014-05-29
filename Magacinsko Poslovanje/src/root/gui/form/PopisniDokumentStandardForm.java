@@ -43,7 +43,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 	protected JTextField tfBrojPopisnogDokumenta = new JTextField(5);
 	protected JDatePickerImpl dateDatumOtvaranja;
 	protected JTextField tfDatumKnjizenja = new JTextField(10);
-	protected JTextField tfStatusPopisnog = new JTextField(3);
+	protected JTextField tfStatusPopisnog = new JTextField(15);
 	protected JLabel lblGreska1 = new JLabel();
 	protected JLabel lblGreska2 = new JLabel();
 	protected JLabel lblGreska3 = new JLabel();
@@ -74,10 +74,15 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		tfDatumKnjizenja.setName("datum knjiženja");
 		tfStatusPopisnog.setName("status popisnog");
 
-		cmbOrgJedinica = super.setupJoins(cmbOrgJedinica, "Organizaciona_jedinica", "id_jedinice", "id jedinice",
-				"naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
-		cmbGodina = super.setupJoins(cmbGodina, "Poslovna_godina", "id_poslovne_godine", "id poslovne godine",
-				"godina", "godina", false, " WHERE zakljucena = 0");
+		cmbOrgJedinica = super.setupJoinsWithComboBox(cmbOrgJedinica, "Organizaciona_jedinica", "id_jedinice",
+				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
+
+		super.setupJoins("Poslovna_godina", "id_poslovne_godine", "godina", "godina");
+		cmbGodina = new JComboBox<ComboBoxPair>();
+		cmbGodina.insertItemAt(new ComboBoxPair(Constants.idGodine, Constants.godina), 0);
+		cmbGodina.setSelectedIndex(0);
+		cmbGodina.setEnabled(false);
+		btnZoomPoslovnaGodina.setVisible(false);
 
 		if (!childWhere.contains("id_jedinice")) {
 			btnZoomOrgJedinica.addActionListener(new ActionListener() {
@@ -183,6 +188,14 @@ public class PopisniDokumentStandardForm extends GenericForm {
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Popisni dokument", joinColumn);
 		tableModel.setColumnForSorting(3);
+		if (Constants.idGodine != 0) {
+			if (childWhere.equals("")) {
+				tableModel.setWhereStmt(" WHERE Popisni_dokument1.id_poslovne_godine = " + Constants.idGodine);
+			} else {
+				tableModel.setWhereStmt(childWhere + " AND Popisni_dokument1.id_poslovne_godine = "
+						+ Constants.idGodine);
+			}
+		}
 		super.setupTable(customQuery);
 	}
 

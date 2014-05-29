@@ -56,7 +56,7 @@ public class PreduzeceStandardForm extends GenericForm {
 		lblGreska2.setForeground(Color.red);
 		lblGreska3.setForeground(Color.red);
 
-		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta", false, "");
+		cmbMesto = super.setupJoinsWithComboBox(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta", false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override

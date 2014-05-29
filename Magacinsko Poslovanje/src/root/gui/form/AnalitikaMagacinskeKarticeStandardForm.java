@@ -40,7 +40,7 @@ public class AnalitikaMagacinskeKarticeStandardForm extends GenericForm {
 		JLabel lblVrednost = new JLabel("Vrednost:");
 		JLabel lblVrsta = new JLabel("Vrsta:");
 
-		cmbVrsta = super.setupJoins(cmbVrsta, "Drzava", "id_drzave", "id države", "naziv_drzave", "naziv države",
+		cmbVrsta = super.setupJoinsWithComboBox(cmbVrsta, "Drzava", "id_drzave", "id države", "naziv_drzave", "naziv države",
 				false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {

@@ -44,8 +44,8 @@ public class ClanKomisijeStandardForm extends GenericForm {
 		lblGreska1.setForeground(Color.red);
 		lblGreska2.setForeground(Color.red);
 
-		cmbRadnik = super.setupJoins(cmbRadnik, "Radnik", "id_radnika", "id radnika", "jmbg", "jmbg", false, "");
-		cmbPopisniDokument = super.setupJoins(cmbPopisniDokument, "Popisni_dokument", "id_popisnog_dokumenta",
+		cmbRadnik = super.setupJoinsWithComboBox(cmbRadnik, "Radnik", "id_radnika", "id radnika", "jmbg", "jmbg", false, "");
+		cmbPopisniDokument = super.setupJoinsWithComboBox(cmbPopisniDokument, "Popisni_dokument", "id_popisnog_dokumenta",
 				"id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta", false, "");
 
 		if (!childWhere.contains("id_radnika")) {

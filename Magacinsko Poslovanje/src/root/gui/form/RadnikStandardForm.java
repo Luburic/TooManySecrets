@@ -66,9 +66,19 @@ public class RadnikStandardForm extends GenericForm {
 		lblGreska5.setForeground(Color.red);
 		lblGreska6.setForeground(Color.red);
 
-		cmbPreduzece = super.setupJoins(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća", "naziv_preduzeca",
-				"naziv preduzeća", false, "");
-		cmbMesto = super.setupJoins(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta", "naziv mesta", false, "");
+		if (Constants.idPreduzeca == 0) {
+			cmbPreduzece = super.setupJoinsWithComboBox(cmbPreduzece, "Preduzece", "id_preduzeca", "id preduzeća",
+					"naziv_preduzeca", "naziv preduzeća", false, "");
+		} else {
+			super.setupJoins("Preduzece", "id_preduzeca", "naziv_preduzeca", "naziv preduzeća");
+			cmbPreduzece = new JComboBox<ComboBoxPair>();
+			cmbPreduzece.insertItemAt(new ComboBoxPair(Constants.idPreduzeca, Constants.nazivPreduzeca), 0);
+			cmbPreduzece.setSelectedIndex(0);
+			cmbPreduzece.setEnabled(false);
+			btnZoomPreduzece.setVisible(false);
+		}
+		cmbMesto = super.setupJoinsWithComboBox(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta",
+				"naziv mesta", false, "");
 
 		if (!childWhere.contains("id_preduzeca")) {
 			btnZoomPreduzece.addActionListener(new ActionListener() {
@@ -188,6 +198,13 @@ public class RadnikStandardForm extends GenericForm {
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Radnik", joinColumn);
 		tableModel.setColumnForSorting(3);
+		if (Constants.idPreduzeca != 0) {
+			if (childWhere.equals("")) {
+				tableModel.setWhereStmt(" WHERE Radnik1.id_preduzeca = " + Constants.idPreduzeca);
+			} else {
+				tableModel.setWhereStmt(childWhere + " AND Radnik1.id_preduzeca = " + Constants.idPreduzeca);
+			}
+		}
 		super.setupTable(customQuery);
 	}
 

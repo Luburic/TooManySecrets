@@ -26,6 +26,8 @@ public class Constants {
 	public static Integer idGodine = 0;
 	public static Integer idPreduzeca = 0;
 	public static boolean godinaZakljucena = false;
+	public static Object nazivPreduzeca = "";
+	public static Object godina = 0;
 
 	public static int MODE;
 
