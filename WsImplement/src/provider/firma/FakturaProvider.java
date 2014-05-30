@@ -1,4 +1,4 @@
-package ws.style.message;
+package provider.firma;
 
 import java.io.Reader;
 import java.util.List;

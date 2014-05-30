@@ -1,4 +1,4 @@
-package ws.style.message;
+package provider.banka;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

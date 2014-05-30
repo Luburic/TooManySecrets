@@ -216,6 +216,11 @@
             <soap:address location="http://localhost:8080/MT103Port"/>
         </wsdl:port>
         
+        
+         <wsdl:port name="MT102Port" binding="ws:BankaBinding">
+            <soap:address location="http://localhost:8080/MT102Port"/>
+        </wsdl:port>
+        
     </wsdl:service>
     
 </wsdl:definitions>

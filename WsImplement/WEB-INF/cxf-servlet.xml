@@ -18,8 +18,15 @@
 
 		<jaxws:endpoint 
 		id="nalog"
-		address="/Nalog"
-		implementor="ws.style.message.NalogProvider"
+		address="/Rtgs"
+		implementor="ws.style.message.RtgsProvider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+		
+		<jaxws:endpoint 
+		id="nalog"
+		address="/Clearing"
+		implementor="ws.style.message.ClearingProvider"
 		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
 		/>
 		

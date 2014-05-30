@@ -1,4 +1,4 @@
-package ws.style.message;
+package provider.centrala;
 
 import java.io.File;
 import java.io.Reader;
@@ -38,14 +38,13 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
 	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
 	private Marshaller marshaller;
-	Document encrypted = null;
+	private Document encrypted = null;
 	
 	@Override
 	public DOMSource invoke(DOMSource request) {
 		
 		try {
     		
-			//serijalizacija DOM-a na ekran
     		System.out.println("\nInvoking MT103Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			Document document =DocumentTransform.convertToDocument(request);
@@ -114,7 +113,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			if(!validateContent(mt103))
 				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
 			
-			
+			//snimanje primljenog mt103
 			
 			MT900 mt900 = createMT900(mt103);
 			JAXBContext con = JAXBContext.newInstance("beans.mt900");
@@ -132,7 +131,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			security.saveDocument(docum, "./MT900Test/MT900.xml");
 			String inputFile =  "./MT900Test/MT900.xml";
 			
-			//potpisivanje od banke
+			//potpisivanje od mt103 providera
 			String outputFile = inputFile.substring(0, inputFile.length()-4) + "-signed.xml";
 			String alias="";
 			String password="";
@@ -153,7 +152,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			security.saveDocument(encrypted, inputFile.substring(0, inputFile.length()-4) + "-crypted.xml");
 			
 			
-			
+			//snimanje poslatog mt900
 			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

@@ -24,11 +24,11 @@ import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import client.firma.FakturaClient;
 import security.SecurityClass;
 import util.MyDatatypeConverter;
 import util.NSPrefixMapper;
 import util.Validation;
-import ws.style.client.FakturaClient;
 import beans.faktura.Faktura;
 import beans.faktura.Faktura.Zaglavlje;
 import firma.gui.MainFrame;

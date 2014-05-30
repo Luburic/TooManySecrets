@@ -1,4 +1,4 @@
-package ws.style.client;
+package client.firma;
 
 import java.net.MalformedURLException;
 import java.net.URL;
