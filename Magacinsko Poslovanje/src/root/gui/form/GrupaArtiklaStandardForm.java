@@ -40,8 +40,8 @@ public class GrupaArtiklaStandardForm extends GenericForm {
 		tfNazivGrupe.setDocument(new JTextFieldLimit(20));
 		lblGreska1.setForeground(Color.red);
 
-		cmbGrupa = super.setupJoinsWithComboBox(cmbGrupa, "Grupa_artikla", "Gru_id_grupe", "Gru_id grupe", "naziv_grupe",
-				"naziv nadgrupe", true, "");
+		cmbGrupa = super.setupJoinsWithComboBox(cmbGrupa, "Grupa_artikla", "Gru_id_grupe", "Gru_id grupe",
+				"naziv_grupe", "naziv nadgrupe", true, "");
 		cmbGrupa.insertItemAt(new ComboBoxPair(0, ""), 0);
 		cmbGrupa.setSelectedIndex(0);
 		if (childWhere.equals("")) {
@@ -114,5 +114,11 @@ public class GrupaArtiklaStandardForm extends GenericForm {
 		btnPickup = new JButton(new PickupAction(this, 2));
 		toolBar.add(btnPickup);
 		btnPickup.setEnabled(false);
+	}
+
+	@Override
+	protected void clearFields(boolean needFocus) {
+		super.clearFields(needFocus);
+		cmbGrupa.setSelectedIndex(0);
 	}
 }

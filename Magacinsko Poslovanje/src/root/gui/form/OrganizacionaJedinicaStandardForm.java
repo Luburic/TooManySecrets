@@ -183,4 +183,10 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		toolBar.add(btnPickup);
 		btnPickup.setEnabled(false);
 	}
+
+	@Override
+	protected void clearFields(boolean needFocus) {
+		super.clearFields(needFocus);
+		cmbOrgJedinica.setSelectedIndex(0);
+	}
 }

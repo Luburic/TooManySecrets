@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     27-May-14 11:03:59 AM                        */
+/* Created on:     30-May-14 5:18:13 PM                         */
 /*==============================================================*/
 
 
@@ -408,7 +408,7 @@ create table Analitika_magacinske_kartice (
    id_magacinske_kartice int                  not null,
    id_prometa           int                  not null,
    id_stavke_prometa    int                  null,
-   "redni broj"         int                  not null,
+   redni_broj           int                  not null,
    smer                 char(1)              not null
       constraint CKC_SMER_ANALITIK check (smer in ('U','I')),
    kolicina             numeric(12)          not null,

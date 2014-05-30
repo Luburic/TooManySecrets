@@ -31,3 +31,8 @@ INSERT INTO Poslovna_godina VALUES (1, '2013', 1, 1)
 INSERT INTO Poslovna_godina VALUES (1, '2014', 0, 1)
 INSERT INTO Poslovna_godina VALUES (2, '2013', 1, 1)
 INSERT INTO Poslovna_godina VALUES (2, '2014', 0, 1)
+
+INSERT INTO Vrsta_prometa VALUES ('OT', 'Otpremnica', 1)
+INSERT INTO Vrsta_prometa VALUES ('NA', 'Nabavka', 1)
+INSERT INTO Vrsta_prometa VALUES ('PK', 'Popisna korekcija', 1)
+INSERT INTO Vrsta_prometa VALUES ('KG', 'Korekcija greške', 1)

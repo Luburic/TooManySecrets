@@ -5,11 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -19,6 +22,7 @@ import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
+import root.gui.action.ZakljuciPrometniAction;
 import root.gui.action.dialog.StavkaPrometaAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
@@ -50,6 +54,8 @@ public class PrometniDokumentStandardForm extends GenericForm {
 	protected JLabel lblGreska5 = new JLabel();
 	protected JRadioButton rbMagacin = new JRadioButton("Međumagacinski promet");
 	protected JRadioButton rbPromet = new JRadioButton("Regularan promet");
+
+	protected JButton btnProknjizi = new JButton(new ZakljuciPrometniAction(this));
 
 	public PrometniDokumentStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
@@ -282,6 +288,8 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		tfStatusPrometnog.setEditable(false);
 		dataPanel.add(tfStatusPrometnog, "wrap, gapx 15px");
 
+		toolBar.add(btnProknjizi);
+		toolBar.addSeparator();
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new StavkaPrometaAction());
 		btnNextForm = new NextFormButton(this, popup);
@@ -311,6 +319,8 @@ public class PrometniDokumentStandardForm extends GenericForm {
 	protected void clearFields(boolean needFocus) {
 		super.clearFields(needFocus);
 		tfStatusPrometnog.setText("u fazi formiranja");
+		cmbOrgJedinicaU.setSelectedIndex(0);
+		cmbPoslovniPartner.setSelectedIndex(0);
 	}
 
 	@Override
@@ -358,5 +368,17 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		btnPickup = new JButton(new PickupAction(this, 6));
 		toolBar.add(btnPickup);
 		btnPickup.setEnabled(false);
+	}
+
+	public void proknjiziDokument() {
+		String date = tableModel.getValueAt(tblGrid.getSelectedRow(), 7).toString();
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		String now = dateFormatter.format(Calendar.getInstance().getTime());
+		if (now.compareTo(date) < 0) {
+			JOptionPane.showMessageDialog(this, "Datum formiranja mora biti manji ili jednak današnjem", "Greška",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
 	}
 }
