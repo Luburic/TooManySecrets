@@ -73,6 +73,7 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 			cmbPreduzece.insertItemAt(new ComboBoxPair(Constants.idPreduzeca, Constants.nazivPreduzeca), 0);
 			cmbPreduzece.setSelectedIndex(0);
 			cmbPreduzece.setEnabled(false);
+			cmbPreduzece.setName("id preduzeća");
 			btnZoomPreduzece.setVisible(false);
 		}
 		cmbMesto = super.setupJoinsWithComboBox(cmbMesto, "Mesto", "id_mesta", "id mesta", "naziv_mesta",

@@ -67,6 +67,7 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		cmbGodina.insertItemAt(new ComboBoxPair(Constants.idGodine, Constants.godina), 0);
 		cmbGodina.setSelectedIndex(0);
 		cmbGodina.setEnabled(false);
+		cmbGodina.setName("id poslovne godine");
 		btnZoomGodina.setVisible(false);
 		cmbArtikal = super.setupJoinsWithComboBox(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
 				"naziv artikla", false, "");

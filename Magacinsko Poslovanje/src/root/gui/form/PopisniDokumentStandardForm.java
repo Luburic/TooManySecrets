@@ -82,6 +82,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		cmbGodina.insertItemAt(new ComboBoxPair(Constants.idGodine, Constants.godina), 0);
 		cmbGodina.setSelectedIndex(0);
 		cmbGodina.setEnabled(false);
+		cmbGodina.setName("id poslovne godine");
 		btnZoomPoslovnaGodina.setVisible(false);
 
 		if (!childWhere.contains("id_jedinice")) {

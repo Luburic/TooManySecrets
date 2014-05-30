@@ -293,7 +293,6 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			for (int i = 0; i < colNames.length; i++) {
 				if (i + 1 < columns.size()) {
 					MetaColumn col = (MetaColumn) columns.toArray()[i + 1];
-					// ###############################
 					if (col.getJClassName().equals("java.lang.Boolean")) {
 						if (colNames[i].equals("1")) {
 							setValueAt("Da", index, i + 1);
@@ -382,7 +381,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			Object[] insertion = new Object[colNames.length + 2 + k];
 			insertion[0] = stmt.getGeneratedKeys().getInt(1);
 			for (int i = 0; i < colNames.length; i++) {
-				MetaColumn mc = (MetaColumn) columns.toArray()[i + k];
+				MetaColumn mc = (MetaColumn) columns.toArray()[i + 1];
 				if (mc.getJClassName().equals("java.lang.Boolean")) {
 					if (colNames[i].equals(1)) {
 						insertion[i + 1] = "Da";

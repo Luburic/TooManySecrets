@@ -84,6 +84,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		cmbGodina.insertItemAt(new ComboBoxPair(Constants.idGodine, Constants.godina), 0);
 		cmbGodina.setSelectedIndex(0);
 		cmbGodina.setEnabled(false);
+		cmbGodina.setName("id poslovne godine");
 		btnZoomPoslovnaGodina.setVisible(false);
 		cmbOrgJedinicaIz = super.setupJoinsWithComboBox(cmbOrgJedinicaIz, "Organizaciona_jedinica", "id_jedinice",
 				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
