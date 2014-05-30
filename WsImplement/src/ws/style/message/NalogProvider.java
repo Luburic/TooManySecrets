@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBContext;
@@ -27,6 +28,7 @@ import org.w3c.dom.Element;
 
 import security.SecurityClass;
 import util.DocumentTransform;
+import util.MyDatatypeConverter;
 import util.NSPrefixMapper;
 import util.Validation;
 import beans.mt102.MT102;
@@ -61,8 +63,8 @@ public class NalogProvider  implements Provider<DOMSource>{
 	public DOMSource invoke(DOMSource request) {
 		
 		try {
-			//serijalizacija DOM-a na ekran
-			System.out.println("\nInvoking FakturaProvider\n");
+			
+			System.out.println("\nInvoking NalogProvider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			Document document = DocumentTransform.convertToDocument(request);
 			DocumentTransform.printDocument(document);
@@ -126,7 +128,7 @@ public class NalogProvider  implements Provider<DOMSource>{
 			Nalog nalog= (Nalog) unmarshaller.unmarshal(decrypted);
 			
 			if(!validateContent(nalog))
-				return new DOMSource(createResponse("Dokument nije validan sadrzaju."));
+				return new DOMSource(createResponse("Dokument nije validan po sadrzaju."));
 			
 			
 			
@@ -142,7 +144,7 @@ public class NalogProvider  implements Provider<DOMSource>{
 			
 			if(nalog.isHitno() || res != -1) {
 			
-				MT103 mt103 = createMT103();
+				MT103 mt103 = createMT103(nalog);
 				JAXBContext con = JAXBContext.newInstance("beans.mt103");
 				marshaller = con.createMarshaller();
 				marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
@@ -194,7 +196,7 @@ public class NalogProvider  implements Provider<DOMSource>{
 					//obrada odgovora od centrale 
 					DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 					
-					//......................
+					//......................zaduzenje..
 					Document rdocument =DocumentTransform.convertToDocument(response);
 
 					Reader reader3 = Validation.createReader(rdocument);
@@ -309,8 +311,29 @@ public class NalogProvider  implements Provider<DOMSource>{
 		return null;
 	}
 	
-	private MT103 createMT103() {
-		return null;
+	private MT103 createMT103(Nalog nalog) {
+		
+		MT103 mt = new MT103();
+		mt.setIdPoruke(nalog.getIdPoruke());
+		mt.setSwiftBankeDuznika("");
+		mt.setObracunskiRacunBankeDuznika("");
+		mt.setSwiftBankePoverioca("");
+		mt.setObracunskiRacunBankePoverioca("");
+		mt.setDuznik(nalog.getDuznikNalogodavac());
+		mt.setSvrhaPlacanja(nalog.getSvrhaPlacanja());
+		mt.setPrimalac(nalog.getPrimalacPoverilac());
+		mt.setDatumNaloga(nalog.getDatumNaloga());
+		
+		mt.setDatumValute(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
+		mt.setRacunDuznika(nalog.getRacunDuznika());
+		mt.setModelZaduzenja(nalog.getModelZaduzenja());
+		mt.setPozivNaBrojZaduzenja(nalog.getPozivNaBrojZaduzenja());
+		mt.setRacunPoverioca(nalog.getRacunPoverioca());
+		mt.setModelOdobrenja(nalog.getModelOdobrenja());
+		mt.setPozivNaBrojOdobrenja(String.valueOf(nalog.getPozivNaBrojOdobrenja()));
+		mt.setIznos(nalog.getIznos());
+		mt.setSifraValute(nalog.getOznakaValute());
+		return mt;
 	}
 	
 	

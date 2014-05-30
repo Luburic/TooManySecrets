@@ -4,24 +4,26 @@ import java.io.File;
 import java.io.Reader;
 
 import javax.ejb.Stateless;
-import javax.xml.ws.Service;
-import javax.xml.ws.ServiceMode;
-import javax.xml.ws.WebServiceProvider;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.ws.Service;
+import javax.xml.ws.ServiceMode;
+import javax.xml.ws.WebServiceProvider;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import beans.mt900.MT900;
 import security.SecurityClass;
 import util.DocumentTransform;
 import util.NSPrefixMapper;
 import util.Validation;
+import beans.mt103.MT103;
+import beans.mt900.MT900;
 
 
 @Stateless
@@ -99,7 +101,22 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			if( decrypt == null )
 				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po Raw semi.",TARGET_NAMESPACE));
 			
-			MT900 mt900 = createMT900();
+			
+			
+			JAXBContext context = JAXBContext.newInstance("mt103.nalog");
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			//SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			//Schema schema = schemaFactory.newSchema(new URL(SCHEME_PATH));
+			//unmarshaller.setSchema(schema);
+			
+			MT103 mt103 = (MT103) unmarshaller.unmarshal(decrypt);
+			
+			if(!validateContent(mt103))
+				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
+			
+			
+			
+			MT900 mt900 = createMT900(mt103);
 			JAXBContext con = JAXBContext.newInstance("beans.mt900");
 			marshaller = con.createMarshaller();
 			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
@@ -155,10 +172,22 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 	
 	
 	
-	private MT900 createMT900(){
-		return null;
+	private MT900 createMT900(MT103 mt103){
+		MT900 mt = new MT900();
+		mt.setIdPorukeNaloga(mt103.getIdPoruke());
+		mt.setDatumValute(mt103.getDatumValute());
+		mt.setIdPoruke("");
+		mt.setIznos(mt103.getIznos());
+		mt.setObracunskiRacunBankeDuzinka(mt103.getObracunskiRacunBankeDuznika());
+		mt.setSifraValute(mt103.getSifraValute());
+		mt.setSwiftBankeDuznika("");
+		return mt;
+		
 	}
 	
+	public boolean validateContent(MT103 mt103){
+		return true;
+	}
 	
 }
 
