@@ -40,8 +40,8 @@ public class AnalitikaMagacinskeKarticeStandardForm extends GenericForm {
 		JLabel lblVrednost = new JLabel("Vrednost:");
 		JLabel lblVrsta = new JLabel("Vrsta:");
 
-		cmbVrsta = super.setupJoinsWithComboBox(cmbVrsta, "Drzava", "id_drzave", "id države", "naziv_drzave", "naziv države",
-				false, "");
+		cmbVrsta = super.setupJoinsWithComboBox(cmbVrsta, "Vrsta_prometa", "id_prometa", "id prometa", "naziv_prometa",
+				"naziv prometa", false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override
@@ -55,6 +55,12 @@ public class AnalitikaMagacinskeKarticeStandardForm extends GenericForm {
 			});
 		} else {
 			cmbVrsta.setEnabled(false);
+			for (int i = 0; i < cmbVrsta.getItemCount(); i++) {
+				if (cmbVrsta.getItemAt(i).getId().equals(parentId)) {
+					cmbVrsta.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoom.setVisible(false);
 		}
 

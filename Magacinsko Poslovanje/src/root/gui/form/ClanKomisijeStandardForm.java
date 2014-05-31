@@ -44,9 +44,11 @@ public class ClanKomisijeStandardForm extends GenericForm {
 		lblGreska1.setForeground(Color.red);
 		lblGreska2.setForeground(Color.red);
 
-		cmbRadnik = super.setupJoinsWithComboBox(cmbRadnik, "Radnik", "id_radnika", "id radnika", "jmbg", "jmbg", false, "");
-		cmbPopisniDokument = super.setupJoinsWithComboBox(cmbPopisniDokument, "Popisni_dokument", "id_popisnog_dokumenta",
-				"id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta", false, "");
+		cmbRadnik = super.setupJoinsWithComboBox(cmbRadnik, "Radnik", "id_radnika", "id radnika", "jmbg", "jmbg",
+				false, "");
+		cmbPopisniDokument = super.setupJoinsWithComboBox(cmbPopisniDokument, "Popisni_dokument",
+				"id_popisnog_dokumenta", "id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta",
+				false, "");
 
 		if (!childWhere.contains("id_radnika")) {
 			btnZoomRadnik.addActionListener(new ActionListener() {
@@ -61,6 +63,12 @@ public class ClanKomisijeStandardForm extends GenericForm {
 			});
 		} else {
 			cmbRadnik.setEnabled(false);
+			for (int i = 0; i < cmbRadnik.getItemCount(); i++) {
+				if (cmbRadnik.getItemAt(i).getId().equals(parentId)) {
+					cmbRadnik.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoomRadnik.setVisible(false);
 		}
 		if (!childWhere.contains("id_popisnog_dokumenta")) {
@@ -76,6 +84,12 @@ public class ClanKomisijeStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPopisniDokument.setEnabled(false);
+			for (int i = 0; i < cmbPopisniDokument.getItemCount(); i++) {
+				if (cmbPopisniDokument.getItemAt(i).getId().equals(parentId)) {
+					cmbPopisniDokument.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoomPopisniDokument.setVisible(false);
 		}
 

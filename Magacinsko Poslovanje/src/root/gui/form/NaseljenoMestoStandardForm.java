@@ -65,6 +65,12 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 			});
 		} else {
 			cmbDrzava.setEnabled(false);
+			for (int i = 0; i < cmbDrzava.getItemCount(); i++) {
+				if (cmbDrzava.getItemAt(i).getId().equals(parentId)) {
+					cmbDrzava.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoom.setVisible(false);
 		}
 

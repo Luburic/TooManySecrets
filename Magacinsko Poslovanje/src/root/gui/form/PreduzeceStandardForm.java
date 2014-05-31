@@ -71,6 +71,12 @@ public class PreduzeceStandardForm extends GenericForm {
 			});
 		} else {
 			cmbMesto.setEnabled(false);
+			for (int i = 0; i < cmbMesto.getItemCount(); i++) {
+				if (cmbMesto.getItemAt(i).getId().equals(parentId)) {
+					cmbMesto.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoom.setVisible(false);
 		}
 

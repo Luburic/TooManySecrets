@@ -94,6 +94,12 @@ public class RadnikStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPreduzece.setEnabled(false);
+			for (int i = 0; i < cmbPreduzece.getItemCount(); i++) {
+				if (cmbPreduzece.getItemAt(i).getId().equals(parentId)) {
+					cmbPreduzece.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoomPreduzece.setVisible(false);
 		}
 		if (!childWhere.contains("id_mesta")) {
@@ -109,6 +115,12 @@ public class RadnikStandardForm extends GenericForm {
 			});
 		} else {
 			cmbMesto.setEnabled(false);
+			for (int i = 0; i < cmbMesto.getItemCount(); i++) {
+				if (cmbMesto.getItemAt(i).getId().equals(parentId)) {
+					cmbMesto.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoomMesto.setVisible(false);
 		}
 

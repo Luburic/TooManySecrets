@@ -63,8 +63,8 @@ public class ArtikalStandardForm extends GenericForm {
 		lblGreska4.setForeground(Color.red);
 		lblGreska5.setForeground(Color.red);
 
-		cmbGrupa = super.setupJoinsWithComboBox(cmbGrupa, "Grupa_artikla", "id_grupe", "id grupe", "naziv_grupe", "naziv grupe",
-				false, "");
+		cmbGrupa = super.setupJoinsWithComboBox(cmbGrupa, "Grupa_artikla", "id_grupe", "id grupe", "naziv_grupe",
+				"naziv grupe", false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override
@@ -78,6 +78,12 @@ public class ArtikalStandardForm extends GenericForm {
 			});
 		} else {
 			cmbGrupa.setEnabled(false);
+			for (int i = 0; i < cmbGrupa.getItemCount(); i++) {
+				if (cmbGrupa.getItemAt(i).getId().equals(parentId)) {
+					cmbGrupa.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoom.setVisible(false);
 		}
 

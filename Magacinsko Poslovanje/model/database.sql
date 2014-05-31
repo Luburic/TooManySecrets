@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     30-May-14 5:18:13 PM                         */
+/* Created on:     31-May-14 5:14:43 PM                         */
 /*==============================================================*/
 
 
@@ -450,7 +450,7 @@ create table Artikal (
    id_artikla           int                  identity,
    id_grupe             int                  not null,
    sifra_artikla        char(8)              not null,
-   pakovanje            decimal(2,2)         not null,
+   pakovanje            decimal(4,2)         not null,
    jedinica_mere        char(3)              not null,
    naziv_artikla        varchar(30)          not null,
    artikal_version      int                  not null,

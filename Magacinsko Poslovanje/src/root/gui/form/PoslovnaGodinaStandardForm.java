@@ -85,6 +85,12 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPreduzece.setEnabled(false);
+			for (int i = 0; i < cmbPreduzece.getItemCount(); i++) {
+				if (cmbPreduzece.getItemAt(i).getId().equals(parentId)) {
+					cmbPreduzece.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoom.setVisible(false);
 		}
 

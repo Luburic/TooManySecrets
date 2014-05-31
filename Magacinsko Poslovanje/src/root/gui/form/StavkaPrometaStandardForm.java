@@ -57,8 +57,9 @@ public class StavkaPrometaStandardForm extends GenericForm {
 
 		cmbArtikal = super.setupJoinsWithComboBox(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
 				"naziv artikla", false, "");
-		cmbPrometniDokument = super.setupJoinsWithComboBox(cmbPrometniDokument, "Prometni_dokument", "id_prometnog_dokumenta",
-				"id prometnog dokumenta", "broj_prometnog_dokumenta", "broj prometnog dokumenta", false, "");
+		cmbPrometniDokument = super.setupJoinsWithComboBox(cmbPrometniDokument, "Prometni_dokument",
+				"id_prometnog_dokumenta", "id prometnog dokumenta", "broj_prometnog_dokumenta",
+				"broj prometnog dokumenta", false, "");
 
 		cmbArtikal.setEnabled(false);
 		cmbPrometniDokument.setEnabled(false);
@@ -74,6 +75,12 @@ public class StavkaPrometaStandardForm extends GenericForm {
 				}
 			});
 		} else {
+			for (int i = 0; i < cmbArtikal.getItemCount(); i++) {
+				if (cmbArtikal.getItemAt(i).getId().equals(parentId)) {
+					cmbArtikal.setSelectedIndex(i);
+					break;
+				}
+			}
 			cmbArtikal.setEnabled(false);
 			btnZoomArtikal.setVisible(false);
 		}
@@ -89,6 +96,12 @@ public class StavkaPrometaStandardForm extends GenericForm {
 				}
 			});
 		} else {
+			for (int i = 0; i < cmbPrometniDokument.getItemCount(); i++) {
+				if (cmbPrometniDokument.getItemAt(i).getId().equals(parentId)) {
+					cmbPrometniDokument.setSelectedIndex(i);
+					break;
+				}
+			}
 			cmbPrometniDokument.setEnabled(false);
 			btnZoomPopisniDokument.setVisible(false);
 		}

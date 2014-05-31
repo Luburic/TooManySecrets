@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -20,6 +22,7 @@ import javax.swing.JTextField;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
+import root.dbConnection.DBConnection;
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
 import root.gui.action.ZakljuciPrometniAction;
@@ -119,6 +122,12 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbOrgJedinicaIz.setEnabled(false);
+			for (int i = 0; i < cmbOrgJedinicaIz.getItemCount(); i++) {
+				if (cmbOrgJedinicaIz.getItemAt(i).getId().equals(parentId)) {
+					cmbOrgJedinicaIz.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoomOrgJedinicaIz.setVisible(false);
 		}
 		if (!childWhere.contains("Org_id_jedinice")) {
@@ -134,6 +143,12 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbOrgJedinicaU.setEnabled(false);
+			for (int i = 0; i < cmbOrgJedinicaU.getItemCount(); i++) {
+				if (cmbOrgJedinicaU.getItemAt(i).getId().equals(parentId)) {
+					cmbOrgJedinicaU.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoomOrgJedinicaU.setVisible(false);
 		}
 		if (!childWhere.contains("id_poslovne_godine")) {
@@ -164,6 +179,12 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbVrstaPrometa.setEnabled(false);
+			for (int i = 0; i < cmbVrstaPrometa.getItemCount(); i++) {
+				if (cmbVrstaPrometa.getItemAt(i).getId().equals(parentId)) {
+					cmbVrstaPrometa.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoomVrstaPrometa.setVisible(false);
 		}
 		if (!childWhere.contains("id_poslovnog_partnera")) {
@@ -179,6 +200,12 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			});
 		} else {
 			cmbPoslovniPartner.setEnabled(false);
+			for (int i = 0; i < cmbPoslovniPartner.getItemCount(); i++) {
+				if (cmbPoslovniPartner.getItemAt(i).getId().equals(parentId)) {
+					cmbPoslovniPartner.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoomPoslovniPartner.setVisible(false);
 		}
 
@@ -380,5 +407,24 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			return;
 		}
 
+		try {
+			CallableStatement proc = DBConnection.getConnection().prepareCall(
+					"{ call ProknjiziPromet(?, ?, ?, ?, ?, ?, ?, ?) }");
+			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
+			proc.setObject(2, tableModel.getValueAt(tblGrid.getSelectedRow(), 1));
+			proc.setObject(3, tableModel.getValueAt(tblGrid.getSelectedRow(), 2));
+			proc.setObject(4, tableModel.getValueAt(tblGrid.getSelectedRow(), 4));
+			proc.setObject(5, tableModel.getValueAt(tblGrid.getSelectedRow(), 3));
+			proc.setObject(6, ((ComboBoxPair) cmbOrgJedinicaU.getSelectedItem()).getCmbShow());
+			proc.setObject(7, now);
+			proc.registerOutParameter(8, java.sql.Types.INTEGER);
+
+			proc.executeUpdate();
+
+			Integer retVal = proc.getInt(8);
+			System.out.println(retVal);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -57,6 +57,12 @@ public class GrupaArtiklaStandardForm extends GenericForm {
 			});
 		} else {
 			cmbGrupa.setEnabled(false);
+			for (int i = 0; i < cmbGrupa.getItemCount(); i++) {
+				if (cmbGrupa.getItemAt(i).getId().equals(parentId)) {
+					cmbGrupa.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoom.setVisible(false);
 		}
 

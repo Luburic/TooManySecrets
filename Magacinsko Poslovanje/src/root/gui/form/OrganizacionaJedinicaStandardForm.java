@@ -95,6 +95,12 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 			});
 		} else {
 			cmbOrgJedinica.setEnabled(false);
+			for (int i = 0; i < cmbOrgJedinica.getItemCount(); i++) {
+				if (cmbOrgJedinica.getItemAt(i).getId().equals(parentId)) {
+					cmbOrgJedinica.setSelectedIndex(i);
+					break;
+				}
+			}
 			btnZoomOrgJedinica.setVisible(false);
 		}
 

@@ -13,8 +13,8 @@ public class AnalitikaMagacinskeKarticeAction extends DialogAction {
 	public AnalitikaMagacinskeKarticeAction() {
 		KeyStroke ctrlMKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlMKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Artikli");
-		putValue(NAME, "Artikli");
+		putValue(SHORT_DESCRIPTION, "Analitika magacinske kartice");
+		putValue(NAME, "Analitika magacinske kartice");
 	}
 
 	@Override

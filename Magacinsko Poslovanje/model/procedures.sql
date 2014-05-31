@@ -143,20 +143,53 @@ BEGIN
 		@vrednost_izlaza = vrednost_izlaza, @kolicina_izlaza = kolicina_izlaza, @vrednost_pocetna = vrednost_pocetnog_stanja, @kolicina_pocetna = kolicina_pocetnog_stanja 
 		FROM Magacinska_kartica JOIN Analitika_magacinske_kartice ON Magacinska_kartica.id_magacinske_kartice = Analitika_magacinske_kartice.id_magacinske_kartice WHERE id_artikla = @id_artikla AND id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine
 		--Ovde ce trebati neki test da vidimo da li je ulaz ili izlaz. Ispod se nalazi test da li postoji magacinska kartica za dati artikal, poslovnu godinu i magacin. Ako ne, kreiraj je.
-		IF(@id_magacinske is null)
+		DECLARE
+			@novi_ulaz numeric(12) = 0,
+			@novi_izlaz numeric(12) = 0,
+			@nova_vrednost_ulaza decimal(15, 2) = 0,
+			@nova_vrednost_izlaza decimal(15, 2) = 0,
+			@smer character(1)
+		IF(@Sifra_vrste = 'OT')
 		BEGIN
-			DECLARE @redni_broj int
-			SELECT @redni_broj = MAX([redni broj]) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
-			INSERT INTO Analitika_magacinske_kartice VALUES (@Id_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj, 'U', @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
-			UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza + @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza + @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza + @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza + @kolicina_prometa))
+			SET @smer = 'I'
+			SET @novi_izlaz = @kolicina_prometa
+			SET @nova_vrednost_izlaza = @vrednost_prometa
 		END
 		ELSE
 		BEGIN
-			INSERT INTO Magacinska_kartica VALUES (@Id_godine, @id_artikla, @Id_magacina, @cena_prometa, 0, @kolicina_prometa, 0, 0, @vrednost_prometa, 0, 1)
-			--Fali mi ovde ID Magacinske kartice koja se formira.
-			INSERT INTO Analitika_magacinske_kartice VALUES (@Id_prometa, @id_stavke_prometa, 1, 'U', @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
+			SET @smer = 'U'
+			IF(@Id_drugog_magacina <> 0)
+			BEGIN
+				SET @novi_ulaz = -@kolicina_prometa
+				SET @nova_vrednost_ulaza = -@vrednost_prometa
+			END
+			ELSE
+			BEGIN
+				SET @novi_ulaz = @kolicina_prometa
+				SET @nova_vrednost_ulaza = @vrednost_prometa
+			END
 		END
-		--Ukoliko imamo medjumagacinski promet, sledece vazi
+
+		IF(@id_magacinske is not null)
+		BEGIN
+			DECLARE @redni_broj int
+			SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
+			INSERT INTO Analitika_magacinske_kartice VALUES (@Id_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj, @smer, @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
+			IF(@smer = 'U')
+			BEGIN
+				UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza + @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza + @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza + @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza + @kolicina_prometa)) WHERE id_magacinske_kartice = @id_magacinske
+			END
+			ELSE
+			BEGIN
+				UPDATE Magacinska_kartica SET kolicina_izlaza = (@kolicina_izlaza + @kolicina_prometa), vrednost_izlaza = (@vrednost_izlaza + @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza - @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza - @kolicina_prometa)) WHERE id_magacinske_kartice = @id_magacinske
+			END
+		END
+		ELSE
+		BEGIN
+			INSERT INTO Magacinska_kartica VALUES (@Id_godine, @id_artikla, @Id_magacina, @cena_prometa, 0, @novi_ulaz, @novi_izlaz, 0, @nova_vrednost_ulaza, @nova_vrednost_izlaza, 1)
+			INSERT INTO Analitika_magacinske_kartice VALUES (SCOPE_IDENTITY(), @Id_prometa, @id_stavke_prometa, 1, @smer, @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
+		END
+		--Ukoliko imamo medjumagacinski promet, kreiramo stavku i u drugom magacinu
 		IF(@Id_drugog_magacina <> 0)
 		BEGIN
 			SELECT @id_magacinske = Magacinska_kartica.id_magacinske_kartice, @prosecna_cena = prosecna_cena, @kolicina_ulaza = kolicina_ulaza, @vrednost_ulaza = vrednost_ulaza, 
@@ -164,15 +197,14 @@ BEGIN
 			FROM Magacinska_kartica JOIN Analitika_magacinske_kartice ON Magacinska_kartica.id_magacinske_kartice = Analitika_magacinske_kartice.id_magacinske_kartice WHERE id_artikla = @id_artikla AND id_jedinice = @Id_drugog_magacina AND id_poslovne_godine = @Id_godine
 			IF(@id_magacinske is null)
 			BEGIN
-				SELECT @redni_broj = MAX([redni broj]) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
+				SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
 				INSERT INTO Analitika_magacinske_kartice VALUES (@Id_drugog_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj, 'U', @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
 				UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza + @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza + @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza + @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza + @kolicina_prometa))
 			END
 			ELSE
 			BEGIN
 				INSERT INTO Magacinska_kartica VALUES (@Id_godine, @id_artikla, @Id_drugog_magacina, @cena_prometa, 0, @kolicina_prometa, 0, 0, @vrednost_prometa, 0, 1)
-				--Fali mi ovde ID Magacinske kartice koja se formira.
-				INSERT INTO Analitika_magacinske_kartice VALUES (@Id_prometa, @id_stavke_prometa, 1, 'U', @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
+				INSERT INTO Analitika_magacinske_kartice VALUES (SCOPE_IDENTITY(), @Id_prometa, @id_stavke_prometa, 1, 'U', @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
 			END
 		END
 	END

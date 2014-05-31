@@ -77,6 +77,8 @@ public abstract class GenericForm extends JDialog {
 
 	protected GenericTableModel tableModel;
 
+	protected Integer parentId = 0;
+
 	public GenericForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		setLayout(new MigLayout("fill"));
 		setSize(new Dimension(600, 400));
@@ -88,6 +90,9 @@ public abstract class GenericForm extends JDialog {
 		initPanels();
 		this.returning = returning;
 		this.childWhere = childWhere;
+		if (childWhere.contains("=")) {
+			parentId = Integer.parseInt(childWhere.substring(childWhere.indexOf("=") + 1, childWhere.length()));
+		}
 	}
 
 	public void initToolbar() {
