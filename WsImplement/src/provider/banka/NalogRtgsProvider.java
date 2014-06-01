@@ -233,7 +233,7 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 					
 					//snimanje u bazu primljenog zaduzenja od te centrale
 					
-					//skidanje para sa racuna firme koja je poslala nalog
+					//skidanje para sa racuna firme
 					
 					
 				}

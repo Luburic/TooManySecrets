@@ -218,7 +218,9 @@
             <soap:address location="http://localhost:8080/IzvodPort"/>
         </wsdl:port>
         
-        
+        <wsdl:port name="OdobrenjePort" binding="ws:BankaBinding">
+            <soap:address location="http://localhost:8080/OdobrenjePort"/>
+        </wsdl:port>
         
          <wsdl:port name="MT103Port" binding="ws:BankaBinding">
             <soap:address location="http://localhost:8080/MT103Port"/>

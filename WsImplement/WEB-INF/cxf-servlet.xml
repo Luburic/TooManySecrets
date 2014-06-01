@@ -17,20 +17,35 @@
 
 
 		<jaxws:endpoint 
-		id="nalog"
+		id="rtgs"
 		address="/Rtgs"
 		implementor="ws.style.message.RtgsProvider"
 		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
 		/>
 		
 		<jaxws:endpoint 
-		id="nalog"
+		id="clearing"
 		address="/Clearing"
 		implementor="ws.style.message.ClearingProvider"
 		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
 		/>
 		
 	
+		<jaxws:endpoint 
+		id="odobrenje"
+		address="/Odobrenje"
+		implementor="ws.style.message.OdobrenjeProvider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+	
+	
+		<jaxws:endpoint 
+			id="mt1023"
+			address="/MT1023"
+			implementor="ws.style.message.MT1023Provider"
+			wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+			/>
+			
 		<jaxws:endpoint 
 		id="izvod"
 		address="/Izvod"

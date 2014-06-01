@@ -259,7 +259,7 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 				
 				//snimanje u bazu banke A(this) primljenog zaduzenja te centrale
 				
-				//skidanje para sa racuna firme koja je poslala nalog
+				//skidanje para sa racuna firme
 				
 			
 			}

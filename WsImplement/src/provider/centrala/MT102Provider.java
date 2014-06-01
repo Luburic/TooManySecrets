@@ -128,7 +128,7 @@ public class MT102Provider implements javax.xml.ws.Provider<DOMSource>{
 			
 			
 			Document docum = Validation.buildDocumentWithoutValidation("./MT900Test/MT900.xml");
-			Element mt = (Element) docum.getElementsByTagName("MT900").item(0);
+			Element mt = (Element) docum.getElementsByTagName("MT102").item(0);
 			mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 			
 			security.saveDocument(docum, "./MT900Test/MT900.xml");
@@ -156,8 +156,8 @@ public class MT102Provider implements javax.xml.ws.Provider<DOMSource>{
 			
 			
 			//snimanje mt900 za slanje
-			createMT910();
-			forwardMT102(); 
+			createMT910(); //invoke odobrenje
+			forwardMT102(); //invoke mt1023
 			
 			
 			
