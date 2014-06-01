@@ -39,7 +39,7 @@ import beans.nalog.Nalog;
 
 @Stateless
 @ServiceMode(value = Service.Mode.PAYLOAD)
-@WebServiceProvider(portName = "MT103Port", 
+@WebServiceProvider(portName = "NalogRtgsPort", 
 					serviceName = "BankaServis",
 					targetNamespace = "http://www.toomanysecrets.com/bankaServis",
 					wsdlLocation = "WEB-INF/wsdl/Banka.wsdl")
@@ -66,7 +66,7 @@ public class RtgsProvider  implements Provider<DOMSource>{
 		
 		try {
 			
-			System.out.println("\nInvoking NalogProvider\n");
+			System.out.println("\nInvoking RtgsProvider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			DocumentTransform.printDocument(DocumentTransform.convertToDocument(request));
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
@@ -131,7 +131,8 @@ public class RtgsProvider  implements Provider<DOMSource>{
 			if(!validateContent(nalog))
 				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
 			
-			//ako je validan, snimanje primljenog naloga u bazu..
+			//ako je validan, snimanje primljenog naloga u bazu
+			//i formiranje MT103 zahteva za centralu..
 			
 		
 			
@@ -216,7 +217,7 @@ public class RtgsProvider  implements Provider<DOMSource>{
 					
 					
 				
-					int dbRbr=0; //...redni broj poslednje primljenog zaduzenja te banke od strane te centrale
+					int dbRbr=0; //...redni broj poslednje primljenog zaduzenja od strane te centrale
 					
 					DOMSource timestampOK2= Validation.validateTimestamp(TARGET_NAMESPACE, decrypt, "",dbRbr);
 					if(timestampOK2==null)

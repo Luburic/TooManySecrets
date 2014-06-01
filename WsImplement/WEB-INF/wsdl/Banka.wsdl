@@ -202,9 +202,17 @@
     
     
     <wsdl:service name="BankaServis">
-        <wsdl:port name="NalogPort" binding="ws:BankaBinding">
-            <soap:address location="http://localhost:8080/NalogPort"/>
+        
+        <wsdl:port name="NalogRtgsPort" binding="ws:BankaBinding">
+            <soap:address location="http://localhost:8080/NalogRtgsPort"/>
         </wsdl:port>
+        
+        
+        <wsdl:port name="NalogClearingPort" binding="ws:BankaBinding">
+            <soap:address location="http://localhost:8080/NalogClearingPort"/>
+        </wsdl:port>
+        
+        
         
          <wsdl:port name="IzvodPort" binding="ws:BankaBinding">
             <soap:address location="http://localhost:8080/IzvodPort"/>

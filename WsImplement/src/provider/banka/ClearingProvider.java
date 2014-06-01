@@ -4,7 +4,6 @@ package provider.banka;
 
 import java.io.File;
 import java.io.Reader;
-import java.net.MalformedURLException;
 
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBContext;
@@ -32,7 +31,7 @@ import beans.nalog.Nalog;
 
 @Stateless
 @ServiceMode(value = Service.Mode.PAYLOAD)
-@WebServiceProvider(portName = "MT102Port", 
+@WebServiceProvider(portName = "NalogClearingPort", 
 		serviceName = "BankaServis", 
 		targetNamespace = "http://www.toomanysecrets.com/bankaServis", 
 		wsdlLocation = "WEB-INF/wsdl/Banka.wsdl")
@@ -119,7 +118,8 @@ public class ClearingProvider implements Provider<DOMSource> {
 				if(!validateContent(nalog))
 					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
 				
-				//ako je validan, snimanje primljenog naloga u bazu..
+				//sve ok, snimanje primljenog naloga u bazu
+				//kreiranje mt102 zahteva za centralu
 				
 				
 				
@@ -164,10 +164,12 @@ public class ClearingProvider implements Provider<DOMSource> {
 				
 				
 			
-		//if(mt102List.count >4)
-				//pozivanje providera MT102 centralne banke - invokeOneWay
+			//if(banka.mt102databaseList.count >4) {
+					//pozivanje providera MT102 centralne banke
 			
 		
+				
+			//}
 		
 		
 				

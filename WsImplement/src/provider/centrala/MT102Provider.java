@@ -22,18 +22,18 @@ import security.SecurityClass;
 import util.DocumentTransform;
 import util.NSPrefixMapper;
 import util.Validation;
-import beans.mt103.MT103;
+import beans.mt102.MT102;
 import beans.mt900.MT900;
 import beans.mt910.MT910;
 
 
 @Stateless
 @ServiceMode(value = Service.Mode.PAYLOAD)
-@WebServiceProvider(portName = "MT103Port", 
+@WebServiceProvider(portName = "MT102Port", 
 					serviceName = "BankaServis",
 					targetNamespace = "http://www.toomanysecrets.com/bankaServis",
 					wsdlLocation = "WEB-INF/wsdl/Banka.wsdl")
-public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
+public class MT102Provider implements javax.xml.ws.Provider<DOMSource>{
 
 	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/bankaServis";
 	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
@@ -41,18 +41,18 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 	private Marshaller marshaller;
 	private Document encrypted = null;
 	
+	
 	@Override
 	public DOMSource invoke(DOMSource request) {
 		
 		try {
-    		
-    		System.out.println("\nInvoking MT103Provider\n");
+		    		
+    		System.out.println("\nInvoking MT102Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			Document document =DocumentTransform.convertToDocument(request);
 			DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
-			
 			
 			
 			
@@ -103,22 +103,22 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			
 			
 			
-			JAXBContext context = JAXBContext.newInstance("mt103.nalog");
+			JAXBContext context = JAXBContext.newInstance("mt102.nalog");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			//SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			//Schema schema = schemaFactory.newSchema(new URL(SCHEME_PATH));
 			//unmarshaller.setSchema(schema);
 			
-			MT103 mt103 = (MT103) unmarshaller.unmarshal(decrypt);
+			MT102 mt102 = (MT102) unmarshaller.unmarshal(decrypt);
 			
-			if(!validateContent(mt103))
+			if(!validateContent(mt102))
 				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
 			
 			
-			//sve je ok, MT103 se snimi u bazu centrale
+			//sve je ok, MT102 se snimi u bazu centrale
 			//kreira se zaduzenje kao odgovor
 			
-			MT900 mt900 = createMT900(mt103);
+			MT900 mt900 = createMT900(mt102);
 			JAXBContext con = JAXBContext.newInstance("beans.mt900");
 			marshaller = con.createMarshaller();
 			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
@@ -134,7 +134,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			security.saveDocument(docum, "./MT900Test/MT900.xml");
 			String inputFile =  "./MT900Test/MT900.xml";
 			
-			//potpisivanje od mt103 providera
+			//potpisivanje od mt102 providera
 			String outputFile = inputFile.substring(0, inputFile.length()-4) + "-signed.xml";
 			String alias="";
 			String password="";
@@ -157,6 +157,11 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			
 			//snimanje poslatog mt900
 			
+			
+			
+			
+			
+			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (DOMException e) {
@@ -168,40 +173,31 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			e.printStackTrace();
 		}
 		return new DOMSource(encrypted);
+		}
+
+	
+	
+	
+	
+		private MT900 createMT900(MT102 mt102){
+			MT900 mt = new MT900();
+			return mt;
+			
+		}
+	
+	
 		
-	}
-	
-	
-	
-	
-	private MT900 createMT900(MT103 mt103){
-		MT900 mt = new MT900();
-		mt.setIdPorukeNaloga(mt103.getIdPoruke());
-		mt.setDatumValute(mt103.getDatumValute());
-		mt.setIdPoruke("");
-		mt.setIznos(mt103.getIznos());
-		mt.setObracunskiRacunBankeDuzinka(mt103.getObracunskiRacunBankeDuznika());
-		mt.setSifraValute(mt103.getSifraValute());
-		mt.setSwiftBankeDuznika("");
-		return mt;
+		private MT910 createMT910(){
+			return null;
+		}
 		
-	}
-	
-	private MT910 createMT910(){
-		return null;
-	}
-	
-	
-	private MT103 createMT103(){
-		return null;
-	}
-	
-	
-	
-	public boolean validateContent(MT103 mt103){
-		return true;
-	}
-	
+		
+		private MT102 createMT102(){
+			return null;
+		}
+		
+		public boolean validateContent(MT102 mt102){
+			return true;
+		}
+		
 }
-
-
