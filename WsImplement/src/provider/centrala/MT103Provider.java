@@ -103,7 +103,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			
 			
 			
-			JAXBContext context = JAXBContext.newInstance("mt103.nalog");
+			JAXBContext context = JAXBContext.newInstance("beans.mt103");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			//SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			//Schema schema = schemaFactory.newSchema(new URL(SCHEME_PATH));
@@ -155,7 +155,9 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			security.saveDocument(encrypted, inputFile.substring(0, inputFile.length()-4) + "-crypted.xml");
 			
 			
-			//snimanje poslatog mt900
+			//snimanje mt900 za slanje
+			forwardMT103(); 
+			createMT910(); 
 			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -187,12 +189,12 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		
 	}
 	
-	private MT910 createMT910(){
+	private DOMSource createMT910(){
 		return null;
 	}
 	
 	
-	private MT103 createMT103(){
+	private DOMSource forwardMT103(){
 		return null;
 	}
 	

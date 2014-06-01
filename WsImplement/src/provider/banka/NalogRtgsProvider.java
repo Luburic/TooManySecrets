@@ -2,7 +2,6 @@ package provider.banka;
 
 import java.io.File;
 import java.io.Reader;
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
@@ -13,7 +12,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
-
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.Dispatch;
@@ -31,9 +29,6 @@ import util.DocumentTransform;
 import util.MyDatatypeConverter;
 import util.NSPrefixMapper;
 import util.Validation;
-import beans.mt102.MT102;
-import beans.mt102.MT102.PojedinacnaUplata;
-import beans.mt102.MT102.ZaglavljeMT102;
 import beans.mt103.MT103;
 import beans.nalog.Nalog;
 
@@ -43,7 +38,7 @@ import beans.nalog.Nalog;
 					serviceName = "BankaServis",
 					targetNamespace = "http://www.toomanysecrets.com/bankaServis",
 					wsdlLocation = "WEB-INF/wsdl/Banka.wsdl")
-public class RtgsProvider  implements Provider<DOMSource>{
+public class NalogRtgsProvider  implements Provider<DOMSource>{
 
 	
 	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/bankaServis";
@@ -55,7 +50,7 @@ public class RtgsProvider  implements Provider<DOMSource>{
 	private Marshaller marshaller;
 	
 	
-	public RtgsProvider() {
+	public NalogRtgsProvider() {
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -240,19 +235,17 @@ public class RtgsProvider  implements Provider<DOMSource>{
 					
 					//skidanje para sa racuna firme koja je poslala nalog
 					
-					return new DOMSource(DocumentTransform.createNotificationResponse("Uspesno poslat i obradjen nalog.",TARGET_NAMESPACE));
 					
 				}
 				catch (MalformedURLException e) {
 					e.printStackTrace();
 				
 				} catch (TransformerFactoryConfigurationError e) {
-					e.printStackTrace();
-					
+					e.printStackTrace();	
 				} 
-				
-	
 			
+				
+				
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (DOMException e) {
@@ -263,54 +256,13 @@ public class RtgsProvider  implements Provider<DOMSource>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return new DOMSource(DocumentTransform.createNotificationResponse("Nalog(rtgs tipa)uspesno primljen i obradjen.",TARGET_NAMESPACE));
+
 		
-		return new DOMSource(null);
 	}
 	
 
 	
-	private MT102 createMT102(Nalog nalog) {
-		//banka treba da proveri u bazi da li ima kreirano zaglavlje kliringa
-		//za banku kojoj je nalog namenjen.. ako ima ,koristi se postojece zaglavlje kliringa,
-		//i dodaje se stavka pristiglog naloga..ako nema, kreira se novo zaglavlje  kliringa za tu 
-		//banku i dodaje stavka iz naloga
-		MT102 mt102=null;
-		boolean exist = false;
-		
-		/*for(MT102 mt: mt102DatabseList){
-			ZaglavljeMT102 zag102 = mt102.getZaglavljeMT102();
-			
-			if(nalog.getRacunPoverioca().startsWith(zag102.getObracunskiRacunBankePoverioca().substring(0, 2))){
-				mt102 = mt;
-				exist = true;
-				break;
-			}
-		}*/
-		
-		if(exist) {
-			PojedinacnaUplata pu = new PojedinacnaUplata();
-			//pu.set...
-			//pu.set...
-			//pu.set...
-			mt102.getPojedinacnaUplata().add(pu);
-			
-		}else {
-			PojedinacnaUplata pu = new PojedinacnaUplata();
-			//pu.set...
-			//pu.set...
-			//pu.set...
-			ZaglavljeMT102 z102 = new ZaglavljeMT102();
-			//z102.set..
-			//z102.set..
-			//z102.set..
-			mt102 = new MT102();
-			mt102.setZaglavljeMT102(z102);
-			mt102.getPojedinacnaUplata().add(pu);
-		}
-		
-		
-		return mt102;
-	}
 	
 	private MT103 createMT103(Nalog nalog) {
 		
