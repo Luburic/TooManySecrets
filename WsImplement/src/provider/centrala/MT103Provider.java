@@ -1,7 +1,6 @@
 package provider.centrala;
 
 import java.io.File;
-import java.io.Reader;
 
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBContext;
@@ -20,11 +19,11 @@ import org.w3c.dom.Element;
 
 import security.SecurityClass;
 import util.DocumentTransform;
+import util.MessageTransform;
 import util.NSPrefixMapper;
 import util.Validation;
 import beans.mt103.MT103;
 import beans.mt900.MT900;
-import beans.mt910.MT910;
 
 
 @Stateless
@@ -39,7 +38,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
 	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
 	private Marshaller marshaller;
-	private Document encrypted = null;
+	private Document encryptedDocument;
 	
 	@Override
 	public DOMSource invoke(DOMSource request) {
@@ -55,67 +54,28 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			
 			
 			
-			
-			
-			SecurityClass security = new SecurityClass();
-			Reader reader = Validation.createReader(document);
-			Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/ws_style/services/Banka?xsd=../shema/MT103Crypt.xsd","http://localhost:8080/ws_style/services/Banka?xsd=xenc-schema.xsd"});
-			
-			if( doc == null )
-				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po Crypt semi.", TARGET_NAMESPACE));
-			
-			
-			//treba da provalim kako da dobijem tu putanju posto za url nece da ga nadje :(
-			String path = "C:\\apache-tomee-plus-1.5.0\\webapps\\ws_style\\keystores\\banka.jks";
-		
-			
-			//onaj properties file kojie je zakomentarisan na pocetku try bloka ce ovde uskociti
-			Document decrypt = security.decrypt(doc, security.readPrivateKey("bankaa", "bankaa", path, "bankaa"));
-			Reader reader1 = Validation.createReader(decrypt);
-			decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/ws_style/services/Banka?xsd=../shema/MT103Signed.xsd","http://localhost:8080/ws_style/services/Banka?xsd=xmldsig-core-schema.xsd"});
-			
-			if( decrypt == null )
-				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po Signed semi.",TARGET_NAMESPACE));
-			
-		
-			
-			if(!security.verifySignature(decrypt)) 
-				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije dobro potpisan.",TARGET_NAMESPACE));
-		
-		
-			DOMSource timestampOk= Validation.validateTimestamp(TARGET_NAMESPACE, decrypt, "",0);
-			if(timestampOk==null)
-				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument ne odgovara prema vremenu primanja.",TARGET_NAMESPACE));
-			
-			
-			decrypt = DocumentTransform.convertToDocument(timestampOk);
-			
-			
-			//skidanje taga
-			Element signature = (Element) decrypt.getElementsByTagName("ds:Signature").item(0);
-			signature.getParentNode().removeChild(signature);
-			
-			Reader reader2 = Validation.createReader(decrypt);
-			decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/ws_style/services/Banka?xsd=../shema/MT103Raw.xsd"});
-			
-			if( decrypt == null )
-				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po Raw semi.",TARGET_NAMESPACE));
-			
-			
+			Document decryptedDocument =MessageTransform.unpack(document, "MT103", "MT103", TARGET_NAMESPACE);
+
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt103");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
-			//SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			//Schema schema = schemaFactory.newSchema(new URL(SCHEME_PATH));
-			//unmarshaller.setSchema(schema);
+		
 			
-			MT103 mt103 = (MT103) unmarshaller.unmarshal(decrypt);
+			MT103 mt103=null;
+			try {
+				mt103 = (MT103) unmarshaller.unmarshal(decryptedDocument);
+			} catch (Exception e) {
+				return new DOMSource(decryptedDocument);
+			}
 			
 			if(!validateContent(mt103))
 				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
 			
 			
 			//sve je ok, MT103 se snimi u bazu centrale
+			
+			
+			
 			//kreira se zaduzenje kao odgovor
 			
 			MT900 mt900 = createMT900(mt103);
@@ -131,33 +91,24 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			Element mt = (Element) docum.getElementsByTagName("MT900").item(0);
 			mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 			
+			
+			SecurityClass security = new SecurityClass();
 			security.saveDocument(docum, "./MT900Test/MT900.xml");
 			String inputFile =  "./MT900Test/MT900.xml";
 			
-			//potpisivanje od mt103 providera
-			String outputFile = inputFile.substring(0, inputFile.length()-4) + "-signed.xml";
+			
 			String alias="";
 			String password="";
 			String keystoreFile="";
 			String keystorePassword="";
-			Document signed = security.addTimestampAndSign(alias, password, keystoreFile, keystorePassword, inputFile, outputFile, 0, " http://localhost:8080/ws_style/services/Banka?xsd=../shema/MT900Signed.xsd", "MT900");
 			
-			if( signed == null )
-				return new DOMSource(DocumentTransform.createNotificationResponse("Greska u potpisivanju.",TARGET_NAMESPACE));
-			
-			
-			
-			encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificate(alias, password, keystoreFile, keystorePassword),NAMESPACE_XSD, "MT900");
-			
-			if(encrypted == null)
-				return new DOMSource(DocumentTransform.createNotificationResponse("Greska u enkripciji.",TARGET_NAMESPACE));
-			
-			security.saveDocument(encrypted, inputFile.substring(0, inputFile.length()-4) + "-crypted.xml");
-			
-			
-			//snimanje mt900 za slanje
-			forwardMT103(); 
-			createMT910(); 
+			encryptedDocument = MessageTransform.pack("MT103", "MT900", inputFile, alias, password, keystoreFile, keystorePassword, TARGET_NAMESPACE, NAMESPACE_XSD);
+
+			//ako je encryptedDocument uspesno snimljen u bazu, znaci da je pack uspesno izvrsen
+			//if(encryptedDocument exist in centralaDatabase){
+				forwardMT103(); 
+				createMT910(); 
+				//}
 			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -169,7 +120,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return new DOMSource(encrypted);
+		return new DOMSource(encryptedDocument);
 		
 	}
 	

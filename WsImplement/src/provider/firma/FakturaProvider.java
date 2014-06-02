@@ -42,8 +42,6 @@ public class FakturaProvider  implements Provider<DOMSource> {
 	public DOMSource invoke(DOMSource request) {
 		
     	try {
-    		//ResourceBundle firmaBundle = ResourceBundle.getBundle("firmaA");
-    		//String nazivFirme = firmaBundle.getString("naziv");
     		
 			//serijalizacija DOM-a na ekran
     		System.out.println("\nInvoking FakturaProvider\n");
@@ -53,67 +51,7 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
-			
-			/*
-			
-			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = schemaFactory.newSchema(new URL(SCHEME_PATH));
-			unmarshaller.setSchema(schema);*/
-			
-			/*SecurityClass security = new SecurityClass();
-			Reader reader = Validation.createReader(document);
-			Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaCrypt.xsd","http://localhost:8080/ws_style/services/Faktura?xsd=xenc-schema.xsd"});
-			
-			if( doc == null )
-				return new DOMSource(createResponse("Dokument nije validan po Crypt semi."));
-			
-			
-			//treba da provalim kako da dobijem tu putanju posto za url nece da ga nadje :(
-			String path = "C:\\apache-tomee-plus-1.5.0\\webapps\\ws_style\\keystores\\firmaa.jks";
-			
-			System.out.println("Pre dekriptovanja");
-			DocumentTransform.printDocument(doc);
-			
-			
-			//onaj properties file kojie je zakomentarisan na pocetku try bloka ce ovde uskociti
-			Document decrypt = security.decrypt(doc, security.readPrivateKey("firmaa", "firmaa", path, "firmaa"));
-			Reader reader1 = Validation.createReader(decrypt);
-			decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaSigned.xsd","http://localhost:8080/ws_style/services/Faktura?xsd=xmldsig-core-schema.xsd"});
-			
-			if( decrypt == null )
-				return new DOMSource(createResponse("Dokument nije validan po Signed semi."));
-			
-			
-			System.out.println("Posle dekriptovanja");
-			DocumentTransform.printDocument(decrypt);
-			
-			if(!security.verifySignature(decrypt)) 
-				return new DOMSource(createResponse("Dokument nije dobro potpisan."));
-			
-			
-			//ovde ce ici provera za timestamp
-			Element timestamp = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
-			String dateString = timestamp.getTextContent();
-			//skidanje taga
-			timestamp.getParentNode().removeChild(timestamp);
-			
-			//ovde ce ici provera za redni broj poruke
-			Element redniBrojPoruke = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
-			//skidanje taga
-			redniBrojPoruke.getParentNode().removeChild(redniBrojPoruke);
-			
-			//skidanje taga
-			Element signature = (Element) decrypt.getElementsByTagName("ds:Signature").item(0);
-			signature.getParentNode().removeChild(signature);
-			System.out.println("Posle skidanja tagova************************************************************");
-			DocumentTransform.printDocument(decrypt);
-			
-			Reader reader2 = Validation.createReader(decrypt);
-			decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaRaw.xsd"});
-			
-			if( decrypt == null )
-				return new DOMSource(createResponse("Dokument nije validan po Raw semi."));*/
-			
+		
 			
 			Document decryptedDocument =MessageTransform.unpack(document, "Faktura", "Faktura", TARGET_NAMESPACE);
 			

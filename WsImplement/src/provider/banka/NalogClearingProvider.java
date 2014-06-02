@@ -3,7 +3,6 @@ package provider.banka;
 
 
 import java.io.File;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -27,11 +26,13 @@ import org.w3c.dom.Element;
 
 import security.SecurityClass;
 import util.DocumentTransform;
+import util.MessageTransform;
 import util.NSPrefixMapper;
 import util.Validation;
 import beans.mt102.MT102;
 import beans.mt102.MT102.PojedinacnaUplata;
 import beans.mt102.MT102.ZaglavljeMT102;
+import beans.mt900.MT900;
 import beans.nalog.Nalog;
 
 @Stateless
@@ -60,65 +61,25 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 				
 				System.out.println("\nInvoking ClearingProvider\n");
 				System.out.println("-------------------REQUEST MESSAGE----------------------------------");
-				DocumentTransform.printDocument(DocumentTransform.convertToDocument(request));
+				Document document =DocumentTransform.convertToDocument(request);
+				DocumentTransform.printDocument(document);
 				System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 				System.out.println("\n");
 				
-				SecurityClass security = new SecurityClass();
-				Reader reader = Validation.createReader(DocumentTransform.convertToDocument(request));
-				Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/ws_style/services/Clearing?xsd=../shema/NalogCrypt.xsd","http://localhost:8080/ws_style/services/Clearing?xsd=xenc-schema.xsd"});
-				
-				if( doc == null ) 
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po Crypt semi.",TARGET_NAMESPACE));
-				
-				String path = "C:\\apache-tomee-plus-1.5.0\\webapps\\ws_style\\keystores\\bankaa.jks";
+				Document decryptedDocument =MessageTransform.unpack(document, "Clearing", "Nalog", TARGET_NAMESPACE);
 
-				
-				Document decrypted = security.decrypt(doc, security.readPrivateKey("bankaa", "bankaa", path, "bankaa"));
-				Reader reader1 = Validation.createReader(decrypted);
-				
-				decrypted = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/ws_style/services/Clearing?xsd=../shema/NalogSigned.xsd","http://localhost:8080/ws_style/services/Clearing?xsd=xmldsig-core-schema.xsd"});
-				
-				if( decrypted == null )
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po Signed semi.",TARGET_NAMESPACE));
-					
-			
-				
-				if(!security.verifySignature(decrypted)) 
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije dobro potpisan.",TARGET_NAMESPACE));
-					
-				
-				DOMSource timestampOK= Validation.validateTimestamp(TARGET_NAMESPACE, decrypted, "",0);
-				
-				if(timestampOK==null)
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument ne odgovara prema vremenu primanja.",TARGET_NAMESPACE));
-				
-				
-				decrypted = DocumentTransform.convertToDocument(timestampOK);
-				
-				
-				Element signature = (Element) decrypted.getElementsByTagName("ds:Signature").item(0);
-				signature.getParentNode().removeChild(signature);
-			
-				
-				Reader reader2 = Validation.createReader(decrypted);
-				decrypted = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/ws_style/services/Clearing?xsd=../shema/NalogRaw.xsd"});
-				
-				if( decrypted == null ) 
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po Raw semi.",TARGET_NAMESPACE));
-				
-				
-				
-				
-				
 				
 				JAXBContext context = JAXBContext.newInstance("beans.nalog");
 				Unmarshaller unmarshaller = context.createUnmarshaller();
-				//SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				//Schema schema = schemaFactory.newSchema(new URL(SCHEME_PATH));
-				//unmarshaller.setSchema(schema);
+				
 			
-				Nalog nalog= (Nalog) unmarshaller.unmarshal(decrypted);
+				Nalog nalog=null;
+				try {
+					nalog = (Nalog) unmarshaller.unmarshal(decryptedDocument);
+				} catch (Exception e) {
+					return new DOMSource(decryptedDocument);
+				}
+				
 				
 				if(!validateContent(nalog))
 					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
@@ -131,8 +92,8 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 				//kreiranje mt102 zahteva i poziv servisa centrale
 				
 				//if(bank.databaseKliringList.count() > 4) {
-					//DOMSource resp = callCentral(nalog);
-					//if(resp!=null)
+					//DOMSource resp = sendClearing(nalog);
+						//if(resp!=null)	
 							//return resp;
 				//}
 				
@@ -155,125 +116,84 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 		
 		
 		
-		public DOMSource callCentral(Nalog nalog){
-			
-			MT102 mt102 = createMT102(nalog); 
-			SecurityClass security = new SecurityClass();
+		public DOMSource sendClearing(Nalog nalog){
 			
 		try {
+			MT102 mt102 = createMT102(nalog); 
+			SecurityClass security = new SecurityClass();
 			
 			JAXBContext con = JAXBContext.newInstance("beans.mt102");
 			marshaller = con.createMarshaller();
 			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			marshaller.marshal(mt102, new File("./MT102Test/MT103.xml"));
+			marshaller.marshal(mt102, new File("./MT102Test/MT102.xml"));
 			
 			Document docum = Validation.buildDocumentWithoutValidation("./MT102Test/MT102.xml");
-			Element mt = (Element) docum.getElementsByTagName("MT102").item(0);
+			Element mt = (Element) docum.getElementsByTagName("mt102").item(0);
 			mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 			
 			security.saveDocument(docum, "./MT102Test/MT102.xml");
 			String inputFile =  "./MT102Test/MT102.xml";
 			
-			//potpisivanje od banke A(this)
-			String outputFile = inputFile.substring(0, inputFile.length()-4) + "-signed.xml";
+			
 			String alias="";
 			String password="";
 			String keystoreFile="";
-			String keystorePassword="";
-			Document signed = security.addTimestampAndSign(alias, password, keystoreFile, keystorePassword, inputFile, outputFile, 0, " http://localhost:8080/ws_style/services/Banka?xsd=../shema/MT102Signed.xsd", "MT102");
+			String keystorePassword="";			
 			
-			if(signed == null)
-				return new DOMSource(DocumentTransform.createNotificationResponse("Greska u potpisivanju.",TARGET_NAMESPACE));
+			Document encryptedDocument = MessageTransform.pack("/Clearing", "MT102", inputFile, alias, password, keystoreFile, keystorePassword, keystoreFile, keystorePassword);
 			
-			Document encrypted = null;
+			//if(encryptedDocument saved in database) {
 			
+					//pozivanje providera MT102 centralne banke
+					try {
+						//kreiranje servisa
+						URL wsdlLocation = new URL("http://localhost:8080/ws_style/services/Banka?wsdl");
+						QName serviceName = new QName("http://www.toomanysecrets.com/bankaServis", "BankaServis");
+						QName portName = new QName("http://www.toomanysecrets.com/bankaServis", "MT102Port");
+						Service service = Service.create(wsdlLocation, serviceName);
+						Dispatch<DOMSource> dispatch = service.createDispatch(portName, DOMSource.class, Service.Mode.PAYLOAD);
+						
+						
+						DOMSource response = dispatch.invoke(new DOMSource(encryptedDocument));
+						
+						
+						
+						
+						//......................zaduzenje kao response....
+						Document rdocument =DocumentTransform.convertToDocument(response);
+						
+						Document decryptedDocument = MessageTransform.unpack(rdocument, "Clearing", "Zaduzenje", TARGET_NAMESPACE);
+						
+						JAXBContext context = JAXBContext.newInstance("beans.mt900");
+						Unmarshaller unmarshaller = context.createUnmarshaller();
+						
+					
+						MT900 zaduzenje=null;
+						try {
+							zaduzenje = (MT900) unmarshaller.unmarshal(decryptedDocument);
+						} catch (Exception e) {
+							return new DOMSource(decryptedDocument);
+						}
+						
+						
+						if(!validateContentZaduzenje(zaduzenje))
+							return new DOMSource(DocumentTransform.createNotificationResponse("Doukment zaduzenje nije validan po sadrzaju.",TARGET_NAMESPACE));
+						
+						//snimanje zaduzenja primljenog od centrale u bazu banke				
+						//skidanje para sa racuna firme
+						
+					}catch (MalformedURLException e) {
+						e.printStackTrace();
+					} catch (TransformerFactoryConfigurationError e) {
+						e.printStackTrace();	
+					} 
 			
-			encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificate(alias, password, keystoreFile, keystorePassword),NAMESPACE_XSD, "MT102");
+			//ako je pri enkripciji - pozivu pack metode doslo do greske
+			//}else {
+				//return new DOMSource(encryptedDocument);
+			//}
 			
-			if(encrypted == null)
-				return new DOMSource(DocumentTransform.createNotificationResponse("Greska u enkripciji.",TARGET_NAMESPACE));
-			
-			security.saveDocument(encrypted, inputFile.substring(0, inputFile.length()-4) + "-crypted.xml");
-		
-			
-			//pozivanje providera MT102 centralne banke
-			try {
-				//kreiranje servisa
-				URL wsdlLocation = new URL("http://localhost:8080/ws_style/services/Banka?wsdl");
-				QName serviceName = new QName("http://www.toomanysecrets.com/bankaServis", "BankaServis");
-				QName portName = new QName("http://www.toomanysecrets.com/bankaServis", "MT102Port");
-				Service service = Service.create(wsdlLocation, serviceName);
-				Dispatch<DOMSource> dispatch = service.createDispatch(portName, DOMSource.class, Service.Mode.PAYLOAD);
-				
-				
-				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
-				
-				
-				
-				
-				//......................zaduzenje kao response....
-				Document rdocument =DocumentTransform.convertToDocument(response);
-				Reader reader3 = Validation.createReader(rdocument);
-				Document doc2 = Validation.buildDocumentWithValidation(reader3,new String[]{ "http://localhost:8080/ws_style/services/Banka?xsd=../shema/ZaduzenjeCrypt.xsd","http://localhost:8080/ws_style/services/Banka?xsd=xenc-schema.xsd"});
-				
-				if( doc2 == null ) 
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po Crypt semi.",TARGET_NAMESPACE));
-				
-				//treba da provalim kako da dobijem tu putanju posto za url nece da ga nadje :(
-				String path2 = "C:\\apache-tomee-plus-1.5.0\\webapps\\ws_style\\keystores\\bankaa.jks";
-				
-				
-				
-				Document decrypt = security.decrypt(doc2, security.readPrivateKey("bankaa", "bankaa", path2, "bankaa"));
-				Reader reader4 = Validation.createReader(decrypt);
-				decrypt = Validation.buildDocumentWithValidation(reader4, new String[]{ "http://localhost:8080/ws_style/services/Banka?xsd=../shema/ZaduzenjeSigned.xsd","http://localhost:8080/ws_style/services/Banka?xsd=xmldsig-core-schema.xsd"});
-				
-				if( decrypt == null ) 
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po Signed semi.",TARGET_NAMESPACE));
-				
-				
-				if(!security.verifySignature(decrypt)) 
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije dobro potpisan.",TARGET_NAMESPACE));
-				
-				
-			
-				int dbRbr=0; //...redni broj poslednje primljenog zaduzenja od strane te centrale
-				
-				DOMSource timestampOK2= Validation.validateTimestamp(TARGET_NAMESPACE, decrypt, "",dbRbr);
-				if(timestampOK2==null)
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument ne odgovara prema vremenu primanja.",TARGET_NAMESPACE));
-				
-				
-				decrypt = DocumentTransform.convertToDocument(timestampOK2);
-				
-				
-				Element signature2 = (Element) decrypt.getElementsByTagName("ds:Signature").item(0);
-				signature2.getParentNode().removeChild(signature2);
-			
-				Reader reader5 = Validation.createReader(decrypt);
-				decrypt = Validation.buildDocumentWithValidation(reader5, new String[]{ "http://localhost:8080/ws_style/services/Banka?xsd=../shema/ZaduzenjeRaw.xsd"});
-				
-				if( decrypt == null )
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po Raw semi.",TARGET_NAMESPACE));
-				
-				//snimanje u bazu banke A(this) primljenog zaduzenja te centrale
-				
-				//skidanje para sa racuna firme
-				
-			
-			}
-			catch (MalformedURLException e) {
-				e.printStackTrace();
-			
-			} catch (TransformerFactoryConfigurationError e) {
-				e.printStackTrace();
-				
-			} 
-			
-		
-		
-		
 		
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -310,11 +230,11 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 			}*/
 			
 			if(exist) {
-				PojedinacnaUplata pu = new PojedinacnaUplata();
+				//PojedinacnaUplata pu = new PojedinacnaUplata();
 				//pu.set...
 				//pu.set...
 				//pu.set...
-				mt102.getPojedinacnaUplata().add(pu);
+				//mt102.getPojedinacnaUplata().add(pu);
 				
 			}else {
 				PojedinacnaUplata pu = new PojedinacnaUplata();
@@ -332,5 +252,11 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 			
 			
 			return mt102;
+		}
+		
+		
+		
+		private boolean validateContentZaduzenje(MT900 zaduzenje) {
+			return true;
 		}
 }
