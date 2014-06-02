@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<faktura xmlns="http://www.toomanysecrets.com/tipovi"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.toomanysecrets.com/tipovi file:C:/Users/Branislav/Documents/GitHub/TooManySecrets/WsImplement/WEB-INF/shema/FakturaRaw.xsd">
+<?xml version="1.0" encoding="UTF-8"?><faktura xmlns="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/tipovi file:C:/Users/Branislav/Documents/GitHub/TooManySecrets/WsImplement/WEB-INF/shema/FakturaRaw.xsd">
     <zaglavlje idPoruke="idPoruke1">
         <nazivDobavljaca>nazivDobavljaca0</nazivDobavljaca>
         <adresaDobavljaca>adresaDobavljaca0</adresaDobavljaca>

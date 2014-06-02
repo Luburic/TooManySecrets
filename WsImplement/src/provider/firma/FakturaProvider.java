@@ -1,10 +1,9 @@
 package provider.firma;
 
-import java.io.Reader;
-import java.util.List;
-
 import javax.ejb.Stateless;
-import javax.xml.parsers.DocumentBuilder;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.Provider;
@@ -14,11 +13,9 @@ import javax.xml.ws.WebServiceProvider;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import security.SecurityClass;
 import util.DocumentTransform;
-import util.Validation;
+import util.MessageTransform;
 import beans.faktura.Faktura;
 
 
@@ -57,14 +54,13 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			System.out.println("\n");
 			
 			
-			/*JAXBContext context = JAXBContext.newInstance("beans.faktura");
-			Unmarshaller unmarshaller = context.createUnmarshaller();
+			/*
 			
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = schemaFactory.newSchema(new URL(SCHEME_PATH));
 			unmarshaller.setSchema(schema);*/
 			
-			SecurityClass security = new SecurityClass();
+			/*SecurityClass security = new SecurityClass();
 			Reader reader = Validation.createReader(document);
 			Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaCrypt.xsd","http://localhost:8080/ws_style/services/Faktura?xsd=xenc-schema.xsd"});
 			
@@ -116,16 +112,28 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaRaw.xsd"});
 			
 			if( decrypt == null )
-				return new DOMSource(createResponse("Dokument nije validan po Raw semi."));
+				return new DOMSource(createResponse("Dokument nije validan po Raw semi."));*/
 			
-			/*
-			Faktura faktura = (Faktura) unmarshaller.unmarshal(document);
+			
+			Document decryptedDocument =MessageTransform.unpack(document, "Faktura", "Faktura", TARGET_NAMESPACE);
+			
+			JAXBContext context = JAXBContext.newInstance("beans.faktura");
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			
+			
+			Faktura faktura=null;
+			try {
+				faktura = (Faktura) unmarshaller.unmarshal(decryptedDocument);
+			} catch (JAXBException e) {
+				return new DOMSource(decryptedDocument);
+			}
 
-
+			
+				
 			if(!validateContent(faktura)) {
 				return new DOMSource(message);
 			}
-			*/
+			
 			
 		
 			//snimanje u bazu...
@@ -137,49 +145,22 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			e.printStackTrace();
 		} catch (TransformerFactoryConfigurationError e) {
 			e.printStackTrace();
-		}
+		} catch (JAXBException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
       
-    	return new DOMSource(createResponse("ok"));
+    	return new DOMSource(DocumentTransform.createNotificationResponse("Faktura uspesno obradjena.", TARGET_NAMESPACE));
 	}
 
 	
-	 private Document createResponse(String notification) {
-			
-			DocumentBuilder documentBuilder = DocumentTransform.getDocumentBuilder();
-			Document doc = documentBuilder.newDocument();
-			
-			Element rootEl = doc.createElementNS(TARGET_NAMESPACE, "ns1:notif");
-			rootEl.setAttributeNS(NAMESPACE_SPEC_NS, "xmlns:ns1", TARGET_NAMESPACE);
-			doc.appendChild(rootEl);
-			rootEl.appendChild(doc.createTextNode(notification));
-			
-			return doc;
-		}
-	
-	
-	
-	
-	/*private boolean validateSchema(Document document){
-    	try{
-	    	SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-	    	Schema schema = factory.newSchema(new URL(SCHEME_PATH));
-	    	Validator validator = schema.newValidator();
-	    	validator.validate(new DOMSource(document));
-
-    	}catch(Exception e){
-    		System.out.println("Nije validna po shemi");
-    		//e.printStackTrace();
-    		return false;
-    	}
-    	
-    	return true;
-    }*/
 	
 	
 	
 	
 	public boolean validateContent(Faktura fak) {
-		boolean flag = true;
+	
+		/*boolean flag = true;
 		double tempKolicina, tempJedinicnaCena, tempVrednost, tempProcenatRabata, tempUmanjenoZaRabat, tempPorez, tempIznosRabata;
 		double ukupnoRobeIUsluge, zaUplatu, ukupanPorez, ukupanRabat, vrednostRobe, vrednostUsluga, ukupnoStavke, zaUplatuStavke, ukupanPorezStavke, ukupanRabatStavke;
 
@@ -271,6 +252,10 @@ public class FakturaProvider  implements Provider<DOMSource> {
 		
 		message = createResponse("Faktura je popunjena bez gre�aka.");
 		return flag;
+	
+	*/
+		return true;
 	}
+		
 
 }

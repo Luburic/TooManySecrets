@@ -11,7 +11,7 @@
 		<jaxws:endpoint 
 		id="faktura"
 		address="/Faktura"
-		implementor="ws.style.message.FakturaProvider"
+		implementor="provider.firma.FakturaProvider"
 		wsdlLocation="WEB-INF/wsdl/Firma.wsdl"
 		/>
 
@@ -19,14 +19,14 @@
 		<jaxws:endpoint 
 		id="rtgs"
 		address="/Rtgs"
-		implementor="ws.style.message.RtgsProvider"
+		implementor="provider.banka.NalogRtgsProvider"
 		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
 		/>
 		
 		<jaxws:endpoint 
 		id="clearing"
 		address="/Clearing"
-		implementor="ws.style.message.ClearingProvider"
+		implementor="provider.banka.NalogClearingProvider"
 		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
 		/>
 		
@@ -34,22 +34,35 @@
 		<jaxws:endpoint 
 		id="odobrenje"
 		address="/Odobrenje"
-		implementor="ws.style.message.OdobrenjeProvider"
+		implementor="provider.banka.OdobrenjeProvider"
 		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
 		/>
 	
 	
-		<jaxws:endpoint 
-			id="mt1023"
-			address="/MT1023"
-			implementor="ws.style.message.MT1023Provider"
-			wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
-			/>
 			
 		<jaxws:endpoint 
 		id="izvod"
 		address="/Izvod"
-		implementor="ws.style.message.IzvodProvider"
+		implementor="provider.banka.IzvodProvider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+		
+		
+		
+		<jaxws:endpoint 
+		id="mt102"
+		address="/MT102"
+		implementor="provider.centrala.MT102Provider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+		
+		
+		
+		
+		<jaxws:endpoint 
+		id="mt103"
+		address="/MT103"
+		implementor="provider.centrala.MT103Provider"
 		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
 		/>
 		
