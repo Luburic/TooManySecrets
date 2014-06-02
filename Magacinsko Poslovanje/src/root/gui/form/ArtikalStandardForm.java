@@ -180,8 +180,8 @@ public class ArtikalStandardForm extends GenericForm {
 			tfPakovanje.requestFocus();
 			return false;
 		}
-		if (VerificationMethods.isDecimal(tfPakovanje.getText())) {
-			lblGreska2.setText("Pakovanje mora biti u formatu XY.ZZ");
+		if (!VerificationMethods.isDecimal(tfPakovanje.getText())) {
+			lblGreska2.setText("Pakovanje mora biti u formatu CC.CC gde je C cifra.");
 			tfPakovanje.requestFocus();
 			return false;
 		}

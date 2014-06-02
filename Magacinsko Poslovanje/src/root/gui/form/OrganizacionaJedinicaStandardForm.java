@@ -52,7 +52,7 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		lblGreska2.setForeground(Color.red);
 
 		cmbOrgJedinica = super.setupJoinsWithComboBox(cmbOrgJedinica, "Organizaciona_jedinica", "Org_id_jedinice",
-				"Org_id jedinice", "naziv_jedinice", "naziv nadsektora", true, "");
+				"Org_id jedinice", "naziv_jedinice", "naziv nadsektora", true, " WHERE magacin = 0");
 		cmbOrgJedinica.insertItemAt(new ComboBoxPair(0, ""), 0);
 		cmbOrgJedinica.setSelectedIndex(0);
 		if (Constants.idPreduzeca == 0) {

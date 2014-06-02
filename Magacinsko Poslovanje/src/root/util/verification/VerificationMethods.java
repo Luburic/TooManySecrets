@@ -32,6 +32,6 @@ public class VerificationMethods {
 		} catch (NumberFormatException e) {
 			return false;
 		}
-		return false;
+		return true;
 	}
 }
