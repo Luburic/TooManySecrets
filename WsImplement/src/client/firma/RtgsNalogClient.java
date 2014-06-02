@@ -13,6 +13,7 @@ import org.w3c.dom.Document;
 
 import security.SecurityClass;
 import util.DocumentTransform;
+import util.MessageTransform;
 
 public class RtgsNalogClient {
 
@@ -38,44 +39,17 @@ public class RtgsNalogClient {
 
 			Service service = Service.create(wsdlLocation, serviceName);
 			Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
-			SecurityClass security = new SecurityClass();
-			String outputFile = inputFile.substring(0, inputFile.length() - 4)+ "-signed.xml";
-
 			
-			Document signed = security
-					.addTimestampAndSign(
-							alias,
-							password,
-							keystoreFile,
-							keystorePassword,
-							inputFile,
-							outputFile,
-							0,
-							" http://localhost:8080/ws_style/services/Rtgs?xsd=../shema/NalogSigned.xsd",
-							"nalog");
-
-			Document encrypted = null;
-
-			if (signed == null) {
-				System.out.println("Greska u potpisivanju.");
-				return;
-			}
-
-			encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificate(alias, password, keystoreFile, keystorePassword),NAMESPACE_XSD, "nalog");
-
-			if (encrypted == null) {
-				System.out.println("Greska u kriptovanju.");
-				return;
-			}
-
-			security.saveDocument(encrypted,inputFile.substring(0, inputFile.length() - 4)+ "-crypted.xml");
-
+			
+			Document encrypted= MessageTransform.packS("Rtgs", "Nalog", inputFile, alias, password, keystoreFile, keystorePassword, NAMESPACE_XSD);
+			
+			if(encrypted!=null) {
 			DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 
 			System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 			DocumentTransform.printDocument(DocumentTransform.convertToDocument(response));
 			System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-
+			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 

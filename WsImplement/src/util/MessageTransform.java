@@ -1,9 +1,11 @@
 package util;
 
 import java.io.Reader;
+import java.util.Date;
 
 import javax.xml.transform.dom.DOMSource;
 
+import org.basex.query.value.item.Dat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,8 +39,9 @@ public class MessageTransform {
 			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije dobro potpisan.",TARGET_NAMESPACE);
 	
 	
-		int rbr=0; //database
-		DOMSource timestampOk= Validation.validateTimestamp(TARGET_NAMESPACE, decrypt, "",rbr);
+		int dbCounter=0; //database
+	
+		DOMSource timestampOk= Validation.validateTimestamp(TARGET_NAMESPACE, decrypt, "20.02.2014",dbCounter);
 		if(timestampOk==null)
 			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument ne odgovara prema vremenu primanja.",TARGET_NAMESPACE);
 		
