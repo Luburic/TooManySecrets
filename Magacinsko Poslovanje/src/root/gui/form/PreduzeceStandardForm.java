@@ -15,9 +15,6 @@ import javax.swing.JTextField;
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
 import root.gui.action.dialog.GodinaAction;
-import root.gui.action.dialog.OrganizacionaJedinicaAction;
-import root.gui.action.dialog.PoslovniPartnerAction;
-import root.gui.action.dialog.RadnikAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
@@ -106,14 +103,14 @@ public class PreduzeceStandardForm extends GenericForm {
 		});
 
 		dataPanel.add(lblNaziv);
-		dataPanel.add(tfNaziv);
+		dataPanel.add(tfNaziv, "span 2");
 		dataPanel.add(lblGreska1, "wrap, gapx 15px");
 
 		dataPanel.add(lblBrojTelefona);
-		dataPanel.add(tfBrojTelefona, "wrap,gapx 15px");
+		dataPanel.add(tfBrojTelefona, "wrap, span 2");
 
 		dataPanel.add(lblAdresa);
-		dataPanel.add(tfAdresa);
+		dataPanel.add(tfAdresa, "span 2");
 		dataPanel.add(lblGreska2, "wrap, gapx 15px");
 
 		dataPanel.add(lblMesto);
@@ -121,15 +118,12 @@ public class PreduzeceStandardForm extends GenericForm {
 		dataPanel.add(btnZoom);
 		dataPanel.add(lblGreska3, "gapx 15px");
 
-		JPopupMenu popup = new JPopupMenu();
-		popup.add(new GodinaAction());
 		if (Constants.idPreduzeca != 0) {
-			popup.add(new RadnikAction());
-			popup.add(new OrganizacionaJedinicaAction());
-			popup.add(new PoslovniPartnerAction());
+			JPopupMenu popup = new JPopupMenu();
+			popup.add(new GodinaAction());
+			btnNextForm = new NextFormButton(this, popup);
+			toolBar.add(btnNextForm);
 		}
-		btnNextForm = new NextFormButton(this, popup);
-		toolBar.add(btnNextForm);
 		setupTable(null);
 	}
 

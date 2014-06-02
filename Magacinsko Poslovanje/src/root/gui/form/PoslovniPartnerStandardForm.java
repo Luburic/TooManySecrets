@@ -168,20 +168,20 @@ public class PoslovniPartnerStandardForm extends GenericForm {
 		});
 
 		dataPanel.add(lblIme);
-		dataPanel.add(tfNaziv);
+		dataPanel.add(tfNaziv, "span 4");
 		dataPanel.add(lblGreska1, "wrap, gapx 15px");
 
 		dataPanel.add(lblPreduzece);
-		dataPanel.add(cmbPreduzece);
+		dataPanel.add(cmbPreduzece, "span 4");
 		dataPanel.add(btnZoomPreduzece);
 		dataPanel.add(lblGreska2, "wrap, gapx 15px");
 
 		dataPanel.add(lblAdresa);
-		dataPanel.add(tfAdresa);
+		dataPanel.add(tfAdresa, "span 4");
 		dataPanel.add(lblGreska3, "wrap, gapx 15px");
 
 		dataPanel.add(lblMesto);
-		dataPanel.add(cmbMesto);
+		dataPanel.add(cmbMesto, "span 3");
 		dataPanel.add(btnZoomMesto);
 		dataPanel.add(lblGreska4, "wrap, gapx 15px");
 

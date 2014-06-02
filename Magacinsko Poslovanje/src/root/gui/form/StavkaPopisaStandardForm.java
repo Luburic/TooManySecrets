@@ -117,14 +117,14 @@ public class StavkaPopisaStandardForm extends GenericForm {
 		dataPanel.add(btnZoomPopisniDokument, "wrap, gapx 15px");
 
 		dataPanel.add(lblPopisanaKolicina);
-		dataPanel.add(tfPopisanaKolicina);
+		dataPanel.add(tfPopisanaKolicina, "span 2");
 		dataPanel.add(lblGreska1, "wrap, gapx 15px");
 
 		dataPanel.add(lblKolicinaPoKnjigama);
-		dataPanel.add(tfKolicinaPoKnjigama, "wrap, gapx 15px");
+		dataPanel.add(tfKolicinaPoKnjigama, "wrap, span 2");
 
 		dataPanel.add(lblProsecnaCenaPopisa);
-		dataPanel.add(tfProsecnaCenaPopisa, "wrap, gapx 15px");
+		dataPanel.add(tfProsecnaCenaPopisa, "wrap, span 2");
 
 		setupTable(null);
 	}

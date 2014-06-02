@@ -15,6 +15,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
@@ -154,21 +156,38 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			}
 		});
 
+		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				int i = tblGrid.getSelectedRow();
+				if (i != -1) {
+					String s = (String) tableModel.getValueAt(i, 6);
+					if (s.trim().equals("u fazi formiranja")) {
+						btnZakljuci.setEnabled(true);
+						btnDelete.setEnabled(true);
+					} else {
+						btnZakljuci.setEnabled(false);
+						btnDelete.setEnabled(false);
+					}
+				}
+			}
+		});
+
 		dataPanel.add(lblBrojPopisnog);
-		dataPanel.add(tfBrojPopisnogDokumenta);
+		dataPanel.add(tfBrojPopisnogDokumenta, "span 2");
 		dataPanel.add(lblGreska1, "wrap,gapx 15px");
 
 		dataPanel.add(lblDatumOtvaranja);
-		dataPanel.add(dateDatumOtvaranja);
+		dataPanel.add(dateDatumOtvaranja, "span 2");
 		dataPanel.add(lblGreska2, "wrap,gapx 15px");
 
 		dataPanel.add(lblDatumKnjizenja);
 		tfDatumKnjizenja.setEditable(false);
-		dataPanel.add(tfDatumKnjizenja, "wrap, gapx 15px");
+		dataPanel.add(tfDatumKnjizenja, "wrap");
 
 		dataPanel.add(lblStatus);
 		tfStatusPopisnog.setEditable(false);
-		dataPanel.add(tfStatusPopisnog, "wrap, gapx 15px");
+		dataPanel.add(tfStatusPopisnog, "wrap, span 2");
 
 		dataPanel.add(lblMagacin);
 		dataPanel.add(cmbOrgJedinica);

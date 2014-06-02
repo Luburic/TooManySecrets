@@ -1,16 +1,16 @@
-IF EXISTS (SELECT name
+IF EXISTS (SELECT 1
    FROM   sysobjects
    WHERE  name = 'ProknjiziPopis' AND type = 'P')
    DROP PROCEDURE ProknjiziPopis
 GO
 
-IF EXISTS (SELECT name
+IF EXISTS (SELECT 1
    FROM   sysobjects
    WHERE  name = 'ProknjiziPromet' AND type = 'P')
    DROP PROCEDURE ProknjiziPromet
 GO
 
-IF EXISTS (SELECT name
+IF EXISTS (SELECT 1
    FROM   sysobjects
    WHERE  name = 'ZakljuciGodinu' AND type = 'P')
    DROP PROCEDURE ZakljuciGodinu

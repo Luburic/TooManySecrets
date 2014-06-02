@@ -129,21 +129,21 @@ public class ArtikalStandardForm extends GenericForm {
 		});
 
 		dataPanel.add(lblSifra);
-		dataPanel.add(tfSifra);
+		dataPanel.add(tfSifra, "span 2");
 		dataPanel.add(lblGreska1, "wrap, gapx 15px");
 
 		dataPanel.add(lblPakovanje);
-		dataPanel.add(tfPakovanje);
+		dataPanel.add(tfPakovanje, "span 2");
 		dataPanel.add(lblGreska2, "wrap, gapx 15px");
 
 		dataPanel.add(lblJedinicaMere);
-		dataPanel.add(cmbJedinicaMere);
+		dataPanel.add(cmbJedinicaMere, "span 2");
 		tfJedinicaMere.setVisible(false);
 		dataPanel.add(tfJedinicaMere);
 		dataPanel.add(lblGreska3, "wrap, gapx 15px");
 
 		dataPanel.add(lblNaziv);
-		dataPanel.add(tfNaziv);
+		dataPanel.add(tfNaziv, "span 2");
 		dataPanel.add(lblGreska4, "wrap, gapx 15px");
 
 		dataPanel.add(lblGrupa);

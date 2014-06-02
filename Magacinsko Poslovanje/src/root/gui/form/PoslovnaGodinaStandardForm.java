@@ -13,18 +13,13 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import root.dbConnection.DBConnection;
-import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
 import root.gui.action.ZakljuciGodinuAction;
-import root.gui.action.dialog.MagacinskaKarticaAction;
-import root.gui.action.dialog.PopisniDokumentAction;
-import root.gui.action.dialog.PrometniDokumentAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
@@ -112,12 +107,12 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		});
 
 		dataPanel.add(lblGodina);
-		dataPanel.add(tfGodina);
+		dataPanel.add(tfGodina, "span 2");
 		dataPanel.add(lblGreska1, "wrap, gapx 15px");
 
 		chkZakljucena.setEnabled(false);
 		dataPanel.add(lblZakljucena);
-		dataPanel.add(chkZakljucena, "wrap,gapx 15px");
+		dataPanel.add(chkZakljucena, "wrap");
 
 		dataPanel.add(lblPreduzece);
 		dataPanel.add(cmbPreduzece);
@@ -127,12 +122,6 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		if (Constants.idPreduzeca != 0) {
 			toolBar.add(btnZakljuci);
 			toolBar.addSeparator();
-			JPopupMenu popup = new JPopupMenu();
-			popup.add(new MagacinskaKarticaAction());
-			popup.add(new PrometniDokumentAction());
-			popup.add(new PopisniDokumentAction());
-			btnNextForm = new NextFormButton(this, popup);
-			toolBar.add(btnNextForm);
 		}
 
 		setupTable(null);

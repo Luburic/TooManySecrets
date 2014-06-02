@@ -81,7 +81,7 @@ public abstract class GenericForm extends JDialog {
 
 	public GenericForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		setLayout(new MigLayout("fill"));
-		setSize(new Dimension(600, 400));
+		setSize(new Dimension(700, 500));
 		setLocationRelativeTo(MainFrame.getInstance());
 		setModal(true);
 		tblGrid.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

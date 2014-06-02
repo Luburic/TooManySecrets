@@ -122,11 +122,11 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		});
 
 		dataPanel.add(lblNaziv);
-		dataPanel.add(tfNaziv);
+		dataPanel.add(tfNaziv, "span 2");
 		dataPanel.add(lblGreska1, "wrap, gapx 15px");
 
 		dataPanel.add(lblMagacin);
-		dataPanel.add(chkMagacin, "wrap,gapx 15px, span 3");
+		dataPanel.add(chkMagacin, "wrap");
 
 		dataPanel.add(lblOrgJedinica);
 		dataPanel.add(cmbOrgJedinica);

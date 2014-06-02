@@ -76,12 +76,11 @@ public class GrupaArtiklaStandardForm extends GenericForm {
 		});
 
 		dataPanel.add(lblNaziv);
-		dataPanel.add(tfNazivGrupe);
+		dataPanel.add(tfNazivGrupe, "span 2");
 		dataPanel.add(lblGreska1, "wrap,gapx 15px");
 
 		dataPanel.add(lblGrupa);
-		dataPanel.add(cmbGrupa, "gapx 15px");
-
+		dataPanel.add(cmbGrupa);
 		dataPanel.add(btnZoom);
 
 		JPopupMenu popup = new JPopupMenu();

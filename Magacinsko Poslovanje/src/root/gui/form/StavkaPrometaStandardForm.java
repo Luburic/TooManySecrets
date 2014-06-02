@@ -61,7 +61,6 @@ public class StavkaPrometaStandardForm extends GenericForm {
 				"id_prometnog_dokumenta", "id prometnog dokumenta", "broj_prometnog_dokumenta",
 				"broj prometnog dokumenta", false, "");
 
-		cmbArtikal.setEnabled(false);
 		cmbPrometniDokument.setEnabled(false);
 		if (!childWhere.contains("id_artikla")) {
 			btnZoomArtikal.addActionListener(new ActionListener() {
@@ -150,22 +149,22 @@ public class StavkaPrometaStandardForm extends GenericForm {
 		dataPanel.add(lblGreska2, "wrap, gapx 15px");
 
 		dataPanel.add(lblKolicinaPrometa);
-		dataPanel.add(tfKolicinaPrometa);
+		dataPanel.add(tfKolicinaPrometa, "span 2");
 		dataPanel.add(lblGreska3, "wrap, gapx 15px");
 
 		dataPanel.add(lblCenaPrometa);
-		dataPanel.add(tfCenaPrometa);
+		dataPanel.add(tfCenaPrometa, "span 2");
 		dataPanel.add(lblGreska4, "wrap, gapx 15px");
 
 		dataPanel.add(lblVrednostPrometa);
-		dataPanel.add(tfVrednostPrometa, "wrap, gapx 15px");
+		dataPanel.add(tfVrednostPrometa, "wrap, span 2");
 
 		setupTable(null);
 	}
 
 	@Override
 	public void setupTable(String customQuery) {
-		tableModel = TableModelCreator.createTableModel("Stavka popisa", joinColumn);
+		tableModel = TableModelCreator.createTableModel("Stavka prometa", joinColumn);
 		tableModel.setColumnForSorting(1);
 		super.setupTable(customQuery);
 	}

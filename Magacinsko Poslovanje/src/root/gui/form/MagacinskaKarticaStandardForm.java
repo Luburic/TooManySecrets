@@ -48,6 +48,9 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		JLabel lblVrednostUlaza = new JLabel("Vrednost ulaza: ");
 		JLabel lblVrednostIzlaza = new JLabel("Vrednost izlaza: ");
 
+		btnDelete.setEnabled(false);
+		btnAdd.setEnabled(false);
+
 		tfProsecnaCenaPopisa.setName("prosečna cena");
 		tfKolicinaPocetnog.setName("količina početnog stanja");
 		tfKolicinaUlaza.setName("količina ulaza");
@@ -133,37 +136,36 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		}
 
 		dataPanel.add(lblGodina);
-		dataPanel.add(cmbGodina);
-		dataPanel.add(btnZoomGodina, "gapx 15px");
+		dataPanel.add(cmbGodina, "wrap");
 
 		dataPanel.add(lblArtikal);
 		dataPanel.add(cmbArtikal);
-		dataPanel.add(btnZoomArtikal, "gapx 15px");
+		dataPanel.add(btnZoomArtikal, "wrap, gapx 15px");
 
 		dataPanel.add(lblMagacin);
 		dataPanel.add(cmbOrgJedinica);
 		dataPanel.add(btnZoomOrgJedinica, "wrap, gapx 15px");
 
 		dataPanel.add(lblProsecnaCena);
-		dataPanel.add(tfProsecnaCenaPopisa, "wrap, gapx 15px");
+		dataPanel.add(tfProsecnaCenaPopisa, "wrap");
 
 		dataPanel.add(lblKolicinaPocetnogStanja);
-		dataPanel.add(tfKolicinaPocetnog, "wrap, gapx 15px");
+		dataPanel.add(tfKolicinaPocetnog, "wrap");
 
 		dataPanel.add(lblKolicinaUlaza);
-		dataPanel.add(tfKolicinaUlaza, "wrap, gapx 15px");
+		dataPanel.add(tfKolicinaUlaza, "wrap");
 
 		dataPanel.add(lblKolicinaIzlaza);
-		dataPanel.add(tfKolicinaIzlaza, "wrap, gapx 15px");
+		dataPanel.add(tfKolicinaIzlaza, "wrap");
 
 		dataPanel.add(lblVrednostPocetnogStanja);
-		dataPanel.add(tfVrednostPocetnog, "wrap, gapx 15px");
+		dataPanel.add(tfVrednostPocetnog, "wrap");
 
 		dataPanel.add(lblVrednostUlaza);
-		dataPanel.add(tfVrednostUlaza, "wrap, gapx 15px");
+		dataPanel.add(tfVrednostUlaza, "wrap");
 
 		dataPanel.add(lblVrednostIzlaza);
-		dataPanel.add(tfVrednostIzlaza, "wrap, gapx 15px");
+		dataPanel.add(tfVrednostIzlaza, "wrap");
 
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new AnalitikaMagacinskeKarticeAction());
@@ -203,5 +205,38 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		btnPickup = new JButton(new PickupAction(this, 0));
 		toolBar.add(btnPickup);
 		btnPickup.setEnabled(false);
+	}
+
+	@Override
+	public void setMode(int mode) {
+		this.mode = mode;
+		if (mode == Constants.MODE_SEARCH) {
+			btnCommit.setEnabled(true);
+			clearFields(true);
+			cmbArtikal.setEnabled(true);
+			cmbOrgJedinica.setEnabled(true);
+			tfKolicinaIzlaza.setEnabled(true);
+			tfKolicinaPocetnog.setEnabled(true);
+			tfKolicinaUlaza.setEnabled(true);
+			tfProsecnaCenaPopisa.setEnabled(true);
+			tfVrednostIzlaza.setEnabled(true);
+			tfVrednostUlaza.setEnabled(true);
+			tfVrednostPocetnog.setEnabled(true);
+			btnZoomArtikal.setEnabled(true);
+			btnZoomOrgJedinica.setEnabled(true);
+		} else {
+			btnCommit.setEnabled(false);
+			cmbArtikal.setEnabled(false);
+			cmbOrgJedinica.setEnabled(false);
+			tfKolicinaIzlaza.setEnabled(false);
+			tfKolicinaPocetnog.setEnabled(false);
+			tfKolicinaUlaza.setEnabled(false);
+			tfProsecnaCenaPopisa.setEnabled(false);
+			tfVrednostIzlaza.setEnabled(false);
+			tfVrednostUlaza.setEnabled(false);
+			tfVrednostPocetnog.setEnabled(false);
+			btnZoomArtikal.setEnabled(false);
+			btnZoomOrgJedinica.setEnabled(false);
+		}
 	}
 }

@@ -174,15 +174,15 @@ public class RadnikStandardForm extends GenericForm {
 		});
 
 		dataPanel.add(lblIme);
-		dataPanel.add(tfIme);
+		dataPanel.add(tfIme, "span 2");
 		dataPanel.add(lblGreska1, "wrap, gapx 15px");
 
 		dataPanel.add(lblPrezime);
-		dataPanel.add(tfPrezime);
+		dataPanel.add(tfPrezime, "span 2");
 		dataPanel.add(lblGreska2, "wrap, gapx 15px");
 
 		dataPanel.add(lblJmbg);
-		dataPanel.add(tfJmbg);
+		dataPanel.add(tfJmbg, "span 2");
 		dataPanel.add(lblGreska3, "wrap, gapx 15px");
 
 		dataPanel.add(lblPreduzece);
@@ -191,7 +191,7 @@ public class RadnikStandardForm extends GenericForm {
 		dataPanel.add(lblGreska4, "wrap, gapx 15px");
 
 		dataPanel.add(lblAdresa);
-		dataPanel.add(tfAdresa);
+		dataPanel.add(tfAdresa, "span 2");
 		dataPanel.add(lblGreska5, "wrap, gapx 15px");
 
 		dataPanel.add(lblMesto);

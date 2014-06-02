@@ -18,6 +18,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
@@ -60,6 +62,9 @@ public class PrometniDokumentStandardForm extends GenericForm {
 
 	protected JButton btnProknjizi = new JButton(new ZakljuciPrometniAction(this));
 
+	private JLabel lblGreskaB = new JLabel();
+	private JLabel lblGreskaA = new JLabel();
+
 	public PrometniDokumentStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
 		setTitle("Prometni dokumenti");
@@ -70,9 +75,9 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		JLabel lblStatus = new JLabel("Status: ");
 		JLabel lblMagacin = new JLabel("Magacin*: ");
 		JLabel lblVrstaPrometa = new JLabel("Vrsta prometa*: ");
-		JLabel lblMagacinIz = new JLabel("Magacin iz kog se dobavlja: ");
 		JLabel lblGodina = new JLabel("Godina*: ");
-		JLabel lblPoslovniPartner = new JLabel("Poslovni partner: ");
+
+		btnProknjizi.setEnabled(false);
 
 		UtilDateModel model = new UtilDateModel();
 		JDatePanelImpl datePanel = new JDatePanelImpl(model);
@@ -87,6 +92,8 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		lblGreska3.setForeground(Color.red);
 		lblGreska4.setForeground(Color.red);
 		lblGreska5.setForeground(Color.red);
+		lblGreskaA.setForeground(Color.red);
+		lblGreskaB.setForeground(Color.red);
 
 		super.setupJoins("Poslovna_godina", "id_poslovne_godine", "godina", "godina");
 		cmbGodina = new JComboBox<ComboBoxPair>();
@@ -256,6 +263,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 					cmbPoslovniPartner.setEnabled(false);
 					cmbPoslovniPartner.setSelectedIndex(0);
 				}
+				lblGreskaA.setText("");
 			}
 		});
 		rbPromet.addActionListener(new ActionListener() {
@@ -265,6 +273,40 @@ public class PrometniDokumentStandardForm extends GenericForm {
 					cmbPoslovniPartner.setEnabled(true);
 					cmbOrgJedinicaIz.setEnabled(false);
 					cmbOrgJedinicaIz.setSelectedIndex(0);
+				}
+				lblGreskaB.setText("");
+			}
+		});
+		cmbOrgJedinicaIz.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (cmbOrgJedinicaU.getSelectedIndex() != -1) {
+					lblGreskaA.setText("");
+				}
+			}
+		});
+		cmbPoslovniPartner.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (cmbPoslovniPartner.getSelectedIndex() != -1) {
+					lblGreskaB.setText("");
+				}
+			}
+		});
+
+		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				int i = tblGrid.getSelectedRow();
+				if (i != -1) {
+					String s = (String) tableModel.getValueAt(i, 9);
+					if (s.trim().equals("u fazi formiranja")) {
+						btnProknjizi.setEnabled(true);
+						btnDelete.setEnabled(true);
+					} else {
+						btnProknjizi.setEnabled(false);
+						btnDelete.setEnabled(false);
+					}
 				}
 			}
 		});
@@ -291,29 +333,30 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		dataPanel.add(lblGreska3, "wrap, gapx 15px");
 
 		dataPanel.add(rbMagacin);
-		dataPanel.add(lblMagacinIz);
 		dataPanel.add(cmbOrgJedinicaIz);
-		dataPanel.add(btnZoomOrgJedinicaIz, "wrap, gapx 15px");
+		dataPanel.add(btnZoomOrgJedinicaIz);
+		dataPanel.add(lblGreskaA, "wrap, gapx 15");
 
 		dataPanel.add(rbPromet);
-		dataPanel.add(lblPoslovniPartner);
 		dataPanel.add(cmbPoslovniPartner);
-		dataPanel.add(btnZoomPoslovniPartner, "wrap, gapx 15px");
+		dataPanel.add(btnZoomPoslovniPartner);
+		dataPanel.add(lblGreskaB, "wrap, gapx 15");
 
 		dataPanel.add(lblBrojPopisnog);
 		dataPanel.add(tfBrojPrometnogDokumenta);
 		dataPanel.add(lblGreska4, "wrap, gapx 15px");
 
 		dataPanel.add(lblDatumOtvaranja);
-		dataPanel.add(dateDatumOtvaranja);
+		dataPanel.add(dateDatumOtvaranja, "span 4");
 		dataPanel.add(lblGreska5, "wrap, gapx 15px");
 
 		dataPanel.add(lblDatumKnjizenja);
-		dataPanel.add(dateDatumKnjizenja, "wrap, gapx 15px");
+		dateDatumKnjizenja.setEditable(false);
+		dataPanel.add(dateDatumKnjizenja, "wrap");
 
 		dataPanel.add(lblStatus);
 		tfStatusPrometnog.setEditable(false);
-		dataPanel.add(tfStatusPrometnog, "wrap, gapx 15px");
+		dataPanel.add(tfStatusPrometnog, "wrap, span 2");
 
 		toolBar.add(btnProknjizi);
 		toolBar.addSeparator();
@@ -322,7 +365,8 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
-		String customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Magacin1.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.Org_id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Magacin1.naziv_jedinice, Vrsta_prometa.naziv_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica Magacin1 ON Prometni_dokument.id_jedinice = Magacin1.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera";
+		String customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Magacin1.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.Org_id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Magacin1.naziv_jedinice, Vrsta_prometa.naziv_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica Magacin1 ON Prometni_dokument.id_jedinice = Magacin1.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera WHERE Prometni_dokument.id_poslovne_godine = "
+				+ Constants.idGodine;
 
 		setupTable(customQuery);
 	}
@@ -331,14 +375,6 @@ public class PrometniDokumentStandardForm extends GenericForm {
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Prometni dokument", joinColumn);
 		tableModel.setColumnForSorting(2);
-		if (Constants.idGodine != 0) {
-			if (childWhere.equals("")) {
-				tableModel.setWhereStmt(" WHERE Prometni_dokument1.id_poslovne_godine = " + Constants.idGodine);
-			} else {
-				tableModel.setWhereStmt(childWhere + " AND Prometni_dokument1.id_poslovne_godine = "
-						+ Constants.idGodine);
-			}
-		}
 		super.setupTable(customQuery);
 	}
 
@@ -367,12 +403,22 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			cmbVrstaPrometa.requestFocus();
 			return false;
 		}
+		if (cmbOrgJedinicaIz.getSelectedIndex() == 0 && rbMagacin.isSelected()) {
+			lblGreskaA.setText(Constants.VALIDATION_MANDATORY_FIELD);
+			cmbPoslovniPartner.requestFocus();
+			return false;
+		}
+		if (cmbPoslovniPartner.getSelectedIndex() == 0 && rbPromet.isSelected()) {
+			lblGreskaB.setText(Constants.VALIDATION_MANDATORY_FIELD);
+			cmbPoslovniPartner.requestFocus();
+			return false;
+		}
 		if (tfBrojPrometnogDokumenta.getText().equals("")) {
 			lblGreska4.setText(Constants.VALIDATION_MANDATORY_FIELD);
 			tfBrojPrometnogDokumenta.requestFocus();
 			return false;
 		}
-		if (VerificationMethods.containsNumbers(tfBrojPrometnogDokumenta.getText())) {
+		if (!VerificationMethods.containsNumbers(tfBrojPrometnogDokumenta.getText())) {
 			lblGreska4.setText(Constants.VALIDATION_BROJ);
 			tfBrojPrometnogDokumenta.requestFocus();
 			return false;
@@ -425,6 +471,18 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			System.out.println(retVal);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void sync() {
+		super.sync();
+		cmbOrgJedinicaIz.setSelectedIndex(0);
+		for (int i = 0; i < cmbOrgJedinicaIz.getItemCount(); i++) {
+			if (cmbOrgJedinicaIz.getItemAt(i).getId().equals(tableModel.getValueAt(tblGrid.getSelectedRow(), 4))) {
+				cmbOrgJedinicaIz.setSelectedIndex(i);
+				break;
+			}
 		}
 	}
 }

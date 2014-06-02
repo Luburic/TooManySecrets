@@ -100,11 +100,11 @@ public class NaseljenoMestoStandardForm extends GenericForm {
 		});
 
 		dataPanel.add(lblSifra);
-		dataPanel.add(tfSifraMesta);
+		dataPanel.add(tfSifraMesta, "span 2");
 		dataPanel.add(lblGreska1, "wrap, gapx 15px");
 
 		dataPanel.add(lblNaziv);
-		dataPanel.add(tfNazivMesta);
+		dataPanel.add(tfNazivMesta, "span 2");
 		dataPanel.add(lblGreska2, "wrap, gapx 15px");
 
 		dataPanel.add(lblDrzava);

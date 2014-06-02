@@ -99,12 +99,12 @@ public class DrzavaStandardForm extends GenericForm {
 		dataPanel.add(lblSifra);
 		tfSifraDrzave.setDocument(new JTextFieldLimit(3));
 		dataPanel.add(tfSifraDrzave);
-		dataPanel.add(lblGreska, "wrap");
+		dataPanel.add(lblGreska, "wrap, gapx 15");
 
 		dataPanel.add(lblNaziv);
 		tfNazivDrzave.setDocument(new JTextFieldLimit(20));
 		dataPanel.add(tfNazivDrzave);
-		dataPanel.add(lblGreska2, "pushx");
+		dataPanel.add(lblGreska2, "gapx 15");
 
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new NaseljenoMestoAction());
