@@ -68,6 +68,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 	public PrometniDokumentStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
 		setTitle("Prometni dokumenti");
+		setSize(1000, 400);
 
 		JLabel lblBrojPopisnog = new JLabel("Broj*: ");
 		JLabel lblDatumOtvaranja = new JLabel("Datum otvaranja*: ");
@@ -366,7 +367,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		toolBar.add(btnNextForm);
 
 		String customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Magacin1.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.Org_id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Magacin1.naziv_jedinice, Vrsta_prometa.naziv_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica Magacin1 ON Prometni_dokument.id_jedinice = Magacin1.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera WHERE Prometni_dokument.id_poslovne_godine = "
-				+ Constants.idGodine;
+				+ Constants.idGodine + " ORDER BY broj_prometnog_dokumenta";
 
 		setupTable(customQuery);
 	}
@@ -374,7 +375,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 	@Override
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Prometni dokument", joinColumn);
-		tableModel.setColumnForSorting(2);
+		tableModel.setColumnForSorting(6);
 		super.setupTable(customQuery);
 	}
 
