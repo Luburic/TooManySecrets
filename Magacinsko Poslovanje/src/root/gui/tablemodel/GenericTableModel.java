@@ -430,7 +430,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 					break;
 			} else {
 				Integer iSifra = (Integer) getValueAt(mid, columnForSorting);
-				if (iSifra < (Integer) colNames[columnForSorting]) {
+				if (iSifra < Integer.parseInt(String.valueOf(colNames[columnForSorting]))) {
 					left = mid + 1;
 				} else {
 					right = mid - 1;

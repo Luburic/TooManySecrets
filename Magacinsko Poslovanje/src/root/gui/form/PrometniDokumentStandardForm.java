@@ -107,7 +107,8 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		cmbOrgJedinicaU = super.setupJoinsWithComboBox(cmbOrgJedinicaU, "Organizaciona_jedinica", "id_jedinice",
 				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 		cmbVrstaPrometa = super.setupJoinsWithComboBox(cmbVrstaPrometa, "Vrsta_prometa", "id_prometa", "id prometa",
-				"sifra_prometa", "šifra prometa", false, "");
+				"sifra_prometa", "šifra prometa", false,
+				" WHERE sifra_prometa = 'OT' OR sifra_prometa = 'NA' OR sifra_prometa = 'MM'");
 		cmbOrgJedinicaIz = super.setupJoinsWithComboBox(cmbOrgJedinicaIz, "Organizaciona_jedinica", "id_jedinice",
 				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 		cmbOrgJedinicaIz.insertItemAt(new ComboBoxPair(0, ""), 0);
@@ -237,8 +238,13 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		cmbVrstaPrometa.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (cmbOrgJedinicaU.getSelectedIndex() != -1) {
+				if (cmbVrstaPrometa.getSelectedIndex() != -1) {
 					lblGreska3.setText("");
+				}
+				if (((ComboBoxPair) cmbVrstaPrometa.getSelectedItem()).getCmbShow().equals("MM")) {
+					rbMagacin.doClick();
+				} else {
+					rbPromet.doClick();
 				}
 			}
 		});
@@ -369,8 +375,17 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
-		String customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Magacin1.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.Org_id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Magacin1.naziv_jedinice, Vrsta_prometa.sifra_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica Magacin1 ON Prometni_dokument.id_jedinice = Magacin1.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera WHERE Prometni_dokument.id_poslovne_godine = "
-				+ Constants.idGodine + " ORDER BY broj_prometnog_dokumenta";
+		String customQuery = "";
+		if (childWhere.equals("")) {
+			customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Magacin1.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.Org_id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Magacin1.naziv_jedinice, Vrsta_prometa.sifra_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica Magacin1 ON Prometni_dokument.id_jedinice = Magacin1.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera WHERE Prometni_dokument.id_poslovne_godine = "
+					+ Constants.idGodine + " ORDER BY broj_prometnog_dokumenta";
+		} else {
+			customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Organizaciona_jedinica.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.Org_id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Organizaciona_jedinica.naziv_jedinice, Vrsta_prometa.sifra_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica ON Prometni_dokument.id_jedinice = Organizaciona_jedinica.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera"
+					+ childWhere
+					+ " AND Prometni_dokument.id_poslovne_godine = "
+					+ Constants.idGodine
+					+ " ORDER BY broj_prometnog_dokumenta";
+		}
 
 		setupTable(customQuery);
 	}
@@ -472,8 +487,13 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			proc.executeUpdate();
 			Integer retVal = proc.getInt(8);
 			System.out.println(retVal);
-
+			tableModel.setValueAt("proknjizen", tblGrid.getSelectedRow(), 9);
+			tableModel.setValueAt(now, tblGrid.getSelectedRow(), 8);
+			dateDatumKnjizenja.setText(now);
+			tfStatusPrometnog.setText("proknjizen");
+			DBConnection.getConnection().commit();
 			proc.close();
+			DBConnection.getConnection().close();
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
