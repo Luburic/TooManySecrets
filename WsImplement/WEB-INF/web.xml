@@ -17,4 +17,18 @@
 	<session-config>
 		<session-timeout>60</session-timeout>
 	</session-config>
+	
+	<context-param>
+		<param-name>org.basex.user</param-name>
+		<param-value>admin</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.basex.password</param-name>
+		<param-value>admin</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>org.basex.dbpath</param-name>
+		<param-value>WEB-INF/data</param-value>
+	</context-param>
 </web-app>

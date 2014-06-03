@@ -132,10 +132,13 @@
 			<classes dir="${bin.dir}">
 				<exclude name="**/client/*.class"/>
 				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+				<include name="**/*.jks"/>
 			</classes>
 			<lib dir="${lib.dir}">
 				<include name="spring-*.jar"/>
 				<include name="bcprov-jdk16-141.jar"/>
+				<include name="commons-*.jar"/>
 			</lib>
 			<webinf dir="${webinf.dir}">
 				<include name="wsdl/**"/>

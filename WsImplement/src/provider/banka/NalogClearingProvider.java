@@ -66,7 +66,7 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 				System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 				System.out.println("\n");
 				
-				Document decryptedDocument =MessageTransform.unpack(document, "Clearing", "Nalog", TARGET_NAMESPACE);
+				Document decryptedDocument =MessageTransform.unpack(document, "Clearing", "Nalog", TARGET_NAMESPACE, null, null);
 
 				
 				JAXBContext context = JAXBContext.newInstance("beans.nalog");
@@ -163,7 +163,7 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 						//......................zaduzenje kao response....
 						Document rdocument =DocumentTransform.convertToDocument(response);
 						
-						Document decryptedDocument = MessageTransform.unpack(rdocument, "Clearing", "Zaduzenje", TARGET_NAMESPACE);
+						Document decryptedDocument = MessageTransform.unpack(rdocument, "Clearing", "Zaduzenje", TARGET_NAMESPACE, null, null);
 						
 						JAXBContext context = JAXBContext.newInstance("beans.mt900");
 						Unmarshaller unmarshaller = context.createUnmarshaller();

@@ -44,7 +44,7 @@ public class OdobrenjeProvider implements Provider<DOMSource>{
 			System.out.println("\n");
 			
 			
-			Document decryptedDocument = MessageTransform.unpack(document, "Odobrenje", "MT910", TARGET_NAMESPACE);
+			Document decryptedDocument = MessageTransform.unpack(document, "Odobrenje", "MT910", TARGET_NAMESPACE, null, null);
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt910");
 			Unmarshaller unmarshaller = context.createUnmarshaller();

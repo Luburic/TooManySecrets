@@ -19,6 +19,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.crypto.KeyGenerator;
@@ -86,11 +87,15 @@ public class SecurityClass {
 
 		Element timestamp = forSign.createElementNS(TARGET_NAMESPACE, "timestamp");
 		faktura.appendChild(timestamp);
-		timestamp.appendChild(forSign.createTextNode(new Date().toString()));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		Date date = new Date();
+		String reportDate = sdf.format(date);
+		timestamp.appendChild(forSign.createTextNode(reportDate));
 
 		Element redniBrojPoruke = forSign.createElementNS(TARGET_NAMESPACE, "redniBrojPoruke");
 		faktura.appendChild(redniBrojPoruke);
-		redniBrojPoruke.appendChild(forSign.createTextNode(String.valueOf(lastNo++)));
+		redniBrojPoruke.appendChild(forSign.createTextNode(String.valueOf(lastNo)));
 		
 		//ucitava privatni kljuc
 		PrivateKey pk = readPrivateKey(alias, password, keystoreFile, keystorePassword);
@@ -443,9 +448,7 @@ public class SecurityClass {
 		}
 	}
 	
-	/**
-	 * Kriptuje sadrzaj prvog elementa odsek
-	 */
+	
 	public Document decrypt(Document doc, PrivateKey privateKey) {
 
 		try {

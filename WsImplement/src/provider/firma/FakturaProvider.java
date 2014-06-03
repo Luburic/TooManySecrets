@@ -1,5 +1,12 @@
 package provider.firma;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
+
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,9 +20,12 @@ import javax.xml.ws.WebServiceProvider;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import util.DocumentTransform;
 import util.MessageTransform;
+import util.Validation;
+import basexdb.RESTUtil;
 import beans.faktura.Faktura;
 
 
@@ -41,6 +51,7 @@ public class FakturaProvider  implements Provider<DOMSource> {
 	@Override
 	public DOMSource invoke(DOMSource request) {
 		
+		
     	try {
     		
 			//serijalizacija DOM-a na ekran
@@ -51,9 +62,26 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
+			//pitanje je da li sme ovako
+			Element propertieSender = (Element) document.getElementsByTagNameNS(NAMESPACE_XSD, "propertieSender").item(0);
+			String propertieOne = propertieSender.getTextContent();
+			propertieSender.getParentNode().removeChild(propertieSender);
+			
+			Element propertieReceiver = (Element) document.getElementsByTagNameNS(NAMESPACE_XSD, "propertieReceiver").item(0);
+			String propertieTwo = propertieReceiver.getTextContent();
+			propertieReceiver.getParentNode().removeChild(propertieReceiver);
+    		
+    		InputStream inputStreamSender = this.getClass().getClassLoader().getResourceAsStream(propertieOne);
+			Properties propSender = new java.util.Properties();
+			propSender.load(inputStreamSender);
+			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream(propertieTwo);
+			Properties propReceiver = new java.util.Properties();
+			propReceiver.load(inputStreamReceiver);
+			//
+			
 		
 			
-			Document decryptedDocument =MessageTransform.unpack(document, "Faktura", "Faktura", TARGET_NAMESPACE);
+			Document decryptedDocument =MessageTransform.unpack(document, "Faktura", "Faktura", TARGET_NAMESPACE, propSender, propReceiver);
 			
 			JAXBContext context = JAXBContext.newInstance("beans.faktura");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -84,6 +112,9 @@ public class FakturaProvider  implements Provider<DOMSource> {
 		} catch (TransformerFactoryConfigurationError e) {
 			e.printStackTrace();
 		} catch (JAXBException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} 

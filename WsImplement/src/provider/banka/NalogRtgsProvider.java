@@ -69,7 +69,7 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
-			Document decryptedDocument = MessageTransform.unpack(document, "Rtgs", "Nalog", TARGET_NAMESPACE);
+			Document decryptedDocument = MessageTransform.unpack(document, "Rtgs", "Nalog", TARGET_NAMESPACE, null, null);
 			
 			
 			JAXBContext context = JAXBContext.newInstance("beans.nalog");
@@ -137,7 +137,7 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 							
 							//......................zaduzenje kao response....
 							Document rdocument =DocumentTransform.convertToDocument(response);
-							Document decryptedDocument2 = MessageTransform.unpack(rdocument, "Rtgs", "Zaduzenje", TARGET_NAMESPACE);
+							Document decryptedDocument2 = MessageTransform.unpack(rdocument, "Rtgs", "Zaduzenje", TARGET_NAMESPACE, null, null);
 							
 							JAXBContext context2 = JAXBContext.newInstance("beans.mt900");
 							Unmarshaller unmarshaller2 = context2.createUnmarshaller();
