@@ -55,11 +55,11 @@ public class StavkaPrometaStandardForm extends GenericForm {
 		tfCenaPrometa.setName("cena prometa");
 		tfVrednostPrometa.setName("vrednost prometa");
 
-		cmbArtikal = super.setupJoinsWithComboBox(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
-				"naziv artikla", false, "");
 		cmbPrometniDokument = super.setupJoinsWithComboBox(cmbPrometniDokument, "Prometni_dokument",
 				"id_prometnog_dokumenta", "id prometnog dokumenta", "broj_prometnog_dokumenta",
 				"broj prometnog dokumenta", false, "");
+		cmbArtikal = super.setupJoinsWithComboBox(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
+				"naziv artikla", false, "");
 
 		cmbPrometniDokument.setEnabled(false);
 		if (!childWhere.contains("id_artikla")) {
@@ -138,15 +138,15 @@ public class StavkaPrometaStandardForm extends GenericForm {
 			}
 		});
 
-		dataPanel.add(lblArtikal);
-		dataPanel.add(cmbArtikal);
-		dataPanel.add(btnZoomArtikal);
-		dataPanel.add(lblGreska1, "wrap, gapx 15px");
-
 		dataPanel.add(lblBrojPrometnog);
 		dataPanel.add(cmbPrometniDokument);
 		dataPanel.add(btnZoomPopisniDokument);
 		dataPanel.add(lblGreska2, "wrap, gapx 15px");
+
+		dataPanel.add(lblArtikal);
+		dataPanel.add(cmbArtikal);
+		dataPanel.add(btnZoomArtikal);
+		dataPanel.add(lblGreska1, "wrap, gapx 15px");
 
 		dataPanel.add(lblKolicinaPrometa);
 		dataPanel.add(tfKolicinaPrometa, "span 2");
@@ -196,6 +196,15 @@ public class StavkaPrometaStandardForm extends GenericForm {
 			tfCenaPrometa.requestFocus();
 			return false;
 		}
+		if (!VerificationMethods.isDecimal(tfCenaPrometa.getText())) {
+			lblGreska4.setText(Constants.VALIDATION_BROJ);
+			tfCenaPrometa.requestFocus();
+			return false;
+		}
+		Integer kol = Integer.parseInt(tfKolicinaPrometa.getText());
+		Double cena = Double.parseDouble(tfCenaPrometa.getText());
+		Double vrednost = kol * cena;
+		tfVrednostPrometa.setText(vrednost.toString());
 		return true;
 	}
 

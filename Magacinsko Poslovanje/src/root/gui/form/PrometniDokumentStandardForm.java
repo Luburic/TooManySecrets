@@ -9,6 +9,7 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -80,7 +81,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 
 		btnProknjizi.setEnabled(false);
 
-		UtilDateModel model = new UtilDateModel();
+		UtilDateModel model = new UtilDateModel(new Date());
 		JDatePanelImpl datePanel = new JDatePanelImpl(model);
 		dateDatumOtvaranja = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
@@ -106,7 +107,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		cmbOrgJedinicaU = super.setupJoinsWithComboBox(cmbOrgJedinicaU, "Organizaciona_jedinica", "id_jedinice",
 				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 		cmbVrstaPrometa = super.setupJoinsWithComboBox(cmbVrstaPrometa, "Vrsta_prometa", "id_prometa", "id prometa",
-				"naziv_prometa", "naziv prometa", false, "");
+				"sifra_prometa", "šifra prometa", false, "");
 		cmbOrgJedinicaIz = super.setupJoinsWithComboBox(cmbOrgJedinicaIz, "Organizaciona_jedinica", "id_jedinice",
 				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
 		cmbOrgJedinicaIz.insertItemAt(new ComboBoxPair(0, ""), 0);
@@ -304,9 +305,11 @@ public class PrometniDokumentStandardForm extends GenericForm {
 					if (s.trim().equals("u fazi formiranja")) {
 						btnProknjizi.setEnabled(true);
 						btnDelete.setEnabled(true);
+						btnCommit.setEnabled(true);
 					} else {
 						btnProknjizi.setEnabled(false);
 						btnDelete.setEnabled(false);
+						btnCommit.setEnabled(false);
 					}
 				}
 			}
@@ -366,7 +369,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
-		String customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Magacin1.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.Org_id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Magacin1.naziv_jedinice, Vrsta_prometa.naziv_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica Magacin1 ON Prometni_dokument.id_jedinice = Magacin1.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera WHERE Prometni_dokument.id_poslovne_godine = "
+		String customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Magacin1.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.Org_id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Magacin1.naziv_jedinice, Vrsta_prometa.sifra_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica Magacin1 ON Prometni_dokument.id_jedinice = Magacin1.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera WHERE Prometni_dokument.id_poslovne_godine = "
 				+ Constants.idGodine + " ORDER BY broj_prometnog_dokumenta";
 
 		setupTable(customQuery);
@@ -462,16 +465,17 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			proc.setObject(3, tableModel.getValueAt(tblGrid.getSelectedRow(), 2));
 			proc.setObject(4, tableModel.getValueAt(tblGrid.getSelectedRow(), 4));
 			proc.setObject(5, tableModel.getValueAt(tblGrid.getSelectedRow(), 3));
-			proc.setObject(6, ((ComboBoxPair) cmbOrgJedinicaIz.getSelectedItem()).getCmbShow());
+			proc.setObject(6, ((ComboBoxPair) cmbVrstaPrometa.getSelectedItem()).getCmbShow());
 			proc.setObject(7, now);
 			proc.registerOutParameter(8, java.sql.Types.INTEGER);
 
 			proc.executeUpdate();
-
 			Integer retVal = proc.getInt(8);
 			System.out.println(retVal);
+
+			proc.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -479,10 +483,73 @@ public class PrometniDokumentStandardForm extends GenericForm {
 	public void sync() {
 		super.sync();
 		cmbOrgJedinicaIz.setSelectedIndex(0);
-		for (int i = 0; i < cmbOrgJedinicaIz.getItemCount(); i++) {
-			if (cmbOrgJedinicaIz.getItemAt(i).getId().equals(tableModel.getValueAt(tblGrid.getSelectedRow(), 4))) {
-				cmbOrgJedinicaIz.setSelectedIndex(i);
-				break;
+		int k = tblGrid.getSelectedRow();
+		if (k > -1) {
+			for (int i = 0; i < cmbOrgJedinicaIz.getItemCount(); i++) {
+				if (cmbOrgJedinicaIz.getItemAt(i).getId().equals(tableModel.getValueAt(k, 4))) {
+					cmbOrgJedinicaIz.setSelectedIndex(i);
+					break;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void setMode(int mode) {
+		if (Constants.godinaZakljucena == true) {
+			btnAdd.setEnabled(false);
+			btnDelete.setEnabled(false);
+			this.mode = mode;
+			if (mode == Constants.MODE_SEARCH) {
+				btnCommit.setEnabled(true);
+				cmbOrgJedinicaU.setEnabled(true);
+				cmbPoslovniPartner.setEnabled(true);
+				cmbVrstaPrometa.setEnabled(true);
+				rbMagacin.setEnabled(true);
+				rbPromet.setEnabled(true);
+				rbPromet.setSelected(true);
+				tfBrojPrometnogDokumenta.setEnabled(true);
+				tfStatusPrometnog.setEnabled(true);
+				dateDatumOtvaranja.setEnabled(true);
+				dateDatumKnjizenja.setEnabled(true);
+				btnZoomOrgJedinicaIz.setVisible(true);
+				btnZoomOrgJedinicaU.setVisible(true);
+				btnZoomPoslovniPartner.setVisible(true);
+				btnZoomVrstaPrometa.setVisible(true);
+				clearFields(true);
+			} else {
+				btnCommit.setEnabled(false);
+				cmbOrgJedinicaU.setEnabled(false);
+				cmbPoslovniPartner.setEnabled(false);
+				cmbVrstaPrometa.setEnabled(false);
+				rbMagacin.setEnabled(false);
+				rbPromet.setEnabled(false);
+				tfBrojPrometnogDokumenta.setEnabled(false);
+				tfStatusPrometnog.setEnabled(false);
+				dateDatumOtvaranja.setEnabled(false);
+				dateDatumKnjizenja.setEnabled(false);
+				btnZoomOrgJedinicaIz.setVisible(false);
+				btnZoomOrgJedinicaU.setVisible(false);
+				btnZoomPoslovniPartner.setVisible(false);
+				btnZoomVrstaPrometa.setVisible(false);
+			}
+		} else {
+			super.setMode(mode);
+			if (mode == Constants.MODE_SEARCH) {
+				cmbOrgJedinicaU.setEnabled(true);
+				cmbPoslovniPartner.setEnabled(true);
+				cmbVrstaPrometa.setEnabled(true);
+				rbMagacin.setEnabled(true);
+				rbPromet.setEnabled(true);
+				rbPromet.setSelected(true);
+				tfBrojPrometnogDokumenta.setEnabled(true);
+				tfStatusPrometnog.setEnabled(true);
+				dateDatumOtvaranja.setEnabled(true);
+				dateDatumKnjizenja.setEnabled(true);
+				clearFields(true);
+			} else {
+				tfStatusPrometnog.setEnabled(false);
+				dateDatumKnjizenja.setEnabled(false);
 			}
 		}
 	}

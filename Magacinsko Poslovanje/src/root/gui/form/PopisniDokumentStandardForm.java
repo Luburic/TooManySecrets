@@ -172,6 +172,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 				}
 			}
 		});
+		btnZakljuci.setEnabled(false);
 
 		dataPanel.add(lblBrojPopisnog);
 		dataPanel.add(tfBrojPopisnogDokumenta, "span 2");
@@ -288,5 +289,43 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		btnPickup = new JButton(new PickupAction(this, 3));
 		toolBar.add(btnPickup);
 		btnPickup.setEnabled(false);
+	}
+
+	@Override
+	public void setMode(int mode) {
+		if (Constants.godinaZakljucena == true) {
+			btnAdd.setEnabled(false);
+			btnDelete.setEnabled(false);
+			this.mode = mode;
+			if (mode == Constants.MODE_SEARCH) {
+				btnCommit.setEnabled(true);
+				cmbOrgJedinica.setEnabled(true);
+				tfBrojPopisnogDokumenta.setEnabled(true);
+				tfDatumKnjizenja.setEnabled(true);
+				dateDatumOtvaranja.setEnabled(true);
+				tfStatusPopisnog.setEnabled(true);
+				btnZoomOrgJedinica.setVisible(true);
+			} else {
+				btnCommit.setEnabled(false);
+				cmbOrgJedinica.setEnabled(false);
+				tfBrojPopisnogDokumenta.setEnabled(false);
+				tfDatumKnjizenja.setEnabled(false);
+				dateDatumOtvaranja.setEnabled(false);
+				tfStatusPopisnog.setEnabled(false);
+				btnZoomOrgJedinica.setVisible(false);
+			}
+		} else {
+			super.setMode(mode);
+			if (mode == Constants.MODE_SEARCH) {
+				cmbOrgJedinica.setEnabled(true);
+				tfBrojPopisnogDokumenta.setEnabled(true);
+				tfDatumKnjizenja.setEnabled(true);
+				dateDatumOtvaranja.setEnabled(true);
+				tfStatusPopisnog.setEnabled(true);
+			} else {
+				tfDatumKnjizenja.setEnabled(false);
+				tfStatusPopisnog.setEnabled(false);
+			}
+		}
 	}
 }

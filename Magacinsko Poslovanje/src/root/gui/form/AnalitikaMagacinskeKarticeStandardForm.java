@@ -24,6 +24,7 @@ public class AnalitikaMagacinskeKarticeStandardForm extends GenericForm {
 	private JButton btnZoom = new JButton("...");
 
 	protected JComboBox<ComboBoxPair> cmbVrsta;
+	protected JComboBox<ComboBoxPair> cmbMagKartica;
 	protected JTextField tfRedniBroj = new JTextField(3);
 	protected JTextField tfSmer = new JTextField(1);
 	protected JTextField tfKolicina = new JTextField(12);
@@ -44,14 +45,16 @@ public class AnalitikaMagacinskeKarticeStandardForm extends GenericForm {
 		JLabel lblVrednost = new JLabel("Vrednost:");
 		JLabel lblVrsta = new JLabel("Vrsta:");
 
-		tfRedniBroj.setName("redni_broj");
+		tfRedniBroj.setName("redni broj");
 		tfSmer.setName("smer");
-		tfKolicina.setName("kolicina");
+		tfKolicina.setName("količina");
 		tfCena.setName("cena");
 		tfVrednost.setName("vrednost");
 
-		cmbVrsta = super.setupJoinsWithComboBox(cmbVrsta, "Vrsta_prometa", "id_prometa", "id prometa", "naziv_prometa",
-				"naziv prometa", false, "");
+		cmbMagKartica = super.setupJoinsWithComboBox(cmbMagKartica, "Magacinska_kartica", "id_magacinske_kartice",
+				"id magacinske kartice", "id_magacinske_kartice", "id magacinske kartice", false, "");
+		cmbVrsta = super.setupJoinsWithComboBox(cmbVrsta, "Vrsta_prometa", "id_prometa", "id prometa", "sifra_prometa",
+				"šifra prometa", false, "");
 		if (childWhere.equals("")) {
 			btnZoom.addActionListener(new ActionListener() {
 				@Override
@@ -75,23 +78,23 @@ public class AnalitikaMagacinskeKarticeStandardForm extends GenericForm {
 		}
 
 		dataPanel.add(lblRedniBroj);
-		dataPanel.add(tfRedniBroj, "wrap, gapx 15px, span 2");
+		dataPanel.add(tfRedniBroj, "wrap");
 
 		dataPanel.add(lblSmer);
-		dataPanel.add(tfSmer, "wrap, gapx 15px, span 2");
+		dataPanel.add(tfSmer, "wrap");
 
 		dataPanel.add(lblVrsta);
-		dataPanel.add(cmbVrsta);
-		dataPanel.add(btnZoom, "wrap, gapx 15px");
+		dataPanel.add(cmbVrsta, "wrap");
+		// dataPanel.add(btnZoom, "wrap 15px");
 
 		dataPanel.add(lblKolicina);
-		dataPanel.add(tfKolicina, "wrap, gapx 15px, span 2");
+		dataPanel.add(tfKolicina, "wrap");
 
 		dataPanel.add(lblCena);
-		dataPanel.add(tfCena, "wrap, gapx 15px, span 2");
+		dataPanel.add(tfCena, "wrap");
 
 		dataPanel.add(lblVrednost);
-		dataPanel.add(tfVrednost, "wrap, gapx 15px, span 2");
+		dataPanel.add(tfVrednost, "wrap");
 
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new PreduzeceAction());
@@ -108,6 +111,7 @@ public class AnalitikaMagacinskeKarticeStandardForm extends GenericForm {
 		tableModel = TableModelCreator.createTableModel("Analitika magacinske kartice", joinColumn);
 		tableModel.setColumnForSorting(2);
 		super.setupTable(customQuery);
+		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(6));
 	}
 
 	@Override

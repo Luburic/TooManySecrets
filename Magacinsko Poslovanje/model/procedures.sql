@@ -73,7 +73,7 @@ IF(@count = 0)
 ELSE
 	BEGIN
 		SELECT @count = COUNT(*) FROM Poslovna_godina god JOIN Popisni_dokument pop ON god.id_poslovne_godine = pop.id_poslovne_godine
-		JOIN Prometni_dokument pro ON god.id_poslovne_godine = pro.id_poslovne_godine WHERE id_poslovne_godine = @Id AND (pop.status_popisnog = 'u fazi formiranja' OR pro.status_prometnog = 'u fazi formiranja')
+		JOIN Prometni_dokument pro ON god.id_poslovne_godine = pro.id_poslovne_godine WHERE god.id_poslovne_godine = @Id AND (pop.status_popisnog = 'u fazi formiranja' OR pro.status_prometnog = 'u fazi formiranja')
 		IF(@count <> 0)
 			BEGIN
 				PRINT 'U godini koja se zaključuje ne sme biti dokumenata u fazi formiranja.'
@@ -86,6 +86,7 @@ ELSE
 			END
 	END
 GO
+
 
 CREATE PROCEDURE ProknjiziPromet
 (
@@ -106,7 +107,7 @@ SELECT @count = COUNT(*) FROM Prometni_dokument WHERE id_prometnog_dokumenta = @
 IF(@count = 0)
 BEGIN
 	SET @RetVal = 1
-	PRINT 'Nije dozvoljeno knjiženje dokumenta koji nije u fazi formiranja.'
+	RAISERROR('Nije dozvoljeno knjiženje dokumenta koji nije u fazi formiranja.', 11, 2)
 	RETURN 
 END
 
@@ -114,10 +115,11 @@ SELECT @count = COUNT(*) FROM Stavka_prometa WHERE id_prometnog_dokumenta = @Id
 IF(@count = 0)
 BEGIN
 	SET @RetVal = 2
-	PRINT 'Prometni dokument se može proknjižiti samo ako ima bar jednu stavku.'
+	RAISERROR('Prometni dokument se može proknjižiti samo ako ima bar jednu stavku.', 11, 2)
+	RETURN
 END
 ELSE
-BEGIN
+BEGIN TRANSACTION
 	DECLARE
 		@id_stavke_prometa int,
 		@id_artikla int,
@@ -138,12 +140,8 @@ BEGIN
 			@vrednost_izlaza decimal(15,2),
 			@kolicina_pocetna numeric(12),
 			@vrednost_pocetna decimal(15,2),
-			@prosecna_cena decimal(15,2)
-		SELECT @id_magacinske = Magacinska_kartica.id_magacinske_kartice, @prosecna_cena = prosecna_cena, @kolicina_ulaza = kolicina_ulaza, @vrednost_ulaza = vrednost_ulaza, 
-		@vrednost_izlaza = vrednost_izlaza, @kolicina_izlaza = kolicina_izlaza, @vrednost_pocetna = vrednost_pocetnog_stanja, @kolicina_pocetna = kolicina_pocetnog_stanja 
-		FROM Magacinska_kartica JOIN Analitika_magacinske_kartice ON Magacinska_kartica.id_magacinske_kartice = Analitika_magacinske_kartice.id_magacinske_kartice WHERE id_artikla = @id_artikla AND id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine
-		--Ovde ce trebati neki test da vidimo da li je ulaz ili izlaz. Ispod se nalazi test da li postoji magacinska kartica za dati artikal, poslovnu godinu i magacin. Ako ne, kreiraj je.
-		DECLARE
+			@prosecna_cena decimal(15,2),
+
 			@novi_ulaz numeric(12) = 0,
 			@novi_izlaz numeric(12) = 0,
 			@nova_vrednost_ulaza decimal(15, 2) = 0,
@@ -158,20 +156,17 @@ BEGIN
 		ELSE
 		BEGIN
 			SET @smer = 'U'
-			IF(@Id_drugog_magacina <> 0)
-			BEGIN
-				SET @novi_ulaz = -@kolicina_prometa
-				SET @nova_vrednost_ulaza = -@vrednost_prometa
-			END
-			ELSE
 			BEGIN
 				SET @novi_ulaz = @kolicina_prometa
 				SET @nova_vrednost_ulaza = @vrednost_prometa
 			END
 		END
 
-		IF(@id_magacinske is not null)
+		IF EXISTS (SELECT 1 FROM Magacinska_kartica JOIN Analitika_magacinske_kartice ON Magacinska_kartica.id_magacinske_kartice = Analitika_magacinske_kartice.id_magacinske_kartice WHERE id_artikla = @id_artikla AND id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine)
 		BEGIN
+			SELECT @id_magacinske = Magacinska_kartica.id_magacinske_kartice, @prosecna_cena = prosecna_cena, @kolicina_ulaza = kolicina_ulaza, @vrednost_ulaza = vrednost_ulaza, 
+				@vrednost_izlaza = vrednost_izlaza, @kolicina_izlaza = kolicina_izlaza, @vrednost_pocetna = vrednost_pocetnog_stanja, @kolicina_pocetna = kolicina_pocetnog_stanja 
+				FROM Magacinska_kartica JOIN Analitika_magacinske_kartice ON Magacinska_kartica.id_magacinske_kartice = Analitika_magacinske_kartice.id_magacinske_kartice WHERE id_artikla = @id_artikla AND id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine
 			DECLARE @redni_broj int
 			SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
 			INSERT INTO Analitika_magacinske_kartice VALUES (@Id_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj, @smer, @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
@@ -198,8 +193,8 @@ BEGIN
 			IF(@id_magacinske is null)
 			BEGIN
 				SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
-				INSERT INTO Analitika_magacinske_kartice VALUES (@Id_drugog_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj, 'U', @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
-				UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza + @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza + @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza + @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza + @kolicina_prometa))
+				INSERT INTO Analitika_magacinske_kartice VALUES (@Id_drugog_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj, 'U', -@kolicina_prometa, @cena_prometa, -@vrednost_prometa, 1)
+				UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza - @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza - @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza - @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza - @kolicina_prometa))
 			END
 			ELSE
 			BEGIN
@@ -207,8 +202,11 @@ BEGIN
 				INSERT INTO Analitika_magacinske_kartice VALUES (SCOPE_IDENTITY(), @Id_prometa, @id_stavke_prometa, 1, 'U', @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
 			END
 		END
+		FETCH NEXT FROM cursor_proknjizi INTO @id_stavke_prometa, @id_artikla, @kolicina_prometa, @cena_prometa, @vrednost_prometa
 	END
+	CLOSE cursor_proknjizi
+    DEALLOCATE cursor_proknjizi
 	UPDATE Prometni_dokument SET status_prometnog = 'proknjizen', datum_knjizenja_prometnog=@Datum WHERE id_prometnog_dokumenta=@Id
 	SET @RetVal = 0
-END
-GO	
+	COMMIT TRANSACTION
+GO
