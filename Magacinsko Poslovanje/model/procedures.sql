@@ -20,6 +20,8 @@ CREATE PROCEDURE ProknjiziPopis
 (
 	@Id int,
 	@Datum char(10),
+	@Id_magacina int,
+	@Id_godine int,
 	@RetVal int OUTPUT
 )
 AS
@@ -27,23 +29,47 @@ DECLARE @count int
 SET @count = 0
 SELECT @count = COUNT(*) FROM Popisni_dokument WHERE id_popisnog_dokumenta = @Id AND status_popisnog = 'u fazi formiranja'
 IF(@count = 0)
-  BEGIN
+BEGIN
 	SET @RetVal = 1
-    PRINT 'Nije dozvoljeno knjiženje dokumenta koji nije u fazi formiranja.'
-	RETURN
-  END
+	RAISERROR('Nije dozvoljeno knjiženje dokumenta koji nije u fazi formiranja.', 11, 2)
+RETURN
+END
   
-SELECT @count = COUNT(*) FROM Stavka_popisa WHERE id_popisnog_dokumenta = @Id AND popisana_kolicina = ''
+SELECT @count = COUNT(*) FROM Stavka_popisa WHERE id_popisnog_dokumenta = @Id AND (popisana_kolicina = '' OR popisana_kolicina is null)
 IF(@count <> 0)
+BEGIN
+	SET @RetVal = 2
+	RAISERROR('Popisni dokument se može proknjižiti samo kada se unesu sve količine artikla.', 11, 2)
+	RETURN
+END
+
+BEGIN TRANSACTION
+	DECLARE
+		@popisana_kolicina numeric(12),
+		@kolicina_po_knjigama numeric(12),
+		@cena decimal(15,2),
+		@id_artikla int
+
+	DECLARE cursor_proknjizi_popis CURSOR FOR SELECT id_artikla, popisana_kolicina, kolicina_po_knjigama, prosecna_cena_popis FROM Stavka_popisa WHERE id_popisnog_dokumenta = @Id
+	OPEN cursor_proknjizi_popis
+	FETCH NEXT FROM cursor_proknjizi_popis INTO @id_artikla, @popisana_kolicina, @kolicina_po_knjigama, @cena
+	WHILE @@FETCH_STATUS = 0
 	BEGIN
-		SET @RetVal = 2
-		PRINT 'Popisni dokument se može proknjižiti samo kada se unesu sve količine artikla.'
+		IF(@popisana_kolicina = @kolicina_po_knjigama)
+		BEGIN
+			FETCH NEXT FROM cursor_proknjizi_popis INTO @popisana_kolicina, @kolicina_po_knjigama
+		END
+		ELSE
+		BEGIN
+			DECLARE @id_magacinske int
+			SELECT @id_magacinske = id_magacinske_kartice FROM Magacinska_kartica WHERE id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine AND id_artikla = @id
+			INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, TEMP, null, 'U', @popisana_kolicina - @kolicina_po_knjigama, @cena, (@popisana_kolicina - @kolicina_po_knjigama)*@cena, 1)
+			--Update magacinske kartice
+		END
 	END
-ELSE
-	BEGIN
-		SET @RetVal = 0
-		UPDATE Popisni_dokument SET status_popisnog = 'proknjizen', datum_knjizenja=@Datum WHERE id_popisnog_dokumenta=@Id
-	END
+	SET @RetVal = 0
+	UPDATE Popisni_dokument SET status_popisnog = 'proknjizen', datum_knjizenja=@Datum WHERE id_popisnog_dokumenta=@Id
+COMMIT TRANSACTION
 GO
 
 CREATE PROCEDURE ZakljuciGodinu

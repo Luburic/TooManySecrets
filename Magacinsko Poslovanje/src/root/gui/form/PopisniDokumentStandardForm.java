@@ -5,14 +5,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
@@ -263,24 +265,35 @@ public class PopisniDokumentStandardForm extends GenericForm {
 	}
 
 	public void proknjiziDokument() {
+		String date = tableModel.getValueAt(tblGrid.getSelectedRow(), 7).toString();
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		String now = dateFormatter.format(Calendar.getInstance().getTime());
+		if (now.compareTo(date) < 0) {
+			JOptionPane.showMessageDialog(this, "Datum formiranja mora biti manji ili jednak današnjem", "Greška",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
 		try {
-			SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-			String now = dateFormatter.format(new Date());
-			PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
-					"EXEC ProknjiziPopis @Id = ?, @Datum = ?");
-			stmt.setInt(1, (int) tblGrid.getModel().getValueAt(tblGrid.getSelectedRow(), 0));
-			stmt.setString(2, now);
-			stmt.execute();
-			int i = tblGrid.getSelectedRow();
-			tableModel.setValueAt(now, i, 5);
-			tableModel.setValueAt("proknjizen", i, 6);
-			tableModel.fireTableDataChanged();
-			tblGrid.getSelectionModel().setSelectionInterval(i, i);
-			sync();
-			stmt.close();
+			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call ProknjiziPopis(?, ?, ?, ?, ?) }");
+			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
+			proc.setObject(2, now);
+			proc.setObject(3, tableModel.getValueAt(tblGrid.getSelectedRow(), 1));
+			proc.setObject(4, tableModel.getValueAt(tblGrid.getSelectedRow(), 2));
+			proc.registerOutParameter(5, java.sql.Types.INTEGER);
+
+			proc.executeUpdate();
+			Integer retVal = proc.getInt(8);
+			System.out.println(retVal);
+			tableModel.setValueAt("proknjizen", tblGrid.getSelectedRow(), 9);
+			tableModel.setValueAt(now, tblGrid.getSelectedRow(), 8);
+			tfDatumKnjizenja.setText(now);
+			tfStatusPopisnog.setText("proknjizen");
 			DBConnection.getConnection().commit();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
+			proc.close();
+			DBConnection.getConnection().close();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
