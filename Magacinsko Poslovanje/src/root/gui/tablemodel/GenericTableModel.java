@@ -497,7 +497,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 				if (searchWhere.toString().contains("=")) {
 					searchWhere.append(" AND ");
 				}
-				searchWhere.append(tableCode + "1." + mc.getCode() + "='" + array[j] + "'");
+				searchWhere.append(tableCode + "1." + mc.getCode() + " LIKE '%" + array[j] + "%'");
 			} else if (array[j] instanceof Integer && !array[j].equals(0)) {
 				if (searchWhere.toString().contains("=")) {
 					searchWhere.append(" AND ");
@@ -505,6 +505,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 				searchWhere.append(tableCode + "1." + mc.getCode() + "=" + array[j]);
 			}
 		}
+		System.out.println(searchWhere.toString());
 		fillData(this.basicQuery + this.joinQuery + searchWhere.toString() + this.orderBy);
 	}
 }
