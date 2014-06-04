@@ -404,8 +404,7 @@ public abstract class GenericForm extends JDialog {
 		btnCommit.setEnabled(true);
 		this.mode = mode;
 
-		switch (mode) {
-		case Constants.MODE_ADD:
+		if (mode == Constants.MODE_ADD || mode == Constants.MODE_SEARCH) {
 			clearFields(true);
 		}
 	}

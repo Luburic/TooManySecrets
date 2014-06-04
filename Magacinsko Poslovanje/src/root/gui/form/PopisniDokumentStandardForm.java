@@ -33,6 +33,7 @@ import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
 import root.util.DateLabelFormatter;
+import root.util.Lookup;
 import root.util.verification.JTextFieldLimit;
 
 public class PopisniDokumentStandardForm extends GenericForm {
@@ -232,6 +233,11 @@ public class PopisniDokumentStandardForm extends GenericForm {
 	protected void clearFields(boolean needFocus) {
 		super.clearFields(needFocus);
 		tfStatusPopisnog.setText("u fazi formiranja");
+		try {
+			tfBrojPopisnogDokumenta.setText(Lookup.getRedniBroj("Popisni_dokument", "broj_popisnog_dokumenta"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -261,15 +267,15 @@ public class PopisniDokumentStandardForm extends GenericForm {
 
 	@Override
 	public boolean allowDeletion() {
-		return allowDeletion("Stavke_popisnog_dokumenta");
+		return true;
 	}
 
 	public void proknjiziDokument() {
-		String date = tableModel.getValueAt(tblGrid.getSelectedRow(), 7).toString();
+		String date = tableModel.getValueAt(tblGrid.getSelectedRow(), 4).toString();
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 		String now = dateFormatter.format(Calendar.getInstance().getTime());
 		if (now.compareTo(date) < 0) {
-			JOptionPane.showMessageDialog(this, "Datum formiranja mora biti manji ili jednak današnjem", "Greška",
+			JOptionPane.showMessageDialog(this, "Datum otvaranja mora biti manji ili jednak današnjem", "Greška",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -283,7 +289,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			proc.registerOutParameter(5, java.sql.Types.INTEGER);
 
 			proc.executeUpdate();
-			Integer retVal = proc.getInt(8);
+			Integer retVal = proc.getInt(5);
 			System.out.println(retVal);
 			tableModel.setValueAt("proknjizen", tblGrid.getSelectedRow(), 9);
 			tableModel.setValueAt(now, tblGrid.getSelectedRow(), 8);
@@ -291,7 +297,6 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			tfStatusPopisnog.setText("proknjizen");
 			DBConnection.getConnection().commit();
 			proc.close();
-			DBConnection.getConnection().close();
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}

@@ -34,6 +34,7 @@ import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
 import root.util.DateLabelFormatter;
+import root.util.Lookup;
 import root.util.verification.VerificationMethods;
 
 public class PrometniDokumentStandardForm extends GenericForm {
@@ -403,6 +404,11 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		tfStatusPrometnog.setText("u fazi formiranja");
 		cmbOrgJedinicaIz.setSelectedIndex(0);
 		cmbPoslovniPartner.setSelectedIndex(0);
+		try {
+			tfBrojPrometnogDokumenta.setText(Lookup.getRedniBroj("Prometni_dokument", "broj_prometnog_dokumenta"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -493,7 +499,6 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			tfStatusPrometnog.setText("proknjizen");
 			DBConnection.getConnection().commit();
 			proc.close();
-			DBConnection.getConnection().close();
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}

@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,6 +16,7 @@ import root.gui.action.PickupAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
+import root.util.Lookup;
 import root.util.verification.JTextFieldLimit;
 import root.util.verification.VerificationMethods;
 
@@ -32,6 +34,8 @@ public class StavkaPrometaStandardForm extends GenericForm {
 	protected JLabel lblGreska2 = new JLabel();
 	protected JLabel lblGreska3 = new JLabel();
 	protected JLabel lblGreska4 = new JLabel();
+
+	protected boolean notEditable = true;
 
 	public StavkaPrometaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
@@ -166,6 +170,22 @@ public class StavkaPrometaStandardForm extends GenericForm {
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Stavka prometa", joinColumn);
 		tableModel.setColumnForSorting(1);
+
+		try {
+			notEditable = Lookup.getZakljucen("Prometni_dokument", "status_prometnog", childWhere);
+			if (notEditable) {
+				tfCenaPrometa.setEditable(false);
+				tfKolicinaPrometa.setEditable(false);
+				cmbArtikal.setEnabled(false);
+				btnZoomArtikal.setVisible(false);
+				btnAdd.setEnabled(false);
+				btnDelete.setEnabled(false);
+				btnCommit.setEnabled(false);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		super.setupTable(customQuery);
 	}
 
@@ -210,7 +230,7 @@ public class StavkaPrometaStandardForm extends GenericForm {
 
 	@Override
 	public boolean allowDeletion() {
-		return false;
+		return !notEditable;
 	}
 
 	@Override
@@ -218,5 +238,25 @@ public class StavkaPrometaStandardForm extends GenericForm {
 		btnPickup = new JButton(new PickupAction(this, 2));
 		toolBar.add(btnPickup);
 		btnPickup.setEnabled(false);
+	}
+
+	@Override
+	public void setMode(int mode) {
+		super.setMode(mode);
+		if (mode == Constants.MODE_SEARCH) {
+			cmbArtikal.setEnabled(true);
+			btnZoomArtikal.setVisible(true);
+			tfCenaPrometa.setEditable(true);
+			tfKolicinaPrometa.setEditable(true);
+			btnCommit.setEnabled(true);
+		} else {
+			if (notEditable) {
+				btnCommit.setEnabled(false);
+				cmbArtikal.setEnabled(false);
+				btnZoomArtikal.setVisible(false);
+				tfCenaPrometa.setEditable(false);
+				tfKolicinaPrometa.setEditable(false);
+			}
+		}
 	}
 }

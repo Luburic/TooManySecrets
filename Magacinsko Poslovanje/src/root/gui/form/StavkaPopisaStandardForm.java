@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,6 +16,7 @@ import root.gui.action.PickupAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
+import root.util.Lookup;
 import root.util.verification.JTextFieldLimit;
 import root.util.verification.VerificationMethods;
 
@@ -29,6 +31,8 @@ public class StavkaPopisaStandardForm extends GenericForm {
 	protected JTextField tfKolicinaPoKnjigama = new JTextField(12);
 	protected JTextField tfProsecnaCenaPopisa = new JTextField(12);
 	protected JLabel lblGreska1 = new JLabel();
+
+	protected boolean notEditable = false;
 
 	public StavkaPopisaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
@@ -47,6 +51,10 @@ public class StavkaPopisaStandardForm extends GenericForm {
 		tfPopisanaKolicina.setName("popisana količina");
 		tfKolicinaPoKnjigama.setName("količina po knjigama");
 		tfProsecnaCenaPopisa.setName("prosečna cena popis");
+
+		btnAdd.setEnabled(false);
+		btnDelete.setEnabled(false);
+		btnZoomArtikal.setVisible(false);
 
 		cmbArtikal = super.setupJoinsWithComboBox(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",
 				"naziv artikla", false, "");
@@ -133,6 +141,16 @@ public class StavkaPopisaStandardForm extends GenericForm {
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Stavka popisa", joinColumn);
 		tableModel.setColumnForSorting(1);
+
+		try {
+			notEditable = Lookup.getZakljucen("Popisni_dokument", "status_popisnog", childWhere);
+			if (notEditable) {
+				tfPopisanaKolicina.setEditable(false);
+				btnCommit.setEnabled(false);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		super.setupTable(customQuery);
 	}
 
@@ -153,7 +171,7 @@ public class StavkaPopisaStandardForm extends GenericForm {
 
 	@Override
 	public boolean allowDeletion() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -161,5 +179,21 @@ public class StavkaPopisaStandardForm extends GenericForm {
 		btnPickup = new JButton(new PickupAction(this, 2));
 		toolBar.add(btnPickup);
 		btnPickup.setEnabled(false);
+	}
+
+	@Override
+	public void setMode(int mode) {
+		super.setMode(mode);
+		if (mode == Constants.MODE_SEARCH) {
+			tfPopisanaKolicina.setEditable(true);
+			btnZoomArtikal.setVisible(true);
+			btnCommit.setEnabled(true);
+		} else {
+			btnZoomArtikal.setVisible(false);
+			if (notEditable) {
+				tfPopisanaKolicina.setEditable(false);
+				btnCommit.setEnabled(false);
+			}
+		}
 	}
 }

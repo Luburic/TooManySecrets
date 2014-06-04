@@ -22,3 +22,16 @@ BEGIN TRANSACTION
 		FETCH NEXT FROM cursor_popis INTO @id_artikla, @kolicina_pocetna, @kolicina_ulaza, @kolicina_izlaza, @cena
 	END
 COMMIT TRANSACTION
+GO
+
+CREATE TRIGGER ObrisiPopis ON Popisni_dokument FOR DELETE
+AS
+BEGIN TRANSACTION
+	DECLARE @Id_popisa int
+
+	SELECT @Id_popisa = id_popisnog_dokumenta FROM DELETED
+
+	DELETE FROM Stavka_popisa WHERE id_popisnog_dokumenta = @Id_popisa
+	DELETE FROM Clan_komisije WHERE id_popisnog_dokumenta = @Id_popisa
+COMMIT TRANSACTION
+GO

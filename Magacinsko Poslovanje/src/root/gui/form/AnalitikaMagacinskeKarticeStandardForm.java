@@ -6,14 +6,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
-import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
-import root.gui.action.dialog.PoslovniPartnerAction;
-import root.gui.action.dialog.PreduzeceAction;
-import root.gui.action.dialog.RadnikAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
@@ -95,13 +90,6 @@ public class AnalitikaMagacinskeKarticeStandardForm extends GenericForm {
 
 		dataPanel.add(lblVrednost);
 		dataPanel.add(tfVrednost, "wrap");
-
-		JPopupMenu popup = new JPopupMenu();
-		popup.add(new PreduzeceAction());
-		popup.add(new RadnikAction());
-		popup.add(new PoslovniPartnerAction());
-		btnNextForm = new NextFormButton(this, popup);
-		toolBar.add(btnNextForm);
 
 		setupTable(null);
 	}

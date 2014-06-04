@@ -51,4 +51,35 @@ public class Lookup {
 		stmt.close();
 		return retVal;
 	}
+
+	public static String getRedniBroj(String tableCode, String columnCode) throws SQLException {
+		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
+				"SELECT MAX(" + columnCode + ") FROM " + tableCode);
+		ResultSet rset = stmt.executeQuery();
+		rset.next();
+		Integer retVal = rset.getInt(1);
+		if (retVal == null) {
+			retVal = 1;
+		} else {
+			retVal++;
+		}
+
+		rset.close();
+		stmt.close();
+		return retVal.toString();
+	}
+
+	public static boolean getZakljucen(String tableCode, String statusColumn, String childWhere) throws SQLException {
+		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
+				"SELECT " + statusColumn + " FROM " + tableCode + childWhere);
+		ResultSet rset = stmt.executeQuery();
+		rset.next();
+		String retVal = rset.getString(1);
+		rset.close();
+		stmt.close();
+		if (retVal.trim().equals("u fazi formiranja")) {
+			return false;
+		}
+		return true;
+	}
 }

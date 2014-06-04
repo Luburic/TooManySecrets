@@ -35,11 +35,19 @@ BEGIN
 RETURN
 END
   
-SELECT @count = COUNT(*) FROM Stavka_popisa WHERE id_popisnog_dokumenta = @Id AND (popisana_kolicina = '' OR popisana_kolicina is null)
+SELECT @count = COUNT(*) FROM Stavka_popisa WHERE id_popisnog_dokumenta = @Id AND popisana_kolicina is null
 IF(@count <> 0)
 BEGIN
 	SET @RetVal = 2
 	RAISERROR('Popisni dokument se može proknjižiti samo kada se unesu sve količine artikla.', 11, 2)
+	RETURN
+END
+
+SELECT @count = COUNT(*) FROM Clan_komisije WHERE id_popisnog_dokumenta = @Id AND vrsta_clana = 'P'
+IF(@count <> 1)
+BEGIN
+	SET @RetVal = 3
+	RAISERROR('Popisni dokument se može proknjižiti samo ako ima tačno jednog člana komisije koji je predsednik.', 11, 2)
 	RETURN
 END
 
@@ -57,16 +65,26 @@ BEGIN TRANSACTION
 	BEGIN
 		IF(@popisana_kolicina = @kolicina_po_knjigama)
 		BEGIN
-			FETCH NEXT FROM cursor_proknjizi_popis INTO @popisana_kolicina, @kolicina_po_knjigama
+			FETCH NEXT FROM cursor_proknjizi_popis INTO @id_artikla, @popisana_kolicina, @kolicina_po_knjigama, @cena
 		END
-		ELSE
+		ELSE --
 		BEGIN
-			DECLARE @id_magacinske int
-			SELECT @id_magacinske = id_magacinske_kartice FROM Magacinska_kartica WHERE id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine AND id_artikla = @id
-			INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, TEMP, null, 'U', @popisana_kolicina - @kolicina_po_knjigama, @cena, (@popisana_kolicina - @kolicina_po_knjigama)*@cena, 1)
-			--Update magacinske kartice
+			DECLARE
+				@id_magacinske int,
+				@id_prometa int,
+				@vrednost decimal(15,2),
+				@redni_broj int
+			SELECT @id_prometa = id_prometa FROM Vrsta_prometa WHERE sifra_prometa = 'KP'
+			SELECT @id_magacinske = id_magacinske_kartice FROM Magacinska_kartica WHERE id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine AND id_artikla = @id_artikla
+			SET @vrednost = (@popisana_kolicina - @kolicina_po_knjigama)*@cena
+			SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
+			INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, @id_prometa, null, @redni_broj+1, 'U', @popisana_kolicina - @kolicina_po_knjigama, @cena, @vrednost, 1)
+			UPDATE Magacinska_kartica SET kolicina_ulaza = (kolicina_ulaza + @popisana_kolicina - @kolicina_po_knjigama), vrednost_ulaza = (vrednost_ulaza + @vrednost), prosecna_cena = ((vrednost_pocetnog_stanja + vrednost_ulaza - vrednost_izlaza + @vrednost) / (kolicina_pocetnog_stanja + kolicina_ulaza - kolicina_izlaza + @popisana_kolicina - @kolicina_po_knjigama)) WHERE id_magacinske_kartice = @id_magacinske
+			FETCH NEXT FROM cursor_proknjizi_popis INTO @id_artikla, @popisana_kolicina, @kolicina_po_knjigama, @cena
 		END
 	END
+	CLOSE cursor_proknjizi_popis
+	DEALLOCATE cursor_proknjizi_popis
 	SET @RetVal = 0
 	UPDATE Popisni_dokument SET status_popisnog = 'proknjizen', datum_knjizenja=@Datum WHERE id_popisnog_dokumenta=@Id
 COMMIT TRANSACTION
