@@ -1,11 +1,14 @@
 package util;
 
+import java.io.File;
 import java.io.Reader;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+
+import javax.el.PropertyNotFoundException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -19,20 +22,20 @@ public class MessageTransform {
 	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
 
 	
-	public static Document unpack(Document document, String serviceAdress, String schemaPrefix, String TARGET_NAMESPACE, Properties propSender, Properties propReceiver){
+	public static Document unpack(Document document, String serviceAdress, String schemaPrefix, String TARGET_NAMESPACE, Properties propReceiver){
 		
 		SecurityClass security = new SecurityClass();
 		Reader reader = Validation.createReader(document);
-		Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/ws_style/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Crypt.xsd","http://localhost:8080/ws_style/services/"+serviceAdress+"?xsd=xenc-schema.xsd"});
+		Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Crypt.xsd","http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=xenc-schema.xsd"});
 		
 		if( doc == null )
 			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Crypt semi.", TARGET_NAMESPACE);
 		
-		URL url = FakturaProvider.class.getClassLoader().getResource(propSender.getProperty("jks"));
+		URL url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		
-		Document decrypt = security.decrypt(doc, security.readPrivateKey(propSender.getProperty("naziv"), propSender.getProperty("pass"), url.toString().substring(6), propSender.getProperty("passKS")));
+		Document decrypt = security.decrypt(doc, security.readPrivateKey(propReceiver.getProperty("naziv"), propReceiver.getProperty("pass"), url.toString().substring(6), propReceiver.getProperty("passKS")));
 		Reader reader1 = Validation.createReader(decrypt);
-		decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/ws_style/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Signed.xsd","http://localhost:8080/ws_style/services/"+serviceAdress+"?xsd=xmldsig-core-schema.xsd"});
+		decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Signed.xsd","http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=xmldsig-core-schema.xsd"});
 		
 		if(decrypt==null)
 			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Signed semi.",TARGET_NAMESPACE);
@@ -52,7 +55,9 @@ public class MessageTransform {
 		
 		decrypt = DocumentTransform.convertToDocument(timestampOk);*/
 		
-		Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaSigned.xsd","http://localhost:8080/ws_style/services/Faktura?xsd=xmldsig-core-schema.xsd"});
+		Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/Faktura?xsd=../shema/FakturaSigned.xsd","http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/Faktura?xsd=xmldsig-core-schema.xsd"});
+		
+		DocumentTransform.printDocument(forSave);
 		
 		//ovde ce ici provera za timestamp
 		Element timestamp = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
@@ -66,7 +71,17 @@ public class MessageTransform {
 			e.printStackTrace();
 		}
 		
-		Date dateFromXml = RESTUtil.getTimestampPoslednjePrimljene(propSender.getProperty("naziv"), propReceiver.getProperty("naziv"));
+		Element propertySender = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "pibDobavljaca").item(0);
+		String propertyOne = propertySender.getTextContent();
+		
+		String naziv = null;
+		try {
+			naziv = propReceiver.getProperty("pib"+propertyOne);
+		} catch (PropertyNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		Date dateFromXml = RESTUtil.getTimestampPoslednjePrimljene(naziv, propReceiver.getProperty("naziv"));
 		//skidanje taga
 		timestamp.getParentNode().removeChild(timestamp);
 		
@@ -74,7 +89,7 @@ public class MessageTransform {
 		Element redniBrojPoruke = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
 		
 		int rbrPoruke = Integer.parseInt(redniBrojPoruke.getTextContent());
-		int rbrPorukeFromXml = RESTUtil.getBrojPoslednjePrimljene(propSender.getProperty("naziv"), propReceiver.getProperty("naziv"));
+		int rbrPorukeFromXml = RESTUtil.getBrojPoslednjePrimljene(naziv, propReceiver.getProperty("naziv"));
 		//skidanje taga
 		redniBrojPoruke.getParentNode().removeChild(redniBrojPoruke);
 		
@@ -87,13 +102,13 @@ public class MessageTransform {
 		signature.getParentNode().removeChild(signature);
 		
 		Reader reader2 = Validation.createReader(decrypt);
-		decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/ws_style/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Raw.xsd"});
+		decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Raw.xsd"});
 		
 		if( decrypt == null )
 			return DocumentTransform.createNotificationResponse(schemaPrefix +" dokument nije validan po Raw semi.",TARGET_NAMESPACE);
 		
 		
-		RESTUtil.sacuvajFakturu(forSave, propSender.getProperty("naziv"), propReceiver.getProperty("naziv"), false, date);
+		RESTUtil.sacuvajFakturu(forSave, naziv, propReceiver.getProperty("naziv"), false, date);
 		
 		return decrypt;
 	}
@@ -141,7 +156,7 @@ public class MessageTransform {
 	
 	
 	//faktura klijent
-	public static Document packS(String serviceAdress,String schemaPrefix,String inputFile,String alias,String password,String keystoreFile,String keystorePassword, String NAMESPACE_XSD){
+	public static Document packS(String serviceAdress,String schemaPrefix,String inputFile,Properties propSender, String receiver, String NAMESPACE_XSD){
 	
 		SecurityClass security =new SecurityClass();
 		Document document = Validation.buildDocumentWithoutValidation("./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
@@ -154,19 +169,31 @@ public class MessageTransform {
 		
 		String outputFile = inputFile.substring(0, inputFile.length()-4) + "-signed.xml";
 		
-		int brojac = RESTUtil.getBrojPoslednjePoslate(alias);
+		int brojac = RESTUtil.getBrojPoslednjePoslate(propSender.getProperty("naziv"));
 		
-		Document signed = security.addTimestampAndSign(alias, password, keystoreFile, keystorePassword, inputFile, outputFile, brojac, " http://localhost:8080/ws_style/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Signed.xsd", schemaPrefix.toLowerCase());
+		URL url = MessageTransform.class.getClassLoader().getResource(propSender.getProperty("jks"));
+		
+		URL urlReceiver = MessageTransform.class.getClassLoader().getResource(propSender.getProperty(receiver));
+		
+		Document signed = security.addTimestampAndSign(propSender.getProperty("naziv"), propSender.getProperty("pass"), url.toString().substring(6), propSender.getProperty("passKS"), inputFile, outputFile, brojac, " http://localhost:8080/"+propSender.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Signed.xsd", schemaPrefix.toLowerCase());
 		
 		if( signed == null ) {
 			System.out.println("Greska u potpisivanju"+schemaPrefix+" dokumenta.");
 			return null;
 		}
 		
-		RESTUtil.sacuvajFakturu(signed, alias, null, true, null);
+		RESTUtil.sacuvajFakturu(signed, propSender.getProperty("naziv"), null, true, null);
 		
 		
-		Document encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificate(alias, password, keystoreFile, keystorePassword),NAMESPACE_XSD, schemaPrefix.toLowerCase());
+		//Document encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificate(alias, password, keystoreFile, keystorePassword),NAMESPACE_XSD, schemaPrefix.toLowerCase());
+		//new File("C:\\apache-tomee-plus-1.5.0\\webapps\\ws_style\\keystores\\firmab.cer")
+		Document encrypted = null;
+		try {
+			encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificateFromFile(new File(urlReceiver.toString().substring(6))),NAMESPACE_XSD, schemaPrefix.toLowerCase());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		if(encrypted == null) {
 			System.out.println("Greska u enkripciji"+schemaPrefix+" dokumenta.");

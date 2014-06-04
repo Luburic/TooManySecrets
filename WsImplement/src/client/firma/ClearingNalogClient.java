@@ -41,7 +41,7 @@ public class ClearingNalogClient {
 			Service service = Service.create(wsdlLocation, serviceName);
 			Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
 			
-		    Document encrypted= MessageTransform.packS("Clearing", "Nalog", inputFile, alias, password, keystoreFile, keystorePassword, NAMESPACE_XSD);
+		    Document encrypted= MessageTransform.packS("Clearing", "Nalog", inputFile, null, null, NAMESPACE_XSD);
 		    if(encrypted!=null) {
 			DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 

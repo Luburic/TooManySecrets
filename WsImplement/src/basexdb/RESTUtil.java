@@ -490,7 +490,7 @@ public class RESTUtil {
 			NodeList counters = counterDoc.getElementsByTagName("firma");
 			for(int i = 0; i < counters.getLength(); ++i) {
 				if (counters.item(i).getChildNodes().item(1).getTextContent().equalsIgnoreCase(nazivFirme))
-					dateStr = counters.item(i).getChildNodes().item(3).getTextContent();	
+					dateStr = counters.item(i).getChildNodes().item(3).getTextContent();
 			}
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");

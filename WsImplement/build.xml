@@ -128,12 +128,16 @@
 	
 	<target name="war" depends="compile">
 		<delete file="${war.name}"/>
+		<copy file="${webinf.dir}/keystores/A/firma.properties" todir="${bin.dir}"/>
 		<war warfile="${dist.dir}/${war.name}" webxml="${webinf.dir}/web.xml">
 			<classes dir="${bin.dir}">
 				<exclude name="**/client/*.class"/>
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
+				<exclude name="**/firmaB.properties"/>
 				<include name="**/*.jks"/>
+				<exclude name="**/firmab.jks"/>
+				<include name="**/*.cer"/>
 			</classes>
 			<lib dir="${lib.dir}">
 				<include name="spring-*.jar"/>
@@ -143,22 +147,55 @@
 			<webinf dir="${webinf.dir}">
 				<include name="wsdl/**"/>
 				<include name="shema/**"/>
-				<include name="keystores/**"/>
+				<include name="keystores/*.cer"/>
+				<include name="keystores/*.jks"/>
 				<include name="cxf-servlet.xml"/>
 			</webinf>
-			<fileset dir="." includes="keystores/**"/>
+			<fileset dir="." includes="keystores/*.cer"/>
 		</war>
 	</target>
+	
+	<target name="war1" depends="compile">
+			<delete file="${war1.name}"/>
+			<copy file="${webinf.dir}/keystores/B/firma.properties" todir="${bin.dir}"/>
+			<war warfile="${dist.dir}/${war1.name}" webxml="${webinf.dir}/web.xml">
+				<classes dir="${bin.dir}">
+					<exclude name="**/client/*.class"/>
+					<include name="**/*.class"/>
+					<include name="**/*.properties"/>
+					<exclude name="**/firmaA.properties"/>
+					<include name="**/*.jks"/>
+					<exclude name="**/firmaa.jks"/>
+					<include name="**/*.cer"/>
+				</classes>
+				<lib dir="${lib.dir}">
+					<include name="spring-*.jar"/>
+					<include name="bcprov-jdk16-141.jar"/>
+					<include name="commons-*.jar"/>
+				</lib>
+				<webinf dir="${webinf.dir}">
+					<include name="wsdl/**"/>
+					<include name="shema/**"/>
+					<include name="keystores/*.cer"/>
+					<include name="keystores/*.jks"/>
+					<include name="cxf-servlet.xml"/>
+				</webinf>
+				<fileset dir="." includes="keystores/*.cer"/>
+			</war>
+		</target>
 
-	<target name="deploy" depends="war">
+	<target name="deploy" depends="war, war1">
 		<copy todir="${tomee.dir}/webapps">
 			<fileset dir="${dist.dir}" includes="${war.name}"/>
+			<fileset dir="${dist.dir}" includes="${war1.name}"/>
 		</copy>
 	</target>
 
 	<target name="clean">
 		<delete file="${dist.dir}/${war.name}"/>
 		<delete file="${tomee.dir}/webapps/${war.name}"/>
+		<delete file="${dist.dir}/${war1.name}"/>
+		<delete file="${tomee.dir}/webapps/${war1.name}"/>
 	</target>
 
 	<target name="main" depends="clean,deploy">

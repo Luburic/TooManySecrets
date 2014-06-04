@@ -18,6 +18,7 @@ import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,16 +55,17 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.w3c.dom.Node;
 
 //Potpisuje dokument, koristi se enveloped tip
 public class SecurityClass {
 
 	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/tipovi";
 	public static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-	public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema"; 
+	//public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema"; 
+	public static final String W3C_XML_SCHEMA = "./WEB-INF/shema/XMLSchema.xsd"; 
 
 	static {
 		//staticka inicijalizacija
@@ -217,6 +219,19 @@ public class SecurityClass {
 			e.printStackTrace();
 			return null;
 		} 
+	}
+	
+	public Certificate readCertificateFromFile(File f) throws Exception {
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+
+		Certificate cert = null;
+		BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
+		while (in.available() > 0) {
+		    cert = cf.generateCertificate(in);
+		}
+		in.close();
+		
+		return cert;
 	}
 
 	/**
@@ -403,7 +418,7 @@ public class SecurityClass {
 	}
 	
 	/**
-	 * Kriptuje sadrzaj prvog elementa odsek
+	 * Kriptuje sadrzaj prvog elementa
 	 */
 	public Document encrypt(Document doc, SecretKey key, Certificate certificate, String namespace, String node) {
 		

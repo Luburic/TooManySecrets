@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><faktura xmlns="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/tipovi http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaSigned.xsd">
+<?xml version="1.0" encoding="UTF-8"?><faktura xmlns="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/tipovi http://localhost:8080/firmab/services/Faktura?xsd=../shema/FakturaSigned.xsd">
     <zaglavlje idPoruke="idPoruke1">
         <nazivDobavljaca>nazivDobavljaca0</nazivDobavljaca>
         <adresaDobavljaca>adresaDobavljaca0</adresaDobavljaca>
-        <pibDobavljaca>pibDobavlja</pibDobavljaca>
+        <pibDobavljaca>22222222222</pibDobavljaca>
         <nazivKupca>nazivKupca0</nazivKupca>
         <adresaKupca>adresaKupca0</adresaKupca>
         <pibKupca>pibKupca0</pibKupca>
@@ -40,7 +40,7 @@
         <umanjenoZaRabat>0.00</umanjenoZaRabat>
         <ukupanPorez>0.00</ukupanPorez>
     </stavka>
-<timestamp>Mon Jun 02 14:49:10 CEST 2014</timestamp><redniBrojPoruke>0</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<timestamp>06/04/2014 03:25:53</timestamp><redniBrojPoruke>1</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -50,39 +50,39 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>YRBFr1pG4gV8dOQt5Mhef5+eA5U=</ds:DigestValue>
+<ds:DigestValue>RurbC0U1UZiPtC5uoA9Zw4UDPDA=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-LSV/JPTv38Vy3T4+6o42Shh1ELuE0+shMCPxs0NszSOdNxSKZz89ayGPIN0vgSo+jMRWSkO6U/uK
-wBBfXkC3UX5H6uKUsmgw/+7ESbwSTC9AOFupkpqod7fFdjryHqlnf9984cJkAEWZJRobnW4EsjP4
-JcgwnxHkNezFDpMJINs=
+VobBUYSlmRu+Iled4kM4IxexebLejl+EuwwJ6vD6tz5PneVySDrTldjKBkiBSvZfLRIp0QfvAiaP
+ewkrODdMTPObpYhbAbZGjFzVl2ElThe4OdzgmYRNf+tzKygv+kshUN9cjkkMX4bFx8GaRa+LhZBO
+hNJBFRyIJqv6ZDsIk3g=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>
 <ds:RSAKeyValue>
 <ds:Modulus>
-he0nIlTyqgmOjdLL7Ly+SOib1o+EtfMfoXm0hYl2MxxAe/iiCUR205jEL1ZDgcbaG5ZAPWprX9mi
-cWHijrtdhvCc6CRt0xI52fDwggKjLdD9aqhXeAKfr1WHnWijo8onYpaKpINPMr4l/6dvUUaltPAJ
-egjXLJ+LFgu0SfQIM00=
+rJufWwruebLBNiVTiNvTZGkLhoQHP8CClhj7YtW/hBIos9lb7fGVib7Mge1FDUD5W8qXguMlAjYR
+4tc62y5zzJgBELAgxiMgFssHbfk6KTEhs1b9b1F/99D5TYhSPtgbvjxZ989w42f5BV8M+e/4qlwf
+DAfcj3mC6niXFsfuPSE=
 </ds:Modulus>
 <ds:Exponent>AQAB</ds:Exponent>
 </ds:RSAKeyValue>
 </ds:KeyValue>
 <ds:X509Data>
 <ds:X509Certificate>
-MIICizCCAfSgAwIBAgIBIjANBgkqhkiG9w0BAQUFADCBiTETMBEGCgmSJomT8ixkAQEMAzEwMDEg
+MIICizCCAfSgAwIBAgIBBzANBgkqhkiG9w0BAQUFADCBiTETMBEGCgmSJomT8ixkAQEMAzEwMDEg
 MB4GCSqGSIb3DQEJARYRY2JhbmthQGNiYW5rYS5jb20xDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwF
 MTEwMDAxGDAWBgNVBAoMD0NlbnRyYWxuYSBiYW5rYTEYMBYGA1UEAwwPQ2VudHJhbG5hIGJhbmth
-MB4XDTE0MDUyMjE4MDUyNVoXDTE1MDUyMjE4MDUyNVowgYwxDzANBgNVBAMMBkZpcm1hQTEPMA0G
-A1UECgwGRmlybWFBMQ8wDQYDVQQLDAZGaXJtYUExDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwFMTEw
-MDAxHzAdBgkqhkiG9w0BCQEWEGZpcm1hYUBnbWFpbC5jb20xGDAWBgoJkiaJk/IsZAEBDAhGSVJN
-U1IxMTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAhe0nIlTyqgmOjdLL7Ly+SOib1o+EtfMf
-oXm0hYl2MxxAe/iiCUR205jEL1ZDgcbaG5ZAPWprX9micWHijrtdhvCc6CRt0xI52fDwggKjLdD9
-aqhXeAKfr1WHnWijo8onYpaKpINPMr4l/6dvUUaltPAJegjXLJ+LFgu0SfQIM00CAwEAATANBgkq
-hkiG9w0BAQUFAAOBgQA9Ogutt6qjgHBtSo0X1l6+siTqdQT3OP4Am26sMyO37N9LnyclJwVq3kuC
-P3g8BpFSFC6HKrVxE3BIZfKMaZxohfpYMA9dUgEBWojlJfor4UccFXkBLOYrs4GOucJeKgwgrktA
-cqf57EIenRifV3zJjU3eWmD+eRA4Fv5dc5XLVw==
+MB4XDTE0MDYwMjIzNTcxOVoXDTE1MDYwMjIzNTcxOVowgYwxDzANBgNVBAMMBmZpcm1hYjEPMA0G
+A1UECgwGZmlybWFiMQ8wDQYDVQQLDAZmaXJtYWIxDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwFMTEw
+MDAxHzAdBgkqhkiG9w0BCQEWEGZpcm1hYkBnbWFpbC5jb20xGDAWBgoJkiaJk/IsZAEBDAhGSVJC
+U1IxMTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEArJufWwruebLBNiVTiNvTZGkLhoQHP8CC
+lhj7YtW/hBIos9lb7fGVib7Mge1FDUD5W8qXguMlAjYR4tc62y5zzJgBELAgxiMgFssHbfk6KTEh
+s1b9b1F/99D5TYhSPtgbvjxZ989w42f5BV8M+e/4qlwfDAfcj3mC6niXFsfuPSECAwEAATANBgkq
+hkiG9w0BAQUFAAOBgQBUEkY6A2y376CrGjxlBAZxUyIBKy+TVUt2Ymjs8BevIEvGPN4g4biDX1Vi
+7LUrHxj6ohWPQL4Ahzvw8oKOMe9gqCGzjRN+Qkxc7cmM+VgA/G+TjQlTimipGyu8uMyuh/UhxZkU
++hHisKOn0OI+Q5JUKIeaNllkDZc5vBhvSVzlmA==
 </ds:X509Certificate>
 </ds:X509Data>
 </ds:KeyInfo>

@@ -549,7 +549,8 @@ public class ZaglavljeDialog extends JDialog {
 					
 					
 					// isto ce se informacije o firmi (password i putanja i tako to citati iz nekog properties fajla pa ce se prosledjivati testIt metodi)
-					FakturaClient.testIt("firmaa", "firmaa", "./WEB-INF/keystores/firmaa.jks", "firmaa","./FakturaTest/Faktura2.xml");
+					FakturaClient fc = new FakturaClient();
+					fc.testIt("firmaA", "firmab", "cerFirmab","./FakturaTest/Faktura2.xml");
 
 					JOptionPane.showMessageDialog(null,
 							"Uspesno kreirana(i poslata*) faktura.",
