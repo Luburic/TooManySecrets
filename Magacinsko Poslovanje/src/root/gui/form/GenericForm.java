@@ -101,7 +101,7 @@ public abstract class GenericForm extends JDialog {
 		btnSearch = new JButton(new SearchAction(this));
 		toolBar.add(btnSearch);
 
-		btnRefresh = new JButton(new RefreshAction());
+		btnRefresh = new JButton(new RefreshAction(this));
 		toolBar.add(btnRefresh);
 
 		initPickup();
@@ -308,6 +308,18 @@ public abstract class GenericForm extends JDialog {
 			tableModel.updateRow(newRow.toArray(), i);
 
 			tblGrid.getSelectionModel().setSelectionInterval(i, i);
+			sync();
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(this, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public void search() {
+
+		try {
+			LinkedList<Object> newRow = new LinkedList<Object>();
+			getDataAndAddToRow(newRow);
+			tableModel.search(newRow.toArray());
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(this, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}

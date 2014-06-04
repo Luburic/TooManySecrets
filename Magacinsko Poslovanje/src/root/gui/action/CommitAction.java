@@ -36,6 +36,7 @@ public class CommitAction extends AbstractAction {
 			}
 			break;
 		case Constants.MODE_SEARCH:
+			standardForm.search();
 			break;
 		}
 	}

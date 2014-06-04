@@ -114,7 +114,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			basicQuery = sb.toString();
 		}
 
-		if (outsideColumns != null) {
+		if (outsideColumns != null && joinQuery.equals("")) {
 			StringBuilder sb = new StringBuilder();
 			Iterator<MetaSurogateDisplay> outsideIterator = outsideColumns.iterator();
 			while (outsideIterator.hasNext()) {
@@ -486,5 +486,25 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 
 	public void setWhereClause(String whereClause) {
 		this.whereClause = whereClause;
+	}
+
+	public void search(Object[] array) throws SQLException {
+		StringBuilder searchWhere = new StringBuilder(" WHERE ");
+		Object[] mColumn = columns.toArray();
+		for (int i = 1, j = 0; i < columns.size() - 1; i++, j++) {
+			MetaColumn mc = (MetaColumn) mColumn[i];
+			if (array[j] instanceof String && !array[j].equals("")) {
+				if (searchWhere.toString().contains("=")) {
+					searchWhere.append(" AND ");
+				}
+				searchWhere.append(tableCode + "1." + mc.getCode() + "='" + array[j] + "'");
+			} else if (array[j] instanceof Integer && !array[j].equals(0)) {
+				if (searchWhere.toString().contains("=")) {
+					searchWhere.append(" AND ");
+				}
+				searchWhere.append(tableCode + "1." + mc.getCode() + "=" + array[j]);
+			}
+		}
+		fillData(this.basicQuery + this.joinQuery + searchWhere.toString() + this.orderBy);
 	}
 }

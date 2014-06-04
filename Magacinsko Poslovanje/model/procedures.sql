@@ -90,6 +90,12 @@ BEGIN TRANSACTION
 COMMIT TRANSACTION
 GO
 
+IF EXISTS (SELECT 1
+   FROM   sysobjects
+   WHERE  name = 'ZakljuciGodinu' AND type = 'P')
+   DROP PROCEDURE ZakljuciGodinu
+GO
+
 CREATE PROCEDURE ZakljuciGodinu
 (
 	@Id int,
@@ -102,35 +108,35 @@ SELECT @count = 0
 SELECT @count = COUNT(*) FROM Poslovna_godina WHERE id_poslovne_godine = @Id AND zakljucena = 0
 
 IF(@count = 0)
-  BEGIN
+BEGIN
 	SET @RetVal = 1
-    PRINT 'Data godina ne postoji ili je već zaključena.'
+	RAISERROR('Data godina ne postoji ili je već zaključena.',11,2)
 	RETURN
-  END
+END
 
 SELECT @count = COUNT(*) FROM Poslovna_godina WHERE zakljucena = 0 AND id_poslovne_godine <> @Id AND id_preduzeca = @Id_preduzeca
 IF(@count = 0)
-	BEGIN
-		PRINT 'Mora se otvoriti nova poslovna godina pre nego što se stara može zaključiti.'
-		SET @RetVal = 2
-	END
-ELSE
-	BEGIN
-		SELECT @count = COUNT(*) FROM Poslovna_godina god JOIN Popisni_dokument pop ON god.id_poslovne_godine = pop.id_poslovne_godine
-		JOIN Prometni_dokument pro ON god.id_poslovne_godine = pro.id_poslovne_godine WHERE god.id_poslovne_godine = @Id AND (pop.status_popisnog = 'u fazi formiranja' OR pro.status_prometnog = 'u fazi formiranja')
-		IF(@count <> 0)
-			BEGIN
-				PRINT 'U godini koja se zaključuje ne sme biti dokumenata u fazi formiranja.'
-				SET @RetVal = 3
-			END
-		ELSE
-			BEGIN
-				SET @RetVal = 0
-				UPDATE Poslovna_godina SET zakljucena = '1' WHERE id_poslovne_godine =@Id
-			END
-	END
-GO
+BEGIN
+	RAISERROR('Mora se otvoriti nova poslovna godina pre nego što se stara može zaključiti.',11,2)
+	SET @RetVal = 2
+	RETURN
+END
 
+SELECT @count = COUNT(*) FROM Poslovna_godina god JOIN Popisni_dokument pop ON god.id_poslovne_godine = pop.id_poslovne_godine
+JOIN Prometni_dokument pro ON god.id_poslovne_godine = pro.id_poslovne_godine WHERE god.id_poslovne_godine = @Id AND (pop.status_popisnog = 'u fazi formiranja' OR pro.status_prometnog = 'u fazi formiranja')
+IF(@count <> 0)
+BEGIN
+	RAISERROR('U godini koja se zaključuje ne sme biti dokumenata u fazi formiranja.',11,2)
+	SET @RetVal = 3
+END
+
+
+
+BEGIN TRANSACTION
+	SET @RetVal = 0
+	UPDATE Poslovna_godina SET zakljucena = '1' WHERE id_poslovne_godine = @Id
+COMMIT TRANSACTION
+GO
 
 CREATE PROCEDURE ProknjiziPromet
 (
