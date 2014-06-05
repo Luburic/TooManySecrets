@@ -249,6 +249,18 @@ public class ZaglavljeDialog extends JDialog {
 				}
 				
 				
+				
+				if(tfPibDob.getText().length()!=11) {
+					JOptionPane.showMessageDialog(null,
+							"Neispravna duzina za pib dobavljaca!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfPibDob.requestFocus();
+					return;
+				}
+				
+				
+				
+				
 				if (("").equals(tfNazKup.getText())) {
 					JOptionPane.showMessageDialog(null,
 							"Obavezan unos naziva kupca!", "Greska",
@@ -276,6 +288,15 @@ public class ZaglavljeDialog extends JDialog {
 				}
 				
 				
+				if(tfPibKup.getText().length()!=11) {
+					JOptionPane.showMessageDialog(null,
+							"Neispravna duzina za pib kupca!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfPibKup.requestFocus();
+					return;
+				}
+				
+				
 				
 				if (("").equals(tfBrRac.getText())) {
 					JOptionPane.showMessageDialog(null,
@@ -284,6 +305,12 @@ public class ZaglavljeDialog extends JDialog {
 					tfBrRac.requestFocus();
 					return;
 				}
+				
+				
+				
+				
+				
+				
 
 				int brRac = 0;
 
@@ -455,6 +482,15 @@ public class ZaglavljeDialog extends JDialog {
 					return;
 				}
 
+				
+				if (tfUplRac.getText().length()!=18) {
+					JOptionPane.showMessageDialog(null,
+							"Neispravna duzina racuna!",
+							"Greska", JOptionPane.ERROR_MESSAGE);
+					tfUplRac.requestFocus();
+					return;
+					
+				}
 				
 				if (("").equals(tfDatVal.getJFormattedTextField().getText())) {
 					JOptionPane.showMessageDialog(null,

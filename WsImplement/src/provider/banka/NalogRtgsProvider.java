@@ -1,9 +1,12 @@
 package provider.banka;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.Properties;
 
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBContext;
@@ -49,7 +52,8 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 	public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 	
 	private Marshaller marshaller;
-	
+	private Properties propSender = new java.util.Properties();
+	private Properties propReciver = new java.util.Properties();
 	
 	public NalogRtgsProvider() {
 		// TODO Auto-generated constructor stub
@@ -112,6 +116,16 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 				String keystoreFile="";
 				String keystorePassword="";
 				
+				
+				
+				String bankSender=MessageTransform.checkBank(nalog.getRacunDuznika().substring(0, 3));
+				String bankReciver=MessageTransform.checkBank(nalog.getRacunPoverioca().substring(0, 3));
+				
+				InputStream inputStreamSender = this.getClass().getClassLoader().getResourceAsStream(bankSender+".properties");
+				propSender.load(inputStreamSender);
+				
+				InputStream inputStreamSender2 = this.getClass().getClassLoader().getResourceAsStream(bankReciver+".properties");
+				propReciver.load(inputStreamSender2);
 				
 				
 				Document encryptedDocument = MessageTransform.pack("Rtgs", "MT103", inputFile, alias, password, keystoreFile, keystorePassword, keystoreFile, keystorePassword);
@@ -183,6 +197,9 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		return new DOMSource(DocumentTransform.createNotificationResponse("Nalog(rtgs tipa)uspesno primljen i obradjen.",TARGET_NAMESPACE));
 
@@ -195,16 +212,17 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 	private MT103 createMT103(Nalog nalog) {
 		
 		MT103 mt = new MT103();
-		mt.setIdPoruke(nalog.getIdPoruke());
-		mt.setSwiftBankeDuznika("");
-		mt.setObracunskiRacunBankeDuznika("");
-		mt.setSwiftBankePoverioca("");
-		mt.setObracunskiRacunBankePoverioca("");
+		mt.setIdPoruke(MessageTransform.randomString(50));
+		mt.setSwiftBankeDuznika(propSender.getProperty("swift"));
+		mt.setObracunskiRacunBankeDuznika(propSender.getProperty("obracunskiRac"));
+		mt.setSwiftBankePoverioca(propReciver.getProperty("swift"));
+		mt.setObracunskiRacunBankePoverioca(propReciver.getProperty("obracunskiRac"));
+		
+		
 		mt.setDuznik(nalog.getDuznikNalogodavac());
 		mt.setSvrhaPlacanja(nalog.getSvrhaPlacanja());
 		mt.setPrimalac(nalog.getPrimalacPoverilac());
-		mt.setDatumNaloga(nalog.getDatumNaloga());
-		
+		mt.setDatumNaloga(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
 		mt.setDatumValute(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
 		mt.setRacunDuznika(nalog.getRacunDuznika());
 		mt.setModelZaduzenja(nalog.getModelZaduzenja());
@@ -219,6 +237,7 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 	
 	
 	public boolean validateContent(Nalog nalog) {
+		//potrebna provera da li su racuni duznika i poverioca registrovani u banci
 		return true;
 	}
 

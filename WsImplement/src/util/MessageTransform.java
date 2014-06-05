@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.el.PropertyNotFoundException;
 
@@ -20,7 +21,8 @@ import basexdb.RESTUtil;
 public class MessageTransform {
 	
 	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
-
+	static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	static Random rnd = new Random();
 	
 	public static Document unpack(Document document, String serviceAdress, String schemaPrefix, String TARGET_NAMESPACE, Properties propReceiver){
 		
@@ -208,4 +210,35 @@ public class MessageTransform {
 	
 	
 	}
+	
+	
+	
+	
+	
+	public static String randomString(int len) 
+	{
+	   StringBuilder sb = new StringBuilder(len);
+	  
+	   for( int i = 0; i < len; i++ ) 
+	      sb.append( AB.charAt(rnd.nextInt(AB.length())));
+	   
+	   
+	   return sb.toString();
+	}
+	
+	
+	public static String checkBank(String prefix) {
+		String ans="";
+		
+		switch(prefix) {
+			case "335": ans="bankaa"; break; 
+			case "221": ans="bankab"; break; 
+			
+		}
+		return ans;
+	}
+	
+	
+	
+	
 }
