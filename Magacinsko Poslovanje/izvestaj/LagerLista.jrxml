@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LagerLista" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="aaf0faae-00ca-435c-9edd-a1d13d787c49">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="preduzece" class="java.lang.String"/>
+	<parameter name="id_jedinice" class="java.lang.Integer"/>
+	<parameter name="id_godine" class="java.lang.Integer"/>
+	<parameter name="naziv_jedinice" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     Magacinska_kartica."prosecna_cena" AS Magacinska_kartica_prosecna_cena,
+     Magacinska_kartica."kolicina_pocetnog_stanja" AS Magacinska_kartica_kolicina_pocetnog_stanja,
+     Magacinska_kartica."kolicina_ulaza" AS Magacinska_kartica_kolicina_ulaza,
+     Magacinska_kartica."kolicina_izlaza" AS Magacinska_kartica_kolicina_izlaza,
+     Artikal."sifra_artikla" AS Artikal_sifra_artikla,
+     Artikal."pakovanje" AS Artikal_pakovanje,
+     Artikal."jedinica_mere" AS Artikal_jedinica_mere,
+     Artikal."naziv_artikla" AS Artikal_naziv_artikla
+FROM
+     "dbo"."Artikal" Artikal INNER JOIN "dbo"."Magacinska_kartica" Magacinska_kartica ON Artikal."id_artikla" = Magacinska_kartica."id_artikla"
+WHERE
+     Magacinska_kartica."id_poslovne_godine" = $P{id_godine}
+ AND Magacinska_kartica."id_jedinice" = $P{id_jedinice}
+ORDER BY
+     Artikal."sifra_artikla"]]>
+	</queryString>
+	<field name="Magacinska_kartica_prosecna_cena" class="java.math.BigDecimal"/>
+	<field name="Magacinska_kartica_kolicina_pocetnog_stanja" class="java.math.BigDecimal"/>
+	<field name="Magacinska_kartica_kolicina_ulaza" class="java.math.BigDecimal"/>
+	<field name="Magacinska_kartica_kolicina_izlaza" class="java.math.BigDecimal"/>
+	<field name="Artikal_sifra_artikla" class="java.lang.String"/>
+	<field name="Artikal_pakovanje" class="java.math.BigDecimal"/>
+	<field name="Artikal_jedinica_mere" class="java.lang.String"/>
+	<field name="Artikal_naziv_artikla" class="java.lang.String"/>
+	<variable name="kolicina" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{Magacinska_kartica_kolicina_pocetnog_stanja}.add($F{Magacinska_kartica_kolicina_ulaza}.subtract($F{Magacinska_kartica_kolicina_izlaza}))]]></variableExpression>
+	</variable>
+	<variable name="vrednost" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{Magacinska_kartica_prosecna_cena}.multiply($V{kolicina})]]></variableExpression>
+	</variable>
+	<variable name="ukupnaVrednost" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{vrednost}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="111" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="30" width="555" height="44" uuid="72ca617f-bcab-47c4-8c89-5586fe5212d3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[LAGER LISTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="447" y="15" width="38" height="15" uuid="1aa36833-e097-493e-af2b-f949d126dcc9"/>
+				<text><![CDATA[Datum:]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="485" y="15" width="70" height="15" uuid="d824788b-2cbb-43e3-95c9-653beb9dcd5c"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="485" y="0" width="38" height="15" uuid="d06d8c84-491b-44c7-9d2f-79813de9475c"/>
+				<text><![CDATA[Strana:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="523" y="0" width="32" height="15" uuid="56c96770-e3ca-4e64-bb18-b706191ea1b3"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="56" height="15" uuid="60b775fd-a942-492c-82ab-0a677b319b93"/>
+				<text><![CDATA[Preduzeće:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="74" width="56" height="15" uuid="75fbd315-a9d4-44e2-afaf-517aac292e4b"/>
+				<text><![CDATA[MAGACIN:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="96" width="56" height="15" uuid="738bead6-80b3-464f-8dfc-f663473d2c1b"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Šifra]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="56" y="96" width="56" height="15" uuid="fd87313a-9375-4fb5-b645-2635f31d5696"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Pakovanje]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="112" y="96" width="56" height="15" uuid="0d39285e-f468-4dd3-b56f-c0cc611e4f19"/>
+				<text><![CDATA[Jed. mere]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="168" y="96" width="112" height="15" uuid="b1345907-0d57-418c-b2a8-27155177e3b1"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Naziv artikla]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="96" width="68" height="15" uuid="14e99988-11f6-4179-9601-a2ee1805320d"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Količina]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="443" y="96" width="112" height="15" uuid="0564f756-821a-4cfd-9e00-a8d0aff8bc6a"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Vrednost po kalk. ceni]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="348" y="96" width="95" height="15" uuid="c69e2fe8-418f-4049-ba79-f971b94ff1f0"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Kalk. cena]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="56" y="0" width="86" height="15" uuid="00d5459d-18eb-4aec-a6b1-4444dbf3ab34"/>
+				<textFieldExpression><![CDATA[$P{preduzece}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="56" y="74" width="86" height="15" uuid="00aeae51-a7b2-4ac9-8849-31191d95310c"/>
+				<textFieldExpression><![CDATA[$P{naziv_jedinice}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="56" height="24" uuid="e4ee796a-cb9f-4002-a7f1-da41d78e77ed"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Artikal_sifra_artikla}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="56" y="0" width="50" height="24" uuid="5d2bb5f0-9042-4cda-86e3-6a4f5be7eb36"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Artikal_pakovanje}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="112" y="0" width="56" height="24" uuid="32f8ebf1-650a-4ace-986b-bdb709829d6b"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Artikal_jedinica_mere}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="168" y="0" width="112" height="24" uuid="a243a852-e669-4f1a-a3ef-5cd979b6bbe2"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Artikal_naziv_artikla}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="0" width="68" height="24" uuid="64226497-3e67-47f2-acff-52f097bb1f19"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{kolicina}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="348" y="0" width="95" height="24" uuid="627163ef-9c30-4eab-9e66-cd216e8c5f9b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Magacinska_kartica_prosecna_cena}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="443" y="0" width="112" height="24" uuid="2347a84d-01b4-4496-ae8e-f603b6c88342"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{vrednost}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="31">
+			<staticText>
+				<reportElement x="0" y="0" width="184" height="20" uuid="1fe0c45d-57c3-4f8d-a52e-86b244a1e307"/>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[UKUPNA VREDNOST ZALIHA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="443" y="0" width="112" height="20" uuid="91fb77b5-cfd2-434d-9d36-cad0b2694876"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
+				<textFieldExpression><![CDATA[$V{ukupnaVrednost}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>
