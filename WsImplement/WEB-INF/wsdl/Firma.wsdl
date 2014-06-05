@@ -22,7 +22,8 @@
             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/FakturaRaw.xsd" />
             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/FakturaSigned.xsd" />
             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/ZahtevZaIzvodCrypt.xsd" />
-            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/PresekCrypt.xsd" />    
+            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/PresekCrypt.xsd" /> 
+             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/Fault.xsd" />    
         	<xs:element name="notif" type="xs:string"/>
         </xs:schema>
     </wsdl:types>
@@ -38,6 +39,10 @@
     </wsdl:message>
     
     
+      <wsdl:message name="faultMessage">
+        <wsdl:part name="fault" element="external:fault"/>
+    </wsdl:message>
+    
     
     <wsdl:portType name="FirmaPortType">
         
@@ -45,6 +50,7 @@
         <wsdl:operation name="PrimiFakturu">
             <wsdl:input name="fakturaInput" message="ws:fakturaRequest"/>
             <wsdl:output name="strOutput" message="ws:notifikacija"/>
+            <wsdl:fault name="fault" message="ws:faultMessage"></wsdl:fault>
         </wsdl:operation>
         
         
@@ -65,6 +71,13 @@
            	 <wsdl:output name="strOutput">
             	<soap:body use="literal"/>
            	</wsdl:output>
+           	
+           	
+           	<wsdl:fault name="fault">
+           		<soap:fault name="fault" use="literal"/>
+           	</wsdl:fault>
+           	
+           	
         </wsdl:operation>
         
     </wsdl:binding>
