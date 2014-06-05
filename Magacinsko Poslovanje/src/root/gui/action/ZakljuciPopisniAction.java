@@ -28,7 +28,7 @@ public class ZakljuciPopisniAction extends AbstractAction {
 			if (JOptionPane
 					.showConfirmDialog(
 							standardForm,
-							"Da li ste sigurni da želite da proknjižite dokument? Kada se jednom proknjiži, dokument se više ne može ažurirati.",
+							"Da li ste sigurni da želite da proknjižite dokument? Kada se jednom proknjiži, dokument se više ne može ažurirati, izuzev storniranja.",
 							"Proknjižavane dokumenta", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				((PopisniDokumentStandardForm) standardForm).proknjiziDokument();
 			}

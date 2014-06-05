@@ -241,6 +241,7 @@ public abstract class GenericForm extends JDialog {
 		if (rowCount > 0)
 			tblGrid.setRowSelectionInterval(rowCount - 1, rowCount - 1);
 		sync();
+		setMode(Constants.MODE_EDIT);
 	}
 
 	public void goFirst() {
@@ -248,6 +249,7 @@ public abstract class GenericForm extends JDialog {
 		if (rowCount > 0)
 			tblGrid.setRowSelectionInterval(0, 0);
 		sync();
+		setMode(Constants.MODE_EDIT);
 	}
 
 	public void goNext() {
@@ -260,6 +262,7 @@ public abstract class GenericForm extends JDialog {
 				tblGrid.setRowSelectionInterval(index + 1, index + 1);
 
 			sync();
+			setMode(Constants.MODE_EDIT);
 		}
 
 	}
@@ -274,6 +277,7 @@ public abstract class GenericForm extends JDialog {
 				tblGrid.setRowSelectionInterval(index - 1, index - 1);
 
 			sync();
+			setMode(Constants.MODE_EDIT);
 		}
 
 	}

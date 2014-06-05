@@ -26,6 +26,7 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import root.dbConnection.DBConnection;
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
+import root.gui.action.StornirajPopisniAction;
 import root.gui.action.ZakljuciPopisniAction;
 import root.gui.action.dialog.ClanKomisijeAction;
 import root.gui.action.dialog.StavkaPopisaAction;
@@ -40,6 +41,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 	private static final long serialVersionUID = 1L;
 
 	protected JButton btnZakljuci = new JButton(new ZakljuciPopisniAction(this));
+	protected JButton btnStorniraj = new JButton(new StornirajPopisniAction(this));
 
 	private JButton btnZoomPoslovnaGodina = new JButton("...");
 	private JButton btnZoomOrgJedinica = new JButton("...");
@@ -168,14 +170,21 @@ public class PopisniDokumentStandardForm extends GenericForm {
 					if (s.trim().equals("u fazi formiranja")) {
 						btnZakljuci.setEnabled(true);
 						btnDelete.setEnabled(true);
+						btnStorniraj.setEnabled(false);
 					} else {
 						btnZakljuci.setEnabled(false);
 						btnDelete.setEnabled(false);
+						if (s.trim().equals("proknjizen") && !Constants.godinaZakljucena) {
+							btnStorniraj.setEnabled(true);
+						} else {
+							btnStorniraj.setEnabled(false);
+						}
 					}
 				}
 			}
 		});
 		btnZakljuci.setEnabled(false);
+		btnStorniraj.setEnabled(false);
 
 		dataPanel.add(lblBrojPopisnog);
 		dataPanel.add(tfBrojPopisnogDokumenta, "span 2");
@@ -204,6 +213,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		dataPanel.add(lblGreska4, "wrap,gapx 15px");
 
 		toolBar.add(btnZakljuci);
+		toolBar.add(btnStorniraj);
 		toolBar.addSeparator();
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new StavkaPopisaAction());
@@ -314,6 +324,8 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		if (Constants.godinaZakljucena == true) {
 			btnAdd.setEnabled(false);
 			btnDelete.setEnabled(false);
+			btnZakljuci.setEnabled(false);
+			btnStorniraj.setEnabled(false);
 			this.mode = mode;
 			if (mode == Constants.MODE_SEARCH) {
 				btnCommit.setEnabled(true);
@@ -344,6 +356,24 @@ public class PopisniDokumentStandardForm extends GenericForm {
 				tfDatumKnjizenja.setEnabled(false);
 				tfStatusPopisnog.setEnabled(false);
 			}
+		}
+	}
+
+	public void stornirajDokument() {
+		try {
+			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call StornirajPopis(?, ?) }");
+			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
+			proc.registerOutParameter(2, java.sql.Types.INTEGER);
+
+			proc.executeUpdate();
+			Integer retVal = proc.getInt(2);
+			System.out.println(retVal);
+			tableModel.setValueAt("storniran", tblGrid.getSelectedRow(), 9);
+			tfStatusPopisnog.setText("storniran");
+			DBConnection.getConnection().commit();
+			proc.close();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

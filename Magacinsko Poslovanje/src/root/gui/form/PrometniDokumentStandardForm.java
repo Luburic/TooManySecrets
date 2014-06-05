@@ -28,6 +28,7 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import root.dbConnection.DBConnection;
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
+import root.gui.action.StornirajPrometniAction;
 import root.gui.action.ZakljuciPrometniAction;
 import root.gui.action.dialog.StavkaPrometaAction;
 import root.gui.tablemodel.TableModelCreator;
@@ -63,6 +64,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 	protected JRadioButton rbPromet = new JRadioButton("Regularan promet");
 
 	protected JButton btnProknjizi = new JButton(new ZakljuciPrometniAction(this));
+	protected JButton btnStorniraj = new JButton(new StornirajPrometniAction(this));
 
 	private JLabel lblGreskaB = new JLabel();
 	private JLabel lblGreskaA = new JLabel();
@@ -310,6 +312,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 				if (i != -1) {
 					String s = (String) tableModel.getValueAt(i, 9);
 					if (s.trim().equals("u fazi formiranja")) {
+						btnStorniraj.setEnabled(false);
 						btnProknjizi.setEnabled(true);
 						btnDelete.setEnabled(true);
 						btnCommit.setEnabled(true);
@@ -317,6 +320,11 @@ public class PrometniDokumentStandardForm extends GenericForm {
 						btnProknjizi.setEnabled(false);
 						btnDelete.setEnabled(false);
 						btnCommit.setEnabled(false);
+						if (s.trim().equals("proknjizen") && !Constants.godinaZakljucena) {
+							btnStorniraj.setEnabled(true);
+						} else {
+							btnStorniraj.setEnabled(false);
+						}
 					}
 				}
 			}
@@ -370,6 +378,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		dataPanel.add(tfStatusPrometnog, "wrap, span 2");
 
 		toolBar.add(btnProknjizi);
+		toolBar.add(btnStorniraj);
 		toolBar.addSeparator();
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new StavkaPrometaAction());
@@ -576,6 +585,30 @@ public class PrometniDokumentStandardForm extends GenericForm {
 				tfStatusPrometnog.setEnabled(false);
 				dateDatumKnjizenja.setEnabled(false);
 			}
+		}
+	}
+
+	public void stornirajDokument() {
+		try {
+			CallableStatement proc = DBConnection.getConnection().prepareCall(
+					"{ call StornirajPromet(?, ?, ?, ?, ?, ?, ?) }");
+			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
+			proc.setObject(2, tableModel.getValueAt(tblGrid.getSelectedRow(), 1));
+			proc.setObject(3, tableModel.getValueAt(tblGrid.getSelectedRow(), 2));
+			proc.setObject(4, tableModel.getValueAt(tblGrid.getSelectedRow(), 4));
+			proc.setObject(5, tableModel.getValueAt(tblGrid.getSelectedRow(), 3));
+			proc.setObject(6, ((ComboBoxPair) cmbVrstaPrometa.getSelectedItem()).getCmbShow());
+			proc.registerOutParameter(7, java.sql.Types.INTEGER);
+
+			proc.executeUpdate();
+			Integer retVal = proc.getInt(7);
+			System.out.println(retVal);
+			tableModel.setValueAt("storniran", tblGrid.getSelectedRow(), 9);
+			tfStatusPrometnog.setText("storniran");
+			DBConnection.getConnection().commit();
+			proc.close();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }
