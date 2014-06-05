@@ -28,6 +28,12 @@ IF EXISTS (SELECT 1
    DROP PROCEDURE StornirajPromet
 GO
 
+IF EXISTS (SELECT 1
+   FROM   sysobjects
+   WHERE  name = 'Nivelacija' AND type = 'P')
+   DROP PROCEDURE Nivelacija
+GO
+
 CREATE PROCEDURE StornirajPopis
 (
 	@Id int,
@@ -420,7 +426,7 @@ BEGIN TRANSACTION
 			FROM Magacinska_kartica JOIN Analitika_magacinske_kartice ON Magacinska_kartica.id_magacinske_kartice = Analitika_magacinske_kartice.id_magacinske_kartice WHERE id_artikla = @id_artikla AND id_jedinice = @Id_drugog_magacina AND id_poslovne_godine = @Id_godine
 			SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
 			INSERT INTO Analitika_magacinske_kartice VALUES (@Id_drugog_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj+1, 'U', @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
-			UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza + @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza + @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza + @vrednost_izlaza + @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza + @kolicina_prometa))
+			UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza + @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza + @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza + @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza + @kolicina_prometa))
 		END
 		IF (@RetVal <> 0)
 		BEGIN
@@ -439,3 +445,27 @@ BEGIN TRANSACTION
 	COMMIT TRANSACTION
 GO
 
+CREATE PROCEDURE Nivelacija
+(
+	@id_kartice int,
+	@godinaZakljucena int
+)
+AS
+IF(@godinaZakljucena = 1)
+BEGIN
+	RAISERROR('Nivelacija se ne može vršiti nad magacinskim karticama iz zaključenih godina.',11,2)
+	RETURN
+END
+DECLARE
+	@ukupna_kolicina decimal(15,2),
+	@ukupna_vrednost decimal(15,2),
+	@prosecna_cena decimal(15,2),
+	@id_prometa int,
+	@redni_broj int
+BEGIN TRANSACTION
+	SELECT @ukupna_kolicina = (kolicina_pocetnog_stanja + kolicina_ulaza - kolicina_izlaza), @ukupna_vrednost = (vrednost_pocetnog_stanja + vrednost_ulaza - vrednost_izlaza), @prosecna_cena = prosecna_cena FROM Magacinska_kartica WHERE id_magacinske_kartice = @id_kartice
+	SELECT @id_prometa = id_prometa FROM Vrsta_prometa WHERE sifra_prometa = 'NI'
+	SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_kartice
+	INSERT INTO Analitika_magacinske_kartice VALUES (@id_kartice, @id_prometa, null, @redni_broj+1, 'U', 0, @prosecna_cena, (@ukupna_kolicina * @prosecna_cena - @ukupna_vrednost), 1)
+COMMIT TRANSACTION
+GO

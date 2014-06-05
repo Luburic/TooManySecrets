@@ -2,14 +2,19 @@ package root.gui.form;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
+import root.dbConnection.DBConnection;
 import root.gui.action.NextFormButton;
+import root.gui.action.NivelacijaAction;
 import root.gui.action.PickupAction;
 import root.gui.action.dialog.AnalitikaMagacinskeKarticeAction;
 import root.gui.tablemodel.TableModelCreator;
@@ -32,6 +37,8 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 	protected JTextField tfVrednostPocetnog = new JTextField(12);
 	protected JTextField tfVrednostUlaza = new JTextField(12);
 	protected JTextField tfVrednostIzlaza = new JTextField(12);
+
+	protected JButton btnNivelacija = new JButton(new NivelacijaAction(this));
 
 	public MagacinskaKarticaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
@@ -237,6 +244,20 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 			tfVrednostPocetnog.setEnabled(false);
 			btnZoomArtikal.setEnabled(false);
 			btnZoomOrgJedinica.setEnabled(false);
+		}
+	}
+
+	public void nivelacija() {
+		try {
+			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call Nivelacija(?, ?) }");
+			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
+			proc.setObject(2, Constants.godinaZakljucena ? 1 : 0);
+
+			proc.executeUpdate();
+			DBConnection.getConnection().commit();
+			proc.close();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

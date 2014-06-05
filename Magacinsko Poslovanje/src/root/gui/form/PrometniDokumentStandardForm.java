@@ -83,6 +83,7 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		JLabel lblGodina = new JLabel("Godina*: ");
 
 		btnProknjizi.setEnabled(false);
+		btnStorniraj.setEnabled(false);
 
 		UtilDateModel model = new UtilDateModel(new Date());
 		JDatePanelImpl datePanel = new JDatePanelImpl(model);
