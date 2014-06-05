@@ -21,6 +21,8 @@ BEGIN TRANSACTION
 		INSERT INTO Stavka_popisa VALUES (@id_artikla, @Id_popisa, null, @kolicina_pocetna+@kolicina_ulaza-@kolicina_izlaza, @cena, 1)
 		FETCH NEXT FROM cursor_popis INTO @id_artikla, @kolicina_pocetna, @kolicina_ulaza, @kolicina_izlaza, @cena
 	END
+	CLOSE cursor_popis
+    DEALLOCATE cursor_popis
 COMMIT TRANSACTION
 GO
 
@@ -34,4 +36,18 @@ BEGIN TRANSACTION
 	DELETE FROM Stavka_popisa WHERE id_popisnog_dokumenta = @Id_popisa
 	DELETE FROM Clan_komisije WHERE id_popisnog_dokumenta = @Id_popisa
 COMMIT TRANSACTION
+GO
+
+CREATE TRIGGER AzurirajKarticu ON Magacinska_kartica FOR UPDATE
+AS
+
+DECLARE @kolicina numeric(12)
+
+SELECT @kolicina = kolicina_pocetnog_stanja + kolicina_ulaza - kolicina_izlaza FROM INSERTED
+IF (@kolicina < 0)
+BEGIN
+	RAISERROR('Nema dovoljno zaliha datog artikla u ovom magacinu.', 11, 2)
+	ROLLBACK TRANSACTION
+	RETURN
+END
 GO
