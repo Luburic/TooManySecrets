@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -174,6 +176,8 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		dataPanel.add(lblVrednostIzlaza);
 		dataPanel.add(tfVrednostIzlaza, "wrap");
 
+		toolBar.add(btnNivelacija);
+		toolBar.addSeparator();
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new AnalitikaMagacinskeKarticeAction());
 		btnNextForm = new NextFormButton(this, popup);
@@ -222,36 +226,39 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 			clearFields(true);
 			cmbArtikal.setEnabled(true);
 			cmbOrgJedinica.setEnabled(true);
-			tfKolicinaIzlaza.setEnabled(true);
-			tfKolicinaPocetnog.setEnabled(true);
-			tfKolicinaUlaza.setEnabled(true);
-			tfProsecnaCenaPopisa.setEnabled(true);
-			tfVrednostIzlaza.setEnabled(true);
-			tfVrednostUlaza.setEnabled(true);
-			tfVrednostPocetnog.setEnabled(true);
+			tfKolicinaIzlaza.setEditable(true);
+			tfKolicinaPocetnog.setEditable(true);
+			tfKolicinaUlaza.setEditable(true);
+			tfProsecnaCenaPopisa.setEditable(true);
+			tfVrednostIzlaza.setEditable(true);
+			tfVrednostUlaza.setEditable(true);
+			tfVrednostPocetnog.setEditable(true);
 			btnZoomArtikal.setEnabled(true);
 			btnZoomOrgJedinica.setEnabled(true);
 		} else {
 			btnCommit.setEnabled(false);
 			cmbArtikal.setEnabled(false);
 			cmbOrgJedinica.setEnabled(false);
-			tfKolicinaIzlaza.setEnabled(false);
-			tfKolicinaPocetnog.setEnabled(false);
-			tfKolicinaUlaza.setEnabled(false);
-			tfProsecnaCenaPopisa.setEnabled(false);
-			tfVrednostIzlaza.setEnabled(false);
-			tfVrednostUlaza.setEnabled(false);
-			tfVrednostPocetnog.setEnabled(false);
+			tfKolicinaIzlaza.setEditable(false);
+			tfKolicinaPocetnog.setEditable(false);
+			tfKolicinaUlaza.setEditable(false);
+			tfProsecnaCenaPopisa.setEditable(false);
+			tfVrednostIzlaza.setEditable(false);
+			tfVrednostUlaza.setEditable(false);
+			tfVrednostPocetnog.setEditable(false);
 			btnZoomArtikal.setEnabled(false);
 			btnZoomOrgJedinica.setEnabled(false);
 		}
 	}
 
 	public void nivelacija() {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		String now = dateFormatter.format(Calendar.getInstance().getTime());
 		try {
 			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call Nivelacija(?, ?) }");
 			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
-			proc.setObject(2, Constants.godinaZakljucena ? 1 : 0);
+			proc.setObject(2, now);
+			proc.setObject(3, Constants.godinaZakljucena ? 1 : 0);
 
 			proc.executeUpdate();
 			DBConnection.getConnection().commit();

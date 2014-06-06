@@ -15,8 +15,8 @@ public class NivelacijaAction extends AbstractAction {
 	private GenericForm standardForm;
 
 	public NivelacijaAction(GenericForm standardForm) {
-		putValue(SMALL_ICON, new ImageIcon("img/storn.png"));
-		putValue(SHORT_DESCRIPTION, "Storniraj popisni dokument");
+		putValue(SMALL_ICON, new ImageIcon("img/nivel.png"));
+		putValue(SHORT_DESCRIPTION, "Nivelacija");
 		this.standardForm = standardForm;
 	}
 

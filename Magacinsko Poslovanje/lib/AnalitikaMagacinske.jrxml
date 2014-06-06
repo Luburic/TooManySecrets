@@ -8,7 +8,7 @@
 	<parameter name="naziv_jedinice" class="java.lang.String"/>
 	<parameter name="preduzece" class="java.lang.String"/>
 	<parameter name="id_jedinice" class="java.lang.String"/>
-	<parameter name="id_godine" class="java.lang.String"/>
+	<parameter name="id_artikla" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
      Analitika_magacinske_kartice."smer" AS Analitika_magacinske_kartice_smer,
@@ -21,7 +21,7 @@ FROM
      "dbo"."Analitika_magacinske_kartice" Analitika_magacinske_kartice INNER JOIN "dbo"."Magacinska_kartica" Magacinska_kartica ON Analitika_magacinske_kartice."id_magacinske_kartice" = Magacinska_kartica."id_magacinske_kartice"
      INNER JOIN "dbo"."Vrsta_prometa" Vrsta_prometa ON Analitika_magacinske_kartice."id_prometa" = Vrsta_prometa."id_prometa"
 WHERE
-     Magacinska_kartica."id_artikla" = $P{id_godine}
+     Magacinska_kartica."id_artikla" = $P{id_artikla}
  AND Magacinska_kartica."id_jedinice" = $P{id_jedinice}
  AND Analitika_magacinske_kartice."datum" >= $P{odDatum}
  AND Analitika_magacinske_kartice."datum" <= $P{doDatum}
@@ -88,7 +88,7 @@ ORDER BY
 				<reportElement x="485" y="0" width="38" height="15" uuid="9f0d3ab4-1daa-4db3-8163-5a2cbb1d5121"/>
 				<text><![CDATA[Strana:]]></text>
 			</staticText>
-			<textField pattern="yyyy/MM/dd">
+			<textField pattern="yyyy-MM-dd">
 				<reportElement x="485" y="15" width="70" height="15" uuid="43544734-93e5-4fe2-b7dd-cf9c32a01812"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>

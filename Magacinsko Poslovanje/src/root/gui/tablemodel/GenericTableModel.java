@@ -493,6 +493,10 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 		Object[] mColumn = columns.toArray();
 		for (int i = 1, j = 0; i < columns.size() - 1; i++, j++) {
 			MetaColumn mc = (MetaColumn) mColumn[i];
+			if (mc.getCode().equals("id_stavke_prometa")) {
+				j--;
+				continue;
+			}
 			if (array[j] instanceof String && !array[j].equals("")) {
 				if (searchWhere.toString().contains("=")) {
 					searchWhere.append(" AND ");

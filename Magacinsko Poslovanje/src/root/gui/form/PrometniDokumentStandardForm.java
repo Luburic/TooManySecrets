@@ -590,19 +590,23 @@ public class PrometniDokumentStandardForm extends GenericForm {
 	}
 
 	public void stornirajDokument() {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		String now = dateFormatter.format(Calendar.getInstance().getTime());
+
 		try {
 			CallableStatement proc = DBConnection.getConnection().prepareCall(
-					"{ call StornirajPromet(?, ?, ?, ?, ?, ?, ?) }");
+					"{ call StornirajPromet(?, ?, ?, ?, ?, ?, ?, ?) }");
 			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
 			proc.setObject(2, tableModel.getValueAt(tblGrid.getSelectedRow(), 1));
 			proc.setObject(3, tableModel.getValueAt(tblGrid.getSelectedRow(), 2));
 			proc.setObject(4, tableModel.getValueAt(tblGrid.getSelectedRow(), 4));
 			proc.setObject(5, tableModel.getValueAt(tblGrid.getSelectedRow(), 3));
 			proc.setObject(6, ((ComboBoxPair) cmbVrstaPrometa.getSelectedItem()).getCmbShow());
-			proc.registerOutParameter(7, java.sql.Types.INTEGER);
+			proc.setObject(7, now);
+			proc.registerOutParameter(8, java.sql.Types.INTEGER);
 
 			proc.executeUpdate();
-			Integer retVal = proc.getInt(7);
+			Integer retVal = proc.getInt(8);
 			System.out.println(retVal);
 			tableModel.setValueAt("storniran", tblGrid.getSelectedRow(), 9);
 			tfStatusPrometnog.setText("storniran");

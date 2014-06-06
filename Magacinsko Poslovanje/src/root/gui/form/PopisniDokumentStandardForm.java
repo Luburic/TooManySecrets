@@ -360,13 +360,16 @@ public class PopisniDokumentStandardForm extends GenericForm {
 	}
 
 	public void stornirajDokument() {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		String now = dateFormatter.format(Calendar.getInstance().getTime());
 		try {
 			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call StornirajPopis(?, ?) }");
 			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
-			proc.registerOutParameter(2, java.sql.Types.INTEGER);
+			proc.setObject(2, now);
+			proc.registerOutParameter(3, java.sql.Types.INTEGER);
 
 			proc.executeUpdate();
-			Integer retVal = proc.getInt(2);
+			Integer retVal = proc.getInt(3);
 			System.out.println(retVal);
 			tableModel.setValueAt("storniran", tblGrid.getSelectedRow(), 9);
 			tfStatusPopisnog.setText("storniran");

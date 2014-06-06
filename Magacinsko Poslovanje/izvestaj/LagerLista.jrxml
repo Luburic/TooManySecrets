@@ -58,7 +58,7 @@ ORDER BY
 				<reportElement x="447" y="15" width="38" height="15" uuid="1aa36833-e097-493e-af2b-f949d126dcc9"/>
 				<text><![CDATA[Datum:]]></text>
 			</staticText>
-			<textField pattern="yyyy/MM/dd">
+			<textField pattern="yyyy-MM-dd">
 				<reportElement x="485" y="15" width="70" height="15" uuid="d824788b-2cbb-43e3-95c9-653beb9dcd5c"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
@@ -79,36 +79,36 @@ ORDER BY
 				<text><![CDATA[MAGACIN:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="96" width="56" height="15" uuid="738bead6-80b3-464f-8dfc-f663473d2c1b"/>
+				<reportElement x="0" y="92" width="56" height="15" uuid="738bead6-80b3-464f-8dfc-f663473d2c1b"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Šifra]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="56" y="96" width="56" height="15" uuid="fd87313a-9375-4fb5-b645-2635f31d5696"/>
+				<reportElement x="56" y="92" width="56" height="15" uuid="fd87313a-9375-4fb5-b645-2635f31d5696"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Pakovanje]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="112" y="96" width="56" height="15" uuid="0d39285e-f468-4dd3-b56f-c0cc611e4f19"/>
+				<reportElement x="112" y="92" width="56" height="15" uuid="0d39285e-f468-4dd3-b56f-c0cc611e4f19"/>
 				<text><![CDATA[Jed. mere]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="168" y="96" width="112" height="15" uuid="b1345907-0d57-418c-b2a8-27155177e3b1"/>
+				<reportElement x="168" y="92" width="112" height="15" uuid="b1345907-0d57-418c-b2a8-27155177e3b1"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Naziv artikla]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="280" y="96" width="68" height="15" uuid="14e99988-11f6-4179-9601-a2ee1805320d"/>
+				<reportElement x="280" y="92" width="68" height="15" uuid="14e99988-11f6-4179-9601-a2ee1805320d"/>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Količina]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="443" y="96" width="112" height="15" uuid="0564f756-821a-4cfd-9e00-a8d0aff8bc6a"/>
+				<reportElement x="443" y="92" width="112" height="15" uuid="0564f756-821a-4cfd-9e00-a8d0aff8bc6a"/>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Vrednost po kalk. ceni]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="348" y="96" width="95" height="15" uuid="c69e2fe8-418f-4049-ba79-f971b94ff1f0"/>
+				<reportElement x="348" y="92" width="95" height="15" uuid="c69e2fe8-418f-4049-ba79-f971b94ff1f0"/>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Kalk. cena]]></text>
 			</staticText>
@@ -120,6 +120,9 @@ ORDER BY
 				<reportElement x="56" y="74" width="86" height="15" uuid="00aeae51-a7b2-4ac9-8849-31191d95310c"/>
 				<textFieldExpression><![CDATA[$P{naziv_jedinice}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="0" y="108" width="555" height="1" uuid="cba7a38c-7e46-496a-bcaa-bf86410b5d56"/>
+			</line>
 		</band>
 	</pageHeader>
 	<detail>
@@ -164,15 +167,18 @@ ORDER BY
 	<lastPageFooter>
 		<band height="31">
 			<staticText>
-				<reportElement x="0" y="0" width="184" height="20" uuid="1fe0c45d-57c3-4f8d-a52e-86b244a1e307"/>
-				<textElement verticalAlignment="Bottom"/>
+				<reportElement x="0" y="11" width="184" height="20" uuid="1fe0c45d-57c3-4f8d-a52e-86b244a1e307"/>
+				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[UKUPNA VREDNOST ZALIHA:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="348" y="0" width="207" height="20" uuid="91fb77b5-cfd2-434d-9d36-cad0b2694876"/>
-				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
+				<reportElement x="348" y="11" width="207" height="20" uuid="91fb77b5-cfd2-434d-9d36-cad0b2694876"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{ukupnaVrednost}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="0" y="6" width="555" height="1" uuid="7eae06c6-060d-4d12-99cf-d370faf5338f"/>
+			</line>
 		</band>
 	</lastPageFooter>
 </jasperReport>
