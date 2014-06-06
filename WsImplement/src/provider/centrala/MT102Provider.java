@@ -47,24 +47,24 @@ public class MT102Provider implements javax.xml.ws.Provider<DOMSource>{
 		    		
     		System.out.println("\nInvoking MT102Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
-			Document document =DocumentTransform.convertToDocument(request);
-			DocumentTransform.printDocument(document);
+			//Document document =DocumentTransform.convertToDocument(request);
+			//DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
 			
-			Document decryptedDocument =MessageTransform.unpack(document, "MT102", "MT102", TARGET_NAMESPACE, null);
+		//	Document decryptedDocument =MessageTransform.unpack(document, "MT102", "MT102", TARGET_NAMESPACE, null);
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt102");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			
 			
 			MT102 mt102=null;
-			try {
+		/*	try {
 				mt102 = (MT102) unmarshaller.unmarshal(decryptedDocument);
 			} catch (Exception e) {
 				return new DOMSource(decryptedDocument);
-			}
+			}*/
 			
 			
 			if(!validateContent(mt102))

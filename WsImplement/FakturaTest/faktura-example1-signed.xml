@@ -40,7 +40,7 @@
         <umanjenoZaRabat>0.00</umanjenoZaRabat>
         <ukupanPorez>0.00</ukupanPorez>
     </stavka>
-<timestamp>06/05/2014 19:03:59</timestamp><redniBrojPoruke>2</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<timestamp>06/06/2014 17:13:43</timestamp><redniBrojPoruke>5</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -50,13 +50,13 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>SKMuiQKbP7h3UbmRf7pL5+hv7Go=</ds:DigestValue>
+<ds:DigestValue>DbZiVqniO0fP15fBnzbHxGowxAw=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-byXLxr3H2I7MzH6R6jz56fy4FeXI4+8/75G/I6ZYbSDO8Zulf2WFo+1HIiAMXZL/UXTkfBAnAzim
-Kd3GyjlBaAYVDXSEvipE27NhWW1wBoIxCOpavZhV4lGNYm5SnAM0L0DHwRstC3/27f0pg0Nuja17
-hEDpEQwKFmBHG+notJM=
+f6jIOOsX3kEd8ih66dXV78+8Nk48EBAUB9FRC0IbUnKCCEFidrr+UuEHzerUn+EwiY0/mS2hZGyj
+v3tMX0efOtvV7yYlBD9F33xK72oZW0lBIIJV+XkylHYxNghngbKg9FgjqPdRzOloq+iq1d1DcD9j
+kvcoJNX4JeDZsk+/FDo=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>

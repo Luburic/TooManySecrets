@@ -46,7 +46,7 @@ public class ClearingNalogClient {
 			DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 
 			System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-			DocumentTransform.printDocument(DocumentTransform.convertToDocument(response));
+			//DocumentTransform.printDocument(DocumentTransform.convertToDocument(response));
 			System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 
 		    }

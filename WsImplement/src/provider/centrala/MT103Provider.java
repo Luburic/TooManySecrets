@@ -47,14 +47,14 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
     		
     		System.out.println("\nInvoking MT103Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
-			Document document =DocumentTransform.convertToDocument(request);
-			DocumentTransform.printDocument(document);
+			//Document document =DocumentTransform.convertToDocument(request);
+			//DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
 			
 			
-			Document decryptedDocument =MessageTransform.unpack(document, "MT103", "MT103", TARGET_NAMESPACE, null);
+			//Document decryptedDocument =MessageTransform.unpack(document, "MT103", "MT103", TARGET_NAMESPACE, null);
 
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt103");
@@ -62,11 +62,11 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		
 			
 			MT103 mt103=null;
-			try {
+			/*try {
 				mt103 = (MT103) unmarshaller.unmarshal(decryptedDocument);
 			} catch (Exception e) {
 				return new DOMSource(decryptedDocument);
-			}
+			}*/
 			
 			if(!validateContent(mt103))
 				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));

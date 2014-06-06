@@ -15,11 +15,13 @@ import javax.xml.ws.Service;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
 
+import org.apache.cxf.binding.soap.SoapFault;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
 import util.DocumentTransform;
 import util.MessageTransform;
+import util.Validation;
 import beans.faktura.Faktura;
 
 
@@ -51,7 +53,8 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			//serijalizacija DOM-a na ekran
     		System.out.println("\nInvoking FakturaProvider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
-			Document document =DocumentTransform.convertToDocument(request);
+			
+			Document document = DocumentTransform.convertToDocument(request);
 			DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");

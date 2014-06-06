@@ -7,8 +7,8 @@
 
 		<xs:complexType>
 			<xs:sequence>
+			<xs:element name="faultstring" type="xs:string" />
 				<xs:element name="faultcode" type="xs:QName" />
-				<xs:element name="faultstring" type="xs:string" />
 				<xs:element name="faultactor" type="xs:anyURI" minOccurs="0" />
 			</xs:sequence>
 		</xs:complexType>

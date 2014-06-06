@@ -38,6 +38,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
@@ -59,6 +60,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import util.Validation;
+
 //Potpisuje dokument, koristi se enveloped tip
 public class SecurityClass {
 
@@ -73,9 +76,14 @@ public class SecurityClass {
 		org.apache.xml.security.Init.init();
 	}
 
-	public Document addTimestampAndSign(String alias, String password, String keystoreFile, String keystorePassword, String inputFile, String outputFile, int lastNo, String schemaLocation, String element) {
+	public Document addTimestampAndSign(String alias, String password, String keystoreFile, String keystorePassword, String inputFile, String outputFile, int lastNo, String schemaLocation, String element){
 		//ucitava se dokument
-		Document doc = loadDocument(inputFile);
+		Document doc;
+		try {
+			doc = loadDocument(inputFile);
+		} catch (Exception e1) {
+			throw Validation.generateSOAPFault("Bad created request.", SoapFault.FAULT_CODE_CLIENT,null);
+		}
 		//Validation.transform(doc);
 		//System.out.println("**************************************************************");
 		//mora jer se tripuje
@@ -122,15 +130,15 @@ public class SecurityClass {
 	/**
 	 * Kreira DOM od XML dokumenta
 	 */
-	public Document loadDocument(String file) {
-		try {
+	public Document loadDocument(String file) throws Exception{
+		//try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setNamespaceAware(true);
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document document = db.parse(new File(file));
 
 			return document;
-		} catch (FactoryConfigurationError e) {
+		/*} catch (FactoryConfigurationError e) {
 			e.printStackTrace();
 			return null;
 		} catch (ParserConfigurationException e) {
@@ -142,7 +150,7 @@ public class SecurityClass {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		}
+		}*/
 	}
 
 	/**

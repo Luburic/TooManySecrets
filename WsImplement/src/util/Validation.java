@@ -8,9 +8,13 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPFactory;
+import javax.xml.soap.SOAPFault;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -22,6 +26,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -192,6 +197,47 @@ public class Validation {
 		}
 
 	}
+	
+	
+	
+	 public static SOAPFaultException generateSOAPFault(String faultString, QName faultCodeQName, String faultActor) {
+	       
+		 try {
+	            SOAPFactory f = SOAPFactory.newInstance(); 
+	            SOAPFault soapFault = f.createFault();
+
+	            soapFault.setFaultCode(faultCodeQName);
+	            soapFault.setFaultString(faultString);
+
+	           /* if (detailNode != null) {
+	                Detail detail = soapFault.addDetail(); 
+	                detail.appendChild(detailNode);
+	            }*/
+
+	            if (faultActor != null) {
+	                soapFault.setFaultActor(faultActor);
+	            }
+
+	            return new SOAPFaultException(soapFault); 
+	        } catch (SOAPException e) {
+	            e.printStackTrace();
+	        } 
+	        return null;
+	    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	static class MyErrorHandler implements ErrorHandler {

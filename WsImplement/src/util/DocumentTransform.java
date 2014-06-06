@@ -2,6 +2,7 @@ package util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,6 +18,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 public class DocumentTransform {
 	
@@ -39,20 +41,39 @@ public class DocumentTransform {
 		}
 	}
     
-	public static Document convertToDocument(DOMSource request) {
+	public static Document convertToDocument(DOMSource request){
 	    Document r = null;
-	    try{
-	    	DocumentBuilder db = getDocumentBuilder();
-	    	Transformer transformer = TransformerFactory.newInstance().newTransformer();
-	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        StreamResult result = new StreamResult(baos);
-	        transformer.transform(request, result);
-	        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-	        r = db.parse(bais);
-	    }catch(Exception e){
-	        e.printStackTrace();
-	    }
+	   
+	    	try {
+				DocumentBuilder db = getDocumentBuilder();
+				Transformer transformer = TransformerFactory.newInstance().newTransformer();
+				transformer.setOutputProperty(OutputKeys.INDENT, "no");
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				StreamResult result = new StreamResult(baos);
+				transformer.transform(request, result);
+				ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+				r = db.parse(bais);
+			} 
+	    	catch (TransformerConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TransformerFactoryConfigurationError e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	   
 	    return r;
 	}
 	

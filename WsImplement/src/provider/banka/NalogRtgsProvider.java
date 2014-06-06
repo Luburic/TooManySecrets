@@ -68,12 +68,12 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 			
 			System.out.println("\nInvoking RtgsProvider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
-			Document document =DocumentTransform.convertToDocument(request);
-			DocumentTransform.printDocument(document);
+			//Document document =DocumentTransform.convertToDocument(request);
+			//DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
-			Document decryptedDocument = MessageTransform.unpack(document, "Rtgs", "Nalog", TARGET_NAMESPACE, null);
+			//Document decryptedDocument = MessageTransform.unpack(document, "Rtgs", "Nalog", TARGET_NAMESPACE, null);
 			
 			
 			JAXBContext context = JAXBContext.newInstance("beans.nalog");
@@ -81,11 +81,11 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 			
 		
 			Nalog nalog=null;
-			try {
+			/*try {
 				nalog = (Nalog) unmarshaller.unmarshal(decryptedDocument);
 			} catch (Exception e1) {
 				return new DOMSource(decryptedDocument);
-			}
+			}*/
 			
 			if(!validateContent(nalog))
 				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nalog nije validan po sadrzaju.",TARGET_NAMESPACE));
@@ -150,19 +150,20 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 							
 							
 							//......................zaduzenje kao response....
-							Document rdocument =DocumentTransform.convertToDocument(response);
-							Document decryptedDocument2 = MessageTransform.unpack(rdocument, "Rtgs", "Zaduzenje", TARGET_NAMESPACE, null);
+							
+							//Document rdocument =DocumentTransform.convertToDocument(response);
+							//Document decryptedDocument2 = MessageTransform.unpack(rdocument, "Rtgs", "Zaduzenje", TARGET_NAMESPACE, null);
 							
 							JAXBContext context2 = JAXBContext.newInstance("beans.mt900");
 							Unmarshaller unmarshaller2 = context2.createUnmarshaller();
 							
 						
 							MT900 zaduzenje=null;
-							try {
+						/*	try {
 								zaduzenje = (MT900) unmarshaller2.unmarshal(decryptedDocument2);
 							} catch (Exception e) {
 								return new DOMSource(decryptedDocument);
-							}
+							}*/
 							
 							
 							if(!validateContentZaduzenje(zaduzenje))

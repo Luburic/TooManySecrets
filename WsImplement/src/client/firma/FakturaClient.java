@@ -11,10 +11,12 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 
+import org.apache.cxf.binding.soap.SoapFault;
 import org.w3c.dom.Document;
 
 import util.DocumentTransform;
 import util.MessageTransform;
+import util.Validation;
 
 public class FakturaClient {
 	
@@ -29,11 +31,17 @@ public class FakturaClient {
 	 public void testIt(String sender, String receiver, String cert, String inputFile) {
 		
 			try {
-				URL wsdlLocation = new URL("http://localhost:8080/"+receiver+"/services/Faktura?wsdl");
+				URL	wsdlLocation = new URL("http://localhost:8080/"+receiver+"/services/Faktura?wsdl");
 				QName serviceName = new QName("http://www.toomanysecrets.com/firmaServis", "FirmaServis");
 				QName portName = new QName("http://www.toomanysecrets.com/firmaServis", "FakturaPort");
 			
-				Service service = Service.create(wsdlLocation, serviceName);
+				Service service;
+				try {
+					service = Service.create(wsdlLocation, serviceName);
+				} catch (Exception e) {
+						throw Validation.generateSOAPFault("Server is not available.", SoapFault.FAULT_CODE_CLIENT, null);
+					
+				}
 				Dispatch<DOMSource> dispatch = service.createDispatch(portName, DOMSource.class, Service.Mode.PAYLOAD);
 			
 				InputStream inputStreamSender = this.getClass().getClassLoader().getResourceAsStream(sender+".properties");
