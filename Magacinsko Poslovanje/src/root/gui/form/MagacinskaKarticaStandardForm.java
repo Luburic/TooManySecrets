@@ -15,6 +15,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import root.dbConnection.DBConnection;
+import root.gui.action.IzvestajMagacinskaAction;
 import root.gui.action.NextFormButton;
 import root.gui.action.NivelacijaAction;
 import root.gui.action.PickupAction;
@@ -41,6 +42,7 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 	protected JTextField tfVrednostIzlaza = new JTextField(12);
 
 	protected JButton btnNivelacija = new JButton(new NivelacijaAction(this));
+	protected JButton btnIzvestaj = new JButton(new IzvestajMagacinskaAction(this));
 
 	public MagacinskaKarticaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
@@ -177,6 +179,8 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		dataPanel.add(tfVrednostIzlaza, "wrap");
 
 		toolBar.add(btnNivelacija);
+		toolBar.addSeparator();
+		toolBar.add(btnIzvestaj);
 		toolBar.addSeparator();
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new AnalitikaMagacinskeKarticeAction());

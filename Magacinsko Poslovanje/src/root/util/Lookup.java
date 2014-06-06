@@ -3,6 +3,7 @@ package root.util;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import root.dbConnection.DBConnection;
@@ -54,7 +55,8 @@ public class Lookup {
 
 	public static String getRedniBroj(String tableCode, String columnCode) throws SQLException {
 		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
-				"SELECT MAX(" + columnCode + ") FROM " + tableCode);
+				"SELECT MAX(" + columnCode + ") FROM " + tableCode + " WHERE id_poslovne_godine = "
+						+ Constants.idGodine);
 		ResultSet rset = stmt.executeQuery();
 		rset.next();
 		Integer retVal = rset.getInt(1);
@@ -81,5 +83,20 @@ public class Lookup {
 			return false;
 		}
 		return true;
+	}
+
+	public static ArrayList<String> getArtikalInfo(Object idArtikla) throws SQLException {
+		ArrayList<String> retVal = new ArrayList<String>();
+		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
+				"SELECT naziv_artikla, pakovanje, jedinica_mere FROM Artikal WHERE id_artikla = " + idArtikla);
+		ResultSet rset = stmt.executeQuery();
+		rset.next();
+		retVal.add(rset.getString(1));
+		retVal.add(rset.getString(2));
+		retVal.add(rset.getString(3));
+		rset.close();
+		stmt.close();
+
+		return retVal;
 	}
 }
