@@ -26,7 +26,6 @@ import root.gui.action.dialog.ClanKomisijeAction;
 import root.gui.action.dialog.DrzaveAction;
 import root.gui.action.dialog.GodinaAction;
 import root.gui.action.dialog.GrupaArtiklaAction;
-import root.gui.action.dialog.MagacinskaKarticaAction;
 import root.gui.action.dialog.NaseljenoMestoAction;
 import root.gui.action.dialog.OrganizacionaJedinicaAction;
 import root.gui.action.dialog.PopisniDokumentAction;
@@ -107,11 +106,10 @@ public class MainFrame extends JFrame {
 			orgSemaMenu.add(new JMenuItem(new OrganizacionaJedinicaAction()));
 			orgSemaMenu.add(new JMenuItem(new PoslovniPartnerAction()));
 
-			JMenu artikliMenu = new JMenu("Magacinske kartice i artikli");
+			JMenu artikliMenu = new JMenu("Artikli");
 			artikliMenu.setMnemonic(KeyEvent.VK_A);
 			artikliMenu.add(new JMenuItem(new GrupaArtiklaAction(false)));
 			artikliMenu.add(new JMenuItem(new ArtikalAction()));
-			artikliMenu.add(new JMenuItem(new MagacinskaKarticaAction()));
 			menuBar.add(artikliMenu);
 
 			JMenu prometMenu = new JMenu("Promet");
@@ -126,17 +124,17 @@ public class MainFrame extends JFrame {
 			popisMenu.add(new JMenuItem(new ClanKomisijeAction()));
 			menuBar.add(popisMenu);
 
-			JButton btnMagacinska = new JButton(new MagacinskaKarticaAction());
+			JButton btnOrgJedinice = new JButton(new OrganizacionaJedinicaAction());
 			JButton btnPrometni = new JButton(new PrometniDokumentAction());
 			JButton btnPopisni = new JButton(new PopisniDokumentAction());
 			JButton btnArtikli = new JButton(new ArtikalAction());
 
-			btnMagacinska.setPreferredSize(new Dimension(250, 250));
+			btnOrgJedinice.setPreferredSize(new Dimension(250, 250));
 			btnPrometni.setPreferredSize(new Dimension(250, 250));
 			btnPopisni.setPreferredSize(new Dimension(250, 250));
 			btnArtikli.setPreferredSize(new Dimension(250, 250));
 
-			this.add(btnMagacinska, "pad 50 50 -50 -50, dock center");
+			this.add(btnOrgJedinice, "pad 50 50 -50 -50, dock center");
 			this.add(btnPrometni, "wrap, pad 50 50 -50 -50, dock center");
 			this.add(btnPopisni, "pad 50 50 -50 -50, dock center");
 			this.add(btnArtikli, "pad 50 50 -50 -50, dock center");

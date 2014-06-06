@@ -259,7 +259,7 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 		String now = dateFormatter.format(Calendar.getInstance().getTime());
 		try {
-			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call Nivelacija(?, ?) }");
+			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call Nivelacija(?, ?, ?) }");
 			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
 			proc.setObject(2, now);
 			proc.setObject(3, Constants.godinaZakljucena ? 1 : 0);

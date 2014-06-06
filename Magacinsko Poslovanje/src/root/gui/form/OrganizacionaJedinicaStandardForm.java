@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -13,6 +15,11 @@ import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
+import root.dbConnection.DBConnection;
+import root.gui.action.IzvestajLagerListaAction;
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
 import root.gui.action.dialog.MagacinskaKarticaAction;
@@ -36,6 +43,8 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 	protected JCheckBox chkMagacin = new JCheckBox();
 	private final JLabel lblGreska1 = new JLabel();
 	private final JLabel lblGreska2 = new JLabel();
+
+	private JButton btnLagerLista = new JButton(new IzvestajLagerListaAction(this));
 
 	public OrganizacionaJedinicaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
@@ -137,6 +146,8 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		dataPanel.add(btnZoomPreduzece);
 		dataPanel.add(lblGreska2, "wrap, gapx 15px");
 
+		toolBar.add(btnLagerLista);
+		toolBar.addSeparator();
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new MagacinskaKarticaAction());
 		popup.add(new PopisniDokumentAction());
@@ -194,5 +205,21 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 	protected void clearFields(boolean needFocus) {
 		super.clearFields(needFocus);
 		cmbOrgJedinica.setSelectedIndex(0);
+	}
+
+	public void lagerLista() {
+		try {
+			Map<String, Object> params = new HashMap<String, Object>(4);
+			params.put("preduzece", Constants.nazivPreduzeca);
+			params.put("id_jedinice", tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
+			params.put("id_godine", Constants.idGodine);
+			params.put("naziv_jedinice", tableModel.getValueAt(tblGrid.getSelectedRow(), 3));
+			JasperPrint jp = JasperFillManager.fillReport(getClass().getResource("/root/izvestaj/LagerLista.jasper")
+					.openStream(), params, DBConnection.getConnection());
+			JasperViewer.viewReport(jp, false);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 }

@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -20,10 +22,14 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import root.dbConnection.DBConnection;
+import root.gui.action.IzvestajPopisAction;
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
 import root.gui.action.StornirajPopisniAction;
@@ -42,6 +48,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 
 	protected JButton btnZakljuci = new JButton(new ZakljuciPopisniAction(this));
 	protected JButton btnStorniraj = new JButton(new StornirajPopisniAction(this));
+	protected JButton btnIzvestaj = new JButton(new IzvestajPopisAction(this));
 
 	private JButton btnZoomPoslovnaGodina = new JButton("...");
 	private JButton btnZoomOrgJedinica = new JButton("...");
@@ -171,9 +178,11 @@ public class PopisniDokumentStandardForm extends GenericForm {
 						btnZakljuci.setEnabled(true);
 						btnDelete.setEnabled(true);
 						btnStorniraj.setEnabled(false);
+						btnIzvestaj.setEnabled(true);
 					} else {
 						btnZakljuci.setEnabled(false);
 						btnDelete.setEnabled(false);
+						btnIzvestaj.setEnabled(false);
 						if (s.trim().equals("proknjizen") && !Constants.godinaZakljucena) {
 							btnStorniraj.setEnabled(true);
 						} else {
@@ -214,6 +223,8 @@ public class PopisniDokumentStandardForm extends GenericForm {
 
 		toolBar.add(btnZakljuci);
 		toolBar.add(btnStorniraj);
+		toolBar.addSeparator();
+		toolBar.add(btnIzvestaj);
 		toolBar.addSeparator();
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new StavkaPopisaAction());
@@ -363,7 +374,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 		String now = dateFormatter.format(Calendar.getInstance().getTime());
 		try {
-			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call StornirajPopis(?, ?) }");
+			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call StornirajPopis(?, ?, ?) }");
 			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
 			proc.setObject(2, now);
 			proc.registerOutParameter(3, java.sql.Types.INTEGER);
@@ -377,6 +388,27 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			proc.close();
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public void izvestaj() {
+		if (!tableModel.getValueAt(tblGrid.getSelectedRow(), 6).toString().trim().equals("u fazi formiranja")) {
+			return;
+		}
+		try {
+			Map<String, Object> params = new HashMap<String, Object>(5);
+			params.put("preduzece", Constants.nazivPreduzeca);
+			params.put("naziv_jedinice", cmbOrgJedinica.getSelectedItem().toString());
+			params.put("id_popisa", tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
+			params.put("broj_popisa", tableModel.getValueAt(tblGrid.getSelectedRow(), 3));
+			params.put("datum_popisa", tableModel.getValueAt(tblGrid.getSelectedRow(), 4));
+			JasperPrint jp = JasperFillManager.fillReport(
+					getClass().getResource("/root/izvestaj/PopisniDokument.jasper").openStream(), params,
+					DBConnection.getConnection());
+			JasperViewer.viewReport(jp, false);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 }
