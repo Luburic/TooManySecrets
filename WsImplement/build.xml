@@ -29,7 +29,7 @@
 		</taskdef>
 	
 	<target name="generate_java" depends="init">
-			<xjc schema="${data.dir}/MT910Raw.xsd" destdir="${gen.dir}"/>
+			<xjc schema="${data.dir}/Fault.xsd" destdir="${gen.dir}"/>
 	</target>
 	
 	

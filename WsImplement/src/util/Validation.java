@@ -8,6 +8,9 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,6 +38,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import beans.fault.Fault;
 
 
 
@@ -206,6 +211,8 @@ public class Validation {
 	            SOAPFactory f = SOAPFactory.newInstance(); 
 	            SOAPFault soapFault = f.createFault();
 
+	            Fault fault = new Fault();
+	            
 	            soapFault.setFaultCode(faultCodeQName);
 	            soapFault.setFaultString(faultString);
 
@@ -216,24 +223,31 @@ public class Validation {
 
 	            if (faultActor != null) {
 	                soapFault.setFaultActor(faultActor);
+	                fault.setFaultactor(faultActor);
 	            }
+	            
+	          
+				fault.setFaultstring(faultString);
+				fault.setFaultcode(faultCodeQName);
+				
+				
+				
+				
+				JAXBContext context = JAXBContext.newInstance("beans.fault");
+				Marshaller marshaller= context.createMarshaller();
+				marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
+				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+				marshaller.marshal(fault,System.out);
 
 	            return new SOAPFaultException(soapFault); 
 	        } catch (SOAPException e) {
 	            e.printStackTrace();
-	        } 
+	        } catch (JAXBException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 	        return null;
 	    }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

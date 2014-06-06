@@ -50,7 +50,7 @@
         <wsdl:operation name="PrimiFakturu">
             <wsdl:input name="fakturaInput" message="ws:fakturaRequest"/>
             <wsdl:output name="strOutput" message="ws:notifikacija"/>
-            <wsdl:fault name="fault" message="ws:faultMessage"></wsdl:fault>
+            <!-- wsdl:fault name="fault" message="ws:faultMessage"></wsdl:fault -->
         </wsdl:operation>
         
         
@@ -73,9 +73,9 @@
            	</wsdl:output>
            	
            	
-           	<wsdl:fault name="fault">
+           <!-- 	<wsdl:fault name="fault">
            		<soap:fault name="fault" use="literal"/>
-           	</wsdl:fault>
+           	</wsdl:fault> -->
            	
            	
         </wsdl:operation>
