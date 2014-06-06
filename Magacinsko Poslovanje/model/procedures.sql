@@ -37,6 +37,7 @@ GO
 CREATE PROCEDURE StornirajPopis
 (
 	@Id int,
+	@Datum char(10),
 	@RetVal int OUTPUT
 )
 AS
@@ -79,7 +80,7 @@ BEGIN TRANSACTION
 			SELECT @id_magacinske = id_magacinske_kartice FROM Magacinska_kartica WHERE id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine AND id_artikla = @id_artikla
 			SET @vrednost = (@kolicina_po_knjigama - @popisana_kolicina)*@cena
 			SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
-			INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, @id_prometa, null, @redni_broj+1, 'U', @kolicina_po_knjigama - @popisana_kolicina, @cena, @vrednost, 1)
+			INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, @id_prometa, null, @redni_broj+1, @datum, 'U', @kolicina_po_knjigama - @popisana_kolicina, @cena, @vrednost, 1)
 			UPDATE Magacinska_kartica SET kolicina_ulaza = (kolicina_ulaza + @kolicina_po_knjigama - @popisana_kolicina), vrednost_ulaza = (vrednost_ulaza + @vrednost), prosecna_cena = ((vrednost_pocetnog_stanja + vrednost_ulaza - vrednost_izlaza + @vrednost) / (kolicina_pocetnog_stanja + kolicina_ulaza - kolicina_izlaza + @kolicina_po_knjigama - @popisana_kolicina)) WHERE id_magacinske_kartice = @id_magacinske
 			FETCH NEXT FROM cursor_proknjizi_popis INTO @id_artikla, @popisana_kolicina, @kolicina_po_knjigama, @cena
 		END
@@ -153,7 +154,7 @@ BEGIN TRANSACTION
 			SELECT @id_magacinske = id_magacinske_kartice FROM Magacinska_kartica WHERE id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine AND id_artikla = @id_artikla
 			SET @vrednost = (@popisana_kolicina - @kolicina_po_knjigama)*@cena
 			SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
-			INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, @id_prometa, null, @redni_broj+1, 'U', @popisana_kolicina - @kolicina_po_knjigama, @cena, @vrednost, 1)
+			INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, @id_prometa, null, @redni_broj+1, @Datum, 'U', @popisana_kolicina - @kolicina_po_knjigama, @cena, @vrednost, 1)
 			UPDATE Magacinska_kartica SET kolicina_ulaza = (kolicina_ulaza + @popisana_kolicina - @kolicina_po_knjigama), vrednost_ulaza = (vrednost_ulaza + @vrednost), prosecna_cena = ((vrednost_pocetnog_stanja + vrednost_ulaza - vrednost_izlaza + @vrednost) / (kolicina_pocetnog_stanja + kolicina_ulaza - kolicina_izlaza + @popisana_kolicina - @kolicina_po_knjigama)) WHERE id_magacinske_kartice = @id_magacinske
 			FETCH NEXT FROM cursor_proknjizi_popis INTO @id_artikla, @popisana_kolicina, @kolicina_po_knjigama, @cena
 		END
@@ -290,14 +291,14 @@ BEGIN TRANSACTION
 				FROM Magacinska_kartica JOIN Analitika_magacinske_kartice ON Magacinska_kartica.id_magacinske_kartice = Analitika_magacinske_kartice.id_magacinske_kartice WHERE id_artikla = @id_artikla AND id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine
 			DECLARE @redni_broj int
 			SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
-			INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, @Id_prometa, @id_stavke_prometa, @redni_broj+1, @smer, @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
+			INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, @Id_prometa, @id_stavke_prometa, @redni_broj+1, @Datum, @smer, @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
 			IF(@smer = 'U')
 			BEGIN
 				UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza + @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza + @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza + @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza + @kolicina_prometa)) WHERE id_magacinske_kartice = @id_magacinske
 			END
 			ELSE
 			BEGIN
-				UPDATE Magacinska_kartica SET kolicina_izlaza = (@kolicina_izlaza + @kolicina_prometa), vrednost_izlaza = (@vrednost_izlaza + @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza - @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza - @kolicina_prometa)) WHERE id_magacinske_kartice = @id_magacinske
+				UPDATE Magacinska_kartica SET kolicina_izlaza = (@kolicina_izlaza + @kolicina_prometa), vrednost_izlaza = (@vrednost_izlaza + @vrednost_prometa) WHERE id_magacinske_kartice = @id_magacinske
 			END
 		END
 		ELSE
@@ -309,7 +310,7 @@ BEGIN TRANSACTION
 			ELSE
 			BEGIN
 				INSERT INTO Magacinska_kartica VALUES (@Id_godine, @id_artikla, @Id_magacina, @cena_prometa, 0, @novi_ulaz, @novi_izlaz, 0, @nova_vrednost_ulaza, @nova_vrednost_izlaza, 1)
-				INSERT INTO Analitika_magacinske_kartice VALUES (SCOPE_IDENTITY(), @Id_prometa, @id_stavke_prometa, 1, @smer, @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
+				INSERT INTO Analitika_magacinske_kartice VALUES (SCOPE_IDENTITY(), @Id_prometa, @id_stavke_prometa, 1, @Datum, @smer, @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
 			END
 		END
 		--Ukoliko imamo medjumagacinski promet, kreiramo stavku i u drugom magacinu
@@ -321,7 +322,7 @@ BEGIN TRANSACTION
 				@vrednost_izlaza = vrednost_izlaza, @kolicina_izlaza = kolicina_izlaza, @vrednost_pocetna = vrednost_pocetnog_stanja, @kolicina_pocetna = kolicina_pocetnog_stanja 
 				FROM Magacinska_kartica JOIN Analitika_magacinske_kartice ON Magacinska_kartica.id_magacinske_kartice = Analitika_magacinske_kartice.id_magacinske_kartice WHERE id_artikla = @id_artikla AND id_jedinice = @Id_drugog_magacina AND id_poslovne_godine = @Id_godine
 				SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
-				INSERT INTO Analitika_magacinske_kartice VALUES (@Id_drugog_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj+1, 'U', -@kolicina_prometa, @cena_prometa, -@vrednost_prometa, 1)
+				INSERT INTO Analitika_magacinske_kartice VALUES (@Id_drugog_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj+1, @Datum, 'U', -@kolicina_prometa, @cena_prometa, -@vrednost_prometa, 1)
 				UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza - @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza - @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza - @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza - @kolicina_prometa))
 			END
 			ELSE
@@ -354,6 +355,7 @@ CREATE PROCEDURE StornirajPromet
 	@Id_drugog_magacina int,
 	@Id_prometa int,
 	@Sifra_vrste char(2),
+	@Datum char(10),
 	@RetVal int OUTPUT
 )
 AS
@@ -408,7 +410,7 @@ BEGIN TRANSACTION
 			FROM Magacinska_kartica JOIN Analitika_magacinske_kartice ON Magacinska_kartica.id_magacinske_kartice = Analitika_magacinske_kartice.id_magacinske_kartice WHERE id_artikla = @id_artikla AND id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine
 		DECLARE @redni_broj int
 		SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
-		INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, @Id_prometa, @id_stavke_prometa, @redni_broj+1, @smer, -@kolicina_prometa, @cena_prometa, -@vrednost_prometa, 1)
+		INSERT INTO Analitika_magacinske_kartice VALUES (@id_magacinske, @Id_prometa, @id_stavke_prometa, @redni_broj+1, @Datum, @smer, -@kolicina_prometa, @cena_prometa, -@vrednost_prometa, 1)
 		IF(@smer = 'U')
 		BEGIN
 			UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza - @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza - @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza - @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza - @kolicina_prometa)) WHERE id_magacinske_kartice = @id_magacinske
@@ -425,7 +427,7 @@ BEGIN TRANSACTION
 			@vrednost_izlaza = vrednost_izlaza, @kolicina_izlaza = kolicina_izlaza, @vrednost_pocetna = vrednost_pocetnog_stanja, @kolicina_pocetna = kolicina_pocetnog_stanja 
 			FROM Magacinska_kartica JOIN Analitika_magacinske_kartice ON Magacinska_kartica.id_magacinske_kartice = Analitika_magacinske_kartice.id_magacinske_kartice WHERE id_artikla = @id_artikla AND id_jedinice = @Id_drugog_magacina AND id_poslovne_godine = @Id_godine
 			SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_magacinske
-			INSERT INTO Analitika_magacinske_kartice VALUES (@Id_drugog_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj+1, 'U', @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
+			INSERT INTO Analitika_magacinske_kartice VALUES (@Id_drugog_magacina, @Id_prometa, @id_stavke_prometa, @redni_broj+1, @Datum, 'U', @kolicina_prometa, @cena_prometa, @vrednost_prometa, 1)
 			UPDATE Magacinska_kartica SET kolicina_ulaza = (@kolicina_ulaza + @kolicina_prometa), vrednost_ulaza = (@vrednost_ulaza + @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza + @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza + @kolicina_prometa))
 		END
 		IF (@RetVal <> 0)
@@ -448,6 +450,7 @@ GO
 CREATE PROCEDURE Nivelacija
 (
 	@id_kartice int,
+	@Datum char(10),
 	@godinaZakljucena int
 )
 AS
@@ -466,6 +469,6 @@ BEGIN TRANSACTION
 	SELECT @ukupna_kolicina = (kolicina_pocetnog_stanja + kolicina_ulaza - kolicina_izlaza), @ukupna_vrednost = (vrednost_pocetnog_stanja + vrednost_ulaza - vrednost_izlaza), @prosecna_cena = prosecna_cena FROM Magacinska_kartica WHERE id_magacinske_kartice = @id_kartice
 	SELECT @id_prometa = id_prometa FROM Vrsta_prometa WHERE sifra_prometa = 'NI'
 	SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_kartice
-	INSERT INTO Analitika_magacinske_kartice VALUES (@id_kartice, @id_prometa, null, @redni_broj+1, 'U', 0, @prosecna_cena, (@ukupna_kolicina * @prosecna_cena - @ukupna_vrednost), 1)
+	INSERT INTO Analitika_magacinske_kartice VALUES (@id_kartice, @id_prometa, null, @redni_broj+1, @Datum, 'U', 0, @prosecna_cena, (@ukupna_kolicina * @prosecna_cena - @ukupna_vrednost), 1)
 COMMIT TRANSACTION
 GO

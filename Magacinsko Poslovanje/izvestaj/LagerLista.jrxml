@@ -50,7 +50,7 @@ ORDER BY
 			<staticText>
 				<reportElement x="0" y="30" width="555" height="44" uuid="72ca617f-bcab-47c4-8c89-5586fe5212d3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="20" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
+					<font size="18" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[LAGER LISTA]]></text>
 			</staticText>
@@ -169,7 +169,7 @@ ORDER BY
 				<text><![CDATA[UKUPNA VREDNOST ZALIHA:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="443" y="0" width="112" height="20" uuid="91fb77b5-cfd2-434d-9d36-cad0b2694876"/>
+				<reportElement x="348" y="0" width="207" height="20" uuid="91fb77b5-cfd2-434d-9d36-cad0b2694876"/>
 				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
 				<textFieldExpression><![CDATA[$V{ukupnaVrednost}]]></textFieldExpression>
 			</textField>

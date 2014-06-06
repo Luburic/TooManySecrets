@@ -97,7 +97,7 @@ public class AnalitikaMagacinskeKarticeStandardForm extends GenericForm {
 	@Override
 	public void setupTable(String customQuery) {
 		tableModel = TableModelCreator.createTableModel("Analitika magacinske kartice", joinColumn);
-		tableModel.setColumnForSorting(2);
+		tableModel.setColumnForSorting(5);
 		super.setupTable(customQuery);
 		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(6));
 		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(0));
