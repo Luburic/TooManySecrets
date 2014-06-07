@@ -99,4 +99,16 @@ public class Lookup {
 
 		return retVal;
 	}
+
+	public static int getBrojOtvorenihGodina() throws SQLException {
+		PreparedStatement stmt = DBConnection.getConnection().prepareStatement(
+				"SELECT COUNT(*) FROM Poslovna_godina WHERE zakljucena = '0' AND id_preduzeca = "
+						+ Constants.idPreduzeca);
+		ResultSet rset = stmt.executeQuery();
+		rset.next();
+		int i = rset.getInt(1);
+		rset.close();
+		stmt.close();
+		return i;
+	}
 }

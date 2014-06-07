@@ -120,7 +120,7 @@ public class GenericTableModel extends DefaultTableModel implements ITableModel 
 			while (outsideIterator.hasNext()) {
 				MetaSurogateDisplay msd = outsideIterator.next();
 				if (!msd.getTableCode().equals(tableCode)) {
-					sb.append(" JOIN ");
+					sb.append(" LEFT JOIN ");
 					sb.append(msd.getTableCode());
 					String foreignKey = msd.getIdColumnName();
 					sb.append(" ON " + tableCode + "1." + foreignKey + " = " + msd.getTableCode() + "." + foreignKey);

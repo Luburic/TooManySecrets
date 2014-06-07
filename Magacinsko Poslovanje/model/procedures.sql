@@ -34,6 +34,12 @@ IF EXISTS (SELECT 1
    DROP PROCEDURE Nivelacija
 GO
 
+IF EXISTS (SELECT 1
+   FROM   sysobjects
+   WHERE  name = 'OtvaranjePocetnog' AND type = 'P')
+   DROP PROCEDURE OtvaranjePocetnog
+GO
+
 CREATE PROCEDURE StornirajPopis
 (
 	@Id int,
@@ -168,43 +174,54 @@ GO
 
 CREATE PROCEDURE ZakljuciGodinu
 (
-	@Id int,
-	@Id_preduzeca int,
-	@RetVal int OUTPUT
+	@Id_zakljucivane_godine int,
+	@Id_preduzeca int
 )
 AS
-DECLARE @count int
-SELECT @count = 0
-SELECT @count = COUNT(*) FROM Poslovna_godina WHERE id_poslovne_godine = @Id AND zakljucena = 0
-
-IF(@count = 0)
+IF NOT EXISTS (SELECT 1 FROM Poslovna_godina WHERE id_poslovne_godine = @Id_zakljucivane_godine AND zakljucena = 0)
 BEGIN
-	SET @RetVal = 1
 	RAISERROR('Data godina ne postoji ili je već zaključena.',11,2)
 	RETURN
 END
 
-SELECT @count = COUNT(*) FROM Poslovna_godina WHERE zakljucena = 0 AND id_poslovne_godine <> @Id AND id_preduzeca = @Id_preduzeca
-IF(@count = 0)
+IF NOT EXISTS(SELECT 1 FROM Poslovna_godina WHERE zakljucena = 0 AND id_poslovne_godine <> @Id_zakljucivane_godine AND id_preduzeca = @Id_preduzeca)
 BEGIN
 	RAISERROR('Mora se otvoriti nova poslovna godina pre nego što se stara može zaključiti.',11,2)
-	SET @RetVal = 2
 	RETURN
 END
 
-SELECT @count = COUNT(*) FROM Poslovna_godina god JOIN Popisni_dokument pop ON god.id_poslovne_godine = pop.id_poslovne_godine
-JOIN Prometni_dokument pro ON god.id_poslovne_godine = pro.id_poslovne_godine WHERE god.id_poslovne_godine = @Id AND (pop.status_popisnog = 'u fazi formiranja' OR pro.status_prometnog = 'u fazi formiranja')
-IF(@count <> 0)
+IF EXISTS(SELECT 1 FROM Poslovna_godina god JOIN Popisni_dokument pop ON god.id_poslovne_godine = pop.id_poslovne_godine
+JOIN Prometni_dokument pro ON god.id_poslovne_godine = pro.id_poslovne_godine WHERE god.id_poslovne_godine = @Id_zakljucivane_godine AND (pop.status_popisnog = 'u fazi formiranja' OR pro.status_prometnog = 'u fazi formiranja'))
 BEGIN
 	RAISERROR('U godini koja se zaključuje ne sme biti dokumenata u fazi formiranja.',11,2)
-	SET @RetVal = 3
+	RETURN
 END
 
+DECLARE
+	@id_nove_godine int,
+	@id_iteriranog_magacina int
 
+SELECT @id_nove_godine = id_poslovne_godine FROM Poslovna_godina WHERE zakljucena = 0 AND id_poslovne_godine <> @Id_zakljucivane_godine AND id_preduzeca = @Id_preduzeca
+DECLARE cursor_zakljucenje CURSOR FOR SELECT id_jedinice FROM Organizaciona_jedinica WHERE id_preduzeca = @Id_preduzeca
+OPEN cursor_zakljucenje
+FETCH NEXT FROM cursor_zakljucenje INTO @id_iteriranog_magacina
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	IF EXISTS (SELECT 1 FROM Magacinska_kartica WHERE id_jedinice = @id_iteriranog_magacina AND id_poslovne_godine = @Id_zakljucivane_godine)
+	BEGIN
+		IF NOT EXISTS (SELECT 1 FROM Magacinska_kartica WHERE id_jedinice = @id_iteriranog_magacina AND id_poslovne_godine = @id_nove_godine)
+		BEGIN
+			RAISERROR('Nisu kreirana nova stanja za sve magacine.',11,2)
+			RETURN
+		END
+	END
+	FETCH NEXT FROM cursor_zakljucenje INTO @id_iteriranog_magacina	
+END
+CLOSE cursor_zakljucenje
+DEALLOCATE cursor_zakljucenje
 
 BEGIN TRANSACTION
-	SET @RetVal = 0
-	UPDATE Poslovna_godina SET zakljucena = '1' WHERE id_poslovne_godine = @Id
+	UPDATE Poslovna_godina SET zakljucena = '1' WHERE id_poslovne_godine = @Id_zakljucivane_godine
 COMMIT TRANSACTION
 GO
 
@@ -417,7 +434,7 @@ BEGIN TRANSACTION
 		END
 		ELSE
 		BEGIN
-			UPDATE Magacinska_kartica SET kolicina_izlaza = (@kolicina_izlaza - @kolicina_prometa), vrednost_izlaza = (@vrednost_izlaza - @vrednost_prometa), prosecna_cena = ((@vrednost_pocetna + @vrednost_ulaza - @vrednost_izlaza + @vrednost_prometa) / (@kolicina_pocetna + @kolicina_ulaza - @kolicina_izlaza + @kolicina_prometa)) WHERE id_magacinske_kartice = @id_magacinske
+			UPDATE Magacinska_kartica SET kolicina_izlaza = (@kolicina_izlaza - @kolicina_prometa), vrednost_izlaza = (@vrednost_izlaza - @vrednost_prometa) WHERE id_magacinske_kartice = @id_magacinske
 		END
 
 		--Ukoliko imamo medjumagacinski promet, kreiramo stavku i u drugom magacinu
@@ -470,5 +487,53 @@ BEGIN TRANSACTION
 	SELECT @id_prometa = id_prometa FROM Vrsta_prometa WHERE sifra_prometa = 'NI'
 	SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_kartice
 	INSERT INTO Analitika_magacinske_kartice VALUES (@id_kartice, @id_prometa, null, @redni_broj+1, @Datum, 'U', 0, @prosecna_cena, (@ukupna_kolicina * @prosecna_cena - @ukupna_vrednost), 1)
+	UPDATE Magacinska_kartica SET vrednost_ulaza = (vrednost_ulaza + (@ukupna_kolicina * @prosecna_cena - @ukupna_vrednost)) WHERE id_magacinske_kartice = @id_kartice
+COMMIT TRANSACTION
+GO
+
+CREATE PROCEDURE OtvaranjePocetnog
+(
+	@Id_magacina int,
+	@Id_godine int,
+	@Id_preduzeca int,
+	@Datum char(10)
+)
+AS
+DECLARE
+	@id_nove_godine int
+IF NOT EXISTS (SELECT 1 FROM Poslovna_godina WHERE zakljucena = '0' AND id_poslovne_godine != @Id_godine AND id_preduzeca = @Id_preduzeca)
+BEGIN
+	RAISERROR('Mora postojati druga nezaključena poslovna godina kako bi se otvorilo novo stanje magacina.',11,2)
+	RETURN
+END
+SELECT @id_nove_godine = id_poslovne_godine FROM Poslovna_godina WHERE zakljucena = '0' AND id_poslovne_godine != @Id_godine AND id_preduzeca = @Id_preduzeca
+IF EXISTS (SELECT 1 FROM Magacinska_kartica WHERE id_jedinice = @Id_magacina AND id_poslovne_godine = @id_nove_godine)
+BEGIN
+	RAISERROR('Početno stanje za dati magacin je već otvoreno.',11,2)
+	RETURN
+END
+
+BEGIN TRANSACTION
+	DECLARE
+		@id_artikla int,
+		@kolicina_pocetnog numeric(12),
+		@kolicina_ulaza numeric(12),
+		@kolicina_izlaza numeric(12),
+		@prosecna_cena decimal(15,2),
+		@pocetna_kolicina numeric(12),
+		@id_prometa int
+	SELECT @id_prometa = id_prometa FROM Vrsta_prometa WHERE sifra_prometa = 'PO'
+	DECLARE cursor_novo_stanje CURSOR FOR SELECT id_artikla, kolicina_pocetnog_stanja, kolicina_ulaza, kolicina_izlaza, prosecna_cena FROM Magacinska_kartica WHERE id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine AND ((kolicina_pocetnog_stanja+kolicina_ulaza-kolicina_izlaza)*prosecna_cena) > 0
+	OPEN cursor_novo_stanje
+	FETCH NEXT FROM cursor_novo_stanje INTO @id_artikla, @kolicina_pocetnog, @kolicina_ulaza, @kolicina_izlaza, @prosecna_cena
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		SET @pocetna_kolicina = @kolicina_pocetnog + @kolicina_ulaza - @kolicina_izlaza
+		INSERT INTO Magacinska_kartica VALUES (@id_nove_godine, @id_artikla, @Id_magacina, @prosecna_cena, @pocetna_kolicina, 0, 0, @pocetna_kolicina*@prosecna_cena, 0, 0, 1)
+		INSERT INTO Analitika_magacinske_kartice VALUES (SCOPE_IDENTITY(), @id_prometa, null, 1, @Datum, 'U', @pocetna_kolicina, @prosecna_cena, @pocetna_kolicina*@prosecna_cena, 1)
+		FETCH NEXT FROM cursor_novo_stanje INTO @id_artikla, @kolicina_pocetnog, @kolicina_ulaza, @kolicina_izlaza, @prosecna_cena	
+	END
+	CLOSE cursor_novo_stanje
+	DEALLOCATE cursor_novo_stanje
 COMMIT TRANSACTION
 GO

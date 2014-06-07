@@ -121,6 +121,7 @@ public class AnalitikaMagacinskeKarticeStandardForm extends GenericForm {
 		tableModel.setColumnForSorting(5);
 		super.setupTable(customQuery);
 		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(6));
+		tblGrid.removeColumn(tblGrid.getColumnModel().getColumn(7));
 	}
 
 	@Override

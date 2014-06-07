@@ -5,6 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,8 +16,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -21,6 +28,7 @@ import net.sf.jasperreports.view.JasperViewer;
 import root.dbConnection.DBConnection;
 import root.gui.action.IzvestajLagerListaAction;
 import root.gui.action.NextFormButton;
+import root.gui.action.NovoStanjeAction;
 import root.gui.action.PickupAction;
 import root.gui.action.dialog.MagacinskaKarticaAction;
 import root.gui.action.dialog.OrganizacionaJedinicaAction;
@@ -45,6 +53,7 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 	private final JLabel lblGreska2 = new JLabel();
 
 	private JButton btnLagerLista = new JButton(new IzvestajLagerListaAction(this));
+	private JButton btnNovoStanje = new JButton(new NovoStanjeAction(this));
 
 	public OrganizacionaJedinicaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
@@ -130,6 +139,23 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 			}
 		});
 
+		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				int i = tblGrid.getSelectedRow();
+				if (i != -1) {
+					String s = (String) tableModel.getValueAt(i, 4);
+					if (s.trim().equals("Da")) {
+						btnLagerLista.setEnabled(true);
+						btnNovoStanje.setEnabled(true);
+					} else {
+						btnLagerLista.setEnabled(false);
+						btnNovoStanje.setEnabled(false);
+					}
+				}
+			}
+		});
+
 		dataPanel.add(lblNaziv);
 		dataPanel.add(tfNaziv, "span 2");
 		dataPanel.add(lblGreska1, "wrap, gapx 15px");
@@ -146,6 +172,8 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		dataPanel.add(btnZoomPreduzece);
 		dataPanel.add(lblGreska2, "wrap, gapx 15px");
 
+		toolBar.add(btnNovoStanje);
+		toolBar.addSeparator();
 		toolBar.add(btnLagerLista);
 		toolBar.addSeparator();
 		JPopupMenu popup = new JPopupMenu();
@@ -220,6 +248,24 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
+		}
+	}
+
+	public void otvoriNovoStanje() {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		String now = dateFormatter.format(Calendar.getInstance().getTime());
+
+		try {
+			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call OtvaranjePocetnog(?, ?, ?, ?) }");
+			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
+			proc.setObject(2, Constants.idGodine);
+			proc.setObject(3, Constants.idPreduzeca);
+			proc.setObject(4, now);
+			proc.executeUpdate();
+			DBConnection.getConnection().commit();
+			proc.close();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

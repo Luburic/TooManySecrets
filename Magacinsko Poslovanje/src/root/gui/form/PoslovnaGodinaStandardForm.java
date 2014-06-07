@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.Calendar;
 
@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -23,6 +24,7 @@ import root.gui.action.ZakljuciGodinuAction;
 import root.gui.tablemodel.TableModelCreator;
 import root.util.ComboBoxPair;
 import root.util.Constants;
+import root.util.Lookup;
 import root.util.verification.JTextFieldLimit;
 import root.util.verification.VerificationMethods;
 
@@ -163,6 +165,17 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 
 	@Override
 	public boolean verification() {
+		try {
+			int i = Lookup.getBrojOtvorenihGodina();
+			if (i > 1) {
+				JOptionPane.showMessageDialog(this, "Nije dozvoljeno imati više od dve otvorene poslovne godine.",
+						"Greška", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
 		if (tfGodina.getText().equals("")) {
 			lblGreska1.setText(Constants.VALIDATION_MANDATORY_FIELD);
 			tfGodina.requestFocus();
@@ -195,18 +208,15 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 
 	public void zakljuciGodinu() {
 		try {
-			PreparedStatement stmt = DBConnection.getConnection().prepareStatement("EXEC ZakljuciGodinu @Id = ?");
-			stmt.setInt(1, (int) tblGrid.getModel().getValueAt(tblGrid.getSelectedRow(), 0));
-			stmt.execute();
-			int i = tblGrid.getSelectedRow();
-			tableModel.setValueAt("Da", i, 3);
-			tableModel.fireTableDataChanged();
-			tblGrid.getSelectionModel().setSelectionInterval(i, i);
-			sync();
-			stmt.close();
+			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call ZakljuciGodinu(?, ?) }");
+			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
+			proc.setObject(2, tableModel.getValueAt(tblGrid.getSelectedRow(), 1));
+			proc.executeUpdate();
 			DBConnection.getConnection().commit();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
+			proc.close();
+			tableModel.setValueAt("Da", tblGrid.getSelectedRow(), 3);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
