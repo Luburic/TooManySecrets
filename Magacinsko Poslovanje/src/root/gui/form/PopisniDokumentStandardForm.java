@@ -312,8 +312,8 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			proc.executeUpdate();
 			Integer retVal = proc.getInt(5);
 			System.out.println(retVal);
-			tableModel.setValueAt("proknjizen", tblGrid.getSelectedRow(), 9);
-			tableModel.setValueAt(now, tblGrid.getSelectedRow(), 8);
+			tableModel.setValueAt("proknjizen", tblGrid.getSelectedRow(), 6);
+			tableModel.setValueAt(now, tblGrid.getSelectedRow(), 5);
 			tfDatumKnjizenja.setText(now);
 			tfStatusPopisnog.setText("proknjizen");
 			DBConnection.getConnection().commit();
@@ -382,7 +382,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			proc.executeUpdate();
 			Integer retVal = proc.getInt(3);
 			System.out.println(retVal);
-			tableModel.setValueAt("storniran", tblGrid.getSelectedRow(), 9);
+			tableModel.setValueAt("storniran", tblGrid.getSelectedRow(), 6);
 			tfStatusPopisnog.setText("storniran");
 			DBConnection.getConnection().commit();
 			proc.close();
@@ -392,7 +392,8 @@ public class PopisniDokumentStandardForm extends GenericForm {
 	}
 
 	public void izvestaj() {
-		if (!tableModel.getValueAt(tblGrid.getSelectedRow(), 6).toString().trim().equals("u fazi formiranja")) {
+		if (!tableModel.getValueAt(tblGrid.getSelectedRow(), 6).toString().trim().equals("u fazi formiranja")
+				&& this.getMode() != Constants.MODE_EDIT) {
 			return;
 		}
 		try {
@@ -400,7 +401,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			params.put("preduzece", Constants.nazivPreduzeca);
 			params.put("naziv_jedinice", cmbOrgJedinica.getSelectedItem().toString());
 			params.put("id_popisa", tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
-			params.put("broj_popisa", tableModel.getValueAt(tblGrid.getSelectedRow(), 3));
+			params.put("broj_popisa", (Integer) tableModel.getValueAt(tblGrid.getSelectedRow(), 3));
 			params.put("datum_popisa", tableModel.getValueAt(tblGrid.getSelectedRow(), 4));
 			JasperPrint jp = JasperFillManager.fillReport(
 					getClass().getResource("/root/izvestaj/PopisniDokument.jasper").openStream(), params,

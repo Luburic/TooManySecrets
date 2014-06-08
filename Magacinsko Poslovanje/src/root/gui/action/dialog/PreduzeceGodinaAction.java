@@ -20,6 +20,6 @@ public class PreduzeceGodinaAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		PreFrame.getInstance();
+		new PreFrame();
 	}
 }

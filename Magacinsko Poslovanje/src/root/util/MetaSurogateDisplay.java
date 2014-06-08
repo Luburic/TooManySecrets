@@ -3,12 +3,6 @@ package root.util;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Klasa zadužena za enkapsulaciju IDa i kolona koje trebaju da se prikažu umesto njega.
- * 
- * @author Nikola
- * 
- */
 public class MetaSurogateDisplay {
 	private String tableCode;
 	private Integer id;

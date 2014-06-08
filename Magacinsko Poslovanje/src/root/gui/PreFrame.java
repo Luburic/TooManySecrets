@@ -17,7 +17,6 @@ import root.util.Lookup;
 
 public class PreFrame extends JDialog {
 	private static final long serialVersionUID = 3409703900859791816L;
-	private static PreFrame instance = null;
 
 	private JLabel lblPreduzece = new JLabel("Preduzeće:");
 	private JComboBox<ComboBoxPair> cmbPreduzece;
@@ -27,7 +26,7 @@ public class PreFrame extends JDialog {
 	private JButton jbTrial = new JButton("Režim osnovne administracije");
 	private JButton jbCancel = new JButton("Odustani");
 
-	private PreFrame() {
+	public PreFrame() {
 		MigLayout migLayout = new MigLayout("wrap 3");
 		setLayout(migLayout);
 		setTitle("Izbor preduzeća i poslovne godine");
@@ -41,6 +40,27 @@ public class PreFrame extends JDialog {
 			cmbGodina = new JComboBox<ComboBoxPair>();
 			cmbGodina.insertItemAt(new ComboBoxPair(0, "-----"), 0);
 			cmbGodina.setSelectedIndex(0);
+			if (Constants.idPreduzeca > 0) {
+				for (int i = 0; i < cmbPreduzece.getItemCount(); i++) {
+					if (cmbPreduzece.getItemAt(i).getId().equals(Constants.idPreduzeca)) {
+						cmbPreduzece.setSelectedIndex(i);
+						break;
+					}
+				}
+			}
+			if (Constants.idGodine > 0) {
+				cmbGodina.setModel(new DefaultComboBoxModel<ComboBoxPair>(Lookup.getComboBoxEntity("Poslovna_godina",
+						"id_poslovne_godine", "godina",
+						" WHERE id_preduzeca = " + ((ComboBoxPair) cmbPreduzece.getSelectedItem()).getId())));
+				cmbGodina.insertItemAt(new ComboBoxPair(0, "-----"), 0);
+				for (int i = 0; i < cmbGodina.getItemCount(); i++) {
+					if (cmbGodina.getItemAt(i).getId().equals(Constants.idGodine)) {
+						cmbGodina.setSelectedIndex(i);
+						jbOK.setEnabled(true);
+						break;
+					}
+				}
+			}
 			cmbPreduzece.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -78,7 +98,7 @@ public class PreFrame extends JDialog {
 		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
+				dispose();
 			}
 		});
 		jbOK.addActionListener(new ActionListener() {
@@ -94,7 +114,7 @@ public class PreFrame extends JDialog {
 				Constants.idPreduzeca = ((ComboBoxPair) cmbPreduzece.getSelectedItem()).getId();
 				Constants.nazivPreduzeca = ((ComboBoxPair) cmbPreduzece.getSelectedItem()).getCmbShow();
 				MainFrame.getInstance().setUpFrame();
-				setVisible(false);
+				dispose();
 			}
 		});
 		jbTrial.addActionListener(new ActionListener() {
@@ -106,7 +126,7 @@ public class PreFrame extends JDialog {
 				Constants.idGodine = 0;
 				Constants.idPreduzeca = 0;
 				MainFrame.getInstance().setUpFrame();
-				setVisible(false);
+				dispose();
 			}
 		});
 
@@ -119,18 +139,7 @@ public class PreFrame extends JDialog {
 		add(jbCancel);
 		setSize(400, 180);
 		this.setResizable(false);
-	}
-
-	public static PreFrame getInstance() {
-		if (instance == null) {
-			instance = new PreFrame();
-		}
-		if (!instance.isVisible()) {
-			int x = (int) ((MainFrame.getInstance().getLocation().getX() + MainFrame.getInstance().getWidth() / 2) - 200);
-			int y = (int) ((MainFrame.getInstance().getLocation().getY() + MainFrame.getInstance().getHeight() / 2) - 90);
-			instance.setLocation(x, y);
-			instance.setVisible(true);
-		}
-		return instance;
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
 	}
 }
