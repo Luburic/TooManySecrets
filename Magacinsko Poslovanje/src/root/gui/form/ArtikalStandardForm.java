@@ -205,7 +205,7 @@ public class ArtikalStandardForm extends GenericForm {
 
 	@Override
 	public boolean allowDeletion() {
-		return allowDeletion("Stavka_popisa, Stavka_prometa, Magacinska_kartica");
+		return allowDeletion("Stavka_popisa", "Stavka_prometa", "Magacinska_kartica");
 	}
 
 	@Override
