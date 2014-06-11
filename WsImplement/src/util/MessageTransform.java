@@ -28,16 +28,20 @@ public class MessageTransform {
 		
 		SecurityClass security = new SecurityClass();
 		Reader reader = Validation.createReader(document);
-		Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Crypt.xsd","http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=xenc-schema.xsd"});
+		//Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Crypt.xsd","http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=xenc-schema.xsd"});
+		Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/"+schemaPrefix+"Crypt.xsd","http://localhost:8080/xenc-schema.xsd"});
 		
 		if( doc == null )
 			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Crypt semi.", TARGET_NAMESPACE);
 		
 		URL url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		
+		System.out.println("URL :" + url.toString());
+		
 		Document decrypt = security.decrypt(doc, security.readPrivateKey(propReceiver.getProperty("naziv"), propReceiver.getProperty("pass"), url.toString().substring(6), propReceiver.getProperty("passKS")));
 		Reader reader1 = Validation.createReader(decrypt);
-		decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Signed.xsd","http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=xmldsig-core-schema.xsd"});
+		//decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Signed.xsd","http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=xmldsig-core-schema.xsd"});
+		decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 		
 		if(decrypt==null)
 			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Signed semi.",TARGET_NAMESPACE);
@@ -57,7 +61,8 @@ public class MessageTransform {
 		
 		decrypt = DocumentTransform.convertToDocument(timestampOk);*/
 		
-		Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/Faktura?xsd=../shema/FakturaSigned.xsd","http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/Faktura?xsd=xmldsig-core-schema.xsd"});
+		//Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/Faktura?xsd=../shema/FakturaSigned.xsd","http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/Faktura?xsd=xmldsig-core-schema.xsd"});
+		Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 		
 		DocumentTransform.printDocument(forSave);
 		
@@ -104,7 +109,7 @@ public class MessageTransform {
 		signature.getParentNode().removeChild(signature);
 		
 		Reader reader2 = Validation.createReader(decrypt);
-		decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/"+propReceiver.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Raw.xsd"});
+		decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/"+schemaPrefix+"Raw.xsd"});
 		
 		if( decrypt == null )
 			return DocumentTransform.createNotificationResponse(schemaPrefix +" dokument nije validan po Raw semi.",TARGET_NAMESPACE);
@@ -177,7 +182,7 @@ public class MessageTransform {
 		
 		URL urlReceiver = MessageTransform.class.getClassLoader().getResource(propSender.getProperty(receiver));
 		
-		Document signed = security.addTimestampAndSign(propSender.getProperty("naziv"), propSender.getProperty("pass"), url.toString().substring(6), propSender.getProperty("passKS"), inputFile, outputFile, brojac, " http://localhost:8080/"+propSender.getProperty("naziv")+"/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Signed.xsd", schemaPrefix.toLowerCase());
+		Document signed = security.addTimestampAndSign(propSender.getProperty("naziv"), propSender.getProperty("pass"), url.toString().substring(6), propSender.getProperty("passKS"), inputFile, outputFile, brojac, " http://localhost:8080/"+schemaPrefix+"Signed.xsd", schemaPrefix.toLowerCase());
 		
 		if( signed == null ) {
 			System.out.println("Greska u potpisivanju"+schemaPrefix+" dokumenta.");

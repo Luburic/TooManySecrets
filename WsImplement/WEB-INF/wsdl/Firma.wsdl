@@ -16,17 +16,18 @@
    
    
    
-    <wsdl:types>
+   <wsdl:types>
         <xs:schema targetNamespace="http://www.toomanysecrets.com/firmaServis">
-            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/FakturaCrypt.xsd" />
-            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/FakturaRaw.xsd" />
-            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/FakturaSigned.xsd" />
-            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/ZahtevZaIzvodCrypt.xsd" />
-            <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/PresekCrypt.xsd" /> 
-             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/Fault.xsd" />    
+     
         	<xs:element name="notif" type="xs:string"/>
         </xs:schema>
     </wsdl:types>
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/FakturaCrypt.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/FakturaRaw.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/FakturaSigned.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/ZahtevZaIzvodCrypt.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/PresekCrypt.xsd" /> 
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/Fault.xsd" />
    
    
     <wsdl:message name="fakturaRequest">

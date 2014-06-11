@@ -17,7 +17,7 @@
     
     
     
-    <wsdl:types>
+   <!--  <wsdl:types>
         <xs:schema targetNamespace="http://www.toomanysecrets.com/prihvatiCentraluTip">
             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT900Crypt.xsd" />
             <xs:import namespace="http://www.toomanysecrets.com/tipovi" schemaLocation="../shema/MT910Crypt.xsd" />
@@ -33,7 +33,17 @@
    
     
     
-    </wsdl:types>
+    </wsdl:types> -->
+    
+     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/MT900Crypt.xsd" />
+     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/MT910Crypt.xsd" />
+            
+     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/MT102Crypt.xsd" />
+     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/MT103Crypt.xsd" />
+        
+     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/NalogCrypt.xsd"/>
+     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/ZahtevZaIzvodCrypt.xsd" />
+     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/PresekCrypt.xsd" />   
           
          
            <wsdl:message name="rtgsRequest">
