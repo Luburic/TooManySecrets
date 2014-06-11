@@ -66,7 +66,9 @@ public class PopisniDokumentStandardForm extends GenericForm {
 	public PopisniDokumentStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
 		setTitle("Popisni dokumenti");
-
+		btnZakljuci.setEnabled(false);
+		btnStorniraj.setEnabled(false);
+		btnIzvestaj.setEnabled(false);
 		JLabel lblBrojPopisnog = new JLabel("Broj*: ");
 		JLabel lblDatumOtvaranja = new JLabel("Datum otvaranja*: ");
 		JLabel lblDatumKnjizenja = new JLabel("Datum knjiženja: ");
@@ -89,7 +91,8 @@ public class PopisniDokumentStandardForm extends GenericForm {
 		tfStatusPopisnog.setName("status popisnog");
 
 		cmbOrgJedinica = super.setupJoinsWithComboBox(cmbOrgJedinica, "Organizaciona_jedinica", "id_jedinice",
-				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
+				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1  AND id_preduzeca = "
+						+ Constants.idPreduzeca);
 
 		super.setupJoins("Poslovna_godina", "id_poslovne_godine", "godina", "godina");
 		cmbGodina = new JComboBox<ComboBoxPair>();
@@ -341,31 +344,31 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			if (mode == Constants.MODE_SEARCH) {
 				btnCommit.setEnabled(true);
 				cmbOrgJedinica.setEnabled(true);
-				tfBrojPopisnogDokumenta.setEnabled(true);
-				tfDatumKnjizenja.setEnabled(true);
+				tfBrojPopisnogDokumenta.setEditable(true);
+				tfDatumKnjizenja.setEditable(true);
 				dateDatumOtvaranja.setEnabled(true);
-				tfStatusPopisnog.setEnabled(true);
+				tfStatusPopisnog.setEditable(true);
 				btnZoomOrgJedinica.setVisible(true);
 			} else {
 				btnCommit.setEnabled(false);
 				cmbOrgJedinica.setEnabled(false);
-				tfBrojPopisnogDokumenta.setEnabled(false);
-				tfDatumKnjizenja.setEnabled(false);
+				tfBrojPopisnogDokumenta.setEditable(false);
+				tfDatumKnjizenja.setEditable(false);
 				dateDatumOtvaranja.setEnabled(false);
-				tfStatusPopisnog.setEnabled(false);
+				tfStatusPopisnog.setEditable(false);
 				btnZoomOrgJedinica.setVisible(false);
 			}
 		} else {
 			super.setMode(mode);
 			if (mode == Constants.MODE_SEARCH) {
 				cmbOrgJedinica.setEnabled(true);
-				tfBrojPopisnogDokumenta.setEnabled(true);
-				tfDatumKnjizenja.setEnabled(true);
+				tfBrojPopisnogDokumenta.setEditable(true);
+				tfDatumKnjizenja.setEditable(true);
 				dateDatumOtvaranja.setEnabled(true);
-				tfStatusPopisnog.setEnabled(true);
+				tfStatusPopisnog.setEditable(true);
 			} else {
-				tfDatumKnjizenja.setEnabled(false);
-				tfStatusPopisnog.setEnabled(false);
+				tfDatumKnjizenja.setEditable(false);
+				tfStatusPopisnog.setEditable(false);
 			}
 		}
 	}
@@ -401,7 +404,7 @@ public class PopisniDokumentStandardForm extends GenericForm {
 			params.put("preduzece", Constants.nazivPreduzeca);
 			params.put("naziv_jedinice", cmbOrgJedinica.getSelectedItem().toString());
 			params.put("id_popisa", tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
-			params.put("broj_popisa", (Integer) tableModel.getValueAt(tblGrid.getSelectedRow(), 3));
+			params.put("broj_popisa", (Integer.parseInt(tableModel.getValueAt(tblGrid.getSelectedRow(), 3).toString())));
 			params.put("datum_popisa", tableModel.getValueAt(tblGrid.getSelectedRow(), 4));
 			JasperPrint jp = JasperFillManager.fillReport(
 					getClass().getResource("/root/izvestaj/PopisniDokument.jasper").openStream(), params,

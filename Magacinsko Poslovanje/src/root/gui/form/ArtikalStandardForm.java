@@ -5,14 +5,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
+import root.dbConnection.DBConnection;
+import root.gui.action.IzvestajSifrarnikArtikalaAction;
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
 import root.gui.action.dialog.MagacinskaKarticaAction;
@@ -40,6 +49,8 @@ public class ArtikalStandardForm extends GenericForm {
 	protected JLabel lblGreska3 = new JLabel();
 	protected JLabel lblGreska4 = new JLabel();
 	protected JLabel lblGreska5 = new JLabel();
+
+	private JButton btnSifrarArtikala = new JButton(new IzvestajSifrarnikArtikalaAction(this));
 
 	public ArtikalStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
@@ -128,6 +139,27 @@ public class ArtikalStandardForm extends GenericForm {
 			}
 		});
 
+		int rowCount = tblGrid.getModel().getRowCount();
+		if (rowCount > 0) {
+
+			btnSifrarArtikala.setEnabled(true);
+		} else {
+			btnSifrarArtikala.setEnabled(false);
+		}
+
+		tblGrid.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				int rowCount = tblGrid.getModel().getRowCount();
+				if (rowCount > 0) {
+
+					btnSifrarArtikala.setEnabled(true);
+				} else {
+					btnSifrarArtikala.setEnabled(false);
+				}
+			}
+		});
+
 		dataPanel.add(lblSifra);
 		dataPanel.add(tfSifra, "span 2");
 		dataPanel.add(lblGreska1, "wrap, gapx 15px");
@@ -155,10 +187,29 @@ public class ArtikalStandardForm extends GenericForm {
 		popup.add(new MagacinskaKarticaAction());
 		popup.add(new StavkaPopisaAction());
 		popup.add(new StavkaPrometaAction());
+		toolBar.addSeparator();
+		toolBar.add(btnSifrarArtikala);
+		toolBar.addSeparator();
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
+		btnNextForm.setVisible(false);
 
 		setupTable(null);
+	}
+
+	public void prikaziSifrarnik() {
+		try {
+			Map<String, Object> params = new HashMap<String, Object>(1);
+			params.put("preduzece", Constants.nazivPreduzeca);
+			JasperPrint jp = JasperFillManager.fillReport(
+					getClass().getResource("/root/izvestaj/SifrarnikArtikala.jasper").openStream(), params,
+					DBConnection.getConnection());
+			JasperViewer.viewReport(jp, false);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -185,6 +236,11 @@ public class ArtikalStandardForm extends GenericForm {
 			tfPakovanje.requestFocus();
 			return false;
 		}
+		if (Double.parseDouble(tfPakovanje.getText()) < 0 || Double.parseDouble(tfPakovanje.getText()) >= 100) {
+			lblGreska2.setText("<html>Pakovanje mora biti dvocifren broj <br /> u formatu CC.CC gde je C cifra.<html>");
+			tfPakovanje.requestFocus();
+			return false;
+		}
 		if (cmbJedinicaMere.getSelectedIndex() == -1) {
 			lblGreska3.setText(Constants.VALIDATION_MANDATORY_FIELD);
 			cmbJedinicaMere.requestFocus();
@@ -205,7 +261,7 @@ public class ArtikalStandardForm extends GenericForm {
 
 	@Override
 	public boolean allowDeletion() {
-		return allowDeletion("Stavka_popisa, Stavka_prometa, Magacinska_kartica");
+		return allowDeletion("Stavka_popisa", "Stavka_prometa", "Magacinska_kartica");
 	}
 
 	@Override
@@ -219,11 +275,34 @@ public class ArtikalStandardForm extends GenericForm {
 	protected void getDataAndAddToRow(LinkedList<Object> newRow) {
 		tfJedinicaMere.setText(cmbJedinicaMere.getSelectedItem().toString());
 		super.getDataAndAddToRow(newRow);
+		System.out.println(tfJedinicaMere.getText());
 	}
 
 	@Override
 	public void sync() {
 		super.sync();
-		cmbJedinicaMere.setSelectedItem(tfJedinicaMere.getText());
+		
+		if(tblGrid.getSelectedRow() != -1) {
+		
+			String jedMere = (String) tblGrid.getValueAt(tblGrid.getSelectedRow(), 2);
+			
+			switch (jedMere.trim()) {
+			case "t":
+				cmbJedinicaMere.setSelectedItem("t");
+				break;
+			case "kg":
+				cmbJedinicaMere.setSelectedItem("kg");
+				break;
+			case "g":
+				cmbJedinicaMere.setSelectedItem("g");
+				break;
+			case "kom":
+				cmbJedinicaMere.setSelectedItem("kom");
+				break;
+			default:
+				break;
+			}
+		}
+		
 	}
 }

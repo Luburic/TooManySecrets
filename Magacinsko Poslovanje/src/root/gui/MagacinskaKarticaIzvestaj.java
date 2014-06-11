@@ -31,9 +31,9 @@ import root.util.Lookup;
 public class MagacinskaKarticaIzvestaj extends JDialog {
 	private static final long serialVersionUID = 3409703900859791816L;
 
-	private JLabel lblOdDatum = new JLabel("Preduzeće:");
+	private JLabel lblOdDatum = new JLabel("Od datuma:");
 	private JDatePickerImpl odDatum;
-	private JLabel lblDoDatum = new JLabel("Poslovna godina:");
+	private JLabel lblDoDatum = new JLabel("Do datuma:");
 	private JDatePickerImpl doDatum;
 	private JLabel lblMagacin = new JLabel("Magacin:");
 	private JComboBox<ComboBoxPair> cmbMagacini;

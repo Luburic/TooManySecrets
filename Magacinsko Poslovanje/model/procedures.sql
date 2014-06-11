@@ -36,6 +36,12 @@ GO
 
 IF EXISTS (SELECT 1
    FROM   sysobjects
+   WHERE  name = 'NivelacijaSvega' AND type = 'P')
+   DROP PROCEDURE NivelacijaSvega
+GO
+
+IF EXISTS (SELECT 1
+   FROM   sysobjects
    WHERE  name = 'OtvaranjePocetnog' AND type = 'P')
    DROP PROCEDURE OtvaranjePocetnog
 GO
@@ -133,6 +139,14 @@ BEGIN
 	RETURN
 END
 
+SELECT @count = COUNT(*) FROM Clan_komisije WHERE id_popisnog_dokumenta = @Id
+IF(@count > 3)
+BEGIN
+	SET @RetVal = 4
+	RAISERROR('Popisni dokument ne može imati više od tri člana komisije.', 11, 2)
+	RETURN
+END
+
 BEGIN TRANSACTION
 	DECLARE
 		@popisana_kolicina numeric(12),
@@ -212,6 +226,8 @@ BEGIN
 		IF NOT EXISTS (SELECT 1 FROM Magacinska_kartica WHERE id_jedinice = @id_iteriranog_magacina AND id_poslovne_godine = @id_nove_godine)
 		BEGIN
 			RAISERROR('Nisu kreirana nova stanja za sve magacine.',11,2)
+			CLOSE cursor_zakljucenje
+			DEALLOCATE cursor_zakljucenje
 			RETURN
 		END
 	END
@@ -486,8 +502,34 @@ BEGIN TRANSACTION
 	SELECT @ukupna_kolicina = (kolicina_pocetnog_stanja + kolicina_ulaza - kolicina_izlaza), @ukupna_vrednost = (vrednost_pocetnog_stanja + vrednost_ulaza - vrednost_izlaza), @prosecna_cena = prosecna_cena FROM Magacinska_kartica WHERE id_magacinske_kartice = @id_kartice
 	SELECT @id_prometa = id_prometa FROM Vrsta_prometa WHERE sifra_prometa = 'NI'
 	SELECT @redni_broj = MAX(redni_broj) FROM Analitika_magacinske_kartice WHERE id_magacinske_kartice = @id_kartice
-	INSERT INTO Analitika_magacinske_kartice VALUES (@id_kartice, @id_prometa, null, @redni_broj+1, @Datum, 'U', 0, @prosecna_cena, (@ukupna_kolicina * @prosecna_cena - @ukupna_vrednost), 1)
-	UPDATE Magacinska_kartica SET vrednost_ulaza = (vrednost_ulaza + (@ukupna_kolicina * @prosecna_cena - @ukupna_vrednost)) WHERE id_magacinske_kartice = @id_kartice
+	IF(@ukupna_kolicina * @prosecna_cena - @ukupna_vrednost <> 0)
+	BEGIN
+		INSERT INTO Analitika_magacinske_kartice VALUES (@id_kartice, @id_prometa, null, @redni_broj+1, @Datum, 'U', 0, @prosecna_cena, (@ukupna_kolicina * @prosecna_cena - @ukupna_vrednost), 1)
+		UPDATE Magacinska_kartica SET vrednost_ulaza = (vrednost_ulaza + (@ukupna_kolicina * @prosecna_cena - @ukupna_vrednost)) WHERE id_magacinske_kartice = @id_kartice
+	END
+COMMIT TRANSACTION
+GO
+
+CREATE PROCEDURE NivelacijaSvega
+(
+	@Id_magacina int,
+	@Id_godine int,
+	@zakljucena int,
+	@datum char(10)
+)
+AS
+BEGIN TRANSACTION
+DECLARE @id_magacinske int
+DECLARE cursor_nivelacija CURSOR FOR SELECT id_magacinske_kartice FROM Magacinska_kartica WHERE id_jedinice = @Id_magacina AND id_poslovne_godine = @Id_godine
+	OPEN cursor_nivelacija
+	FETCH NEXT FROM cursor_nivelacija INTO @id_magacinske
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		EXEC Nivelacija @id_magacinske, @datum, @zakljucena
+		FETCH NEXT FROM cursor_nivelacija INTO @id_magacinske
+	END
+	CLOSE cursor_nivelacija
+	DEALLOCATE cursor_nivelacija
 COMMIT TRANSACTION
 GO
 

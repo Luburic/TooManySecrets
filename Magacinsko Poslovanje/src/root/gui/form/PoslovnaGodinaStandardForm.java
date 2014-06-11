@@ -226,4 +226,14 @@ public class PoslovnaGodinaStandardForm extends GenericForm {
 		toolBar.add(btnPickup);
 		btnPickup.setEnabled(false);
 	}
+
+	@Override
+	public void setMode(int mode) {
+		super.setMode(mode);
+		if (mode == Constants.MODE_SEARCH) {
+			chkZakljucena.setEnabled(true);
+		} else {
+			chkZakljucena.setEnabled(false);
+		}
+	}
 }

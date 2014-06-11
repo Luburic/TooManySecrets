@@ -43,12 +43,14 @@ public class ClanKomisijeStandardForm extends GenericForm {
 		tfVrsta.setName("vrsta člana");
 		lblGreska1.setForeground(Color.red);
 		lblGreska2.setForeground(Color.red);
+		
+		btnSearch.setVisible(false);
 
 		cmbRadnik = super.setupJoinsWithComboBox(cmbRadnik, "Radnik", "id_radnika", "id radnika", "jmbg", "jmbg",
-				false, "");
+				false, " WHERE id_preduzeca = " + Constants.idPreduzeca);
 		cmbPopisniDokument = super.setupJoinsWithComboBox(cmbPopisniDokument, "Popisni_dokument",
 				"id_popisnog_dokumenta", "id popisnog dokumenta", "broj_popisnog_dokumenta", "broj popisnog dokumenta",
-				false, "");
+				false, " WHERE status_popisnog = 'u fazi formiranja' AND id_poslovne_godine = " + Constants.idGodine);
 
 		if (!childWhere.contains("id_radnika")) {
 			btnZoomRadnik.addActionListener(new ActionListener() {
@@ -132,6 +134,11 @@ public class ClanKomisijeStandardForm extends GenericForm {
 		dataPanel.add(rbPredsednik);
 		tfVrsta.setVisible(false);
 		dataPanel.add(tfVrsta);
+		
+		if( Constants.godinaZakljucena == true) {
+			btnAdd.setEnabled(false);
+			btnDelete.setEnabled(false);
+		}
 
 		setupTable(null);
 	}
@@ -147,7 +154,7 @@ public class ClanKomisijeStandardForm extends GenericForm {
 	protected void getDataAndAddToRow(LinkedList<Object> newRow) {
 		if (rbRadnik.isSelected()) {
 			tfVrsta.setText("O");
-		} else if (rbRadnik.isSelected()) {
+		} else if (rbZPredsednik.isSelected()) {
 			tfVrsta.setText("Z");
 		} else {
 			tfVrsta.setText("P");
