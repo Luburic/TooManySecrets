@@ -52,8 +52,10 @@ public class StavkaPopisaStandardForm extends GenericForm {
 		tfKolicinaPoKnjigama.setName("količina po knjigama");
 		tfProsecnaCenaPopisa.setName("prosečna cena popis");
 
-		btnAdd.setEnabled(false);
-		btnDelete.setEnabled(false);
+		//btnAdd.setEnabled(false);
+		//btnDelete.setEnabled(false);
+		btnAdd.setVisible(false);
+		btnDelete.setVisible(false);
 		btnZoomArtikal.setVisible(false);
 
 		cmbArtikal = super.setupJoinsWithComboBox(cmbArtikal, "Artikal", "id_artikla", "id artikla", "naziv_artikla",

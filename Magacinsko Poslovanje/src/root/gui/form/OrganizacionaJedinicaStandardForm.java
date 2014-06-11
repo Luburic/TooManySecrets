@@ -28,10 +28,10 @@ import net.sf.jasperreports.view.JasperViewer;
 import root.dbConnection.DBConnection;
 import root.gui.action.IzvestajLagerListaAction;
 import root.gui.action.NextFormButton;
+import root.gui.action.NivelacijaSvegaAction;
 import root.gui.action.NovoStanjeAction;
 import root.gui.action.PickupAction;
 import root.gui.action.dialog.MagacinskaKarticaAction;
-import root.gui.action.dialog.OrganizacionaJedinicaAction;
 import root.gui.action.dialog.PopisniDokumentAction;
 import root.gui.action.dialog.PrometniDokumentAction;
 import root.gui.tablemodel.TableModelCreator;
@@ -54,11 +54,14 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 
 	private JButton btnLagerLista = new JButton(new IzvestajLagerListaAction(this));
 	private JButton btnNovoStanje = new JButton(new NovoStanjeAction(this));
+	private JButton btnNivelacija = new JButton(new NivelacijaSvegaAction(this));
 
 	public OrganizacionaJedinicaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
 		setTitle("Organizacione jedinice");
-
+		btnLagerLista.setEnabled(false);
+		btnNovoStanje.setEnabled(false);
+		btnNivelacija.setEnabled(false);
 		JLabel lblNaziv = new JLabel("Naziv jedinice*:");
 		JLabel lblMagacin = new JLabel("Magacin:");
 		JLabel lblOrgJedinica = new JLabel("Nadsektor:");
@@ -148,9 +151,15 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 					if (s.trim().equals("Da")) {
 						btnLagerLista.setEnabled(true);
 						btnNovoStanje.setEnabled(true);
+						btnNivelacija.setEnabled(true);
+						if (OrganizacionaJedinicaStandardForm.this.returning != null) {
+							btnPickup.setEnabled(true);
+						}
 					} else {
 						btnLagerLista.setEnabled(false);
 						btnNovoStanje.setEnabled(false);
+						btnNivelacija.setEnabled(false);
+						btnPickup.setEnabled(false);
 					}
 				}
 			}
@@ -174,13 +183,14 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 
 		toolBar.add(btnNovoStanje);
 		toolBar.addSeparator();
+		toolBar.add(btnNivelacija);
+		toolBar.addSeparator();
 		toolBar.add(btnLagerLista);
 		toolBar.addSeparator();
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new MagacinskaKarticaAction());
 		popup.add(new PopisniDokumentAction());
 		popup.add(new PrometniDokumentAction());
-		popup.add(new OrganizacionaJedinicaAction());
 		btnNextForm = new NextFormButton(this, popup);
 		toolBar.add(btnNextForm);
 
@@ -249,6 +259,7 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+
 	}
 
 	public void otvoriNovoStanje() {
@@ -261,6 +272,24 @@ public class OrganizacionaJedinicaStandardForm extends GenericForm {
 			proc.setObject(2, Constants.idGodine);
 			proc.setObject(3, Constants.idPreduzeca);
 			proc.setObject(4, now);
+			proc.executeUpdate();
+			DBConnection.getConnection().commit();
+			proc.close();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public void nivelacija() {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		String now = dateFormatter.format(Calendar.getInstance().getTime());
+		try {
+			CallableStatement proc = DBConnection.getConnection().prepareCall("{ call NivelacijaSvega(?, ?, ?, ?) }");
+			proc.setObject(1, tableModel.getValueAt(tblGrid.getSelectedRow(), 0));
+			proc.setObject(2, Constants.idGodine);
+			proc.setObject(3, Constants.godinaZakljucena ? 1 : 0);
+			proc.setObject(4, now);
+
 			proc.executeUpdate();
 			DBConnection.getConnection().commit();
 			proc.close();

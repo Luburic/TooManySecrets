@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -19,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -26,8 +28,16 @@ import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import root.dbConnection.DBConnection;
+import root.gui.action.AddAction;
+import root.gui.action.DeleteAction;
+import root.gui.action.FirstAction;
+import root.gui.action.HelpAction;
+import root.gui.action.LastAction;
+import root.gui.action.NextAction;
 import root.gui.action.NextFormButton;
 import root.gui.action.PickupAction;
+import root.gui.action.PreviousAction;
+import root.gui.action.Refresh2Action;
 import root.gui.action.StornirajPrometniAction;
 import root.gui.action.ZakljuciPrometniAction;
 import root.gui.action.dialog.StavkaPrometaAction;
@@ -73,7 +83,8 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		super(returning, childWhere);
 		setTitle("Prometni dokumenti");
 		setSize(1000, 400);
-
+		btnProknjizi.setEnabled(false);
+		btnStorniraj.setEnabled(false);
 		JLabel lblBrojPopisnog = new JLabel("Broj*: ");
 		JLabel lblDatumOtvaranja = new JLabel("Datum otvaranja*: ");
 		JLabel lblDatumKnjizenja = new JLabel("Datum knjiženja: ");
@@ -109,17 +120,19 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		cmbGodina.setName("id poslovne godine");
 		btnZoomPoslovnaGodina.setVisible(false);
 		cmbOrgJedinicaU = super.setupJoinsWithComboBox(cmbOrgJedinicaU, "Organizaciona_jedinica", "id_jedinice",
-				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
+				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1 AND id_preduzeca = "
+						+ Constants.idPreduzeca);
 		cmbVrstaPrometa = super.setupJoinsWithComboBox(cmbVrstaPrometa, "Vrsta_prometa", "id_prometa", "id prometa",
 				"sifra_prometa", "šifra prometa", false,
 				" WHERE sifra_prometa = 'OT' OR sifra_prometa = 'NA' OR sifra_prometa = 'MM'");
 		cmbOrgJedinicaIz = super.setupJoinsWithComboBox(cmbOrgJedinicaIz, "Organizaciona_jedinica", "id_jedinice",
-				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1");
+				"id jedinice", "naziv_jedinice", "naziv jedinice", false, " WHERE magacin = 1 AND id_preduzeca = "
+						+ Constants.idPreduzeca);
 		cmbOrgJedinicaIz.insertItemAt(new ComboBoxPair(0, ""), 0);
 		cmbOrgJedinicaIz.setSelectedIndex(0);
 		cmbPoslovniPartner = super.setupJoinsWithComboBox(cmbPoslovniPartner, "Poslovni_partner",
 				"id_poslovnog_partnera", "id poslovnog partnera", "naziv_poslovnog_partnera",
-				"naziv poslovnog partnera", false, "");
+				"naziv poslovnog partnera", false, " WHERE id_preduzeca = " + Constants.idPreduzeca);
 		cmbPoslovniPartner.insertItemAt(new ComboBoxPair(0, ""), 0);
 		cmbPoslovniPartner.setSelectedIndex(0);
 
@@ -246,9 +259,13 @@ public class PrometniDokumentStandardForm extends GenericForm {
 					lblGreska3.setText("");
 				}
 				if (((ComboBoxPair) cmbVrstaPrometa.getSelectedItem()).getCmbShow().equals("MM")) {
+					rbMagacin.setEnabled(true);
 					rbMagacin.doClick();
+					rbMagacin.setEnabled(false);
 				} else {
+					rbPromet.setEnabled(true);
 					rbPromet.doClick();
+					rbPromet.setEnabled(false);
 				}
 			}
 		});
@@ -283,8 +300,22 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			public void actionPerformed(ActionEvent e) {
 				if (rbPromet.isSelected()) {
 					cmbPoslovniPartner.setEnabled(true);
-					cmbOrgJedinicaIz.setEnabled(false);
-					cmbOrgJedinicaIz.setSelectedIndex(0);
+					try {
+						String where = " WHERE id_preduzeca = " + Constants.idPreduzeca
+								+ " AND (vrsta_poslovnog_partnera = 'O' OR ";
+						if (cmbVrstaPrometa.getSelectedItem().toString().equals("NA")) {
+							where += "vrsta_poslovnog_partnera = 'D')";
+						} else {
+							where += "vrsta_poslovnog_partnera = 'K')";
+						}
+						cmbPoslovniPartner.setModel(new DefaultComboBoxModel<ComboBoxPair>(Lookup.getComboBoxEntity(
+								"Poslovni_partner", "id_poslovnog_partnera", "naziv_poslovnog_partnera", where)));
+						cmbPoslovniPartner.insertItemAt(new ComboBoxPair(0, ""), 0);
+						cmbOrgJedinicaIz.setEnabled(false);
+						cmbOrgJedinicaIz.setSelectedIndex(0);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
 				}
 				lblGreskaB.setText("");
 			}
@@ -388,10 +419,10 @@ public class PrometniDokumentStandardForm extends GenericForm {
 
 		String customQuery = "";
 		if (childWhere.equals("")) {
-			customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Magacin1.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.Org_id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Magacin1.naziv_jedinice, Vrsta_prometa.sifra_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica Magacin1 ON Prometni_dokument.id_jedinice = Magacin1.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice LEFT JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera WHERE Prometni_dokument.id_poslovne_godine = "
+			customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Magacin1.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Magacin1.naziv_jedinice, Vrsta_prometa.sifra_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica Magacin1 ON Prometni_dokument.id_jedinice = Magacin1.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice LEFT JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera WHERE Prometni_dokument.id_poslovne_godine = "
 					+ Constants.idGodine + " ORDER BY broj_prometnog_dokumenta";
 		} else {
-			customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Organizaciona_jedinica.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.Org_id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Organizaciona_jedinica.naziv_jedinice, Vrsta_prometa.sifra_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica ON Prometni_dokument.id_jedinice = Organizaciona_jedinica.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice LEFT JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera"
+			customQuery = "SELECT id_prometnog_dokumenta, Poslovna_godina.id_poslovne_godine, Organizaciona_jedinica.id_jedinice, Vrsta_prometa.id_prometa,Magacin2.id_jedinice, Poslovni_partner.id_poslovnog_partnera, broj_prometnog_dokumenta, datum_prometnog, datum_knjizenja_prometnog, status_prometnog, Poslovna_godina.godina, Organizaciona_jedinica.naziv_jedinice, Vrsta_prometa.sifra_prometa, Magacin2.naziv_jedinice, Poslovni_partner.naziv_poslovnog_partnera, prometni_version FROM Prometni_dokument JOIN Poslovna_godina ON Prometni_dokument.id_poslovne_godine = Poslovna_godina.id_poslovne_godine JOIN Organizaciona_jedinica ON Prometni_dokument.id_jedinice = Organizaciona_jedinica.id_jedinice JOIN Vrsta_prometa ON Prometni_dokument.id_prometa = Vrsta_prometa.id_prometa LEFT JOIN Organizaciona_jedinica Magacin2 ON Prometni_dokument.Org_id_jedinice = Magacin2.id_jedinice LEFT JOIN Poslovni_partner ON Prometni_dokument.id_poslovnog_partnera = Poslovni_partner.id_poslovnog_partnera"
 					+ childWhere
 					+ " AND Prometni_dokument.id_poslovne_godine = "
 					+ Constants.idGodine
@@ -585,6 +616,8 @@ public class PrometniDokumentStandardForm extends GenericForm {
 			} else {
 				tfStatusPrometnog.setEnabled(false);
 				dateDatumKnjizenja.setEnabled(false);
+				rbMagacin.setEnabled(false);
+				rbPromet.setEnabled(false);
 			}
 		}
 	}
@@ -615,5 +648,43 @@ public class PrometniDokumentStandardForm extends GenericForm {
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	@Override
+	public void initToolbar() {
+		toolBar = new JToolBar();
+		btnRefresh = new JButton(new Refresh2Action(this));
+		toolBar.add(btnRefresh);
+
+		initPickup();
+
+		btnHelp = new JButton(new HelpAction());
+		toolBar.add(btnHelp);
+
+		toolBar.addSeparator();
+
+		btnFirst = new JButton(new FirstAction(this));
+		toolBar.add(btnFirst);
+
+		btnPrevious = new JButton(new PreviousAction(this));
+		toolBar.add(btnPrevious);
+
+		btnNext = new JButton(new NextAction(this));
+		toolBar.add(btnNext);
+
+		btnLast = new JButton(new LastAction(this));
+		toolBar.add(btnLast);
+
+		toolBar.addSeparator();
+
+		btnAdd = new JButton(new AddAction(this));
+		toolBar.add(btnAdd);
+
+		btnDelete = new JButton(new DeleteAction(this));
+		toolBar.add(btnDelete);
+
+		toolBar.addSeparator();
+
+		add(toolBar, "dock north");
 	}
 }

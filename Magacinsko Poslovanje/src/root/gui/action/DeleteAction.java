@@ -22,6 +22,10 @@ public class DeleteAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		
+		if(standardForm.getTblGrid().getSelectedRow() == -1)
+			return;
+		
 		if (standardForm.allowDeletion()) {
 			if (JOptionPane.showConfirmDialog(standardForm, "Da li ste sigurni da želite da obrišete dati slog?",
 					"Brišete slog", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {

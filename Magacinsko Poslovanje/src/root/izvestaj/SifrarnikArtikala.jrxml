@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SifrarnikArtikala" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="93b55977-4228-4e5e-96c9-20e7d981823e">
+	<property name="ireport.zoom" value="1.771561000000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="preduzece" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     Artikal."sifra_artikla" AS Artikal_sifra_artikla,
+     Artikal."pakovanje" AS Artikal_pakovanje,
+     Artikal."jedinica_mere" AS Artikal_jedinica_mere,
+     Artikal."naziv_artikla" AS Artikal_naziv_artikla,
+     Grupa_artikla."naziv_grupe" AS Grupa_artikla_naziv_grupe
+FROM
+     "dbo"."Artikal" Artikal
+INNER JOIN
+     "dbo"."Grupa_artikla" Grupa_artikla
+ON
+     Artikal."id_grupe" = Grupa_artikla."id_grupe"]]>
+	</queryString>
+	<field name="Artikal_sifra_artikla" class="java.lang.String"/>
+	<field name="Artikal_pakovanje" class="java.math.BigDecimal"/>
+	<field name="Artikal_jedinica_mere" class="java.lang.String"/>
+	<field name="Artikal_naziv_artikla" class="java.lang.String"/>
+	<field name="Grupa_artikla_naziv_grupe" class="java.lang.String"/>
+	<group name="GRUPA" keepTogether="true">
+		<groupExpression><![CDATA[$F{Grupa_artikla_naziv_grupe}]]></groupExpression>
+		<groupHeader>
+			<band height="51">
+				<textField>
+					<reportElement x="0" y="30" width="142" height="20" uuid="6ce2fc08-9bab-4488-97e9-06907b55bee3"/>
+					<textElement>
+						<font pdfEncoding="Cp1250"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Grupa_artikla_naziv_grupe}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="127" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="45" width="555" height="46" uuid="8bef031e-3257-4cac-879d-5df271600626"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[ŠIFRARNIK ARTIKALA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="56" height="15" uuid="27582370-322c-447c-8fe4-d0f822dd651a"/>
+				<textElement>
+					<font pdfEncoding="Cp1250"/>
+				</textElement>
+				<text><![CDATA[Preduzeće:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="56" y="0" width="86" height="15" uuid="f9611869-3b62-4eec-8017-64df50148833"/>
+				<textElement>
+					<font pdfEncoding="Cp1250"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{preduzece}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="485" y="0" width="38" height="15" uuid="41fc70dd-ca9b-4507-ac57-f4d210923f5f"/>
+				<text><![CDATA[Strana:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="523" y="0" width="32" height="15" uuid="a1ce841e-a904-4f0c-83e6-4396eeb08ae0"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="271" y="104" width="56" height="15" uuid="744e88f2-1adf-4a25-a7a7-f55cba3eb2ca"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Jed. mere]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="215" y="104" width="56" height="15" uuid="fdf029ed-0962-4ef0-8294-cced9cba22dc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Pakovanje]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="104" width="73" height="15" uuid="bce9b37e-3cd7-42f5-bbce-24bf2a9a7312"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Šifra]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="327" y="104" width="159" height="15" uuid="4ed1f2e1-6b16-42e8-9ebd-e49454081a40"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Naziv artikla]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="104" width="109" height="15" uuid="32faacbc-b0d1-490f-9bb7-1dd544ec171b"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Grupa]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement x="271" y="0" width="56" height="15" uuid="94e1aa01-4cf4-4662-9fa6-e2fce7e6c3fd"/>
+				<textElement verticalAlignment="Middle">
+					<font pdfEncoding="Cp1250"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Artikal_jedinica_mere}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="327" y="0" width="159" height="15" uuid="5dfddafa-4379-405c-80c4-c1edc08a6106"/>
+				<textElement verticalAlignment="Middle">
+					<font pdfEncoding="Cp1250"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Artikal_naziv_artikla}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="142" y="0" width="73" height="15" uuid="69a6c991-c55a-4c1f-90ed-bb90ae1a716d"/>
+				<textElement verticalAlignment="Middle">
+					<font pdfEncoding="Cp1252"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Artikal_sifra_artikla}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="215" y="0" width="50" height="15" uuid="999041fe-c715-4158-ae5c-9858c4d75987"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font pdfEncoding="Cp1250"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Artikal_pakovanje}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

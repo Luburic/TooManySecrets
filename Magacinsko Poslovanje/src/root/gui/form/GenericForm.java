@@ -71,6 +71,10 @@ public abstract class GenericForm extends JDialog {
 
 	protected String childWhere;
 
+	public String getChildWhere() {
+		return childWhere;
+	}
+
 	protected JTable tblGrid = new JTable();
 
 	protected int mode;

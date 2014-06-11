@@ -1,5 +1,7 @@
 package root.gui.form;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -40,6 +42,8 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 	protected JTextField tfVrednostPocetnog = new JTextField(12);
 	protected JTextField tfVrednostUlaza = new JTextField(12);
 	protected JTextField tfVrednostIzlaza = new JTextField(12);
+	protected JTextField tfUkupnaKolicina = new JTextField(12);
+	protected JTextField tfUkupnaVrednost = new JTextField(12);
 
 	protected JButton btnNivelacija = new JButton(new NivelacijaAction(this));
 	protected JButton btnIzvestaj = new JButton(new IzvestajMagacinskaAction(this));
@@ -47,7 +51,8 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 	public MagacinskaKarticaStandardForm(JComboBox<ComboBoxPair> returning, String childWhere) {
 		super(returning, childWhere);
 		setTitle("Magacinska kartica");
-
+		setSize(new Dimension(1100, 500));
+		setLocationRelativeTo(super.getParent());
 		JLabel lblArtikal = new JLabel("Artikal: ");
 		JLabel lblMagacin = new JLabel("Magacin: ");
 		JLabel lblGodina = new JLabel("Godina: ");
@@ -58,6 +63,8 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		JLabel lblVrednostPocetnogStanja = new JLabel("Vrednost početnog stanja: ");
 		JLabel lblVrednostUlaza = new JLabel("Vrednost ulaza: ");
 		JLabel lblVrednostIzlaza = new JLabel("Vrednost izlaza: ");
+		JLabel lblUkupnaKolicina = new JLabel("Ukupna količina: ");
+		JLabel lblUkupnaVrednost = new JLabel("Ukupna vrednost: ");
 
 		btnDelete.setEnabled(false);
 		btnAdd.setEnabled(false);
@@ -75,6 +82,9 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		tfVrednostIzlaza.setEditable(false);
 		tfVrednostUlaza.setEditable(false);
 		tfVrednostPocetnog.setEditable(false);
+
+		tfUkupnaKolicina.setBackground(Color.YELLOW);
+		tfUkupnaVrednost.setBackground(Color.YELLOW);
 
 		super.setupJoins("Poslovna_godina", "id_poslovne_godine", "godina", "godina");
 		cmbGodina = new JComboBox<ComboBoxPair>();
@@ -178,6 +188,12 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 		dataPanel.add(lblVrednostIzlaza);
 		dataPanel.add(tfVrednostIzlaza, "wrap");
 
+		dataPanel.add(lblUkupnaKolicina);
+		dataPanel.add(tfUkupnaKolicina, "wrap");
+
+		dataPanel.add(lblUkupnaVrednost);
+		dataPanel.add(tfUkupnaVrednost, "wrap");
+
 		toolBar.add(btnNivelacija);
 		toolBar.addSeparator();
 		toolBar.add(btnIzvestaj);
@@ -269,6 +285,26 @@ public class MagacinskaKarticaStandardForm extends GenericForm {
 			proc.close();
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	@Override
+	public void sync() {
+		super.sync();
+		if (tblGrid.getSelectedRow() != -1) {
+			Integer kolicina = Integer.parseInt(tfKolicinaPocetnog.getText())
+					+ Integer.parseInt(tfKolicinaUlaza.getText()) - Integer.parseInt(tfKolicinaIzlaza.getText());
+			tfUkupnaKolicina.setText(String.valueOf(kolicina));
+
+			Double vrednost = Double.parseDouble(tfVrednostPocetnog.getText())
+					+ Double.parseDouble(tfVrednostUlaza.getText()) - Double.parseDouble(tfVrednostIzlaza.getText());
+
+			tfUkupnaVrednost.setText(String.format("%.2f", vrednost));
+		} else {
+
+			tfUkupnaKolicina.setText("");
+			tfUkupnaVrednost.setText("");
+
 		}
 	}
 }
