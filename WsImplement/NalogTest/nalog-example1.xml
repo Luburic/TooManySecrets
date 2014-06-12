@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p:nalog idPoruke="" xmlns:p="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/tipovi ../WEB-INF/shema/NalogRaw.xsd ">
+  <p:duznikNalogodavac>Bokić DOO</p:duznikNalogodavac>
+  <p:svrhaPlacanja>Borko mi je rekao da treba.</p:svrhaPlacanja>
+  <p:primalacPoverilac>Univerexport</p:primalacPoverilac>
+  <p:datumNaloga>2014-03-05</p:datumNaloga>
+  <p:datumValute>2014-03-03</p:datumValute>
+  <p:racunDuznika>555123456789123497</p:racunDuznika>
+  <p:modelZaduzenja>97</p:modelZaduzenja>
+  <p:pozivNaBrojZaduzenja>Poziv na broj zaduženja</p:pozivNaBrojZaduzenja>
+  <p:racunPoverioca>444123456789123497</p:racunPoverioca>
+  <p:modelOdobrenja>97</p:modelOdobrenja>
+  <p:pozivNaBrojOdobrenja>Poziv na broj odobrenja</p:pozivNaBrojOdobrenja>
+  <p:iznos>0.0</p:iznos>
+  <p:oznakaValute>EUR</p:oznakaValute>
+  <p:hitno>false</p:hitno>
+</p:nalog>
