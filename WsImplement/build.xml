@@ -156,38 +156,68 @@
 	</target>
 	
 	<target name="war1" depends="compile">
-			<delete file="${war1.name}"/>
-			<copy file="${webinf.dir}/keystores/B/firma.properties" todir="${bin.dir}"/>
-			<war warfile="${dist.dir}/${war1.name}" webxml="${webinf.dir}/web.xml">
-				<classes dir="${bin.dir}">
-					<exclude name="**/client/*.class"/>
-					<include name="**/*.class"/>
-					<include name="**/*.properties"/>
-					<exclude name="**/firmaA.properties"/>
-					<include name="**/*.jks"/>
-					<exclude name="**/firmaa.jks"/>
-					<include name="**/*.cer"/>
-				</classes>
-				<lib dir="${lib.dir}">
-					<include name="spring-*.jar"/>
-					<include name="bcprov-jdk16-141.jar"/>
-					<include name="commons-*.jar"/>
-				</lib>
-				<webinf dir="${webinf.dir}">
-					<include name="wsdl/**"/>
-					<include name="shema/**"/>
-					<include name="keystores/*.cer"/>
-					<include name="keystores/*.jks"/>
-					<include name="cxf-servlet.xml"/>
-				</webinf>
-				<fileset dir="." includes="keystores/*.cer"/>
-			</war>
-		</target>
+		<delete file="${war1.name}"/>
+		<copy file="${webinf.dir}/keystores/B/firma.properties" todir="${bin.dir}"/>
+		<war warfile="${dist.dir}/${war1.name}" webxml="${webinf.dir}/web.xml">
+			<classes dir="${bin.dir}">
+				<exclude name="**/client/*.class"/>
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+				<exclude name="**/firmaA.properties"/>
+				<include name="**/*.jks"/>
+				<exclude name="**/firmaa.jks"/>
+				<include name="**/*.cer"/>
+			</classes>
+			<lib dir="${lib.dir}">
+				<include name="spring-*.jar"/>
+				<include name="bcprov-jdk16-141.jar"/>
+				<include name="commons-*.jar"/>
+			</lib>
+			<webinf dir="${webinf.dir}">
+				<include name="wsdl/**"/>
+				<include name="shema/**"/>
+				<include name="keystores/*.cer"/>
+				<include name="keystores/*.jks"/>
+				<include name="cxf-servlet.xml"/>
+			</webinf>
+			<fileset dir="." includes="keystores/*.cer"/>
+		</war>
+	</target>
+	
+	<target name="warBanka1" depends="compile">
+		<delete file="${warBanka1.name}"/>
+		<copy file="${webinf.dir}/keystores/A/banka.properties" todir="${bin.dir}"/>
+		<war warfile="${dist.dir}/${warBanka1.name}" webxml="${webinf.dir}/web.xml">
+			<classes dir="${bin.dir}">
+				<exclude name="**/client/*.class"/>
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+				<exclude name="**/bankaA.properties"/>
+				<include name="**/*.jks"/>
+				<exclude name="**/bankaa.jks"/>
+				<include name="**/*.cer"/>
+			</classes>
+			<lib dir="${lib.dir}">
+				<include name="spring-*.jar"/>
+				<include name="bcprov-jdk16-141.jar"/>
+				<include name="commons-*.jar"/>
+			</lib>
+			<webinf dir="${webinf.dir}">
+				<include name="wsdl/**"/>
+				<include name="shema/**"/>
+				<include name="keystores/*.cer"/>
+				<include name="keystores/*.jks"/>
+				<include name="cxf-servlet.xml"/>
+			</webinf>
+			<fileset dir="." includes="keystores/*.cer"/>
+		</war>
+	</target>
 
-	<target name="deploy" depends="war, war1">
+	<target name="deploy" depends="war, war1, warBanka1">
 		<copy todir="${tomee.dir}/webapps">
 			<fileset dir="${dist.dir}" includes="${war.name}"/>
 			<fileset dir="${dist.dir}" includes="${war1.name}"/>
+			<fileset dir="${dist.dir}" includes="${warBanka1.name}"/>
 		</copy>
 	</target>
 
@@ -196,6 +226,8 @@
 		<delete file="${tomee.dir}/webapps/${war.name}"/>
 		<delete file="${dist.dir}/${war1.name}"/>
 		<delete file="${tomee.dir}/webapps/${war1.name}"/>
+		<delete file="${dist.dir}/${warBanka1.name}"/>
+		<delete file="${tomee.dir}/webapps/${warBanka1.name}"/>
 	</target>
 
 	<target name="main" depends="clean,deploy">
