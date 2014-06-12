@@ -101,7 +101,7 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			e1.printStackTrace();
 		} 
       
-    	return new DOMSource(DocumentTransform.createNotificationResponse("Faktura uspesno obradjena.", TARGET_NAMESPACE));
+    	return new DOMSource(DocumentTransform.createNotificationResponse("Faktura uspesno obradjena."));
 	}
 
 	

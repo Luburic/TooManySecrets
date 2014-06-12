@@ -82,7 +82,7 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 				
 				
 				if(!validateContent(nalog))
-					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
+					return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju."));
 				
 				//sve ok, snimanje primljenog kliring naloga u bazu banke A(this)
 				
@@ -105,7 +105,7 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return new DOMSource(DocumentTransform.createNotificationResponse("Nalog(kliring tipa)uspesno primljen.",TARGET_NAMESPACE));
+			return new DOMSource(DocumentTransform.createNotificationResponse("Nalog(kliring tipa)uspesno primljen."));
 
 	
 		}
@@ -179,7 +179,7 @@ public class NalogClearingProvider implements Provider<DOMSource> {
 						
 						
 						if(!validateContentZaduzenje(zaduzenje))
-							return new DOMSource(DocumentTransform.createNotificationResponse("Doukment zaduzenje nije validan po sadrzaju.",TARGET_NAMESPACE));
+							return new DOMSource(DocumentTransform.createNotificationResponse("Doukment zaduzenje nije validan po sadrzaju."));
 						
 						//snimanje zaduzenja primljenog od centrale u bazu banke				
 						//skidanje para sa racuna firme

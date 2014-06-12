@@ -56,7 +56,7 @@ public class OdobrenjeProvider implements Provider<DOMSource>{
 			}
 			*/
 			if(!validateContent(mt910))
-				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument odobrenje nije validan po sadrzaju.",TARGET_NAMESPACE));
+				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument odobrenje nije validan po sadrzaju."));
 			
 			//sve je ok, mt910 se snimi u bazu
 			
@@ -71,7 +71,7 @@ public class OdobrenjeProvider implements Provider<DOMSource>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return new DOMSource(DocumentTransform.createNotificationResponse("Primljeno odobrenje.",TARGET_NAMESPACE));
+		return new DOMSource(DocumentTransform.createNotificationResponse("Primljeno odobrenje."));
 		}
 
 	private boolean validateContent(MT910 mt910) {

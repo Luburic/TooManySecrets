@@ -32,7 +32,7 @@ public class MessageTransform {
 		Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/"+schemaPrefix+"Crypt.xsd","http://localhost:8080/xenc-schema.xsd"});
 		
 		if( doc == null )
-			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Crypt semi.", TARGET_NAMESPACE);
+			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Crypt semi.");
 		
 		URL url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		
@@ -44,12 +44,12 @@ public class MessageTransform {
 		decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 		
 		if(decrypt==null)
-			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Signed semi.",TARGET_NAMESPACE);
+			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Signed semi.");
 		
 	
 		
 		if(!security.verifySignature(decrypt)) 
-			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije dobro potpisan.",TARGET_NAMESPACE);
+			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije dobro potpisan.");
 	
 	
 		/*int dbCounter=0; //database
@@ -101,7 +101,7 @@ public class MessageTransform {
 		redniBrojPoruke.getParentNode().removeChild(redniBrojPoruke);
 		
 		if(rbrPoruke <= rbrPorukeFromXml || dateFromXml.after(date) || dateFromXml.equals(date)) {
-			return DocumentTransform.createNotificationResponse(schemaPrefix +" pokusaj napada.", TARGET_NAMESPACE);
+			return DocumentTransform.createNotificationResponse(schemaPrefix +" pokusaj napada.");
 		}
 		///////////////////////////////////////////////
 		
@@ -112,7 +112,7 @@ public class MessageTransform {
 		decrypt = Validation.buildDocumentWithValidation(reader2, new String[]{ "http://localhost:8080/"+schemaPrefix+"Raw.xsd"});
 		
 		if( decrypt == null )
-			return DocumentTransform.createNotificationResponse(schemaPrefix +" dokument nije validan po Raw semi.",TARGET_NAMESPACE);
+			return DocumentTransform.createNotificationResponse(schemaPrefix +" dokument nije validan po Raw semi.");
 		
 		
 		RESTUtil.sacuvajFakturu(forSave, naziv, propReceiver.getProperty("naziv"), false, date);
@@ -137,14 +137,14 @@ public class MessageTransform {
 		Document signed = security.addTimestampAndSign(alias, password, keystoreFile, keystorePassword, inputFile, outputFile, 0, " http://localhost:8080/ws_style/services/"+serviceAdress+"?xsd=../shema/"+schemaPrefix+"Signed.xsd", schemaPrefix.toLowerCase());
 		
 		if( signed == null )
-			return DocumentTransform.createNotificationResponse("Greska u potpisivanju"+schemaPrefix+" dokumenta.",TARGET_NAMESPACE);
+			return DocumentTransform.createNotificationResponse("Greska u potpisivanju"+schemaPrefix+" dokumenta.");
 		
 		
 		
 		Document encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificate(alias, password, keystoreFile, keystorePassword),NAMESPACE_XSD, schemaPrefix.toLowerCase());
 		
 		if(encrypted == null)
-			return DocumentTransform.createNotificationResponse("Greska u enkripciji"+schemaPrefix+" dokumenta.",TARGET_NAMESPACE);
+			return DocumentTransform.createNotificationResponse("Greska u enkripciji"+schemaPrefix+" dokumenta.");
 		
 		
 		

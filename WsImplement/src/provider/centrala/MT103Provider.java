@@ -69,7 +69,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			}*/
 			
 			if(!validateContent(mt103))
-				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
+				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju."));
 			
 			
 			//sve je ok, MT103 se snimi u bazu centrale

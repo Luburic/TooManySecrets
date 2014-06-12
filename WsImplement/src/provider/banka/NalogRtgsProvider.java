@@ -88,7 +88,7 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 			}*/
 			
 			if(!validateContent(nalog))
-				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nalog nije validan po sadrzaju.",TARGET_NAMESPACE));
+				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nalog nije validan po sadrzaju."));
 			
 			//ako je validan, snimanje primljenog naloga u bazu
 			
@@ -167,7 +167,7 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 							
 							
 							if(!validateContentZaduzenje(zaduzenje))
-								return new DOMSource(DocumentTransform.createNotificationResponse("Doukment zaduzenje nije validan po sadrzaju.",TARGET_NAMESPACE));
+								return new DOMSource(DocumentTransform.createNotificationResponse("Doukment zaduzenje nije validan po sadrzaju."));
 							
 							
 							//snimanje u bazu primljenog zaduzenja od te centrale
@@ -202,7 +202,7 @@ public class NalogRtgsProvider  implements Provider<DOMSource>{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		return new DOMSource(DocumentTransform.createNotificationResponse("Nalog(rtgs tipa)uspesno primljen i obradjen.",TARGET_NAMESPACE));
+		return new DOMSource(DocumentTransform.createNotificationResponse("Nalog(rtgs tipa)uspesno primljen i obradjen."));
 
 		
 	}
