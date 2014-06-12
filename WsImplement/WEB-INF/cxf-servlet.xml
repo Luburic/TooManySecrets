@@ -16,6 +16,12 @@
 		wsdlLocation="WEB-INF/wsdl/Firma.wsdl"
 		/>
 
+		<jaxws:endpoint 
+		id="nalog"
+		address="/Nalog"
+		implementor="provider.banka.NalogProvider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
 
 		<jaxws:endpoint 
 		id="rtgs"
