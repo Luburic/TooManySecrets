@@ -215,9 +215,5 @@ pip-log.txt
 .mr.developer.cfg
 WsImplement/ant.properties
 WsImplement/FakturaTest/faktura-example1-crypted.xml
-WsImplement/FakturaTest/faktura-example1-crypted.xml
-WsImplement/FakturaTest/faktura-example1-crypted.xml
 WsImplement/FakturaTest/faktura-example1-signed.xml
-WsImplement/ant.properties
 WsImplement/NalogTest/nalog-example1.xml
-WsImplement/ant.properties
