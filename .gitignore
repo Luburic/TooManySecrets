@@ -217,3 +217,4 @@ WsImplement/ant.properties
 WsImplement/FakturaTest/faktura-example1-crypted.xml
 WsImplement/FakturaTest/faktura-example1-signed.xml
 WsImplement/NalogTest/nalog-example1.xml
+XWSBSEP/ant.properties
