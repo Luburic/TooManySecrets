@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd"
+		>
+
+		<jaxws:endpoint 
+		id="nalog"
+		address="/Nalog"
+		implementor="provider.banka.NalogProvider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+
+		<jaxws:endpoint 
+		id="rtgs"
+		address="/Rtgs"
+		implementor="provider.banka.NalogRtgsProvider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+		
+		<jaxws:endpoint 
+		id="clearing"
+		address="/Clearing"
+		implementor="provider.banka.NalogClearingProvider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+		
+	
+		<jaxws:endpoint 
+		id="odobrenje"
+		address="/Odobrenje"
+		implementor="provider.banka.OdobrenjeProvider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+	
+	
+			
+		<jaxws:endpoint 
+		id="izvod"
+		address="/Izvod"
+		implementor="provider.banka.IzvodProvider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+		
+		
+		
+		<jaxws:endpoint 
+		id="mt102"
+		address="/MT102"
+		implementor="provider.centrala.MT102Provider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+		
+		
+		
+		
+		<jaxws:endpoint 
+		id="mt103"
+		address="/MT103"
+		implementor="provider.centrala.MT103Provider"
+		wsdlLocation="WEB-INF/wsdl/Banka.wsdl"
+		/>
+		
+</beans>
+  

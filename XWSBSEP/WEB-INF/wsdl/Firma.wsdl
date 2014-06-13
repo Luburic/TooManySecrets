@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+    targetNamespace="http://www.toomanysecrets.com/firmaServis"
+    xmlns:ws="http://www.toomanysecrets.com/firmaServis"
+    xmlns:external="http://www.toomanysecrets.com/tipovi"
+    
+    name = "FirmaServis"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    >
+   
+   
+   
+   <wsdl:types>
+        <xs:schema targetNamespace="http://www.toomanysecrets.com/firmaServis">
+     
+        	<xs:element name="notif" type="xs:string"/>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/FakturaCrypt.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/FakturaRaw.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/FakturaSigned.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/ZahtevZaIzvodCrypt.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/PresekCrypt.xsd" /> 
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/Fault.xsd" />
+   
+   
+    <wsdl:message name="fakturaRequest">
+        <wsdl:part name="fakturaReq" element="external:faktura"/>
+    </wsdl:message>
+    
+    
+    <wsdl:message name="notifikacija">
+        <wsdl:part name="notif" element="ws:notif"/>
+    </wsdl:message>
+    
+    
+      <wsdl:message name="faultMessage">
+        <wsdl:part name="fault" element="external:fault"/>
+    </wsdl:message>
+    
+    
+    <wsdl:portType name="FirmaPortType">
+        
+        <!--request-response -->
+        <wsdl:operation name="PrimiFakturu">
+            <wsdl:input name="fakturaInput" message="ws:fakturaRequest"/>
+            <wsdl:output name="strOutput" message="ws:notifikacija"/>
+            <!-- wsdl:fault name="fault" message="ws:faultMessage"></wsdl:fault -->
+        </wsdl:operation>
+        
+        
+    </wsdl:portType>
+    
+    <wsdl:binding name="FirmaBinding" type="ws:FirmaPortType">
+        
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+      
+        <wsdl:operation name="PrimiFakturu">
+       
+          <soap:operation soapAction="" style="document"/>
+           
+            <wsdl:input name="fakturaInput">
+            	<soap:body use="literal"/>
+            </wsdl:input>
+           		
+           	 <wsdl:output name="strOutput">
+            	<soap:body use="literal"/>
+           	</wsdl:output>
+           	
+           	
+           <!-- 	<wsdl:fault name="fault">
+           		<soap:fault name="fault" use="literal"/>
+           	</wsdl:fault> -->
+           	
+           	
+        </wsdl:operation>
+        
+    </wsdl:binding>
+    
+    
+    
+    <wsdl:service name="FirmaServis">
+       
+        <wsdl:port name="FakturaPort" binding="ws:FirmaBinding">
+            <soap:address location="http://localhost:8080/FakturaPort"/>
+        </wsdl:port>
+        
+    </wsdl:service>
+    
+    
+</wsdl:definitions>
