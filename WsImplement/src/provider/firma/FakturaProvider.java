@@ -15,15 +15,12 @@ import javax.xml.ws.Service;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
 
-import org.apache.cxf.binding.soap.SoapFault;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
 import util.DocumentTransform;
 import util.MessageTransform;
-import util.Validation;
 import beans.faktura.Faktura;
-
 
 @Stateless
 @ServiceMode(value = Service.Mode.PAYLOAD)
@@ -37,19 +34,13 @@ public class FakturaProvider  implements Provider<DOMSource> {
 	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
 	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
 	
-	
 	private Document message;
 	
-	public FakturaProvider() {
-		// TODO Auto-generated constructor stub
-	}
+	public FakturaProvider() {}
 	
 	@Override
 	public DOMSource invoke(DOMSource request) {
-		
-		
     	try {
-    		
 			//serijalizacija DOM-a na ekran
     		System.out.println("\nInvoking FakturaProvider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
@@ -76,17 +67,10 @@ public class FakturaProvider  implements Provider<DOMSource> {
 				return new DOMSource(decryptedDocument);
 			}
 
-			
-				
 			if(!validateContent(faktura)) {
 				return new DOMSource(message);
 			}
-			
-			
-		
 			//snimanje u bazu...
-			
-			
     	} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (DOMException e) {
@@ -104,11 +88,6 @@ public class FakturaProvider  implements Provider<DOMSource> {
     	return new DOMSource(DocumentTransform.createNotificationResponse("Faktura uspesno obradjena."));
 	}
 
-	
-	
-	
-	
-	
 	public boolean validateContent(Faktura fak) {
 	
 		/*boolean flag = true;

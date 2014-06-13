@@ -24,6 +24,8 @@ import beans.nalog.Nalog;
 @WebServiceProvider(portName = "NalogPort", serviceName = "NalogServis", targetNamespace = "http://www.toomanysecrets.com/bankaServis", wsdlLocation = "WEB-INF/wsdl/Banka.wsdl")
 public class NalogProvider implements Provider<DOMSource> {
 	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/bankaServis";
+	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
+	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
 
 	public NalogProvider() {
 	}

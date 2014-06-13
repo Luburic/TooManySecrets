@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.Dispatch;
@@ -17,7 +18,13 @@ import util.MessageTransform;
 import util.Validation;
 
 public class NalogClient {
+	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/bankaServis";
+	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
 	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
+	public static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+	public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+	@SuppressWarnings("unused")
+	private Marshaller marshaller;
 
 	public void testIt(String sender, String receiver, String cert, String inputFile) {
 		try {
