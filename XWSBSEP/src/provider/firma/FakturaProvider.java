@@ -18,34 +18,22 @@ import javax.xml.ws.WebServiceProvider;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
+import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
 import beans.faktura.Faktura;
 
-
 @Stateless
 @ServiceMode(value = Service.Mode.PAYLOAD)
-@WebServiceProvider(portName = "FakturaPort", 
-serviceName = "FirmaServis",
-targetNamespace = "http://www.toomanysecrets.com/firmaServis",
-wsdlLocation = "WEB-INF/wsdl/Firma.wsdl")
-public class FakturaProvider  implements Provider<DOMSource> {
-
-	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/firmaServis";
-
-
-	private Document message;
-
+@WebServiceProvider(portName = "FakturaPort", serviceName = "FirmaServis", targetNamespace = ConstantsXWS.TARGET_NAMESPACE_FIRMA, wsdlLocation = "WEB-INF/wsdl/Firma.wsdl")
+public class FakturaProvider implements Provider<DOMSource> {
 	public FakturaProvider() {
 	}
 
 	@Override
 	public DOMSource invoke(DOMSource request) {
-
-
 		try {
-
-			//serijalizacija DOM-a na ekran
+			// serijalizacija DOM-a na ekran
 			System.out.println("\nInvoking FakturaProvider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 
@@ -58,30 +46,23 @@ public class FakturaProvider  implements Provider<DOMSource> {
 			Properties propReceiver = new Properties();
 			propReceiver.load(inputStreamReceiver);
 
-			Document decryptedDocument = MessageTransform.unpack(document, "Faktura", "Faktura", TARGET_NAMESPACE, propReceiver);
+			Document decryptedDocument = MessageTransform.unpack(document, "Faktura", "Faktura",
+					ConstantsXWS.TARGET_NAMESPACE_FIRMA, propReceiver);
 
 			JAXBContext context = JAXBContext.newInstance("beans.faktura");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 
-
-			Faktura faktura=null;
+			Faktura faktura = null;
 			try {
 				faktura = (Faktura) unmarshaller.unmarshal(decryptedDocument);
 			} catch (JAXBException e) {
 				return new DOMSource(decryptedDocument);
 			}
 
-
-
-			if(!validateContent(faktura)) {
-				return new DOMSource(message);
+			if (!validateContent(faktura)) {
+				// Radi sa greškom.
 			}
-
-
-
-			//snimanje u bazu...
-
-
+			// snimanje u bazu...
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (DOMException e) {
@@ -89,23 +70,15 @@ public class FakturaProvider  implements Provider<DOMSource> {
 		} catch (TransformerFactoryConfigurationError e) {
 			e.printStackTrace();
 		} catch (JAXBException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} 
-
-		return new DOMSource(DocumentTransform.createNotificationResponse("Faktura uspesno obradjena.", TARGET_NAMESPACE));
+		}
+		return new DOMSource(DocumentTransform.createNotificationResponse("Faktura uspesno obradjena.",
+				ConstantsXWS.TARGET_NAMESPACE_FIRMA));
 	}
 
-
-
-
-
-
 	public boolean validateContent(Faktura fak) {
-
 		/*boolean flag = true;
 		double tempKolicina, tempJedinicnaCena, tempVrednost, tempProcenatRabata, tempUmanjenoZaRabat, tempPorez, tempIznosRabata;
 		double ukupnoRobeIUsluge, zaUplatu, ukupanPorez, ukupanRabat, vrednostRobe, vrednostUsluga, ukupnoStavke, zaUplatuStavke, ukupanPorezStavke, ukupanRabatStavke;
@@ -202,6 +175,4 @@ public class FakturaProvider  implements Provider<DOMSource> {
 		 */
 		return true;
 	}
-
-
 }
