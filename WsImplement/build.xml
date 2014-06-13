@@ -213,11 +213,11 @@
 		</war>
 	</target>
 
-	<target name="deploy" depends="war, war1, warBanka1">
+	<target name="deploy" depends="war, war1">
 		<copy todir="${tomee.dir}/webapps">
 			<fileset dir="${dist.dir}" includes="${war.name}"/>
 			<fileset dir="${dist.dir}" includes="${war1.name}"/>
-			<fileset dir="${dist.dir}" includes="${warBanka1.name}"/>
+			<!--fileset dir="${dist.dir}" includes="${warBanka1.name}"/-->
 		</copy>
 	</target>
 
