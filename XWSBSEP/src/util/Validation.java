@@ -32,7 +32,6 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -208,9 +207,24 @@ public class Validation {
 
 			JAXBContext context = JAXBContext.newInstance("beans.fault");
 			Marshaller marshaller= context.createMarshaller();
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
+			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(fault,System.out);
+			//marshaller.marshal(fault, new File("./Fault/fault-example.xml"));
+			
+			
+			
+			/*Testirani deo koji je prosao kada se pokrene FakturaKlijent
+			 * 
+			 * Notification notification = new Notification();
+			notification.setNotificationstring("labudova_kara");
+
+			JAXBContext context = JAXBContext.newInstance("beans.notification");
+			Marshaller marshaller = context.createMarshaller();
+			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+			
+			marshaller.marshal(notification, new File("./Notification/notification-example.xml"));*/
 
 			return new SOAPFaultException(soapFault); 
 		} catch (SOAPException e) {

@@ -17,10 +17,7 @@
    
    
    <wsdl:types>
-        <xs:schema targetNamespace="http://www.toomanysecrets.com/firmaServis">
      
-        	<xs:element name="notif" type="xs:string"/>
-        </xs:schema>
     </wsdl:types>
     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/FakturaCrypt.xsd" />
     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/FakturaRaw.xsd" />
@@ -28,6 +25,11 @@
     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/ZahtevZaIzvodCrypt.xsd" />
     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/PresekCrypt.xsd" /> 
     <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/Fault.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/NotificationCrypt.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/NotificationSigned.xsd" />
+    <wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/NotificationRaw.xsd" />
+    
+    
    
    
     <wsdl:message name="fakturaRequest">
@@ -36,7 +38,7 @@
     
     
     <wsdl:message name="notifikacija">
-        <wsdl:part name="notif" element="ws:notif"/>
+        <wsdl:part name="notif" element="external:notification"/>
     </wsdl:message>
     
     
