@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<fault xmlns="http://www.toomanysecrets.com/tipovi">
-    <faultstring>Server is not available.</faultstring>
-    <faultcode xmlns:ns0="http://cxf.apache.org/faultcode">ns0:client</faultcode>
-</fault>
