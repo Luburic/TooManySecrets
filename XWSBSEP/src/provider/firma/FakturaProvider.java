@@ -2,6 +2,7 @@ package provider.firma;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 import javax.ejb.Stateless;
@@ -27,6 +28,10 @@ import beans.faktura.Faktura;
 @ServiceMode(value = Service.Mode.PAYLOAD)
 @WebServiceProvider(portName = "FakturaPort", serviceName = "FirmaServis", targetNamespace = ConstantsXWS.TARGET_NAMESPACE_FIRMA, wsdlLocation = "WEB-INF/wsdl/Firma.wsdl")
 public class FakturaProvider implements Provider<DOMSource> {
+	private Properties propReceiver;
+	private String message;
+	private Document encrypted;
+	
 	public FakturaProvider() {
 	}
 
@@ -42,13 +47,14 @@ public class FakturaProvider implements Provider<DOMSource> {
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 
-			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("/firma.properties");
-			Properties propReceiver = new Properties();
+			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("firmaA.properties");
+			propReceiver = new Properties();
 			propReceiver.load(inputStreamReceiver);
 
 			Document decryptedDocument = MessageTransform.unpack(document, "Faktura", "Faktura",
 					ConstantsXWS.TARGET_NAMESPACE_FIRMA, propReceiver);
-
+			
+			
 			JAXBContext context = JAXBContext.newInstance("beans.faktura");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 
@@ -59,10 +65,22 @@ public class FakturaProvider implements Provider<DOMSource> {
 				return new DOMSource(decryptedDocument);
 			}
 
+			
+			
 			if (!validateContent(faktura)) {
-				// Radi sa greškom.
+				DocumentTransform.createNotificationResponse(message,ConstantsXWS.TARGET_NAMESPACE_FIRMA);
 			}
-			// snimanje u bazu...
+			else {
+				DocumentTransform.createNotificationResponse("Faktura uspesno obradjena.",ConstantsXWS.TARGET_NAMESPACE_FIRMA);
+			}
+			
+
+			//propSender=proprReciver
+			String apsolute = "C:\\Users\\Branislav\\Documents\\GitHub\\TooManySecrets\\XWSBSEP\\TestXMLi\\notification.xml";
+
+			//encrypted = MessageTransform.packS("Faktura", "Faktura",apsolute, propReceiver, "cerFirmab",ConstantsXWS.NAMESPACE_XSD);
+
+			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (DOMException e) {
@@ -74,12 +92,14 @@ public class FakturaProvider implements Provider<DOMSource> {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		return new DOMSource(DocumentTransform.createNotificationResponse("Faktura uspesno obradjena.",
-				ConstantsXWS.TARGET_NAMESPACE_FIRMA));
+		
+		
+		return new DOMSource(encrypted);
 	}
 
 	public boolean validateContent(Faktura fak) {
-		/*boolean flag = true;
+		
+		
 		double tempKolicina, tempJedinicnaCena, tempVrednost, tempProcenatRabata, tempUmanjenoZaRabat, tempPorez, tempIznosRabata;
 		double ukupnoRobeIUsluge, zaUplatu, ukupanPorez, ukupanRabat, vrednostRobe, vrednostUsluga, ukupnoStavke, zaUplatuStavke, ukupanPorezStavke, ukupanRabatStavke;
 
@@ -89,6 +109,10 @@ public class FakturaProvider implements Provider<DOMSource> {
 		ukupanRabatStavke = 0;
 
 		List<Faktura.Stavka> stavke = fak.getStavka();
+
+		
+		
+		
 		for (Faktura.Stavka stavka : stavke) {
 
 			tempKolicina = stavka.getKolicina().doubleValue();
@@ -97,31 +121,27 @@ public class FakturaProvider implements Provider<DOMSource> {
 			tempIznosRabata = stavka.getIznosRabata().doubleValue();
 			tempProcenatRabata = stavka.getProcenatRabata().doubleValue();
 			tempUmanjenoZaRabat = stavka.getUmanjenoZaRabat().doubleValue();
-			//tempPorez = stavka.getPorez().doubleValue();
+			tempPorez = stavka.getUkupanPorez().doubleValue();
 
 			if (tempKolicina * tempJedinicnaCena != tempVrednost) {
-				message = createResponse("GRE�KA: Vrednost stavke "+ stavka.getRedniBroj()+ ". ne odgovara proizvodu koli�ine i jedini�ne cene.");
-				flag = false;
-				return flag;
+				message ="Greska: Vrednost stavke "+ stavka.getRedniBroj()+ ". ne odgovara proizvodu kolicine i jedinicne cene.";
+				return false;
 			}
 
 			else if (tempVrednost * tempProcenatRabata / 100 != tempIznosRabata) {
-				message = createResponse( "GRE�KA: Vrednost rabata stavke "+ stavka.getRedniBroj()+ ". ne odgovara procentu rabata ukupne vrednosti.");
-				flag = false;
-				return flag;
+				message =  "Greska: Vrednost rabata stavke "+ stavka.getRedniBroj()+ ". ne odgovara procentu rabata ukupne vrednosti.";
+				return false;
 			}
 
 			else if (tempUmanjenoZaRabat != tempVrednost - tempIznosRabata) {
-				message = createResponse("GRE�KA: Vrednost umanjena za rabat stavke "+ stavka.getRedniBroj()+ ". ne odgovara ukupnoj vrednosti umanjenoj za rabat.");
-
-				flag = false;
-				return flag;
+				message = "Greska: Vrednost umanjena za rabat stavke "+ stavka.getRedniBroj()+ ". ne odgovara ukupnoj vrednosti umanjenoj za rabat.";
+				return false;
 
 			}
 
 			ukupnoStavke += tempVrednost;
-			//zaUplatuStavke += tempUmanjenoZaRabat + tempPorez;
-			//ukupanPorezStavke += tempPorez;
+			zaUplatuStavke += tempUmanjenoZaRabat + tempPorez;
+			ukupanPorezStavke += tempPorez;
 			ukupanRabatStavke += tempIznosRabata;
 		}
 
@@ -133,46 +153,37 @@ public class FakturaProvider implements Provider<DOMSource> {
 		vrednostUsluga = fak.getZaglavlje().getVrednostUsluga().doubleValue();
 
 		if (ukupnoRobeIUsluge != vrednostRobe + vrednostUsluga) {
-			message = createResponse("GRE�KA: Ukupna vrednost robe i usluga u zaglavlju se ne sla�e sa zbirom vrednosti robe i usluga iz zaglavlja.");
-			flag = false;
-			return flag;
+			message = "Greska: Ukupna vrednost robe i usluga ne odgovara sumi vrednosti robe i usluga(zaglavlje fakture).";
+			return false;
 		}
 
+		// vrednost robe ? 
 		else if (ukupnoRobeIUsluge != ukupnoStavke) {
-			message = createResponse("GRE�KA: Ukupna vrednost robe i usluga u zaglavlju je razli�ita od zbira vrednosti stavki.");
-			flag = false;
-			return flag;
+			message = "Greska: Ukupna vrednost robe i usluga ne odgovara sumi vrednosti stavki.";
+			return false;
 		}
 
 		else if (zaUplatu != ukupnoRobeIUsluge - ukupanRabat + ukupanPorez) {
-			message = createResponse("GRE�KA: Iznos za uplatu se ne sla�e sa ukupnom vredno��u robe sa porezom umanjene za rabat.");
-			flag = false;
-			return flag;
+			message = "Greska: Iznos za uplatu ne odgovara vrednosti robe sa porezom, umanjene za rabat(zaglavlje fakture).";
+			return false;
 		}
 
 		else if (zaUplatu != zaUplatuStavke) {
-			message = createResponse("GRE�KA: Iznos za uplatu iz zaglavlja se ne sla�e sa zbirom stavki posle odbijanja rabata i dodavanja poreza.");
-			flag = false;
-			return flag;
+			message = "Greska: Iznos za uplatu iz zaglavlja ne odgovara sumi stavki sa porezom, umanjene za rabat";
+			return false;
 		}
 
 		else if (ukupanPorez != ukupanPorezStavke) {
-			message = createResponse("GRE�KA: Ukupan porez iz zaglavlja se ne sla�e sa zbirom poreza iz stavki.");
-			flag = false;
-			return flag;
+			message = "Greska: Ukupan porez iz zaglavlja ne odgovara sumi poreza iz stavki.";
+			return false;
 		}
 
 		else if (ukupanRabat != ukupanRabatStavke) {
-			message = createResponse("GRE�KA: Ukupan rabat iz zaglavlja se ne sla�e sa zbirom rabata iz stavki.");
-			flag = false;
-			return flag;
+			message = "Greska: Ukupan rabat iz zaglavlja se ne odgovara sumi rabata iz stavki.";
+			return false;
 		}
 
-
-		message = createResponse("Faktura je popunjena bez gre�aka.");
-		return flag;
-
-		 */
 		return true;
+
 	}
 }

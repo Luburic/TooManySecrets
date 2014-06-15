@@ -124,10 +124,14 @@ public class DocumentTransform {
 			JAXBContext context = JAXBContext.newInstance("beans.notification");
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			marshaller.marshal(notification, new File("C:\\Users\\Branislav\\Documents\\GitHub\\TooManySecrets\\XWSBSEP\\Notification\\notification-example.xml"));
 			
-			doc = Validation.buildDocumentWithoutValidation("C:\\Users\\Branislav\\Documents\\GitHub\\TooManySecrets\\XWSBSEP\\Notification\\notification-example.xml");// ./Notification/notification-example.xml
-
+			String apsolute = "C:\\Users\\Branislav\\Documents\\GitHub\\TooManySecrets\\XWSBSEP\\TestXMLi\\notification.xml";
+			
+			marshaller.marshal(notification, new File(apsolute));
+			
+			doc = Validation.buildDocumentWithoutValidation(apsolute);
+		
+			
 		} catch (PropertyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

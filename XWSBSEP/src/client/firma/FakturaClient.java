@@ -45,8 +45,14 @@ public class FakturaClient {
 			if (encrypted != null) {
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 
+				
+				//unpack..
+				
 				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-				DocumentTransform.printDocument(DocumentTransform.convertToDocument(response));
+				
+				if(response!=null)
+					DocumentTransform.printDocument(DocumentTransform.convertToDocument(response));
+				
 				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 			}
 		} catch (MalformedURLException e) {
