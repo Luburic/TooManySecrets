@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions targetNamespace="http://www.toomanysecrets.com/CentralnaRTGSNalog"
+	xmlns:ws="http://www.toomanysecrets.com/CentralnaRTGSNalog" xmlns:external="http://www.toomanysecrets.com/tipovi"
+	name="CentralnaRTGSNalog" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<wsdl:types>
+		<xs:schema targetNamespace="http://www.toomanysecrets.com/CentralnaRTGSNalog">
+			<xs:element name="notif" type="xs:string" />
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/MT103Crypt.xsd" />
+	<wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/MT900Crypt.xsd" />
+	<wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/MT910Crypt.xsd" />
+
+
+	<wsdl:message name="rtgsRequest">
+		<wsdl:part name="rtgs" element="external:MT103"/>
+	</wsdl:message>
+
+	<wsdl:message name="odobrenjeRtgsResponse">
+	    <wsdl:part name="odobrenje" element="external:MT910"/>
+	</wsdl:message>
+
+	<wsdl:message name="zaduzenjeRtgsResponse">
+	    <wsdl:part name="zaduzenje" element="external:MT900"/>
+	</wsdl:message>
+	
+	<wsdl:message name="notifikacija">
+	    <wsdl:part name="notif" type="xs:string"/>
+	</wsdl:message>
+	
+	<wsdl:portType name="CentralnaRTGSNalogPortType">
+		<wsdl:operation name="PrihvatiRTGSNalog">
+		    <wsdl:input name="rtgsNalogInput" message="ws:rtgsRequest"/>
+		    <wsdl:output name="zaduzanjeRtgsOutput" message="ws:zaduzenjeRtgsResponse"/>
+		</wsdl:operation>
+		
+		<wsdl:operation name="ProslediRTGSOdgovor">
+		    <wsdl:input name="rtgsNalogInput" message="ws:rtgsRequest"/>
+		    <wsdl:output name="strOutput" message="ws:notifikacija"/>
+		</wsdl:operation>
+		
+		<wsdl:operation name="ProslediRTGSOdobrenje">
+		    <wsdl:input name="rtgsOdobrenjeInput" message="ws:odobrenjeRtgsResponse"/>
+		    <wsdl:output name="strOutput" message="ws:notifikacija"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="CentralnaRTGSNalogSOAP" type="ws:CentralnaRTGSNalogPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="PrihvatiRTGSNalog">
+	        <soap:operation soapAction="" style="document"/>
+	        <wsdl:input name="rtgsNalogInput"><soap:body use="literal"/></wsdl:input>
+	        <wsdl:output name="zaduzanjeRtgsOutput"><soap:body use="literal"/></wsdl:output>
+	    </wsdl:operation>
+	    
+	    <wsdl:operation name="ProslediRTGSOdgovor">
+	        <soap:operation soapAction="" style="document"/>
+	        <wsdl:input name="rtgsNalogInput"><soap:body use="literal"/></wsdl:input>
+	        <wsdl:output name="strOutput"><soap:body use="literal"/></wsdl:output>
+	    </wsdl:operation>
+	    
+	    <wsdl:operation name="ProslediRTGSOdobrenje">
+	        <soap:operation soapAction="" style="document"/>
+	        <wsdl:input name="rtgsOdobrenjeInput"><soap:body use="literal"/></wsdl:input>
+	        <wsdl:output name="strOutput"><soap:body use="literal"/></wsdl:output>
+	    </wsdl:operation>
+	    
+	</wsdl:binding>
+	<wsdl:service name="CentralnaRTGSNalog">
+		<wsdl:port binding="ws:CentralnaRTGSNalogSOAP" name="CentralnaRTGSNalogPort">
+			<soap:address location="http://localhost:8080/CentralnaRTGSNalogPort" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.toomanysecrets.com/tipovi"
+    targetNamespace="http://www.toomanysecrets.com/tipovi" elementFormDefault="qualified"
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb" 
+    jxb:version="2.0">
+
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#"
+        schemaLocation="xmldsig-core-schema.xsd"/>
+    <xs:element name="MT900">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="swiftBankeDuznika">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="8"/>
+                            <xs:maxLength value="11"/>
+                            <xs:pattern value="[A-Z]{4}[A-Z]{2}[0-9A-Z]{2}([0-9A-Z]{3})?"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="obracunskiRacunBankeDuzinka">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:length value="18"/>
+                            <xs:pattern value="[0-9]{3}[0-9]{13}[0-9]{2}"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="idPorukeNaloga">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:maxLength value="50"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="datumValute">
+                	<xs:simpleType>
+						<xs:annotation>
+							<xs:appinfo>
+								<jxb:javaType name="java.util.Date" parseMethod="util.MyDatatypeConverter.parseDate" printMethod="util.MyDatatypeConverter.printDate" />
+							</xs:appinfo>
+						</xs:annotation>
+						<xs:restriction base="xs:date">
+							<xs:minInclusive value="1900-01-01" />
+							<xs:maxInclusive value="2200-01-01" />
+						</xs:restriction>
+					</xs:simpleType>
+                </xs:element>
+                <xs:element name="iznos">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:totalDigits value="15"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="sifraValute">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:length value="3"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="timestamp" type="xs:string"/>
+                <xs:element name="redniBrojPoruke" type="xs:int"/>
+                <xs:element ref="ds:Signature"/>
+            </xs:sequence>
+            <xs:attribute name="idPoruke" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

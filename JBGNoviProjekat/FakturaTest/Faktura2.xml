@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><faktura xmlns="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <zaglavlje idPoruke="1">
+        <nazivDobavljaca>1</nazivDobavljaca>
+        <adresaDobavljaca>1</adresaDobavljaca>
+        <pibDobavljaca>11111111111</pibDobavljaca>
+        <nazivKupca>1</nazivKupca>
+        <adresaKupca>1</adresaKupca>
+        <pibKupca>11111111111</pibKupca>
+        <brojRacuna>1</brojRacuna>
+        <datumRacuna>2014-06-25</datumRacuna>
+        <vrednostRobe>1.0</vrednostRobe>
+        <vrednostUsluga>1.0</vrednostUsluga>
+        <ukupnoRobaIUsluge>1.0</ukupnoRobaIUsluge>
+        <ukupanRabat>1.0</ukupanRabat>
+        <ukupanPorez>1.0</ukupanPorez>
+        <oznakaValute>1</oznakaValute>
+        <iznosZaUplatu>1.0</iznosZaUplatu>
+        <uplataNaRacun>123123123123123123</uplataNaRacun>
+        <datumValute>2014-06-04</datumValute>
+    </zaglavlje>
+    <stavka redniBroj="123">
+        <nazivRobeIliUsluge>123</nazivRobeIliUsluge>
+        <kolicina>123.0</kolicina>
+        <jedinicaMere>213</jedinicaMere>
+        <jedinicnaCena>123.0</jedinicnaCena>
+        <vrednost>123.0</vrednost>
+        <procenatRabata>123.0</procenatRabata>
+        <iznosRabata>123.0</iznosRabata>
+        <umanjenoZaRabat>123.0</umanjenoZaRabat>
+        <ukupanPorez>123.0</ukupanPorez>
+    </stavka>
+</faktura>

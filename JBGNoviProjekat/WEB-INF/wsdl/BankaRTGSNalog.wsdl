@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions targetNamespace="http://www.toomanysecrets.com/BankaRTGSNalog"
+	xmlns:ws="http://www.toomanysecrets.com/BankaRTGSNalog" xmlns:external="http://www.toomanysecrets.com/tipovi"
+	name="BankaRTGSNalog" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+	<wsdl:types>
+		<xs:schema targetNamespace="http://www.toomanysecrets.com/BankaRTGSNalog">
+			<xs:element name="notif" type="xs:string" />
+		</xs:schema>
+	</wsdl:types>
+
+	<wsdl:import namespace="http://www.toomanysecrets.com/tipovi"
+		location="http://localhost:8080/NalogCrypt.xsd" />
+
+
+	<wsdl:message name="nalogRTGSRequest">
+		<wsdl:part name="nalog" element="external:nalog" />
+	</wsdl:message>
+
+	<wsdl:message name="notifikacija">
+		<wsdl:part name="notif" type="xs:string" />
+	</wsdl:message>
+	
+	<wsdl:portType name="BankaRTGSNalogPortType">
+		<wsdl:operation name="PrihvatiRTGSNalog">
+		    <wsdl:input name="nalogInput" message="ws:nalogRTGSRequest"/>
+		    <wsdl:output name="strOutput" message="ws:notifikacija"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="BankaRTGSNalogSOAP" type="ws:BankaRTGSNalogPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="PrihvatiRTGSNalog">
+	        <soap:operation soapAction="" style="document"/>
+	        <wsdl:input name="nalogInput"><soap:body use="literal"/></wsdl:input>
+	        <wsdl:output name="strOutput"><soap:body use="literal"/></wsdl:output>
+	    </wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="BankaRTGSNalog">
+		<wsdl:port binding="ws:BankaRTGSNalogSOAP" name="BankaRTGSNalogPort">
+			<soap:address location="http://localhost:8080/BankaRTGSNalogPort" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
