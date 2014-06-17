@@ -116,6 +116,8 @@ public class MessageTransform {
 
 		SecurityClass security =new SecurityClass();
 		Document document = Validation.buildDocumentWithoutValidation("./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+		System.out.println("****DOKUMENT :  "+ document);
+		
 		Element mt = (Element) document.getElementsByTagName(schemaPrefix.toLowerCase()).item(0);
 		mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 

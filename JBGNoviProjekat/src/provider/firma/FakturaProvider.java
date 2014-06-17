@@ -101,12 +101,9 @@ public class FakturaProvider implements Provider<DOMSource> {
 			}
 			
 			
-			
-			
 			//propSender=proprReciver
-			String apsolute = "C:\\Users\\Branislav\\Documents\\GitHub\\TooManySecrets\\JBGNoviProjekat\\TestXMLi\\notification.xml";
-
-			//encrypted = MessageTransform.packS("Faktura", "Faktura",apsolute, propReceiver, "cerFirmab",ConstantsXWS.NAMESPACE_XSD);
+			
+			encrypted = MessageTransform.packS("Faktura", "Notification","./NotificationTest/Notification.xml", propReceiver, "cerFirmab",ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
 			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

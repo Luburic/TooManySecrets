@@ -44,10 +44,16 @@ public class FakturaClient {
 
 			if (encrypted != null) {
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
-
-				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-				DocumentTransform.printDocument(DocumentTransform.convertToDocument(response));
-				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+				
+				if(response!=null) {
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");					
+					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "Faktura", "Notification",
+							ConstantsXWS.TARGET_NAMESPACE_FIRMA, propSender, "firma", "Notifikacija");
+				
+					DocumentTransform.printDocument(decryptedDocument);
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+				}	
+				
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

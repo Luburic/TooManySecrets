@@ -43,7 +43,6 @@ import basexdb.RequestMethod;
  * Klasa demonstrira upotrebu REST API-a BaseX XML baze podataka.
  * Sadrzi set reusable CRUD operacija, sa primerom njihove upotrebe. 
  * 
- * @author Igor Cverdelj-Fogarasi
  *
  */
 public class RESTUtil {
@@ -69,15 +68,39 @@ public class RESTUtil {
 
 		DOMSource cntPoslateFakA = brojacPoslatihDocument("","rbrPoslateFaktura", 0);
 		DOMSource cntPoslateFakB = brojacPoslatihDocument("","rbrPoslateFaktura", 0);
+		
+		DOMSource cntPoslateNotifA = brojacPoslatihDocument("","rbrPoslateNotifikacija", 0);
+		DOMSource cntPoslateNotifB = brojacPoslatihDocument("","rbrPoslateNotifikacija", 0);
+		
+		
+		
 		DOMSource ctnPrimljeneFakA = brojacPrimljenihDocument(null,"","primljeneFaktura","firma", "firmab", new Date(), 0);
-		DocumentTransform.printDocument(DocumentTransform.convertToDocument(ctnPrimljeneFakA));
-		ctnPrimljeneFakA = brojacPrimljenihDocument(DocumentTransform.convertToDocument(ctnPrimljeneFakA),"","primljeneFaktura", "firma", "firmac", new Date(), 0);
 		DOMSource ctnPrimljeneFakB = brojacPrimljenihDocument(null,"","primljeneFaktura", "firma", "firmaa",  new Date(), 0);
+		
+		DOMSource ctnPrimljeneNotifA = brojacPrimljenihDocument(null,"","primljeneNotifikacija","firma", "firmab", new Date(), 0);
+		DOMSource ctnPrimljeneNotifB = brojacPrimljenihDocument(null,"","primljeneNotifikacija","firma", "firmaa", new Date(), 0);
+		
+		//DocumentTransform.printDocument(DocumentTransform.convertToDocument(ctnPrimljeneFakA));
+		ctnPrimljeneFakA = brojacPrimljenihDocument(DocumentTransform.convertToDocument(ctnPrimljeneFakA),"","primljeneFaktura", "firma", "firmac", new Date(), 0);
+		ctnPrimljeneNotifA = brojacPrimljenihDocument(DocumentTransform.convertToDocument(ctnPrimljeneNotifA),"","primljeneNotifikacija", "firma", "firmac", new Date(), 0);
+
+		
+		
+		
 		
 		createResource("firmaa", "brojacPoslatihFaktura", DOM2InputStream(cntPoslateFakA));
 		createResource("firmab", "brojacPoslatihFaktura", DOM2InputStream(cntPoslateFakB));
 		createResource("firmaa", "brojacPrimljenihFaktura", DOM2InputStream(ctnPrimljeneFakA));
 		createResource("firmab", "brojacPrimljenihFaktura", DOM2InputStream(ctnPrimljeneFakB));
+		
+		
+		
+		createResource("firmaa", "brojacPoslatihNotifikacija", DOM2InputStream(cntPoslateNotifA));
+		createResource("firmab", "brojacPoslatihNotifikacija", DOM2InputStream(cntPoslateNotifB));
+		createResource("firmaa", "brojacPrimljenihNotifikacija", DOM2InputStream(ctnPrimljeneNotifA));
+		createResource("firmab", "brojacPrimljenihNotifikacija", DOM2InputStream(ctnPrimljeneNotifB));
+		
+		
 
 		DOMSource accountA = createAccount("firmaa", "111111111111111111",
 				"111111111", "100.00");
