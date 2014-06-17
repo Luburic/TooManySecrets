@@ -8,14 +8,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 
-	<wsdl:types>
-		<xs:schema targetNamespace="http://www.toomanysecrets.com/BankaNalog">
-			<xs:element name="notif" type="xs:string" />
-		</xs:schema>
-	</wsdl:types>
+	
 
 	<wsdl:import namespace="http://www.toomanysecrets.com/tipovi"
 		location="http://localhost:8080/NalogCrypt.xsd" />
+	<wsdl:import namespace="http://www.toomanysecrets.com/tipovi"
+	 location="http://localhost:8080/NotificationCrypt.xsd" />
 
 
 	<wsdl:message name="nalogRequest">
@@ -23,7 +21,7 @@
 	</wsdl:message>
 
 	<wsdl:message name="notifikacija">
-		<wsdl:part name="notif" type="xs:string" />
+		<wsdl:part name="notif" type="external:notification" />
 	</wsdl:message>
 	
 	<wsdl:portType name="BankaNalogPortType">

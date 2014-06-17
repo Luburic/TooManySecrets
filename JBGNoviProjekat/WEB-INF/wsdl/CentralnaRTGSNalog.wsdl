@@ -7,15 +7,11 @@
 	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-	<wsdl:types>
-		<xs:schema targetNamespace="http://www.toomanysecrets.com/CentralnaRTGSNalog">
-			<xs:element name="notif" type="xs:string" />
-		</xs:schema>
-	</wsdl:types>
+	
 	<wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/MT103Crypt.xsd" />
 	<wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/MT900Crypt.xsd" />
 	<wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/MT910Crypt.xsd" />
-
+	<wsdl:import namespace="http://www.toomanysecrets.com/tipovi" location="http://localhost:8080/NotificationCrypt.xsd" />
 
 	<wsdl:message name="rtgsRequest">
 		<wsdl:part name="rtgs" element="external:MT103"/>
@@ -30,7 +26,7 @@
 	</wsdl:message>
 	
 	<wsdl:message name="notifikacija">
-	    <wsdl:part name="notif" type="xs:string"/>
+	    <wsdl:part name="notif" type="external:notification"/>
 	</wsdl:message>
 	
 	<wsdl:portType name="CentralnaRTGSNalogPortType">
