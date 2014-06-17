@@ -2,8 +2,13 @@ package util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,8 +22,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import beans.notification.Notification;
 
 public class DocumentTransform {
 
@@ -108,16 +114,37 @@ public class DocumentTransform {
 
 
 
-	public static Document createNotificationResponse(String notification,String TARGET_NAMESPACE) {
+	public static Document createNotificationResponse(String notificationMessage,String TARGET_NAMESPACE) {
+		Document doc = null;
 
-		DocumentBuilder documentBuilder = DocumentTransform.getDocumentBuilder();
-		Document doc = documentBuilder.newDocument();
+		try {
+			Notification notification = new Notification();
+			notification.setNotificationstring(notificationMessage);
 
-		Element rootEl = doc.createElementNS(TARGET_NAMESPACE, "ns1:notif");
-		rootEl.setAttributeNS(NAMESPACE_SPEC_NS, "xmlns:ns1", TARGET_NAMESPACE);
-		doc.appendChild(rootEl);
-		rootEl.appendChild(doc.createTextNode(notification));
-
+			JAXBContext context = JAXBContext.newInstance("beans.notification");
+			Marshaller marshaller = context.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+			
+			String apsolute = "C:\\Users\\Branislav\\Documents\\GitHub\\TooManySecrets\\JBGNoviProjekat\\TestXMLi\\notification.xml";
+			
+			marshaller.marshal(notification, new File(apsolute));
+			
+			
+			
+			doc = Validation.buildDocumentWithoutValidation(apsolute);
+		
+			
+		} catch (PropertyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return doc;
 	}
 }
