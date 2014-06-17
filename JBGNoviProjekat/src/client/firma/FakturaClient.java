@@ -66,6 +66,6 @@ public class FakturaClient {
 
 	public static void main(String[] args) {
 		FakturaClient fc = new FakturaClient();
-		fc.testIt("firmaB", "firmaa", "cerFirmaa", "./FakturaTest/faktura-example1.xml");
+		fc.testIt("firmaB", "firmaa", "cerfirmaa", "./FakturaTest/faktura-example1.xml");
 	}
 }

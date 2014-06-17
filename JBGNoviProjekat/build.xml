@@ -232,6 +232,7 @@
 						<exclude name="**/firmaa.jks"/>
 						<exclude name="**/firmab.jks"/>
 						<include name="**/*.cer"/>
+						<include name="**/*.xml"/>
 					</classes>
 					<lib dir="${lib.dir}">
 						<include name="spring-*.jar"/>
@@ -272,6 +273,7 @@
 							<exclude name="**/firmaa.jks"/>
 							<exclude name="**/firmab.jks"/>
 							<include name="**/*.cer"/>
+							<include name="**/*.xml"/>
 						</classes>
 						<lib dir="${lib.dir}">
 							<include name="spring-*.jar"/>
@@ -313,6 +315,7 @@
 								<exclude name="**/firmaa.jks"/>
 								<exclude name="**/firmab.jks"/>
 								<include name="**/*.cer"/>
+								<include name="**/*.xml"/>
 							</classes>
 							<lib dir="${lib.dir}">
 								<include name="spring-*.jar"/>
