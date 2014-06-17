@@ -12,6 +12,7 @@
 	<property name="wsdl.dir" value="${webinf.dir}/wsdl"/>
 	<property name="shema.dir" value="${webinf.dir}/shema"/>
 	<property name="keystores.dir" value="${webinf.dir}/keystores"/>
+	<property name="notif.dir" value="${basedir}/NotificationTest"/>
 	
 	
 	<!--Task za generisanje objektnog modela na osnovu XSD seme -->
@@ -129,6 +130,8 @@
 	<target name="war" depends="compile">
 		<delete file="${webinf.dir}/cxf-servlet.xml"/>
 		<delete file="${war.name}"/>
+		<delete file="${src.dir}/firma.properties"/>
+		<delete file="${bin.dir}/firma.properties"/>
 		<copy file="${webinf.dir}/keystores/A/cxf-servlet.xml" todir="${webinf.dir}"/>
 		<copy file="${webinf.dir}/keystores/A/firma.properties" todir="${bin.dir}"/>
 		<war warfile="${dist.dir}/${war.name}" webxml="${webinf.dir}/web.xml">
@@ -142,6 +145,7 @@
 				<include name="**/*.jks"/>
 				<exclude name="**/firmab.jks"/>
 				<include name="**/*.cer"/>
+				<include name="**/*.xml"/>
 			</classes>
 			<lib dir="${lib.dir}">
 				<include name="spring-*.jar"/>
@@ -182,11 +186,15 @@
 					<include name="**/*.jks"/>
 					<exclude name="**/firmaa.jks"/>
 					<include name="**/*.cer"/>
+					<include name="**/*.xml"/>
 				</classes>
 				<lib dir="${lib.dir}">
 					<include name="spring-*.jar"/>
 					<include name="bcprov-jdk16-141.jar"/>
 					<include name="commons-*.jar"/>
+				</lib>
+				<lib dir="${notif.dir}">
+					<include name="Notification.xml"/>
 				</lib>
 				<webinf dir="${webinf.dir}">
 					<include name="wsdl/**"/>
@@ -330,9 +338,9 @@
 		<copy todir="${tomee.dir}/webapps">
 			<fileset dir="${dist.dir}" includes="${war.name}"/>
 			<fileset dir="${dist.dir}" includes="${war1.name}"/>
-			<fileset dir="${dist.dir}" includes="${war2.name}"/>
+			<!--fileset dir="${dist.dir}" includes="${war2.name}"/>
 			<fileset dir="${dist.dir}" includes="${war3.name}"/>
-			<fileset dir="${dist.dir}" includes="${war4.name}"/>
+			<fileset dir="${dist.dir}" includes="${war4.name}"/-->
 
 		</copy>
 	</target>

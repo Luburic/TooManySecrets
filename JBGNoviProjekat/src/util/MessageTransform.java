@@ -113,15 +113,24 @@ public class MessageTransform {
 
 	//faktura klijent
 	public static Document packS(String serviceAdress,String schemaPrefix,String inputFile,Properties propSender, String receiver, String NAMESPACE_XSD, String type){
-
+		
+		Document document = null;
 		SecurityClass security =new SecurityClass();
-		Document document = Validation.buildDocumentWithoutValidation("./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+		if(!serviceAdress.equalsIgnoreCase("Notifikacija")) {
+			document = Validation.buildDocumentWithoutValidation("./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+		} else {
+			document = Validation.buildDocumentWithoutValidation(inputFile);
+		}
 		System.out.println("****DOKUMENT :  "+ document);
 		
 		Element mt = (Element) document.getElementsByTagName(schemaPrefix.toLowerCase()).item(0);
 		mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 
-		security.saveDocument(document, "./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+		if(!serviceAdress.equalsIgnoreCase("Notifikacija")){
+			security.saveDocument(document, "./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+		} else {
+			security.saveDocument(document, inputFile);
+		}
 
 		String outputFile = inputFile.substring(0, inputFile.length()-4) + "-signed.xml";
 

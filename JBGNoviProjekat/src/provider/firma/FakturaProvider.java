@@ -55,7 +55,7 @@ public class FakturaProvider implements Provider<DOMSource> {
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 
-			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("firmaA.properties");
+			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("firma.properties");
 			propReceiver = new Properties();
 			propReceiver.load(inputStreamReceiver);
 
@@ -102,8 +102,9 @@ public class FakturaProvider implements Provider<DOMSource> {
 			
 			
 			//propSender=proprReciver
+			String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
 			
-			encrypted = MessageTransform.packS("Faktura", "Notification","./NotificationTest/Notification.xml", propReceiver, "cerFirmab",ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
+			encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cerFirmaa",ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
 			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

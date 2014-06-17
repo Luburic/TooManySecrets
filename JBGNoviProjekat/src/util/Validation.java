@@ -32,7 +32,6 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;

@@ -125,8 +125,10 @@ public class DocumentTransform {
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			
-			String apsolute = "C:\\Users\\Branislav\\Documents\\GitHub\\TooManySecrets\\JBGNoviProjekat\\NotificationTest\\Notification.xml";
-			
+			String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
+			System.out.println("NOTIFICATION RESPONSE URL: "+apsolute);
+			//String apsolute = "C:\\Users\\Milan\\Documents\\GitHub\\TooManySecrets\\JBGNoviProjekat\\src\\Notification.xml";
+
 			marshaller.marshal(notification, new File(apsolute));
 			
 			
