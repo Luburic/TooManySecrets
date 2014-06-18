@@ -34,19 +34,26 @@ public class NalogClient {
 			}
 			Dispatch<DOMSource> dispatch = service.createDispatch(portName, DOMSource.class, Service.Mode.PAYLOAD);
 
-			InputStream inputStreamSender = this.getClass().getClassLoader()
-					.getResourceAsStream(sender + ".properties");
+			InputStream inputStreamSender = this.getClass().getClassLoader().getResourceAsStream(sender + ".properties");
 			Properties propSender = new java.util.Properties();
 			propSender.load(inputStreamSender);
 
-			Document encrypted = null;
-			//Document encrypted = MessageTransform.packS("Nalog", "Nalog", inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD);
+			Document encrypted = MessageTransform.packS("Nalog", "Nalog", inputFile, propSender, cert,ConstantsXWS.NAMESPACE_XSD, "Nalog");
+			
 			if (encrypted != null) {
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
-				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-				DocumentTransform.printDocument(DocumentTransform.convertToDocument(response));
-				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+				
+				if(response!=null) {
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");					
+					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "Nalog", "Notification",
+							ConstantsXWS.TARGET_NAMESPACE_FIRMA, propSender, "firma", "Notifikacija");
+				
+					DocumentTransform.printDocument(decryptedDocument);
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+				}	
 			}
+			
+			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (TransformerFactoryConfigurationError e) {
@@ -58,6 +65,7 @@ public class NalogClient {
 
 	public static void main(String[] args) {
 		NalogClient fc = new NalogClient();
-		fc.testIt("firmaa", "bankaa", "cerBankaa", "./TestXMLi/nalog-example1.xml");
+		fc.testIt("firmaA", "bankaa", "cerbankaa", "./TestXMLi/nalog-example1.xml");
+		
 	}
 }
