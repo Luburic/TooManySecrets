@@ -2,6 +2,7 @@ package provider.banka;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -101,8 +102,16 @@ public class NalogProvider implements Provider<DOMSource> {
 				DocumentTransform.createNotificationResponse(message,ConstantsXWS.TARGET_NAMESPACE_BANKA);
 			}
 			else {
+				
+				//....
 				DocumentTransform.createNotificationResponse("Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA);
 			}
+			
+			
+			
+			
+			String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
+			encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
 		
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -120,7 +129,25 @@ public class NalogProvider implements Provider<DOMSource> {
 
 	private boolean validateContent(Nalog nalog) {
 		message ="";
+		
+		BigDecimal limit = new BigDecimal(250000);
+		
+		if(nalog.isHitno() || nalog.getIznos().compareTo(limit)!= -1) {
+			//rtgs
+		}
+		else {
+			//clearing
+		}
+		
+		
 		return true;
 	}
+	
+	
+	
+	
+	
+	
+	
 
 }
