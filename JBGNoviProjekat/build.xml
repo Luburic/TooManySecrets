@@ -337,13 +337,13 @@
 						</war>
 		</target>
 
-	<target name="deploy" depends="war, war1, war2, war3, war4">
+	<target name="deploy" depends="war,war1,war2,war3,war4">
 		<copy todir="${tomee.dir}/webapps">
 			<fileset dir="${dist.dir}" includes="${war.name}"/>
 			<fileset dir="${dist.dir}" includes="${war1.name}"/>
-			<!--fileset dir="${dist.dir}" includes="${war2.name}"/>
+			<fileset dir="${dist.dir}" includes="${war2.name}"/>
 			<fileset dir="${dist.dir}" includes="${war3.name}"/>
-			<fileset dir="${dist.dir}" includes="${war4.name}"/-->
+			<fileset dir="${dist.dir}" includes="${war4.name}"/>
 
 		</copy>
 	</target>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tipovi:nalog xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+ xmlns:tipovi="http://www.toomanysecrets.com/tipovi"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.toomanysecrets.com/tipovi file:/C:/Users/Branislav/Desktop/NalogRaw.xsd" idPoruke="idPoruke0">
+    <tipovi:duznikNalogodavac>duznikNalogodavac0</tipovi:duznikNalogodavac>
+    <tipovi:svrhaPlacanja>svrhaPlacanja0</tipovi:svrhaPlacanja>
+    <tipovi:primalacPoverilac>primalacPoverilac0</tipovi:primalacPoverilac>
+    <tipovi:datumNaloga>2006-05-04</tipovi:datumNaloga>
+    <tipovi:datumValute>2006-05-04</tipovi:datumValute>
+    <tipovi:racunDuznika>000000000000000000</tipovi:racunDuznika>
+    <tipovi:modelZaduzenja>0</tipovi:modelZaduzenja>
+    <tipovi:pozivNaBrojZaduzenja>pozivNaBrojZaduzenja</tipovi:pozivNaBrojZaduzenja>
+    <tipovi:racunPoverioca>000000000000000000</tipovi:racunPoverioca>
+    <tipovi:modelOdobrenja>0</tipovi:modelOdobrenja>
+    <tipovi:pozivNaBrojOdobrenja>0</tipovi:pozivNaBrojOdobrenja>
+    <tipovi:iznos>0.00</tipovi:iznos>
+    <tipovi:oznakaValute>ozn</tipovi:oznakaValute>
+    <tipovi:hitno>false</tipovi:hitno>
+</tipovi:nalog>

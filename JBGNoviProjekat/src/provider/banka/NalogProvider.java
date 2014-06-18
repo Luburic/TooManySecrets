@@ -27,7 +27,9 @@ import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
+import util.MyDatatypeConverter;
 import basexdb.RESTUtil;
+import beans.mt103.MT103;
 import beans.nalog.Nalog;
 
 @Stateless
@@ -37,9 +39,11 @@ import beans.nalog.Nalog;
 					targetNamespace = "http://www.toomanysecrets.com/BankaNalog",
 					wsdlLocation = "WEB-INF/wsdl/BankaNalog.wsdl")
 public class NalogProvider implements Provider<DOMSource> {
-	private Properties propReceiver;
+	
 	private String message;
 	private Document encrypted;
+	private BigDecimal limit = new BigDecimal(250000);
+	private Properties propReceiver;
 	
 	public NalogProvider() {
 	}
@@ -57,7 +61,7 @@ public class NalogProvider implements Provider<DOMSource> {
 			System.out.println("\n");
 
 			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("/banka.properties");
-			Properties propReceiver = new Properties();
+			propReceiver = new Properties();
 			propReceiver.load(inputStreamReceiver);
 
 			Document decryptedDocument = MessageTransform.unpack(document, "Nalog", "Nalog",
@@ -101,14 +105,22 @@ public class NalogProvider implements Provider<DOMSource> {
 			if (!validateContent(nalog)) {
 				DocumentTransform.createNotificationResponse(message,ConstantsXWS.TARGET_NAMESPACE_BANKA);
 			}
+			
+			
 			else {
 				
-				//....
-				DocumentTransform.createNotificationResponse("Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA);
+				
+				if(nalog.isHitno() || nalog.getIznos().compareTo(limit)!= -1) {
+					//rtgs
+					//..
+					DocumentTransform.createNotificationResponse("Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA);
+				}
+				else {
+					//clearing
+				
+				
+				}
 			}
-			
-			
-			
 			
 			String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
 			encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
@@ -130,7 +142,7 @@ public class NalogProvider implements Provider<DOMSource> {
 	private boolean validateContent(Nalog nalog) {
 		message ="";
 		
-		BigDecimal limit = new BigDecimal(250000);
+		
 		
 		if(nalog.isHitno() || nalog.getIznos().compareTo(limit)!= -1) {
 			//rtgs
@@ -144,7 +156,44 @@ public class NalogProvider implements Provider<DOMSource> {
 	}
 	
 	
-	
+	private MT103 createMT103(Nalog nalog) {
+		MT103 mt=null;
+		try {
+		    mt = new MT103();
+			mt.setIdPoruke(MessageTransform.randomString(50));
+			mt.setSwiftBankeDuznika(propReceiver.getProperty("swift"));
+			mt.setObracunskiRacunBankeDuznika(propReceiver.getProperty("obracunskiRac"));
+			
+			String bankPropertiesFileName=MessageTransform.checkBank(nalog.getRacunPoverioca().substring(0, 3));
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream(bankPropertiesFileName+".properties");
+			Properties reciver = new Properties();
+			reciver.load(is);
+			
+			mt.setSwiftBankePoverioca(reciver.getProperty("swift"));
+			mt.setObracunskiRacunBankePoverioca(reciver.getProperty("obracunskiRac"));
+
+
+			mt.setDuznik(nalog.getDuznikNalogodavac());
+			mt.setSvrhaPlacanja(nalog.getSvrhaPlacanja());
+			mt.setPrimalac(nalog.getPrimalacPoverilac());
+			mt.setDatumNaloga(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
+			mt.setDatumValute(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
+			mt.setRacunDuznika(nalog.getRacunDuznika());
+			mt.setModelZaduzenja(nalog.getModelZaduzenja());
+			mt.setPozivNaBrojZaduzenja(nalog.getPozivNaBrojZaduzenja());
+			mt.setRacunPoverioca(nalog.getRacunPoverioca());
+			mt.setModelOdobrenja(nalog.getModelOdobrenja());
+			mt.setPozivNaBrojOdobrenja(String.valueOf(nalog.getPozivNaBrojOdobrenja()));
+			mt.setIznos(nalog.getIznos());
+			mt.setSifraValute(nalog.getOznakaValute());
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return mt;
+	}
 	
 	
 	

@@ -65,7 +65,7 @@ public class NalogClient {
 
 	public static void main(String[] args) {
 		NalogClient fc = new NalogClient();
-		fc.testIt("firmaA", "bankaa", "cerbankaa", "./TestXMLi/nalog-example1.xml");
+		fc.testIt("firmaA", "bankaa", "cerbankaa", "./TestXMLi/nalog.xml");
 		
 	}
 }
