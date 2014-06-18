@@ -46,7 +46,7 @@ public class NalogClient {
 				if(response!=null) {
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");					
 					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "Nalog", "Notification",
-							ConstantsXWS.TARGET_NAMESPACE_FIRMA, propSender, "firma", "Notifikacija");
+							ConstantsXWS.TARGET_NAMESPACE_BANKA, propSender, "firma", "Notifikacija");
 				
 					DocumentTransform.printDocument(decryptedDocument);
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
