@@ -1,7 +1,9 @@
 package gui.dialogs;
 
+import firms.Firm;
+import firms.RegisteredFirms;
 import gui.MainFrame;
-import gui.tables.BanksTableModel;
+import gui.tables.FirmsTableModel;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -19,44 +21,44 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
 import net.miginfocom.swing.MigLayout;
-import banks.Bank;
-import banks.RegisteredBanks;
 
 @SuppressWarnings("serial")
-public class BanksDialog extends JDialog {
-
-	private BanksTableModel banksTableModel = null;
+public class FirmsDialog extends JDialog {
+	
+	private FirmsTableModel firmsTableModel = null;
 	private JTable tblGrid;
 	private JToolBar toolBar;
 	private JButton btnAdd, btnDelete, btnCertificates;
-	private RegisteredBanks registeredBanks = null;
+	private RegisteredFirms registeredFirms = null;
 	private String[] columns;
+	private String bankName;
 
-	public BanksDialog(MainFrame mf) {
+	public FirmsDialog(MainFrame mf, String name) {
 	
 		setLayout(new MigLayout("fill"));
 
 		setSize(new Dimension(600, 400));
-		setTitle("Bank registration");
+		setTitle("Firm registration");
 		setLocationRelativeTo(mf);
 		setModal(true);
 
 		toolBar = new JToolBar();
 
 
-		btnAdd = new JButton("New bank");
+		btnAdd = new JButton("New firm");
 		
 		toolBar.add(btnAdd);
 
-		btnDelete = new JButton("Delete bank");
+		btnDelete = new JButton("Delete firm");
 		toolBar.add(btnDelete);
 
-		btnCertificates = new JButton("View bank certificates");
+		btnCertificates = new JButton("View firm certificates");
 		toolBar.add(btnCertificates);
 
 		add(toolBar, "dock north");
 		
-		registeredBanks = RegisteredBanks.load();
+		registeredFirms = RegisteredFirms.load(name);
+		bankName = name;
 		
 		initTable();
 		JScrollPane scrollPane = new JScrollPane(tblGrid);
@@ -64,10 +66,10 @@ public class BanksDialog extends JDialog {
 		
 		btnAdd.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				NewBankDialog bd = new NewBankDialog(MainFrame.getInstance());
+				NewFirmDialog bd = new NewFirmDialog(MainFrame.getInstance(), bankName);
 				bd.setVisible(true);
-				banksTableModel.fillTable(bd.getRegisteredBanks());
-				banksTableModel.fireTableDataChanged();
+				firmsTableModel.fillTable(bd.getRegisteredFirms());
+				firmsTableModel.fireTableDataChanged();
 			}			
 		});
 		
@@ -75,15 +77,15 @@ public class BanksDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int sel = tblGrid.getSelectedRow();
 				if(sel < 0) return;
-				Bank tempBank = registeredBanks.removeBank((String) banksTableModel.getValueAt(sel, 1));
-				registeredBanks.store(registeredBanks.getBank());
-				banksTableModel.fillTable(registeredBanks);
-				banksTableModel.fireTableDataChanged();
-				File fileToDelete = new File("./keystores/" + tempBank.getName()+".jks");
+				Firm tempFirm = registeredFirms.removeFirm((String) firmsTableModel.getValueAt(sel, 1));
+				registeredFirms.store(registeredFirms.getFirm(), bankName);
+				firmsTableModel.fillTable(registeredFirms);
+				firmsTableModel.fireTableDataChanged();
+				File fileToDelete = new File("./keystores/" + tempFirm.getName()+".jks");
 				if(fileToDelete.exists()) {
 					fileToDelete.delete();
 				}
-				File fileToDelete2 = new File("./keystores/" + tempBank.getName()+".cer");
+				File fileToDelete2 = new File("./keystores/" + tempFirm.getName()+".cer");
 				if(fileToDelete2.exists()) {
 					fileToDelete2.delete();
 				}
@@ -94,7 +96,7 @@ public class BanksDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int sel = tblGrid.getSelectedRow();
 				if(sel < 0) return;
-				CertificateDialog cd = new CertificateDialog(RegisteredBanks.load().getBank((String)banksTableModel.getValueAt(sel, 1)));
+				CertificateDialog cd = new CertificateDialog(RegisteredFirms.load(bankName).getFirmByPib((String)firmsTableModel.getValueAt(sel, 1)), bankName);
 				cd.setVisible(true);
 			}			
 		});
@@ -105,9 +107,9 @@ public class BanksDialog extends JDialog {
 		tblGrid = new JTable();
 		tblGrid.setRowHeight(20);
 		tblGrid.setAutoCreateColumnsFromModel(false);
-		banksTableModel = new BanksTableModel();
-		banksTableModel.fillTable(registeredBanks);
-		tblGrid.setModel(banksTableModel);
+		firmsTableModel = new FirmsTableModel();
+		firmsTableModel.fillTable(registeredFirms);
+		tblGrid.setModel(firmsTableModel);
 		tblGrid.getTableHeader().setReorderingAllowed(false);
 
 		tblGrid.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);		
@@ -120,11 +122,11 @@ public class BanksDialog extends JDialog {
 				//removeBank.setEnabled(true);
 			}
 		});
-		for (int i = 0; i < BanksTableModel.colHeaders.length; i++) {
+		for (int i = 0; i < FirmsTableModel.colHeaders.length; i++) {
 			TableColumn column = new TableColumn(i);
 			tblGrid.addColumn(column);
 		}
-		banksTableModel.fireTableDataChanged();
+		firmsTableModel.fireTableDataChanged();
 	}
 	
 	protected int getColumn(String str) {

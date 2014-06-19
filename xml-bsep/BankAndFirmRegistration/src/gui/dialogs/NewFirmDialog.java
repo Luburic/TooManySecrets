@@ -1,12 +1,8 @@
 package gui.dialogs;
 
-import gui.MainFrame;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.security.cert.X509Certificate;
 
 import javax.swing.BorderFactory;
@@ -18,17 +14,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
-
-import org.w3c.dom.Document;
-
 import security.CertificateGenerator;
-import util.DOMUtils;
-import banks.Bank;
-import banks.RegisteredBanks;
+import firms.Firm;
+import firms.RegisteredFirms;
+import gui.MainFrame;
 
 @SuppressWarnings("serial")
-public class NewBankDialog extends JDialog {
-
+public class NewFirmDialog extends JDialog {
+	
 	private JLabel lblAlgorithm = new JLabel("Signature Algorithm:");
 	private JLabel lblValidity = new JLabel("Validity period (days):");
 	private JLabel lblCN = new JLabel("Name:");
@@ -37,7 +30,9 @@ public class NewBankDialog extends JDialog {
 	private JLabel lblL = new JLabel("Locality Postcode (L):");
 	private JLabel lblC = new JLabel("Country Code (C):");
 	private JLabel lblE = new JLabel("Email (E):");
-	private JLabel lblSwift = new JLabel("ID (4 letters):");
+	private JLabel lblAddress = new JLabel("Address (A):");
+	private JLabel lblAcc = new JLabel("Account (Acc):");
+	private JLabel lblSwift = new JLabel("PIB (11 letters max):");
 
 	private JTextField txtAlgorithm = new JTextField();
 	private JTextField txtValidity = new JTextField();
@@ -47,6 +42,8 @@ public class NewBankDialog extends JDialog {
 	private JTextField txtO = new JTextField();
 	private JTextField txtC = new JTextField();
 	private JTextField txtE = new JTextField();
+	private JTextField txtAddress = new JTextField();
+	private JTextField txtAcc = new JTextField();
 	private JTextField txtSwift = new JTextField();
 
 	private JButton btnOk = new JButton("OK");
@@ -54,17 +51,19 @@ public class NewBankDialog extends JDialog {
 
 	private int days = 0;
 
-	private Bank bank;
-	private RegisteredBanks registeredBanks;
+	private Firm firm;
+	private String bankName;
+	private RegisteredFirms registeredFirms;
 	private CertificateGenerator cert;
 
-	public NewBankDialog(MainFrame mf) {
+	public NewFirmDialog(MainFrame mf, String name) {
 
-		setModal(true);		
-		bank = new Bank();
-		registeredBanks = RegisteredBanks.load();
+		setModal(true);
+		bankName = name;
+		firm = new Firm();
+		registeredFirms = RegisteredFirms.load(name);
 		setResizable(false);
-		setTitle("Bank Registration");
+		setTitle("Firm Registration");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		setLayout(new MigLayout());
@@ -92,7 +91,7 @@ public class NewBankDialog extends JDialog {
 				"10[]10[]10[]10[]10[]10[]10");		
 		JPanel bankP = new JPanel();
 		bankP.setLayout(layout);
-		bankP.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Bank data"));
+		bankP.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Firm data"));
 
 		bankP.add(lblCN);
 		txtCN.setMinimumSize(new Dimension(160,20));
@@ -121,6 +120,14 @@ public class NewBankDialog extends JDialog {
 		bankP.add(lblSwift);
 		txtSwift.setMinimumSize(new Dimension(60,20));
 		bankP.add(txtSwift,"wrap");	
+		
+		bankP.add(lblAddress);
+		txtAddress.setMinimumSize(new Dimension(60,20));
+		bankP.add(txtAddress,"wrap");
+		
+		bankP.add(lblAcc);
+		txtAcc.setMinimumSize(new Dimension(60,20));
+		bankP.add(txtAcc,"wrap");
 
 		JPanel okP = new JPanel();
 		okP.setLayout(new MigLayout("","[]20[]","10[]10"));
@@ -145,7 +152,7 @@ public class NewBankDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				String CN = txtCN.getText().trim();
 				if(("").equals(CN)){
-					JOptionPane.showMessageDialog(null, "Please, enter bank name!","ERROR",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Please, enter firm name!","ERROR",JOptionPane.ERROR_MESSAGE);
 					txtCN.requestFocus();
 					return;
 				}
@@ -191,14 +198,14 @@ public class NewBankDialog extends JDialog {
 					txtE.requestFocus();
 					return;
 				}
-				String swift = txtSwift.getText().trim();
-				if(("").equals(swift)){
-					JOptionPane.showMessageDialog(null, "Please, enter bank id!","ERROR",JOptionPane.ERROR_MESSAGE);
+				String pib = txtSwift.getText().trim();
+				if(("").equals(pib)){
+					JOptionPane.showMessageDialog(null, "Please, enter firm pib!","ERROR",JOptionPane.ERROR_MESSAGE);
 					txtE.requestFocus();
 					return;
 				}
-				if(swift.length()!=4){
-					JOptionPane.showMessageDialog(null, "Bank id must be exactly 4 letters long!","ERROR",JOptionPane.ERROR_MESSAGE);
+				if(pib.length()> 11){
+					JOptionPane.showMessageDialog(null, "Bank id must be less than 12 letters long!","ERROR",JOptionPane.ERROR_MESSAGE);
 					txtC.requestFocus();
 					return;
 				}
@@ -214,78 +221,66 @@ public class NewBankDialog extends JDialog {
 					txtValidity.requestFocus();
 					return;
 				}
-
-				swift += C.substring(0, 2) + loc.substring(0, 2);
-				for(Bank b : registeredBanks.getBank()) {
-					if(b.getSwiftCode().equalsIgnoreCase(swift)) {
-						JOptionPane.showMessageDialog(null, "Please, valid bank id!","ERROR",JOptionPane.ERROR_MESSAGE);
-						txtE.requestFocus();
-						return;
-					}
-				}
-
-				bank.setSwiftCode(swift);
-				bank.setName(CN);
-				bank.setOrganisationName(O);
-				bank.setCountry(C);
-				bank.setPostcode(loc);
-				bank.setEmail(E);
-				if(bank.getId() == null){
-					String acc = String.valueOf((int) (1000*Math.random()));
-					bank.setId(acc);
-					while(registeredBanks.getBank().contains(bank)) { 
-						acc = String.valueOf((int) (1000*Math.random()));
-						bank.setId(acc);
-					}
-				}
-				cert = new CertificateGenerator();
-				X509Certificate certificate = cert.generateChainedCertificate(CN, O, OU, C, loc, E, swift, days, true, null);
 				
-				bank.addCertificate(certificate);
+				String address = txtAddress.getText().trim();
+				if(("").equals(address)){
+					JOptionPane.showMessageDialog(null, "Please, enter firm address!","ERROR",JOptionPane.ERROR_MESSAGE);
+					txtAddress.requestFocus();
+					return;
+				}
+				
+				String account = txtAcc.getText().trim();
+				if(("").equals(account)){
+					JOptionPane.showMessageDialog(null, "Please, enter firm account!","ERROR",JOptionPane.ERROR_MESSAGE);
+					txtAcc.requestFocus();
+					return;
+				}
+
+				if(registeredFirms.getFirm().size() > 0){
+					for(Firm f : registeredFirms.getFirm()) {
+						if(f.getPib().equalsIgnoreCase(pib)) {
+							JOptionPane.showMessageDialog(null, "Please, valid pib!","ERROR",JOptionPane.ERROR_MESSAGE);
+							txtSwift.requestFocus();
+							return;
+						}
+					}
+				}
+
+				firm.setName(CN);
+				firm.setOrganisationName(OU);
+				firm.setEmail(E);
+				firm.setCountry(C);
+				firm.setPib(pib);
+				firm.setPostCode(loc);
+				firm.setAccount(account);
+				firm.setAddress(address);
+				
+				cert = new CertificateGenerator();
+				X509Certificate certificate = cert.generateChainedCertificate(CN, O, OU, C, loc, E, pib, days, false, bankName);
+				
+				firm.addCertificate(certificate);
 				setVisible(false);
 				dispose();
-				registeredBanks.addBank(bank);
-				registeredBanks.store(registeredBanks.getBank());
+				registeredFirms.addFirm(firm);
+				registeredFirms.store(registeredFirms.getFirm(), bankName);
 				
 
-				File file = new File("./xsdSchemas/"+bank.getName()+".xml");
-				if(!file.exists()) {
-					try {
-						file.createNewFile();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-				File fileCrl = new File("./xsdSchemas/crl"+bank.getName()+".xml");
-				if(!fileCrl.exists()) {
-					try {
-						fileCrl.createNewFile();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-				Document doc = DOMUtils.createNewDocument();
-				doc = DOMUtils.createDomTree(doc);
-				DOMUtils.transform(doc, "./xsdSchemas/"+bank.getName()+".xml");
 				
-				Document docCrl = DOMUtils.createNewDocument();
-				docCrl = DOMUtils.createDomTreeCrl(docCrl);
-				DOMUtils.transform(docCrl, "./xsdSchemas/crl"+bank.getName()+".xml");
 			}			
 		});
 
 
 	}
 	
-	public NewBankDialog(Bank b) {
+	public NewFirmDialog(String name, Firm f) {
 		
-		registeredBanks = RegisteredBanks.load();
-		bank = b;
+		registeredFirms = RegisteredFirms.load(name);
+		firm = f;
+		bankName = name;
+		
 		setModal(true);
 		setResizable(false);
-		setTitle("Bank Registration");
+		setTitle("Firm Registration");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		setLayout(new MigLayout());
@@ -318,38 +313,50 @@ public class NewBankDialog extends JDialog {
 		bankP.add(lblCN);
 		txtCN.setMinimumSize(new Dimension(160,20));
 		bankP.add(txtCN,"wrap");
-		txtCN.setText(bank.getName());
+		txtCN.setText(firm.getName());
 		txtCN.setEditable(false);
 		
 		bankP.add(lblO);
 		txtO.setMinimumSize(new Dimension(160,20));
 		bankP.add(txtO,"wrap");
-		txtO.setText(bank.getOrganisationName());
+		txtO.setText(firm.getOrganisationName());
 		txtO.setEditable(false);
 
 		bankP.add(lblL);
 		txtL.setMinimumSize(new Dimension(60,20));
 		bankP.add(txtL,"wrap");
-		txtL.setText(bank.getPostcode());
+		txtL.setText(firm.getPostCode());
 		txtL.setEditable(false);
 
 		bankP.add(lblC);
 		txtC.setMinimumSize(new Dimension(60,20));
 		bankP.add(txtC,"wrap");
-		txtC.setText(bank.getCountry());
+		txtC.setText(firm.getCountry());
 		txtC.setEditable(false);
 
 		bankP.add(lblE);
 		txtE.setMinimumSize(new Dimension(160,20));
 		bankP.add(txtE,"wrap");
-		txtE.setText(bank.getEmail());
+		txtE.setText(firm.getEmail());
 		txtE.setEditable(false);
 
 		bankP.add(lblSwift);
 		txtSwift.setMinimumSize(new Dimension(60,20));
 		bankP.add(txtSwift,"wrap");	
-		txtSwift.setText(bank.getSwiftCode());
+		txtSwift.setText(firm.getPib());
 		txtSwift.setEditable(false);
+		
+		bankP.add(lblAddress);
+		txtAddress.setMinimumSize(new Dimension(60,20));
+		bankP.add(txtAddress,"wrap");	
+		txtAddress.setText(firm.getAddress());
+		txtAddress.setEditable(false);
+		
+		bankP.add(lblAcc);
+		txtAcc.setMinimumSize(new Dimension(60,20));
+		bankP.add(txtAcc,"wrap");	
+		txtAcc.setText(firm.getAccount());
+		txtAcc.setEditable(false);
 		
 		txtValidity.requestFocus();
 
@@ -382,6 +389,7 @@ public class NewBankDialog extends JDialog {
 				String C = txtC.getText().trim();
 				String E = txtE.getText();
 				String swift = txtSwift.getText().trim();
+				
 				try{
 					days = Integer.valueOf(txtValidity.getText());
 				} catch (NumberFormatException nfe) {
@@ -391,26 +399,22 @@ public class NewBankDialog extends JDialog {
 				}
 
 				cert = new CertificateGenerator();
-				X509Certificate certificate = cert.generateChainedCertificate(CN, O, OU, C, loc, E, swift, days, true, null);
+				X509Certificate certificate = cert.generateChainedCertificate(CN, O, OU, C, loc, E, swift, days, false, bankName);
 				
-				bank.addCertificate(certificate);
+				firm.addCertificate(certificate);
 				setVisible(false);
 				dispose();
-				registeredBanks.removeBank(swift);
-				registeredBanks.addBank(bank);
-				registeredBanks.store(registeredBanks.getBank());
+				registeredFirms.removeFirm(swift);
+				registeredFirms.addFirm(firm);
+				registeredFirms.store(registeredFirms.getFirm(), bankName);
 			}			
 		});
 		
 		
 	}
 
-	public RegisteredBanks getRegisteredBanks() {
-		return registeredBanks;
+	public RegisteredFirms getRegisteredFirms() {
+		return registeredFirms;
 	}
-
-
-
-
 
 }

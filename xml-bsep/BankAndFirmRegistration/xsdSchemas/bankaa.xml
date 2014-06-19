@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<registeredFirms xmlns="http://www.toomanysecrets.com/firme">
+    <firm>
+        <pib>firmaa</pib>
+        <name>firmaa</name>
+        <account>111111111111111111</account>
+        <address>Ulica Firme A</address>
+        <organisationName>firmaa</organisationName>
+        <postCode>11000</postCode>
+        <country>SRB</country>
+        <email>firmaa@firmaa.com</email>
+        <certificate>MIICjTCCAfagAwIBAgIBADANBgkqhkiG9w0BAQUFADCBjDEPMA0GA1UEAwwGYmFua2FhMQ8wDQYDVQQKDAZiYW5rYWExDzANBgNVBAsMBmJhbmthYTEMMAoGA1UEBhMDU1JCMQ4wDAYDVQQHDAUxMTAwMDEfMB0GCSqGSIb3DQEJARYQYmFua2FhQGJhbmthLmNvbTEYMBYGCgmSJomT8ixkAQEMCEJOS0FTUjExMB4XDTE0MDYxOTAxNTc0MFoXDTE1MDYxOTAxNTc0MFowgYsxDzANBgNVBAMMBmZpcm1hYTEPMA0GA1UECgwGZmlybWFhMQ8wDQYDVQQLDAZmaXJtYWExDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwFMTEwMDAxIDAeBgkqhkiG9w0BCQEWEWZpcm1hYUBmaXJtYWEuY29tMRYwFAYKCZImiZPyLGQBAQwGZmlybWFhMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQChKUzxwplqRlw0fT3uUcmEH1M8T/bVhF+wgnmrjrAMwnaSZyqGCInSjTMoGB25rhmS4qknXiqhBLhcEgUdd24pavTQmC2qO9/31tqCg2MawviVd7uh4AyDy+sRDv9J+dfWuY0MIdG1dj8akv/BMEkSqnckZMReGzWanbhlDfVaUQIDAQABMA0GCSqGSIb3DQEBBQUAA4GBAHMgAGGTUC4Zd5DIxYQfUfiEXhAh0fOmJGBFuZOHHMR+kNlQhrKM6FeY2e14xfm4wzGAVo/C0lOZdkBwwZrLUVKKTxPyPhzLD7cEVsWI0utLk10/8yJEXNYy23bcEWqGy8TeE3apoLnanhYuC8WS8NLyU3Luh5FPcn+VAHhzoWAw</certificate>
+    </firm>
+</registeredFirms>

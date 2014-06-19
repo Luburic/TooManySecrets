@@ -1,9 +1,10 @@
 package security;
 
-import gui.dialogs.PasswordDialog;
-import gui.dialogs.SaveKeystoreDialog;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -33,6 +34,7 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
+import util.Base64;
 import util.Constants;
 
 public class CertificateGenerator {
@@ -149,12 +151,12 @@ public class CertificateGenerator {
 		SubjectData subjectData = new SubjectData(keyPair.getPublic(), builder.build(), sn, startDate, endDate);
 
 		X509Certificate cert = generateCertificate(issuerData, subjectData);
-
+		
 		if(Constants.alias == null)
 			return;
 
 		char[] pass =  null;
-		PasswordDialog pd = new PasswordDialog(); //password za alias
+		/*PasswordDialog pd = new PasswordDialog(); //password za alias
 		pd.setVisible(true);
 		if(!pd.isOk()){
 			pd.dispose();
@@ -162,21 +164,40 @@ public class CertificateGenerator {
 		}
 		String alias = pd.getAlias();
 		pass = pd.getPass();
-		pd.dispose();
+		pd.dispose();*/
+		String alias = commonName;
+		pass = commonName.toCharArray();
 		
+		try {
+			File file = new File("./keystores/"+commonName+".cer");
+			byte[] buf = cert.getEncoded();
+
+			FileOutputStream os = new FileOutputStream(file);
+			os.write(Base64.decode(Base64.encodeToString((buf))));
+			os.close();
+
+		} catch (CertificateEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
+		/*SaveKeystoreDialog sd = new SaveKeystoreDialog(alias);
+		sd.setVisible(true);*/
 		
-		SaveKeystoreDialog sd = new SaveKeystoreDialog(alias);
-		sd.setVisible(true);	
-		
-		File f = new File("./keystores/"+sd.getFile()+".jks");
+		File f = new File("./keystores/"+alias+".jks");
 		if(!f.exists()) {
-			ksWriter.loadKeyStore(null, sd.getPass());
+			ksWriter.loadKeyStore(null, pass);
 		} else {
-			ksWriter.loadKeyStore(sd.getFile(), sd.getPass());
+			ksWriter.loadKeyStore(alias, pass);
 		}
 		ksWriter.write(alias, keyPair.getPrivate(), pass, cert);
-		ksWriter.saveKeyStore("./keystores/"+sd.getFile()+".jks", sd.getPass());
-		JOptionPane.showMessageDialog(null, "Keystore "+sd.getFile()+".jks is saved in keystores/ folder.");
+		ksWriter.saveKeyStore("./keystores/"+alias+".jks", pass);
+		JOptionPane.showMessageDialog(null, "Keystore "+alias+".jks is saved in keystores/ folder.");
 		
 
 		//ovde bi trebalo da prodje
@@ -204,7 +225,7 @@ public class CertificateGenerator {
 	
 	//bio je void
 	public X509Certificate generateChainedCertificate(String commonName, String orgName, String orgUnit, String country, String locality,
-			String email, String uid, int days, boolean isCentralBank) {
+			String email, String uid, int days, boolean isCentralBank, String bankName) {
 		
 		KeyStoreWriter ksWriter = new KeyStoreWriter();
 		KeyStoreReader keyStoreReader = new KeyStoreReader();
@@ -233,7 +254,7 @@ public class CertificateGenerator {
 		
 		
 
-		char[] pass =  null;
+		/*char[] pass =  null;
 		PasswordDialog pd = new PasswordDialog();
 		pd.setVisible(true);
 		if(!pd.isOk()){
@@ -242,7 +263,7 @@ public class CertificateGenerator {
 		}
 		String alias = pd.getAlias();
 		pass = pd.getPass();
-		pd.dispose();
+		pd.dispose();*/
 		
 		// ucitavaju se podaci za issuer-a iz keystore fajla
 		IssuerData issuerData = null;
@@ -250,9 +271,9 @@ public class CertificateGenerator {
 			if(isCentralBank) {
 				issuerData = keyStoreReader.readKeyStoreForIssuer(isCentralBank, Constants.alias, Constants.ksPass);
 			} else {
-				PasswordDialog passDialog = new PasswordDialog();
-				passDialog.setVisible(true);
-				issuerData = keyStoreReader.readKeyStoreForIssuer(isCentralBank, passDialog.getAlias(), passDialog.getPass() ); //dodati dialog
+				/*PasswordDialog passDialog = new PasswordDialog();
+				passDialog.setVisible(true);*/
+				issuerData = keyStoreReader.readKeyStoreForIssuer(isCentralBank, bankName, bankName.toCharArray() ); //dodati dialog
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -261,20 +282,38 @@ public class CertificateGenerator {
 		SubjectData subjectData = new SubjectData(keyPair.getPublic(), builder.build(), sn, startDate, endDate);
 
 		X509Certificate cert = generateCertificate(issuerData, subjectData);
+		
+	    try {
+			File file = new File("./keystores/"+commonName+".cer");
+			byte[] buf = cert.getEncoded();
 
+		    FileOutputStream os = new FileOutputStream(file);
+		    os.write(Base64.decode(Base64.encodeToString((buf))));
+		    os.close();
+
+		} catch (CertificateEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
 		
-		SaveKeystoreDialog sd = new SaveKeystoreDialog(alias);
-		sd.setVisible(true);	
+		/*SaveKeystoreDialog sd = new SaveKeystoreDialog(alias);
+		sd.setVisible(true);*/	
 		
-		File f = new File("./keystores/"+sd.getFile()+".jks");
+		File f = new File("./keystores/"+commonName+".jks");
 		if(!f.exists()) {
-			ksWriter.loadKeyStore(null, sd.getPass());
+			ksWriter.loadKeyStore(null, commonName.toCharArray());
 		} else {
-			ksWriter.loadKeyStore("./keystores/"+sd.getFile()+".jks", sd.getPass());
+			ksWriter.loadKeyStore("./keystores/"+commonName+".jks", commonName.toCharArray());
 		}
-		ksWriter.write(alias, keyPair.getPrivate(), pass, cert);
-		ksWriter.saveKeyStore("./keystores/"+sd.getFile()+".jks", sd.getPass());
-		JOptionPane.showMessageDialog(null, "Keystore "+sd.getFile()+".jks is saved in keystores/ folder.");
+		ksWriter.write(commonName, keyPair.getPrivate(), commonName.toCharArray(), cert);
+		ksWriter.saveKeyStore("./keystores/"+commonName+".jks", commonName.toCharArray());
+		JOptionPane.showMessageDialog(null, "Keystore "+commonName+".jks is saved in keystores/ folder.");
 		
 		
 		// ispis na konzolu

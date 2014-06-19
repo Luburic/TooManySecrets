@@ -12,6 +12,7 @@ import actions.LoadCertificateAction;
 import actions.NewCertificateAction;
 import actions.ViewBanksAction;
 import actions.ViewCertificateAction;
+import actions.ViewFirmsAction;
 
 @SuppressWarnings("serial")
 public class MenuBar extends JMenuBar {
@@ -56,11 +57,13 @@ public class MenuBar extends JMenuBar {
 		
 		registration = new JMenu("Registration");
 		registerBank = new JMenuItem(new ViewBanksAction());
-		registerFirm = new JMenuItem("Firm");
+		registerFirm = new JMenuItem(new ViewFirmsAction());
 		
 		registration.add(registerBank);
 		registration.add(registerFirm);
 		add(registration);
+		
+		loadSelfSignedCertificate.setVisible(false);
 	}
 	
 

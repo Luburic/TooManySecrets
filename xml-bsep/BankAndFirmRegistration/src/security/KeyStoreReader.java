@@ -1,6 +1,5 @@
 package security;
 
-import gui.dialogs.LoadIssuerDialog;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -113,7 +112,7 @@ public class KeyStoreReader {
 			if(isCentralBank) {
 				in = new BufferedInputStream(new FileInputStream(Constants.file));
 			} else {
-				in = new BufferedInputStream(new FileInputStream("./keystore/"+alias+".jks"));
+				in = new BufferedInputStream(new FileInputStream("./keystores/"+alias+".jks"));
 			}
 			ks.load(in, pass);
 			// citamo par sertifikat privatni kljuc
@@ -127,13 +126,13 @@ public class KeyStoreReader {
 			PrivateKey privKey = null;
 			if(!isCentralBank) {
 				
-				LoadIssuerDialog issuerDialog = new LoadIssuerDialog();
+				/*LoadIssuerDialog issuerDialog = new LoadIssuerDialog();
 				issuerDialog.setVisible(true);
 				if(!issuerDialog.isOk()){
 					issuerDialog.dispose();
-				}
+				}*/
 				
-				privKey = (PrivateKey) ks.getKey(FilenameUtils.getBaseName(alias), issuerDialog.getPass());
+				privKey = (PrivateKey) ks.getKey(FilenameUtils.getBaseName(alias), alias.toCharArray());
 			} else {
 				
 				privKey = (PrivateKey) ks.getKey(FilenameUtils.getBaseName(alias), pass);

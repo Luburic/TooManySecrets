@@ -22,6 +22,7 @@ public class MainFrame extends JFrame {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		setUpMenu();
+		
 
 		addWindowListener(new WindowAdapter() {
 			@Override

@@ -13,17 +13,17 @@ import banks.RegisteredBanks;
 public class BanksTableModel extends AbstractTableModel {
 
 	static final public String[] colHeaders = new String []{"Bank Name", "SWIFT code"};
-	private ArrayList<RowData> rowData;
+	private ArrayList<RowDataBanks> rowData;
 
 	public BanksTableModel(){
 
-		rowData = new ArrayList<RowData>();
+		rowData = new ArrayList<RowDataBanks>();
 	}
 
 	public void fillTable(RegisteredBanks regBanks){
 		rowData.clear();			
 		for(Bank b : regBanks.getBank()){
-			RowData data = new RowData();
+			RowDataBanks data = new RowDataBanks();
 			data.setBankName(b.getName());
 			data.setSwift(b.getSwiftCode());						
 			rowData.add(data);
@@ -45,7 +45,7 @@ public class BanksTableModel extends AbstractTableModel {
 	public Object getValueAt(int r, int c) {
 		if( r<0 || r >= getRowCount())
 			return "";
-		RowData row = rowData.get(r);
+		RowDataBanks row = rowData.get(r);
 		switch(c){
 		case 0: return row.getBankName();
 		case 1:	return row.getSwift();

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<crlCentralna xmlns="http://www.toomanysecrets.com/centralnacrl">
+    <bank>
+        <name>name0</name>
+        <date>2006-05-04</date>
+        <certificateID>certificateID0</certificateID>
+        <certificateID>certificateID1</certificateID>
+    </bank>
+    <bank>
+        <name>name1</name>
+        <date>2006-05-04</date>
+        <certificateID>certificateID2</certificateID>
+        <certificateID>certificateID3</certificateID>
+    </bank>
+    <bank>
+        <name>o</name>
+        <date>2014-06-18</date>
+        <certificateID>46</certificateID>
+        <certificateID>87</certificateID>
+    </bank>
+</crlCentralna>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.toomanysecrets.com/centralnacrl"
+    targetNamespace="http://www.toomanysecrets.com/centralnacrl" elementFormDefault="qualified"
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+    jxb:version="2.0">
+
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#"
+        schemaLocation="xmldsig-core-schema.xsd"/>
+    <xs:element name="crlCentralna">
+        <xs:complexType>
+            <xs:sequence maxOccurs="1" minOccurs="1">
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="bank">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name" type="xs:string"/>
+                            <xs:element name="date">
+                                <xs:simpleType>
+                                    <xs:annotation>
+                                        <xs:appinfo>
+											<jxb:javaType name="java.util.Date" parseMethod="util.MyDatatypeConverter.parseDate" printMethod="util.MyDatatypeConverter.printDate"/>
+										</xs:appinfo>
+                                    </xs:annotation>
+                                    <xs:restriction base="xs:date">
+                                        <xs:minInclusive value="1900-01-01"/>
+                                        <xs:maxInclusive value="2200-01-01"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element maxOccurs="unbounded" minOccurs="1" name="certificateID"
+                                type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="ds:Signature"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
