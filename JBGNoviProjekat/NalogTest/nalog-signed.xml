@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><nalog xmlns="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" idPoruke="123456" xsi:schemaLocation="http://www.toomanysecrets.com/tipovi http://localhost:8080/NalogSigned.xsd">
+<?xml version="1.0" encoding="UTF-8"?><nalog xmlns="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/tipovi http://localhost:8080/NalogSigned.xsd">
+    <idPoruke>123456</idPoruke>
     <duznikNalogodavac>pera</duznikNalogodavac>
     <svrhaPlacanja>reket</svrhaPlacanja>
     <primalacPoverilac>djoka</primalacPoverilac>
@@ -13,7 +14,7 @@
     <iznos>100500</iznos>
     <oznakaValute>rsd</oznakaValute>
     <hitno>true</hitno>
-<timestamp>06/19/2014 13:57:57</timestamp><redniBrojPoruke>1</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<timestamp>06/19/2014 16:26:45</timestamp><redniBrojPoruke>5</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -23,13 +24,13 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>qSuglzYFdsF6JaZBCrc33CpWpXU=</ds:DigestValue>
+<ds:DigestValue>huMb18kjobKbR04DkZG+SVZR5Vw=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-duEalg2Nu2uQVY1kC3sUJNOhIn6plVGCbtLuxThbHx8NsJQm8GAnpIFwQHk/7b6pa5o55b29GdTV
-zLlXwd5slpiPvW+9LLvnJ6BbyZyIBYNpau8+7PFoFWH1NvkLKCq9iJRE3PIM0+82rADIFwq4OnD/
-hd4p4b4YdJ8MgXKmcr8=
+VxF4oaYjwnAzndZjg4yiFqf/lWoZOnHgwpJlO8h7npL0UMw8NqEwL/Ffmv27NABYEEBnlxiVuHWa
+dOcjBppX97xY7aKsu4pk2n0hIBhx8sg6rDhLTPxs4tCvpzMkNyI2KuXzWniyCRFUEpOgVlugeyXA
+SaAu6nuB/D7jugv8v2k=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>

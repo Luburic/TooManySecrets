@@ -9,17 +9,19 @@
 		>
 
 		<jaxws:endpoint 
-		id="centralnaRTGSNalog"
-		address="/CentralnaRTGSNalog"
-		implementor="provider.centrala.MT103Provider"
-		wsdlLocation="WEB-INF/wsdl/CentralnaRTGSNalog.wsdl"
+		id="nalog"
+		address="/BankaNalog"
+		implementor="provider.banka.NalogProvider"
+		wsdlLocation="WEB-INF/wsdl/BankaNalog.wsdl"
 		/>
+
 		
+			
 		<jaxws:endpoint 
-		id="centralnaClearingNalog"
-		address="/CentralnaClearingNalog"
-		implementor="provider.centrala.MT102Provider"
-		wsdlLocation="WEB-INF/wsdl/CentralnaClearingNalog.wsdl"
+		id="izvod"
+		address="/BankaIzvod"
+		implementor="provider.banka.IzvodProvider"
+		wsdlLocation="WEB-INF/wsdl/BankaIzvod.wsdl"
 		/>
 		
 		

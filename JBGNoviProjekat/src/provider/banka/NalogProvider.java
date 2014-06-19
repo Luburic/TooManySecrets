@@ -49,7 +49,7 @@ public class NalogProvider implements Provider<DOMSource> {
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 
-			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("/banka.properties");
+			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("banka.properties");// /
 			propReceiver = new Properties();
 			propReceiver.load(inputStreamReceiver);
 

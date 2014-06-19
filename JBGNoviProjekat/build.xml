@@ -30,7 +30,7 @@
 		</taskdef>
 	
 	<target name="generate_java" depends="init">
-			<xjc schema="${data.dir}/Fault.xsd" destdir="${gen.dir}"/>
+			<xjc schema="${data.dir}/MT103Raw.xsd" destdir="${gen.dir}"/>
 	</target>
 	
 	
@@ -337,16 +337,20 @@
 						</war>
 		</target>
 
-	<target name="deploy" depends="war,war1,war2,war3,war4">
-		<copy todir="${tomee.dir}/webapps">
-			<fileset dir="${dist.dir}" includes="${war.name}"/>
-			<fileset dir="${dist.dir}" includes="${war1.name}"/>
-			<fileset dir="${dist.dir}" includes="${war2.name}"/>
-			<fileset dir="${dist.dir}" includes="${war3.name}"/>
-			<fileset dir="${dist.dir}" includes="${war4.name}"/>
+	<target name="deploy" depends="war,war2">
+			<copy todir="${tomee.dir}/webapps">
+				<fileset dir="${dist.dir}" includes="${war.name}"/>
+				
+				<!--fileset dir="${dist.dir}" includes="${war1.name}"/-->
+				
+				
+				<fileset dir="${dist.dir}" includes="${war2.name}"/>
+				
+				<!--fileset dir="${dist.dir}" includes="${war3.name}"/-->
+				<!--fileset dir="${dist.dir}" includes="${war4.name}"/-->
 
-		</copy>
-	</target>
+			</copy>
+		</target>
 
 	<target name="clean">
 		<delete file="${dist.dir}/${war.name}"/>

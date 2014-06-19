@@ -12,6 +12,7 @@ import java.util.Random;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import provider.banka.NalogProvider;
 import provider.firma.FakturaProvider;
 import security.SecurityClass;
 import basexdb.RESTUtil;
@@ -31,7 +32,17 @@ public class MessageTransform {
 		if( doc == null )
 			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Crypt semi.", TARGET_NAMESPACE);
 
-		URL url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
+		URL url=null;
+		
+		if(schemaPrefix.toLowerCase().equals("faktura")) {
+			url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
+		}
+		
+		else if(schemaPrefix.toLowerCase().equals("nalog")){
+			url = NalogProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
+		}
+		
+		
 
 		Document decrypt = security.decrypt(doc, security.readPrivateKey(propReceiver.getProperty("naziv"), propReceiver.getProperty("pass"), url.toString().substring(6), propReceiver.getProperty("passKS")));
 		Reader reader1 = Validation.createReader(decrypt);
