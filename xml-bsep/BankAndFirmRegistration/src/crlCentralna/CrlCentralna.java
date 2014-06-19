@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import security.Signature;
 import util.NSPrefixMapper;
 
 
@@ -315,6 +316,11 @@ public class CrlCentralna {
 			CrlCentralna crlCentralna = new CrlCentralna();
 			crlCentralna.setBank(banks);
 			marshaller.marshal(crlCentralna, new BufferedWriter(new FileWriter(new File("./xsdSchemas/crlcentralnabanka.xml"))));
+			
+			File file = new File("./xsdSchemas/CRLcentralnabanka.xml");
+			file.createNewFile();
+			Signature sig = new Signature();
+			sig.doSign("centralnabanka", "centralnabanka", "./keystores/centralnabanka.jks", "centralnabanka", "./xsdSchemas/CRLcentralnabanka.xml");
 		} catch (PropertyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

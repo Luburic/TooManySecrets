@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
+
+import security.Signature;
 import util.NSPrefixMapper;
 
 /**
@@ -315,6 +317,11 @@ public class CrlBank {
 			CrlBank crlBank = new CrlBank();
 			crlBank.setFirm(firms);
 			marshaller.marshal(crlBank, new BufferedWriter(new FileWriter(new File("./xsdSchemas/crl"+name+".xml"))));
+			
+			File file = new File("./xsdSchemas/CRL"+name+".xml");
+			file.createNewFile();
+			Signature sig = new Signature();
+			sig.doSign(name, name, "./keystores/"+name+".jks", name, "./xsdSchemas/CRL"+name+".xml");
 		} catch (PropertyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

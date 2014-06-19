@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <registeredBanks xmlns="http:/www.toomanysecrets.com/banke">
-    <bank id="874" swiftCode="BNKASR11">
-        <name>bankaa</name>
-        <organisationName>bankaa</organisationName>
-        <postcode>11000</postcode>
-        <country>SRB</country>
-        <email>bankaa@banka.com</email>
-        <certificate>MIICpDCCAg2gAwIBAgIBDDANBgkqhkiG9w0BAQUFADCBojEXMBUGA1UEAwwOY2VudHJhbG5hYmFua2ExFzAVBgNVBAoMDmNlbnRyYWxuYWJhbmthMRcwFQYDVQQLDA5jZW50cmFsbmFiYW5rYTEMMAoGA1UEBhMDU1JCMQ4wDAYDVQQHDAUxMTAwMDEiMCAGCSqGSIb3DQEJARYTY2VudHJhbG5hQGJhbmthLmNvbTETMBEGCgmSJomT8ixkAQEMAzEwMDAeFw0xNDA2MTkwMTU2MjNaFw0xNTA2MTkwMTU2MjNaMIGMMQ8wDQYDVQQDDAZiYW5rYWExDzANBgNVBAoMBmJhbmthYTEPMA0GA1UECwwGYmFua2FhMQwwCgYDVQQGEwNTUkIxDjAMBgNVBAcMBTExMDAwMR8wHQYJKoZIhvcNAQkBFhBiYW5rYWFAYmFua2EuY29tMRgwFgYKCZImiZPyLGQBAQwIQk5LQVNSMTEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAK6MvbgKO5tP/qrAGWfCBYozdLoCGaTJ4skE0Py85QMb9WrFmXVfaGt76XL22wyg3DctJA4g6ry7ZLxA1A4yKm76To3HijzuB5sl5qGD58o8Q+SkJIXcshACAyxko0m/kpGxaADZ5mGZB3el0hbqS1ntZm+z7z1ay2mel15TX+XXAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAejYzzgpH0ArSold0b0yvH3Gip1rFkMDY91SGOvFTK/2zmrBUHINQ5Vv8PKVpDEVQGfStXSv8p5lLLeet/bCX/C9lCjGDDfMrR1S83gbJ9FYeFB5zeEou42n6IV8/ylMT4i1aAUrRf0wD+R8oyb6uafVhA1lf9Zc43Ba1g7k/kVc=</certificate>
-    </bank>
     <bank id="654" swiftCode="BNKBSR21">
         <name>bankab</name>
         <organisationName>bankab</organisationName>
@@ -15,5 +7,12 @@
         <country>SRB</country>
         <email>bankab@banka.com</email>
         <certificate>MIICpDCCAg2gAwIBAgIBSDANBgkqhkiG9w0BAQUFADCBojEXMBUGA1UEAwwOY2VudHJhbG5hYmFua2ExFzAVBgNVBAoMDmNlbnRyYWxuYWJhbmthMRcwFQYDVQQLDA5jZW50cmFsbmFiYW5rYTEMMAoGA1UEBhMDU1JCMQ4wDAYDVQQHDAUxMTAwMDEiMCAGCSqGSIb3DQEJARYTY2VudHJhbG5hQGJhbmthLmNvbTETMBEGCgmSJomT8ixkAQEMAzEwMDAeFw0xNDA2MTkwMTU2NTVaFw0xNTA2MTkwMTU2NTVaMIGMMQ8wDQYDVQQDDAZiYW5rYWIxDzANBgNVBAoMBmJhbmthYjEPMA0GA1UECwwGYmFua2FiMQwwCgYDVQQGEwNTUkIxDjAMBgNVBAcMBTIxMDAwMR8wHQYJKoZIhvcNAQkBFhBiYW5rYWJAYmFua2EuY29tMRgwFgYKCZImiZPyLGQBAQwIQk5LQlNSMjEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAIQZNFa/BMDTuZOIwJ6p952LJVSrM0l0WAiFIeuuSraQfflfYyBqzOnQKmpvDih1XZbwpmK95s9+sJ/0LmLQF3zszMdWYDp9lKhyfCTbC1OEy/j2F1pJVr5ZWVnAPk7xFCZAdXit6oZUzrEEljp6K8KmTndqVcRMe/PKIxIF0bbLAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAip6mxa7r/UOZoSu2HznjKM66dDJmmLXLC5xSGKNzSJbLJjpnLEWy/m4uDYp3ovng8MkvE3Da9I5IjLa37iKtYxjK2I17NBBTNzniZfAfMqubw6/rd76X6NxTCaIDX1u+soLsBzWGhETuoCF7lpoI36s1xyb/u+i+KaGm4EGIoM4=</certificate>
+    </bank>
+    <bank id="874" swiftCode="BNKASR11">
+        <name>bankaa</name>
+        <organisationName>bankaa</organisationName>
+        <postcode>11000</postcode>
+        <country>SRB</country>
+        <email>bankaa@banka.com</email>
     </bank>
 </registeredBanks>

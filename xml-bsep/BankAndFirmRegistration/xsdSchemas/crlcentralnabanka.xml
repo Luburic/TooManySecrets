@@ -1,21 +1,54 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<crlCentralna xmlns="http://www.toomanysecrets.com/centralnacrl">
+<?xml version="1.0" encoding="UTF-8"?><crlCentralna xmlns="http://www.toomanysecrets.com/centralnacrl">
     <bank>
-        <name>name0</name>
-        <date>2006-05-04</date>
-        <certificateID>certificateID0</certificateID>
-        <certificateID>certificateID1</certificateID>
+        <name>bankaa</name>
+        <date>2014-06-19</date>
+        <certificateID>12</certificateID>
     </bank>
-    <bank>
-        <name>name1</name>
-        <date>2006-05-04</date>
-        <certificateID>certificateID2</certificateID>
-        <certificateID>certificateID3</certificateID>
-    </bank>
-    <bank>
-        <name>o</name>
-        <date>2014-06-18</date>
-        <certificateID>46</certificateID>
-        <certificateID>87</certificateID>
-    </bank>
-</crlCentralna>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<ds:Reference URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>KvDKigNWLPmvQVwOBXInr4q4jns=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+X8Xttbmh3U87ciF5qDMnmPQbXKB5FQyina1LuxVdIZ/h0B22G9fMKRIbmH8lHfN6lmRcwqDeT+wc
+8dknAKWCxYQAQa+3coQGnfXbuxGZJns+zu/AHFnFVceVKq4YthpVhMTKRUIU+PHaNJhkoWe8MVdY
+nFf70m9iNwS7ZC3oTog=
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+rAbpTe7aK40TbLQ08B2UDUS0iIaTkDR2Jq3y+blNhPpMtFas5T46omuYkEwKjVkvI8P7bQsolmt4
+R0mizqVm/OU2xQGwmkxouN/pqlYHmGygVstJC1YBEcLTD6iczreUza3/oZNqfqTcFFReLJeM7Ubu
+0all+7cVnc0O65IP8Ek=
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+<ds:X509Data>
+<ds:X509Certificate>
+MIICujCCAiOgAwIBAgIBGjANBgkqhkiG9w0BAQUFADCBojEXMBUGA1UEAwwOY2VudHJhbG5hYmFu
+a2ExFzAVBgNVBAoMDmNlbnRyYWxuYWJhbmthMRcwFQYDVQQLDA5jZW50cmFsbmFiYW5rYTEMMAoG
+A1UEBhMDU1JCMQ4wDAYDVQQHDAUxMTAwMDEiMCAGCSqGSIb3DQEJARYTY2VudHJhbG5hQGJhbmth
+LmNvbTETMBEGCgmSJomT8ixkAQEMAzEwMDAeFw0xNDA2MTkwMTU0MThaFw0xNTA2MTkwMTU0MTha
+MIGiMRcwFQYDVQQDDA5jZW50cmFsbmFiYW5rYTEXMBUGA1UECgwOY2VudHJhbG5hYmFua2ExFzAV
+BgNVBAsMDmNlbnRyYWxuYWJhbmthMQwwCgYDVQQGEwNTUkIxDjAMBgNVBAcMBTExMDAwMSIwIAYJ
+KoZIhvcNAQkBFhNjZW50cmFsbmFAYmFua2EuY29tMRMwEQYKCZImiZPyLGQBAQwDMTAwMIGfMA0G
+CSqGSIb3DQEBAQUAA4GNADCBiQKBgQCsBulN7torjRNstDTwHZQNRLSIhpOQNHYmrfL5uU2E+ky0
+VqzlPjqia5iQTAqNWS8jw/ttCyiWa3hHSaLOpWb85TbFAbCaTGi43+mqVgeYbKBWy0kLVgERwtMP
+qJzOt5TNrf+hk2p+pNwUVF4sl4ztRu7RqWX7txWdzQ7rkg/wSQIDAQABMA0GCSqGSIb3DQEBBQUA
+A4GBADhJOorZd8nZ2SoPs4HD36DBPwqBInL0I7ts8/WpGCGLdB1NQsnrpIabU5mRmpECjUZKaqiR
+IJjnpMHZ0peAdSyZhZUwRH6MtcOOMCzPR2Y/2P7DlAAddo7fEvkGQ9fGjZtN5uZ6Kc2qtzhDydAL
+yNDjvEJ+osbdB6O08zRLNr/l
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+</ds:Signature></crlCentralna>
