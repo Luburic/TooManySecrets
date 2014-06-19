@@ -42,13 +42,11 @@ public class NalogProvider implements Provider<DOMSource> {
 		try {
 
 			System.out.println("\nInvoking NalogProvider\n");
-			System.out
-					.println("-------------------REQUEST MESSAGE----------------------------------");
+			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 
 			Document document = DocumentTransform.convertToDocument(request);
 			DocumentTransform.printDocument(document);
-			System.out
-					.println("-------------------REQUEST MESSAGE----------------------------------");
+			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 
 			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("/banka.properties");
