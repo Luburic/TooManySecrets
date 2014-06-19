@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><nalog xmlns="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" idPoruke="123456" xsi:schemaLocation="http://www.toomanysecrets.com/tipovi http://localhost:8080/NalogSigned.xsd">
+    <duznikNalogodavac>pera</duznikNalogodavac>
+    <svrhaPlacanja>reket</svrhaPlacanja>
+    <primalacPoverilac>djoka</primalacPoverilac>
+    <datumNaloga>2014-06-19</datumNaloga>
+    <datumValute>2014-06-19</datumValute>
+    <racunDuznika>111111111222222222</racunDuznika>
+    <modelZaduzenja>97</modelZaduzenja>
+    <pozivNaBrojZaduzenja>111111</pozivNaBrojZaduzenja>
+    <racunPoverioca>222222222111111111</racunPoverioca>
+    <modelOdobrenja>97</modelOdobrenja>
+    <pozivNaBrojOdobrenja>111111</pozivNaBrojOdobrenja>
+    <iznos>100500</iznos>
+    <oznakaValute>rsd</oznakaValute>
+    <hitno>true</hitno>
+<timestamp>06/19/2014 13:09:49</timestamp><redniBrojPoruke>5</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<ds:Reference URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>ZjiiIbaSjgKYyyFAVQxMGC7gCZs=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+H8zkcPJH0ZFr1Ir2IHW341chiKJZHezkgm3ttJiEAOT2cA8JlV95B3z2rPfljJ7QsAV4rMboTo7l
+U+YSdO2t7HZhKThte/i3dzrNTG/Nb4qEkv1azM0o+Sn6elwO4x7xLjzwzX3Fpccq6CDm9IYakjyg
+BzFc/N2h0pwkMjwHjBM=
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+he0nIlTyqgmOjdLL7Ly+SOib1o+EtfMfoXm0hYl2MxxAe/iiCUR205jEL1ZDgcbaG5ZAPWprX9mi
+cWHijrtdhvCc6CRt0xI52fDwggKjLdD9aqhXeAKfr1WHnWijo8onYpaKpINPMr4l/6dvUUaltPAJ
+egjXLJ+LFgu0SfQIM00=
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+<ds:X509Data>
+<ds:X509Certificate>
+MIICizCCAfSgAwIBAgIBIjANBgkqhkiG9w0BAQUFADCBiTETMBEGCgmSJomT8ixkAQEMAzEwMDEg
+MB4GCSqGSIb3DQEJARYRY2JhbmthQGNiYW5rYS5jb20xDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwF
+MTEwMDAxGDAWBgNVBAoMD0NlbnRyYWxuYSBiYW5rYTEYMBYGA1UEAwwPQ2VudHJhbG5hIGJhbmth
+MB4XDTE0MDUyMjE4MDUyNVoXDTE1MDUyMjE4MDUyNVowgYwxDzANBgNVBAMMBkZpcm1hQTEPMA0G
+A1UECgwGRmlybWFBMQ8wDQYDVQQLDAZGaXJtYUExDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwFMTEw
+MDAxHzAdBgkqhkiG9w0BCQEWEGZpcm1hYUBnbWFpbC5jb20xGDAWBgoJkiaJk/IsZAEBDAhGSVJN
+U1IxMTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAhe0nIlTyqgmOjdLL7Ly+SOib1o+EtfMf
+oXm0hYl2MxxAe/iiCUR205jEL1ZDgcbaG5ZAPWprX9micWHijrtdhvCc6CRt0xI52fDwggKjLdD9
+aqhXeAKfr1WHnWijo8onYpaKpINPMr4l/6dvUUaltPAJegjXLJ+LFgu0SfQIM00CAwEAATANBgkq
+hkiG9w0BAQUFAAOBgQA9Ogutt6qjgHBtSo0X1l6+siTqdQT3OP4Am26sMyO37N9LnyclJwVq3kuC
+P3g8BpFSFC6HKrVxE3BIZfKMaZxohfpYMA9dUgEBWojlJfor4UccFXkBLOYrs4GOucJeKgwgrktA
+cqf57EIenRifV3zJjU3eWmD+eRA4Fv5dc5XLVw==
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+</ds:Signature></nalog>

@@ -68,22 +68,31 @@ public class RESTUtil {
 
 		DOMSource cntPoslateFakA = brojacPoslatihDocument("","rbrPoslateFaktura", 0);
 		DOMSource cntPoslateFakB = brojacPoslatihDocument("","rbrPoslateFaktura", 0);
-		
-		DOMSource cntPoslateNotifA = brojacPoslatihDocument("","rbrPoslateNotifikacija", 0);
-		DOMSource cntPoslateNotifB = brojacPoslatihDocument("","rbrPoslateNotifikacija", 0);
-		
-		
-		
 		DOMSource ctnPrimljeneFakA = brojacPrimljenihDocument(null,"","primljeneFaktura","firma", "firmab", new Date(), 0);
 		DOMSource ctnPrimljeneFakB = brojacPrimljenihDocument(null,"","primljeneFaktura", "firma", "firmaa",  new Date(), 0);
 		
+		
+		
+		DOMSource cntPoslateNotifA = brojacPoslatihDocument("","rbrPoslateNotifikacija", 0);
+		DOMSource cntPoslateNotifB = brojacPoslatihDocument("","rbrPoslateNotifikacija", 0);
 		DOMSource ctnPrimljeneNotifA = brojacPrimljenihDocument(null,"","primljeneNotifikacija","firma", "firmab", new Date(), 0);
 		DOMSource ctnPrimljeneNotifB = brojacPrimljenihDocument(null,"","primljeneNotifikacija","firma", "firmaa", new Date(), 0);
+		
+		
+		DOMSource cntPoslateNalogA = brojacPoslatihDocument("","rbrPoslateNalog", 0); //firmaA 
+		DOMSource cntPoslateNalogB = brojacPoslatihDocument("","rbrPoslateNalog", 0); //firmaB 
+		DOMSource ctnPrimljeneNalogA = brojacPrimljenihDocument(null,"","primljeneNalog","banka", "firmaa", new Date(), 0); //bankaA
+		DOMSource ctnPrimljeneNalogB = brojacPrimljenihDocument(null,"","primljeneNalog", "banka", "firmab",  new Date(), 0); //bankaB
+		
+		
+
+		
+		
 		
 		//DocumentTransform.printDocument(DocumentTransform.convertToDocument(ctnPrimljeneFakA));
 		ctnPrimljeneFakA = brojacPrimljenihDocument(DocumentTransform.convertToDocument(ctnPrimljeneFakA),"","primljeneFaktura", "firma", "firmac", new Date(), 0);
 		ctnPrimljeneNotifA = brojacPrimljenihDocument(DocumentTransform.convertToDocument(ctnPrimljeneNotifA),"","primljeneNotifikacija", "firma", "firmac", new Date(), 0);
-
+		
 		
 		
 		
@@ -99,6 +108,16 @@ public class RESTUtil {
 		createResource("firmab", "brojacPoslatihNotifikacija", DOM2InputStream(cntPoslateNotifB));
 		createResource("firmaa", "brojacPrimljenihNotifikacija", DOM2InputStream(ctnPrimljeneNotifA));
 		createResource("firmab", "brojacPrimljenihNotifikacija", DOM2InputStream(ctnPrimljeneNotifB));
+		
+		
+		
+		
+		
+		createResource("firmaa", "brojacPoslatihNalog", DOM2InputStream(cntPoslateNalogA));
+		createResource("firmab", "brojacPoslatihNalog", DOM2InputStream(cntPoslateNalogB));
+		
+		createResource("bankaa", "brojacPrimljenihNalog", DOM2InputStream(ctnPrimljeneNalogA));
+		createResource("bankab", "brojacPrimljenihNalog", DOM2InputStream(ctnPrimljeneNalogB));
 		
 		
 

@@ -52,8 +52,10 @@ public class Validation {
 
 	//kreira DOM stablo, bez validacije
 	public static Document buildDocumentWithoutValidation(String fileName) {
+		Document document = null;
+		
 		try {
-			Document document = null;
+			
 			//Kreira se DocumentBuilderFactory klasa, metoda je staticka
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -65,18 +67,18 @@ public class Validation {
 			//Parsiramo ulaz, tj. XML file
 			document = builder.parse(new File(fileName));
 
-			return document;
+			
 		} catch (ParserConfigurationException e) {
-			//e.printStackTrace();
-			return null;
+			e.printStackTrace();
+			
 		} catch (SAXException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
-			//e.printStackTrace();
-			return null;
-
+			e.printStackTrace();
+			
 		}
+		return document;
 	}
 
 	//kreira DOM stablo, sa validacijom, xsd fajl se zadaje programski
@@ -127,13 +129,13 @@ public class Validation {
 
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
-			return null;
+			
 		} catch (SAXException e) {
 			e.printStackTrace();
-			return null;
+			
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
+			
 
 		}
 		return document;
@@ -141,7 +143,7 @@ public class Validation {
 
 
 	public static Reader createReader(Node node) {
-
+		StringWriter strWriter=null;
 		try {
 			//Kreira se TransformerFactory
 			TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -152,27 +154,27 @@ public class Validation {
 			DOMSource source = new DOMSource(node);
 
 			//serijalizacija DOM-a u string
-			StringWriter strWriter = new StringWriter();
+			strWriter = new StringWriter();
 			StreamResult result = new StreamResult(new BufferedWriter(strWriter));
 			//Vrsi se transformacija
 			transformer.transform(source, result);
 
-			//od stringa dobijenog serijalizacijom formira se StringReader
-			return new BufferedReader(new StringReader(strWriter.getBuffer().toString()));
-
+			
 		} catch (TransformerConfigurationException e) {
 			e.printStackTrace();
-			return null;
+			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-			return null;
+			
 		} catch (TransformerFactoryConfigurationError e) {
 			e.printStackTrace();
-			return null;
+			
 		} catch (TransformerException e) {
 			e.printStackTrace();
-			return null;
+			
 		}
+		//od stringa dobijenog serijalizacijom formira se StringReader
+		return new BufferedReader(new StringReader(strWriter.getBuffer().toString()));
 
 	}
 
