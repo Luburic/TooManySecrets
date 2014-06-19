@@ -13,7 +13,7 @@
     <iznos>100500</iznos>
     <oznakaValute>rsd</oznakaValute>
     <hitno>true</hitno>
-<timestamp>06/19/2014 13:09:49</timestamp><redniBrojPoruke>5</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<timestamp>06/19/2014 13:57:57</timestamp><redniBrojPoruke>1</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -23,13 +23,13 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>ZjiiIbaSjgKYyyFAVQxMGC7gCZs=</ds:DigestValue>
+<ds:DigestValue>qSuglzYFdsF6JaZBCrc33CpWpXU=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-H8zkcPJH0ZFr1Ir2IHW341chiKJZHezkgm3ttJiEAOT2cA8JlV95B3z2rPfljJ7QsAV4rMboTo7l
-U+YSdO2t7HZhKThte/i3dzrNTG/Nb4qEkv1azM0o+Sn6elwO4x7xLjzwzX3Fpccq6CDm9IYakjyg
-BzFc/N2h0pwkMjwHjBM=
+duEalg2Nu2uQVY1kC3sUJNOhIn6plVGCbtLuxThbHx8NsJQm8GAnpIFwQHk/7b6pa5o55b29GdTV
+zLlXwd5slpiPvW+9LLvnJ6BbyZyIBYNpau8+7PFoFWH1NvkLKCq9iJRE3PIM0+82rADIFwq4OnD/
+hd4p4b4YdJ8MgXKmcr8=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>

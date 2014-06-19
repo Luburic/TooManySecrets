@@ -54,7 +54,7 @@ public class NalogProvider implements Provider<DOMSource> {
 			propReceiver.load(inputStreamReceiver);
 
 			Document decryptedDocument = MessageTransform.unpack(document,
-					"Nalog", "Nalog", ConstantsXWS.TARGET_NAMESPACE_BANKA,
+					"Nalog", "Nalog", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG,
 					propReceiver, "banka", "Nalog");
 
 			System.out.println("-------------------decrypted----------------------------------");

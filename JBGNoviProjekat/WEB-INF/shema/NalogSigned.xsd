@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.toomanysecrets.com/tipovi"
     targetNamespace="http://www.toomanysecrets.com/tipovi" elementFormDefault="qualified"
-    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-    xmlns:jxb="http://java.sun.com/xml/ns/jaxb" 
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
     jxb:version="2.0">
     <xs:import namespace="http://www.w3.org/2000/09/xmldsig#"
         schemaLocation="xmldsig-core-schema.xsd"/>
     <xs:element name="nalog">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="idPoruke">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:maxLength value="50"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
                 <xs:element name="duznikNalogodavac">
                     <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -31,30 +37,30 @@
                     </xs:simpleType>
                 </xs:element>
                 <xs:element name="datumNaloga">
-                	<xs:simpleType>
-						<xs:annotation>
-							<xs:appinfo>
-								<jxb:javaType name="java.util.Date" parseMethod="util.MyDatatypeConverter.parseDate" printMethod="util.MyDatatypeConverter.printDate" />
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo>
+								<jxb:javaType name="java.util.Date" parseMethod="util.MyDatatypeConverter.parseDate" printMethod="util.MyDatatypeConverter.printDate"/>
 							</xs:appinfo>
-						</xs:annotation>
-						<xs:restriction base="xs:date">
-							<xs:minInclusive value="1900-01-01" />
-							<xs:maxInclusive value="2200-01-01" />
-						</xs:restriction>
-					</xs:simpleType>
+                        </xs:annotation>
+                        <xs:restriction base="xs:date">
+                            <xs:minInclusive value="1900-01-01"/>
+                            <xs:maxInclusive value="2200-01-01"/>
+                        </xs:restriction>
+                    </xs:simpleType>
                 </xs:element>
                 <xs:element name="datumValute">
-                	<xs:simpleType>
-						<xs:annotation>
-							<xs:appinfo>
-								<jxb:javaType name="java.util.Date" parseMethod="util.MyDatatypeConverter.parseDate" printMethod="util.MyDatatypeConverter.printDate" />
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo>
+								<jxb:javaType name="java.util.Date" parseMethod="util.MyDatatypeConverter.parseDate" printMethod="util.MyDatatypeConverter.printDate"/>
 							</xs:appinfo>
-						</xs:annotation>
-						<xs:restriction base="xs:date">
-							<xs:minInclusive value="1900-01-01" />
-							<xs:maxInclusive value="2200-01-01" />
-						</xs:restriction>
-					</xs:simpleType>
+                        </xs:annotation>
+                        <xs:restriction base="xs:date">
+                            <xs:minInclusive value="1900-01-01"/>
+                            <xs:maxInclusive value="2200-01-01"/>
+                        </xs:restriction>
+                    </xs:simpleType>
                 </xs:element>
                 <xs:element name="racunDuznika">
                     <xs:simpleType>
@@ -123,13 +129,6 @@
                 <xs:element name="redniBrojPoruke" type="xs:int"/>
                 <xs:element ref="ds:Signature"/>
             </xs:sequence>
-            <xs:attribute name="idPoruke" use="required">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:maxLength value="50"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:attribute>
         </xs:complexType>
     </xs:element>
 </xs:schema>
