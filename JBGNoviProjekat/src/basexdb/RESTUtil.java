@@ -66,6 +66,7 @@ public class RESTUtil {
 		createSchema("bankaa");
 		createSchema("bankab");
 
+		/****************************	firma <-> firma *************************************/
 		DOMSource cntPoslateFakA = brojacPoslatihDocument("","rbrPoslateFaktura", 0);
 		DOMSource cntPoslateFakB = brojacPoslatihDocument("","rbrPoslateFaktura", 0);
 		DOMSource ctnPrimljeneFakA = brojacPrimljenihDocument(null,"","primljeneFaktura","firma", "firmab", new Date(), 0);
@@ -77,13 +78,32 @@ public class RESTUtil {
 		DOMSource cntPoslateNotifB = brojacPoslatihDocument("","rbrPoslateNotifikacija", 0);
 		DOMSource ctnPrimljeneNotifA = brojacPrimljenihDocument(null,"","primljeneNotifikacija","firma", "firmab", new Date(), 0);
 		DOMSource ctnPrimljeneNotifB = brojacPrimljenihDocument(null,"","primljeneNotifikacija","firma", "firmaa", new Date(), 0);
+		/***********************************************************************************/
 		
 		
-		DOMSource cntPoslateNalogA = brojacPoslatihDocument("","rbrPoslateNalog", 0); //firmaA 
-		DOMSource cntPoslateNalogB = brojacPoslatihDocument("","rbrPoslateNalog", 0); //firmaB 
+		
+		
+		
+		/**************************** firma -> banka *************************************/
+		DOMSource cntPoslateNalogA = brojacPoslatihDocument("","rbrPoslateNalog", 0);
+		DOMSource cntPoslateNalogB = brojacPoslatihDocument("","rbrPoslateNalog", 0); 
+		/********************************************************************************/
+		
+		
+		
+		
+		/****************************  firma <-banka *************************************/
+		DOMSource cPrimljeneNotifA = brojacPrimljenihDocument(null,"","primljeneNalog","firma", "bankaa", new Date(), 0); //firmaA
+		DOMSource cPrimljeneNotifB = brojacPrimljenihDocument(null,"","primljeneNalog","firma", "bankab", new Date(), 0); //firmaB
+		/********************************************************************************/
+
+		
+		
+		/**************************** banka <- firma *************************************/
 		DOMSource ctnPrimljeneNalogA = brojacPrimljenihDocument(null,"","primljeneNalog","banka", "firmaa", new Date(), 0); //bankaA
 		DOMSource ctnPrimljeneNalogB = brojacPrimljenihDocument(null,"","primljeneNalog", "banka", "firmab",  new Date(), 0); //bankaB
-		
+		/********************************************************************************/
+
 		
 
 		
@@ -118,7 +138,8 @@ public class RESTUtil {
 		
 		createResource("bankaa", "brojacPrimljenihNalog", DOM2InputStream(ctnPrimljeneNalogA));
 		createResource("bankab", "brojacPrimljenihNalog", DOM2InputStream(ctnPrimljeneNalogB));
-		
+		createResource("firmaa", "brojacPrimljenihNotif", DOM2InputStream(cPrimljeneNotifA)); //od banke
+		createResource("firmab", "brojacPrimljenihNotif", DOM2InputStream(cPrimljeneNotifB)); //od banke
 		
 
 		DOMSource accountA = createAccount("firmaa", "111111111111111111",

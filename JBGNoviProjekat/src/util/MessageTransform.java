@@ -38,10 +38,9 @@ public class MessageTransform {
 			url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		}
 		
-		else if(schemaPrefix.toLowerCase().equals("nalog")){
+		else if(schemaPrefix.toLowerCase().equals("nalog") || schemaPrefix.toLowerCase().equals("notification")){
 			url = NalogProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		}
-		
 		
 
 		Document decrypt = security.decrypt(doc, security.readPrivateKey(propReceiver.getProperty("naziv"), propReceiver.getProperty("pass"), url.toString().substring(6), propReceiver.getProperty("passKS")));
@@ -122,7 +121,7 @@ public class MessageTransform {
 		return encrypted;
 	}
 
-	//faktura klijent
+	
 	public static Document packS(String serviceAdress,String schemaPrefix,String inputFile,Properties propSender, String receiver, String NAMESPACE_XSD, String type){
 		
 		Document document = null;

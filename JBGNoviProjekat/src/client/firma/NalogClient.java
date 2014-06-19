@@ -32,13 +32,9 @@ public class NalogClient {
 	public void testIt(String sender, String receiver, String cert,
 			String inputFile) {
 		try {
-			URL wsdlLocation = new URL("http://localhost:8080/" + receiver
-					+ "/services/BankaNalog?wsdl");
-			QName serviceName = new QName(
-					"http://www.toomanysecrets.com/BankaNalog", "BankaNalog");
-			QName portName = new QName(
-					"http://www.toomanysecrets.com/BankaNalog",
-					"BankaNalogPort");
+			URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/BankaNalog?wsdl");
+			QName serviceName = new QName("http://www.toomanysecrets.com/BankaNalog", "BankaNalog");
+			QName portName = new QName("http://www.toomanysecrets.com/BankaNalog","BankaNalogPort");
 
 			Service service;
 			try {
@@ -47,8 +43,7 @@ public class NalogClient {
 				throw Validation.generateSOAPFault("Server is not available.",
 						SoapFault.FAULT_CODE_CLIENT, null);
 			}
-			Dispatch<DOMSource> dispatch = service.createDispatch(portName,
-					DOMSource.class, Service.Mode.PAYLOAD);
+			Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
 
 			InputStream inputStreamSender = this.getClass().getClassLoader().getResourceAsStream(sender + ".properties");
 			Properties propSender = new java.util.Properties();
@@ -61,7 +56,7 @@ public class NalogClient {
 
 				if (response != null) {
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propSender,"firma", "Notifikacija");
+					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propSender,"firma", "Notif");
 					DocumentTransform.printDocument(decryptedDocument);
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 				}

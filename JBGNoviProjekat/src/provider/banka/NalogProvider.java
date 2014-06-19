@@ -3,10 +3,15 @@ package provider.banka;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
 import javax.ejb.Stateless;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.Provider;
@@ -16,11 +21,14 @@ import javax.xml.ws.WebServiceProvider;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
 import util.MyDatatypeConverter;
+import basexdb.RESTUtil;
 import beans.mt103.MT103;
 import beans.nalog.Nalog;
 
@@ -53,70 +61,48 @@ public class NalogProvider implements Provider<DOMSource> {
 			propReceiver = new Properties();
 			propReceiver.load(inputStreamReceiver);
 
-			Document decryptedDocument = MessageTransform.unpack(document,
-					"Nalog", "Nalog", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG,
-					propReceiver, "banka", "Nalog");
+			Document decryptedDocument = MessageTransform.unpack(document,"Nalog", "Nalog",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propReceiver,"banka", "Nalog");
 
-			System.out.println("-------------------decrypted----------------------------------");
-			DocumentTransform.printDocument(decryptedDocument);
-			System.out.println("-------------------decrypted----------------------------------");
 
-			/*
-			 * Element timestamp = (Element)
-			 * decryptedDocument.getElementsByTagNameNS
-			 * (ConstantsXWS.NAMESPACE_XSD, "timestamp").item(0); String
-			 * dateString = timestamp.getTextContent();
-			 * 
-			 * Date date = null; try { date = new
-			 * SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString); }
-			 * catch (ParseException e) { // TODO Auto-generated catch block
-			 * e.printStackTrace(); }
-			 * 
-			 * String sender =
-			 * SecurityClass.getOwner(decryptedDocument).toLowerCase();
-			 * 
-			 * RESTUtil.sacuvajEntitet(decryptedDocument,
-			 * propReceiver.getProperty("naziv"), false, sender, date, "Nalog",
-			 * "banka");
-			 * 
-			 * decryptedDocument =
-			 * MessageTransform.removeTimestamp(decryptedDocument);
-			 * decryptedDocument =
-			 * MessageTransform.removeRedniBrojPoruke(decryptedDocument);
-			 * decryptedDocument =
-			 * MessageTransform.removeSignature(decryptedDocument);
-			 */
+			Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD,"timestamp").item(0);
+			String dateString = timestamp.getTextContent();
 
-			/*
-			 * JAXBContext context = JAXBContext.newInstance("beans.nalog");
-			 * Unmarshaller unmarshaller = context.createUnmarshaller();
-			 * 
-			 * Nalog nalog = null; try { nalog = (Nalog)
-			 * unmarshaller.unmarshal(decryptedDocument); } catch (JAXBException
-			 * e) { return new DOMSource(decryptedDocument); }
-			 * 
-			 * if (!validateContent(nalog)) {
-			 * DocumentTransform.createNotificationResponse
-			 * (message,ConstantsXWS.TARGET_NAMESPACE_BANKA); }
-			 * 
-			 * 
-			 * else {
-			 * 
-			 * 
-			 * if(nalog.isHitno() || nalog.getIznos().compareTo(limit)!= -1) {
-			 * //rtgs //.. DocumentTransform.createNotificationResponse(
-			 * "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA); }
-			 * else { //clearing
-			 * 
-			 * 
-			 * } }
-			 */
+			Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+			
 
-			// String apsolute =
-			// DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
-			// encrypted = MessageTransform.packS("Notifikacija",
-			// "Notification",apsolute, propReceiver,
-			// "cer"+sender,ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
+			String sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+
+			RESTUtil.sacuvajEntitet(decryptedDocument,propReceiver.getProperty("naziv"), false, sender, date,"Nalog", "banka");
+
+			decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument);
+			decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument);
+			decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
+
+			JAXBContext context = JAXBContext.newInstance("beans.nalog");
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+
+			Nalog nalog = (Nalog) unmarshaller.unmarshal(decryptedDocument);
+			
+			
+			if (!validateContent(nalog)) {
+				DocumentTransform.createNotificationResponse(message,ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+			}
+
+			else {
+
+				if (nalog.isHitno() || nalog.getIznos().compareTo(limit) != -1) {
+					// rtgs
+					
+					DocumentTransform.createNotificationResponse("Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+				} else {
+					// clearing
+
+				}
+			}
+		
+
+			String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
+			encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -124,10 +110,13 @@ public class NalogProvider implements Provider<DOMSource> {
 			e.printStackTrace();
 		} catch (TransformerFactoryConfigurationError e) {
 			e.printStackTrace();
-		} /*
-		 * catch (JAXBException e1) { e1.printStackTrace(); }
-		 */catch (IOException e1) {
+		} catch (JAXBException e1) {
 			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return new DOMSource(encrypted);

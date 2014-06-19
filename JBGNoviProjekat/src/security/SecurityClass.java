@@ -480,6 +480,7 @@ public class SecurityClass {
 	}
 	
 	public static String getOwner(Document doc) {
+		String ownerName = null;
 		try {
 			//pronalazi se zeljeni ds:KeyInfo element
 			Element keyInfoEl = (Element)doc.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "KeyInfo").item(0);
@@ -493,7 +494,7 @@ public class SecurityClass {
 			X509Certificate cert = keyInfo.itemX509Data(0).itemCertificate(0).getX509Certificate();
 			
 			String dn = cert.getSubjectX500Principal().getName();
-			String ownerName = null;
+			
 			
 			LdapName ln = new LdapName(dn);
 
@@ -504,9 +505,6 @@ public class SecurityClass {
 	            }
 	        }
 			
-			if(ownerName != null)
-				return ownerName;
-			
 		} catch (XMLSecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -515,7 +513,13 @@ public class SecurityClass {
 			e.printStackTrace();
 		}
 		
+		if(ownerName != null) {
+			return ownerName;
+		}
+		
 		return null;
+		
+		
 	}
 
 }
