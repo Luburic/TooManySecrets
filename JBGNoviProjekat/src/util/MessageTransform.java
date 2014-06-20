@@ -9,8 +9,10 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import provider.banka.NalogProvider;
 import provider.firma.FakturaProvider;
@@ -25,64 +27,79 @@ public class MessageTransform {
 
 	public static Document unpack(Document document, String serviceAdress, String schemaPrefix, String TARGET_NAMESPACE, Properties propReceiver, String entity, String type){
 
-		SecurityClass security = new SecurityClass();
-		Reader reader = Validation.createReader(document);
-		Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/"+schemaPrefix+"Crypt.xsd","http://localhost:8080/xenc-schema.xsd"});
-
-		if( doc == null )
-			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Crypt semi.", TARGET_NAMESPACE);
-
-		URL url=null;
-		
-		if(schemaPrefix.toLowerCase().equals("faktura")) {
-			url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
-		}
-		
-		else if(schemaPrefix.toLowerCase().equals("nalog") || schemaPrefix.toLowerCase().equals("notification")){
-			url = NalogProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
-		}
-		
-
-		Document decrypt = security.decrypt(doc, security.readPrivateKey(propReceiver.getProperty("naziv"), propReceiver.getProperty("pass"), url.toString().substring(6), propReceiver.getProperty("passKS")));
-		Reader reader1 = Validation.createReader(decrypt);
-		decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
-
-		if(decrypt==null)
-			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Signed semi.",TARGET_NAMESPACE);
-
-		if(!security.verifySignature(decrypt)) 
-			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije dobro potpisan.",TARGET_NAMESPACE);
-
-		Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
-
-		DocumentTransform.printDocument(forSave);
-
-		Element timestamp = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
-		String dateString = timestamp.getTextContent();
-
-		Date date = null;
+		Document decrypt=null;
 		try {
-			date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+			SecurityClass security = new SecurityClass();
+			Reader reader = Validation.createReader(document);
+			Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/"+schemaPrefix+"Crypt.xsd","http://localhost:8080/xenc-schema.xsd"});
+
+			if( doc == null ) {
+				DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Crypt semi.", TARGET_NAMESPACE);
+				return null;
+			}
+				
+
+			URL url=null;
+			
+			if(schemaPrefix.toLowerCase().equals("faktura")) {
+				url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
+			}
+			
+			else if(schemaPrefix.toLowerCase().equals("nalog") || schemaPrefix.toLowerCase().equals("notification")){
+				url = NalogProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
+			}
+			
+
+			decrypt = security.decrypt(doc, security.readPrivateKey(propReceiver.getProperty("naziv"), propReceiver.getProperty("pass"), url.toString().substring(6), propReceiver.getProperty("passKS")));
+			Reader reader1 = Validation.createReader(decrypt);
+			decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
+
+			if(decrypt==null){
+				DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Signed semi.",TARGET_NAMESPACE);
+				return null;
+			}
+				
+
+			if(!security.verifySignature(decrypt)) {
+				DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije dobro potpisan.",TARGET_NAMESPACE);
+				return null;
+			}
+		
+			
+			Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
+
+			//DocumentTransform.printDocument(forSave);
+
+			Element timestamp = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
+			String dateString = timestamp.getTextContent();
+
+			Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+			
+			
+			String senderName = SecurityClass.getOwner(decrypt).toLowerCase();
+			Date dateFromXml = RESTUtil.getTimestampPoslednjePrimljene(senderName, propReceiver.getProperty("naziv"), entity, type);
+			Element redniBrojPoruke = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
+			int rbrPoruke = Integer.parseInt(redniBrojPoruke.getTextContent());
+			int rbrPorukeFromXml = RESTUtil.getBrojPoslednjePrimljene(senderName, propReceiver.getProperty("naziv"), entity, type);
+			
+			if(rbrPoruke <= rbrPorukeFromXml || dateFromXml.after(date) || dateFromXml.equals(date)) {
+				DocumentTransform.createNotificationResponse(schemaPrefix +" pokusaj napada.", TARGET_NAMESPACE);
+				return null;
+			}
+				
+			
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		String senderName = SecurityClass.getOwner(decrypt).toLowerCase();
-
-		Date dateFromXml = RESTUtil.getTimestampPoslednjePrimljene(senderName, propReceiver.getProperty("naziv"), entity, type);
-		//skidanje taga
-		//timestamp.getParentNode().removeChild(timestamp);
-
-		Element redniBrojPoruke = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
-
-		int rbrPoruke = Integer.parseInt(redniBrojPoruke.getTextContent());
-		int rbrPorukeFromXml = RESTUtil.getBrojPoslednjePrimljene(senderName, propReceiver.getProperty("naziv"), entity, type);
-		//skidanje taga
-		//redniBrojPoruke.getParentNode().removeChild(redniBrojPoruke);
-
-		if(rbrPoruke <= rbrPorukeFromXml || dateFromXml.after(date) || dateFromXml.equals(date)) {
-			return DocumentTransform.createNotificationResponse(schemaPrefix +" pokusaj napada.", TARGET_NAMESPACE);
+		}catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return decrypt;
@@ -173,9 +190,17 @@ public class MessageTransform {
 
 		}
 		security.saveDocument(encrypted, inputFile.substring(0, inputFile.length()-4) + "-crypted.xml");
+		
+		
+		/*Document forCrypted = security.reserialize(encrypted);
+		Element root = (Element) forCrypted.getElementsByTagNameNS(NAMESPACE_XSD, type.toLowerCase()).item(0);
 
+		Element esender = forCrypted.createElementNS(NAMESPACE_XSD, "sender");
+		root.appendChild(esender);
+		
+		esender.appendChild(forCrypted.createTextNode(propSender.getProperty("naziv")));
+		*/
 		return encrypted;
-
 
 	}
 	

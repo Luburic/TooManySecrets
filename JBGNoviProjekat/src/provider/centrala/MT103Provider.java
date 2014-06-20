@@ -1,27 +1,14 @@
 package provider.centrala;
 
-import java.io.File;
-
 import javax.ejb.Stateless;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.Service;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import security.SecurityClass;
-import util.DocumentTransform;
-import util.MessageTransform;
-import util.NSPrefixMapper;
-import util.Validation;
 import beans.mt103.MT103;
 import beans.mt900.MT900;
 
@@ -43,7 +30,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 	@Override
 	public DOMSource invoke(DOMSource request) {
 		
-		try {
+		/*try {
     		
     		System.out.println("\nInvoking MT103Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
@@ -54,7 +41,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			
 			
 			
-			//Document decryptedDocument =MessageTransform.unpack(document, "MT103", "MT103", TARGET_NAMESPACE, null);
+			Document decryptedDocument =MessageTransform.unpack(document, "MT103", "MT103", TARGET_NAMESPACE, null);
 
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt103");
@@ -62,17 +49,14 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		
 			
 			MT103 mt103=null;
-			/*try {
+			try {
 				mt103 = (MT103) unmarshaller.unmarshal(decryptedDocument);
 			} catch (Exception e) {
 				return new DOMSource(decryptedDocument);
-			}*/
+			}
 			
 			if(!validateContent(mt103))
 				return new DOMSource(DocumentTransform.createNotificationResponse("Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
-			
-			
-			//sve je ok, MT103 se snimi u bazu centrale
 			
 			
 			
@@ -119,8 +103,8 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		return new DOMSource(encryptedDocument);
+		}*/
+		return new DOMSource(null);
 		
 	}
 	
