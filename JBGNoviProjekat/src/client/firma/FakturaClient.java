@@ -20,6 +20,7 @@ import util.MessageTransform;
 import util.Validation;
 
 public class FakturaClient {
+	
 	public void testIt(String sender, String receiver, String cert, String inputFile) {
 		try {
 			URL wsdlLocation = new URL("http://localhost:8080/" + receiver + "/services/Faktura?wsdl");
@@ -34,8 +35,7 @@ public class FakturaClient {
 			}
 			Dispatch<DOMSource> dispatch = service.createDispatch(portName, DOMSource.class, Service.Mode.PAYLOAD);
 
-			InputStream inputStreamSender = this.getClass().getClassLoader()
-					.getResourceAsStream(sender + ".properties");
+			InputStream inputStreamSender = this.getClass().getClassLoader().getResourceAsStream(sender + ".properties");
 			Properties propSender = new java.util.Properties();
 			propSender.load(inputStreamSender);
 
@@ -47,10 +47,16 @@ public class FakturaClient {
 				
 				if(response!=null) {
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");					
-					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "Faktura", "Notification",
-							ConstantsXWS.TARGET_NAMESPACE_FIRMA, propSender, "firma", "Notifikacija");
-				
-					DocumentTransform.printDocument(decryptedDocument);
+					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "Faktura", "Notification",ConstantsXWS.TARGET_NAMESPACE_FIRMA, propSender, "firma", "Notifikacija");
+					
+					decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propSender, "firma", "Notifikacija");
+					
+					if(decryptedDocument==null) {
+						System.out.println("Neuspesna obrada odgovora koji je stigao od web servisa.");
+					}else {
+						DocumentTransform.printDocument(decryptedDocument);
+					}
+					
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 				}	
 				
@@ -68,4 +74,8 @@ public class FakturaClient {
 		FakturaClient fc = new FakturaClient();
 		fc.testIt("firmaB", "firmaa", "cerfirmaa", "./FakturaTest/faktura-example1.xml");
 	}
+	
+
+	
+	
 }

@@ -3,8 +3,6 @@ package provider.banka;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
@@ -19,18 +17,14 @@ import javax.xml.ws.Service;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
 
-import org.apache.cxf.binding.soap.SoapFault;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
 import util.MyDatatypeConverter;
-import util.Validation;
-import basexdb.RESTUtil;
 import beans.mt103.MT103;
 import beans.nalog.Nalog;
 
@@ -64,21 +58,10 @@ public class NalogProvider implements Provider<DOMSource> {
 			propReceiver.load(inputStreamReceiver);
 
 			Document decryptedDocument = MessageTransform.unpack(document,"Nalog", "Nalog",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propReceiver,"banka", "Nalog");
-
-			Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD,"timestamp").item(0);
-			String dateString = timestamp.getTextContent();
-
-			Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
-			
-
 			String sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+			decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propReceiver, "banka", "Nalog");
 
-			RESTUtil.sacuvajEntitet(decryptedDocument,propReceiver.getProperty("naziv"), false, sender, date,"Nalog", "banka");
-
-			decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument);
-			decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument);
-			decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
-
+			
 			JAXBContext context = JAXBContext.newInstance("beans.nalog");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 
@@ -115,10 +98,9 @@ public class NalogProvider implements Provider<DOMSource> {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} 
 
 		return new DOMSource(encrypted);
 	}

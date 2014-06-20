@@ -4,6 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -21,9 +25,13 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import security.SecurityClass;
+import basexdb.RESTUtil;
 import beans.notification.Notification;
 
 public class DocumentTransform {
@@ -145,4 +153,36 @@ public class DocumentTransform {
 		}
 		return doc;
 	}
+	
+	//propSender - properties onog ko je slao
+	public static Document postDecryptTransform(Document decryptedDocument,Properties propSender, String entity, String type) {
+		try {
+			
+			Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD,"timestamp").item(0);
+			String dateString = timestamp.getTextContent();
+			Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+			String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+			RESTUtil.sacuvajEntitet(decryptedDocument,propSender.getProperty("naziv"), false, owner, date,type, entity);
+			decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument);
+			decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument);
+			decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
+			
+		} catch (DOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+			}
+		return decryptedDocument;
+	}
+	
+	
+	
 }
