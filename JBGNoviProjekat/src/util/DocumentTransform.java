@@ -123,6 +123,7 @@ public class DocumentTransform {
 
 			JAXBContext context = JAXBContext.newInstance("beans.notification");
 			Marshaller marshaller = context.createMarshaller();
+			
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			
 			String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
