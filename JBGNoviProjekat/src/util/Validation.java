@@ -180,10 +180,10 @@ public class Validation {
 
 
 	public static SOAPFaultException generateSOAPFault(String faultString, QName faultCodeQName, String faultActor) {
-
+		SOAPFault soapFault=null;
 		try {
 			SOAPFactory f = SOAPFactory.newInstance(); 
-			SOAPFault soapFault = f.createFault();
+			soapFault = f.createFault();
 
 			Fault fault = new Fault();
 
@@ -213,14 +213,14 @@ public class Validation {
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(fault,System.out);
 
-			return new SOAPFaultException(soapFault); 
+			
 		} catch (SOAPException e) {
 			e.printStackTrace();
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		return null;
+		return new SOAPFaultException(soapFault); 
 	}
 
 	static class MyErrorHandler implements ErrorHandler {

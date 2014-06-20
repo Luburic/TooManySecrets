@@ -2,9 +2,6 @@ package provider.firma;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -23,22 +20,22 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import client.firma.FakturaClient;
 import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
-import basexdb.RESTUtil;
 import beans.faktura.Faktura;
 
 @Stateless
 @ServiceMode(value = Service.Mode.PAYLOAD)
 @WebServiceProvider(portName = "FakturaPort", serviceName = "FirmaServis", targetNamespace = ConstantsXWS.TARGET_NAMESPACE_FIRMA, wsdlLocation = "WEB-INF/wsdl/Firma.wsdl")
 public class FakturaProvider implements Provider<DOMSource> {
-	
-	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
+
 	private Properties propReceiver;
 	private String message;
 	private Document encrypted;
+	private String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
 	
 	public FakturaProvider() {
 	}
@@ -46,7 +43,7 @@ public class FakturaProvider implements Provider<DOMSource> {
 	@Override
 	public DOMSource invoke(DOMSource request) {
 		try {
-			// serijalizacija DOM-a na ekran
+			
 			System.out.println("\nInvoking FakturaProvider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 
@@ -58,39 +55,33 @@ public class FakturaProvider implements Provider<DOMSource> {
 			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("firma.properties");
 			propReceiver = new Properties();
 			propReceiver.load(inputStreamReceiver);
-
-			Document decryptedDocument = MessageTransform.unpack(document, "Faktura", "Faktura",
-					ConstantsXWS.TARGET_NAMESPACE_FIRMA, propReceiver, "firma", "Faktura");
 			
-			Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
-			String dateString = timestamp.getTextContent();
+		//	Element esender = (Element) document.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD, "sender").item(0);
+		//	esender.getParentNode().removeChild(esender);
 
-			Date date = null;
-			try {
-				date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			
+			Document decryptedDocument = MessageTransform.unpack(document, "Faktura", "Faktura",ConstantsXWS.TARGET_NAMESPACE_FIRMA, propReceiver, "firma", "Faktura");
+			if(decryptedDocument==null){ 
+				//encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+esender.getTextContent(),ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
+				return new DOMSource(encrypted);
 			}
 			
+			
 			String sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
-
-			RESTUtil.sacuvajEntitet(decryptedDocument, propReceiver.getProperty("naziv"), false, sender, date, "Faktura", "firma");
+			decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propReceiver, "firma", "Faktura");
 			
-			decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument);
-			decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument);
-			decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
-			
+			if(decryptedDocument==null){ 
+				DocumentTransform.createNotificationResponse("Greska nakon dekripcije.", ConstantsXWS.NAMESPACE_XSD);
+				encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
+				return new DOMSource(encrypted);
+				
+			}
 			
 			JAXBContext context = JAXBContext.newInstance("beans.faktura");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 
-			Faktura faktura = null;
-			try {
-				faktura = (Faktura) unmarshaller.unmarshal(decryptedDocument);
-			} catch (JAXBException e) {
-				return new DOMSource(decryptedDocument);
-			}
+			Faktura faktura = (Faktura) unmarshaller.unmarshal(decryptedDocument);
+			
 			
 			
 			if (!validateContent(faktura)) {
@@ -99,10 +90,6 @@ public class FakturaProvider implements Provider<DOMSource> {
 			else {
 				DocumentTransform.createNotificationResponse("Faktura uspesno obradjena.",ConstantsXWS.TARGET_NAMESPACE_FIRMA);
 			}
-			
-			
-			//propSender=proprReciver
-			String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
 			
 			encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
 			
@@ -121,9 +108,10 @@ public class FakturaProvider implements Provider<DOMSource> {
 		return new DOMSource(encrypted);
 	}
 
-public boolean validateContent(Faktura fak) {
+	public boolean validateContent(Faktura fak) {
 		
-		
+	
+	
 		double tempKolicina, tempJedinicnaCena, tempVrednost, tempProcenatRabata, tempUmanjenoZaRabat, tempPorez, tempIznosRabata;
 		double ukupnoRobeIUsluge, zaUplatu, ukupanPorez, ukupanRabat, vrednostRobe, vrednostUsluga, ukupnoStavke, zaUplatuStavke, ukupanPorezStavke, ukupanRabatStavke;
 
@@ -132,6 +120,12 @@ public boolean validateContent(Faktura fak) {
 		ukupanPorezStavke = 0;
 		ukupanRabatStavke = 0;
 
+		
+		if(fak == null) {
+			message ="Greska:Neodgovarajuci tip dokumenta.";
+			return false;
+		}
+		
 		List<Faktura.Stavka> stavke = fak.getStavka();
 
 		

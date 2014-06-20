@@ -373,7 +373,7 @@ public class SecurityClass {
 		}
 	}
 
-	private Document reserialize(Node request) {
+	public Document reserialize(Node request) {
 		Document r = null;
 		try{
 			DocumentBuilder db = DocumentTransform.getDocumentBuilder();
