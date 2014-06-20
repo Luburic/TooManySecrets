@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <registeredFirms xmlns="http://www.toomanysecrets.com/firme">
     <firm>
-        <pib>firmab</pib>
+        <pib>pibfirmab</pib>
         <name>firmab</name>
         <account>222222222222222222</account>
-        <address>Ulica Firme B</address>
+        <address>firmab</address>
         <organisationName>firmab</organisationName>
         <postCode>21000</postCode>
         <country>SRB</country>
-        <email>firmab@firmab.com</email>
-        <certificate>MIICjTCCAfagAwIBAgIBBDANBgkqhkiG9w0BAQUFADCBjDEPMA0GA1UEAwwGYmFua2FiMQ8wDQYDVQQKDAZiYW5rYWIxDzANBgNVBAsMBmJhbmthYjEMMAoGA1UEBhMDU1JCMQ4wDAYDVQQHDAUyMTAwMDEfMB0GCSqGSIb3DQEJARYQYmFua2FiQGJhbmthLmNvbTEYMBYGCgmSJomT8ixkAQEMCEJOS0JTUjIxMB4XDTE0MDYxOTAxNTgyMVoXDTE1MDYxOTAxNTgyMVowgYsxDzANBgNVBAMMBmZpcm1hYjEPMA0GA1UECgwGZmlybWFiMQ8wDQYDVQQLDAZmaXJtYWIxDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwFMjEwMDAxIDAeBgkqhkiG9w0BCQEWEWZpcm1hYkBmaXJtYWIuY29tMRYwFAYKCZImiZPyLGQBAQwGZmlybWFiMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCSoekM9k0rDdS6NiBPX3+1WyLKL3+KvSb/RB23sgyfnki1F7WboCxC9qtiC0kImNgzgxVy9yKlpt/CCb7k+FwQgUkrRjIusIteIXBgFXpIzVTi+nVUED1pprI7ir8t1ta326HpmNVDTvGmyYk2ZlNoao2wnapcGlTj9i94+qtIdwIDAQABMA0GCSqGSIb3DQEBBQUAA4GBAFuh58D+9INlj0ZlrqwOIov154rsjX1BC7acws13G6zpwLv87Ot2uVGlDsSA/l6mnzB9bxPwc5y4BVSpXIxoAysUMqA2BLdgpVhc5MsqzZMKd7+xqu3mVJf94PVjSSBNhI1kvBbo8Ni/3vsINdmkOqVi1T6cPtQTpM31Nwvn9dSx</certificate>
+        <email>firmab@firma.com</email>
+        <certificate>MIICjzCCAfigAwIBAgIBODANBgkqhkiG9w0BAQUFADCBjDEPMA0GA1UEAwwGYmFua2FiMQ8wDQYDVQQKDAZiYW5rYWIxDzANBgNVBAsMBmJhbmthYjEMMAoGA1UEBhMDU1JCMQ4wDAYDVQQHDAUyMTAwMDEfMB0GCSqGSIb3DQEJARYQYmFua2FiQGJhbmthLmNvbTEYMBYGCgmSJomT8ixkAQEMCEJOS0JTUjIxMB4XDTE0MDYyMDIxMjA1MloXDTE1MDYyMDIxMjA1MlowgY0xDzANBgNVBAMMBmZpcm1hYjEPMA0GA1UECgwGZmlybWFiMQ8wDQYDVQQLDAZmaXJtYWIxDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwFMjEwMDAxHzAdBgkqhkiG9w0BCQEWEGZpcm1hYkBmaXJtYS5jb20xGTAXBgoJkiaJk/IsZAEBDAlwaWJmaXJtYWIwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAITF3/yy4AR4q7mHelg5esJyUYlcmMJgldZvGikX6d6Vx/FcJH0UUkJfdfbmDZIiwyTuAVJCxxtivNis0EAdtWNzhE0qgh9XEPJqc4JCQOWkI9S+whhL7ydyO//ldLUhp0QVgGjG6/CVdD/AW8FRufjsIsgZppfxC4FBhC+c385hAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAYGCS9uX6bvkFnkgr87laycrZlnfrV9DzTcDuzgl4Xnlmm+7y4p/7URIyg44SxVmCqE1ra/RjvZV0fpFwfOPMLf+nxeGLzJ+8evKDKU4pOG4tsNkCWWA/fviLq6Z9J+ptPsV0PFdS0bTvyMg9jpgKKnS0z0c1X8RNPLpSrx+EI5w=</certificate>
     </firm>
 </registeredFirms>

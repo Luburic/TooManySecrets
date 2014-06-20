@@ -199,6 +199,19 @@ public class CertificateGenerator {
 		ksWriter.saveKeyStore("./keystores/"+alias+".jks", pass);
 		JOptionPane.showMessageDialog(null, "Keystore "+alias+".jks is saved in keystores/ folder.");
 		
+		
+		// ispis na konzolu
+				System.out
+						.println("ISSUER: " + cert.getIssuerX500Principal().getName());
+				System.out.println("SUBJECT: "
+						+ cert.getSubjectX500Principal().getName());
+				System.out.println("Sertifikat:");
+				System.out
+						.println("-------------------------------------------------------");
+				System.out.println(cert);
+				System.out
+						.println("-------------------------------------------------------");
+				//ovde bi trebalo da prodje
 
 		//ovde bi trebalo da prodje
 		try {
@@ -273,7 +286,7 @@ public class CertificateGenerator {
 			} else {
 				/*PasswordDialog passDialog = new PasswordDialog();
 				passDialog.setVisible(true);*/
-				issuerData = keyStoreReader.readKeyStoreForIssuer(isCentralBank, bankName, bankName.toCharArray() ); //dodati dialog
+				issuerData = keyStoreReader.readKeyStoreForIssuer(false, bankName, bankName.toCharArray() ); //dodati dialog
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();

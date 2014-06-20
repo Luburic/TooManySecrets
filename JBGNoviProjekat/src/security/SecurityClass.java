@@ -9,12 +9,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.Security;
+import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -478,7 +481,7 @@ public class SecurityClass {
 			return null;
 		}
 	}
-	
+
 	public static String getOwner(Document doc) {
 		String ownerName = null;
 		try {
@@ -492,19 +495,19 @@ public class SecurityClass {
 			keyInfo.registerInternalKeyResolver(new X509CertificateResolver());
 			//citanje sertifikata
 			X509Certificate cert = keyInfo.itemX509Data(0).itemCertificate(0).getX509Certificate();
-			
+
 			String dn = cert.getSubjectX500Principal().getName();
-			
-			
+
+
 			LdapName ln = new LdapName(dn);
 
-	        for (Rdn rdn : ln.getRdns()) {
-	            if (rdn.getType().equalsIgnoreCase("CN")) {
-	            	ownerName = rdn.getValue().toString();
-	                break;
-	            }
-	        }
-			
+			for (Rdn rdn : ln.getRdns()) {
+				if (rdn.getType().equalsIgnoreCase("CN")) {
+					ownerName = rdn.getValue().toString();
+					break;
+				}
+			}
+
 		} catch (XMLSecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -512,14 +515,144 @@ public class SecurityClass {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		if(ownerName != null) {
 			return ownerName;
 		}
-		
+
 		return null;
-		
-		
 	}
+
+	public static String getIssuer(Document doc) {
+		try {
+
+			//pronalazi se zeljeni ds:KeyInfo element
+			Element keyInfoEl = (Element)doc.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "KeyInfo").item(0);
+
+			//kreira se KeyInfo objekat na osnovu ds:KeyInfo elementa
+			KeyInfo keyInfo = new KeyInfo(keyInfoEl, null);
+			//registracija resolvera
+			keyInfo.registerInternalKeyResolver(new RSAKeyValueResolver());
+			keyInfo.registerInternalKeyResolver(new X509CertificateResolver());
+			//citanje sertifikata
+			X509Certificate cert = keyInfo.itemX509Data(0).itemCertificate(0).getX509Certificate();
+
+			String dn = cert.getIssuerX500Principal().getName();
+			String issuerName = null;
+
+			LdapName ln = new LdapName(dn);
+
+			for (Rdn rdn : ln.getRdns()) {
+				if (rdn.getType().equalsIgnoreCase("CN")) {
+					issuerName = rdn.getValue().toString();
+					break;
+				}
+			}
+
+			if(issuerName != null)
+				return issuerName;
+		}	catch (InvalidNameException | XMLSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static String getIssuerFromCert(X509Certificate cert) {
+		try {
+
+			String dn = cert.getIssuerX500Principal().getName();
+			String issuerName = null;
+
+			LdapName ln = new LdapName(dn);
+
+			for (Rdn rdn : ln.getRdns()) {
+				if (rdn.getType().equalsIgnoreCase("CN")) {
+					issuerName = rdn.getValue().toString();
+					break;
+				}
+			}
+
+			if(issuerName != null)
+				return issuerName;
+		}	catch (InvalidNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Checks whether given X.509 certificate is self-signed.
+	 */
+	public static boolean isSelfSigned(X509Certificate cert) throws CertificateException, 
+	NoSuchAlgorithmException, NoSuchProviderException {
+		try {
+			// Try to verify certificate signature with its own public key
+			PublicKey key = cert.getPublicKey();
+			cert.verify(key);
+			return true;
+		} catch (SignatureException sigEx) {
+			// Invalid signature --> not self-signed
+			return false;
+		} catch (InvalidKeyException keyEx) {
+			// Invalid key --> not self-signed
+			return false;
+		}
+	}
+
+	public static X509Certificate getCertFromDocument(Document doc) {
+
+		X509Certificate cert = null;
+		try {
+			//pronalazi se zeljeni ds:KeyInfo element
+			Element keyInfoEl = (Element)doc.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "KeyInfo").item(0);
+
+			//kreira se KeyInfo objekat na osnovu ds:KeyInfo elementa
+			KeyInfo keyInfo = new KeyInfo(keyInfoEl, null);
+			//registracija resolvera
+			keyInfo.registerInternalKeyResolver(new RSAKeyValueResolver());
+			keyInfo.registerInternalKeyResolver(new X509CertificateResolver());
+			//citanje sertifikata
+			cert = keyInfo.itemX509Data(0).itemCertificate(0).getX509Certificate();
+		}catch (XMLSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return cert;
+
+	}
+	
+	public static Certificate[] getCertChain(Document doc){
+		try{
+			NodeList signatures = doc.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Signature");
+			Element signatureEl = (Element) signatures.item(0);
+
+			//kreira se signature objekat od elementa
+			XMLSignature signature = new XMLSignature(signatureEl, null);
+			//preuzima se key info
+			KeyInfo keyInfo = signature.getKeyInfo();
+			Certificate[] chain;
+			if(keyInfo != null) {
+				chain=new Certificate[keyInfo.lengthX509Data()];
+				if(keyInfo.containsX509Data()){      
+					for(int i=0;i<keyInfo.lengthX509Data();i++){
+						Certificate cert=keyInfo.itemX509Data(i).itemCertificate(0).getX509Certificate();
+						chain[i]=cert;
+					}
+				}
+				
+				return chain;
+			}	
+			return null;
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return null;
+		}
+	}
+	
 
 }

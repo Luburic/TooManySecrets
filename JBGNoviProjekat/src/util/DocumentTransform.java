@@ -3,6 +3,8 @@ package util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBContext;
@@ -143,5 +145,35 @@ public class DocumentTransform {
 			e.printStackTrace();
 		}
 		return doc;
+	}
+	
+	//serializuje DOM u XML
+	public static void transform(Document doc, String file) {
+		try {
+
+			//Kreira se TransformerFactory
+			TransformerFactory tFactory = TransformerFactory.newInstance();
+			//Kreiramo transformer
+			Transformer transformer = tFactory.newTransformer();
+			//uvlacenje
+			transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			//Posto je ulaz za transformaciju DOM kreiramo DOMSource
+			DOMSource source = new DOMSource(doc);
+			//Izlaz je std.out, odnosno stream
+			StreamResult result = new StreamResult(new FileOutputStream(new File(file)));
+			//Vrsi se transformacija
+			transformer.transform(source, result);
+
+		} catch (TransformerConfigurationException e) {
+			e.printStackTrace();
+		} catch (TransformerFactoryConfigurationError e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <registeredBanks xmlns="http:/www.toomanysecrets.com/banke">
-    <bank id="654" swiftCode="BNKBSR21">
-        <name>bankab</name>
-        <organisationName>bankab</organisationName>
-        <postcode>21000</postcode>
-        <country>SRB</country>
-        <email>bankab@banka.com</email>
-        <certificate>MIICpDCCAg2gAwIBAgIBSDANBgkqhkiG9w0BAQUFADCBojEXMBUGA1UEAwwOY2VudHJhbG5hYmFua2ExFzAVBgNVBAoMDmNlbnRyYWxuYWJhbmthMRcwFQYDVQQLDA5jZW50cmFsbmFiYW5rYTEMMAoGA1UEBhMDU1JCMQ4wDAYDVQQHDAUxMTAwMDEiMCAGCSqGSIb3DQEJARYTY2VudHJhbG5hQGJhbmthLmNvbTETMBEGCgmSJomT8ixkAQEMAzEwMDAeFw0xNDA2MTkwMTU2NTVaFw0xNTA2MTkwMTU2NTVaMIGMMQ8wDQYDVQQDDAZiYW5rYWIxDzANBgNVBAoMBmJhbmthYjEPMA0GA1UECwwGYmFua2FiMQwwCgYDVQQGEwNTUkIxDjAMBgNVBAcMBTIxMDAwMR8wHQYJKoZIhvcNAQkBFhBiYW5rYWJAYmFua2EuY29tMRgwFgYKCZImiZPyLGQBAQwIQk5LQlNSMjEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAIQZNFa/BMDTuZOIwJ6p952LJVSrM0l0WAiFIeuuSraQfflfYyBqzOnQKmpvDih1XZbwpmK95s9+sJ/0LmLQF3zszMdWYDp9lKhyfCTbC1OEy/j2F1pJVr5ZWVnAPk7xFCZAdXit6oZUzrEEljp6K8KmTndqVcRMe/PKIxIF0bbLAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAip6mxa7r/UOZoSu2HznjKM66dDJmmLXLC5xSGKNzSJbLJjpnLEWy/m4uDYp3ovng8MkvE3Da9I5IjLa37iKtYxjK2I17NBBTNzniZfAfMqubw6/rd76X6NxTCaIDX1u+soLsBzWGhETuoCF7lpoI36s1xyb/u+i+KaGm4EGIoM4=</certificate>
-    </bank>
-    <bank id="874" swiftCode="BNKASR11">
+    <bank id="500" swiftCode="BNKASR11">
         <name>bankaa</name>
         <organisationName>bankaa</organisationName>
         <postcode>11000</postcode>
         <country>SRB</country>
         <email>bankaa@banka.com</email>
+        <certificate>MIICpDCCAg2gAwIBAgIBBDANBgkqhkiG9w0BAQUFADCBojEXMBUGA1UEAwwOY2VudHJhbG5hYmFua2ExFzAVBgNVBAoMDmNlbnRyYWxuYWJhbmthMRcwFQYDVQQLDA5jZW50cmFsbmFiYW5rYTEMMAoGA1UEBhMDU1JCMQ4wDAYDVQQHDAUxMTAwMDEiMCAGCSqGSIb3DQEJARYTY2VudHJhbG5hQGJhbmthLmNvbTETMBEGCgmSJomT8ixkAQEMAzEwMDAeFw0xNDA2MjAyMTE5MjFaFw0xNTA2MjAyMTE5MjFaMIGMMQ8wDQYDVQQDDAZiYW5rYWExDzANBgNVBAoMBmJhbmthYTEPMA0GA1UECwwGYmFua2FhMQwwCgYDVQQGEwNTUkIxDjAMBgNVBAcMBTExMDAwMR8wHQYJKoZIhvcNAQkBFhBiYW5rYWFAYmFua2EuY29tMRgwFgYKCZImiZPyLGQBAQwIQk5LQVNSMTEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMGVDg2PntShvgel9aj+YFd+WODyR9Rf4RqTpvG+1/bkEnH0FajxzCtUz6YQgX3VKjG+FYEOGzQ6HYspdYI8HWf71j55qkwoz3VOnzUWJrM1AJiBNLC3gZuPkNLkU/NOJoszCd89okw0g7E3+IhV0q9c/K70xtfEfhq6xzcpauP1AgMBAAEwDQYJKoZIhvcNAQEFBQADgYEApNI20spuGncfMvi3xxDH+fbkcolUiJSofBOuR3JxvU7WVUpYkp4swOm7wgjAYd6U28Un2AYIaMKDCUz0vJVEI1w32frXcpl/re60ynFrog8le0vLX+yTtaMXMPLcDWgIEZ+oxj5hICT6gw3Kuz3OYSdbDJJdxE/M9UX10BEHZxk=</certificate>
+    </bank>
+    <bank id="843" swiftCode="BNKBSR21">
+        <name>bankab</name>
+        <organisationName>bankab</organisationName>
+        <postcode>21000</postcode>
+        <country>SRB</country>
+        <email>bankab@banka.com</email>
+        <certificate>MIICpDCCAg2gAwIBAgIBETANBgkqhkiG9w0BAQUFADCBojEXMBUGA1UEAwwOY2VudHJhbG5hYmFua2ExFzAVBgNVBAoMDmNlbnRyYWxuYWJhbmthMRcwFQYDVQQLDA5jZW50cmFsbmFiYW5rYTEMMAoGA1UEBhMDU1JCMQ4wDAYDVQQHDAUxMTAwMDEiMCAGCSqGSIb3DQEJARYTY2VudHJhbG5hQGJhbmthLmNvbTETMBEGCgmSJomT8ixkAQEMAzEwMDAeFw0xNDA2MjAyMTE5NDFaFw0xNTA2MjAyMTE5NDFaMIGMMQ8wDQYDVQQDDAZiYW5rYWIxDzANBgNVBAoMBmJhbmthYjEPMA0GA1UECwwGYmFua2FiMQwwCgYDVQQGEwNTUkIxDjAMBgNVBAcMBTIxMDAwMR8wHQYJKoZIhvcNAQkBFhBiYW5rYWJAYmFua2EuY29tMRgwFgYKCZImiZPyLGQBAQwIQk5LQlNSMjEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALSCh3Vg9GquppVRuHeQLfgYQTseNaA3D9e/FJy99gZsdANXcVeW4BrUh7FGuZdZOTK5wDySc5dBFlRmJdGcZy6E7ZrEzRcXXgjmRQ/DcIEVyLXqYULeOSiKLERBKgiv18wa8ma0kjtlJDw8NVlPfG31V+ZPZo4u4cq+LL65LK2fAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAHWsjvhSFI6yVT3leABJicjdAT/kecXKlo71DdwBNVPaG3/447GKGkFyNWxpJS6wwD5p0pvq7jsEGxdyEb6ELmsLRnPgWAY0QhmGEr6X8BnozRq2g/slgGV4ait1CTBCZ3rvSUwGUBmd4EDdkygReLTqjkrd9tpsrKCmFm8ZGz9k=</certificate>
     </bank>
 </registeredBanks>

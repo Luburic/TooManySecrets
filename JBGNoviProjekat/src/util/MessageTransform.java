@@ -1,8 +1,16 @@
 package util;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,6 +24,10 @@ import provider.banka.NalogProvider;
 import provider.firma.FakturaProvider;
 import security.SecurityClass;
 import basexdb.RESTUtil;
+import crlBanks.CrlBank;
+import crlBanks.CrlBank.Firm;
+import crlCentralna.CrlCentralna;
+import crlCentralna.CrlCentralna.Bank;
 
 public class MessageTransform {
 
@@ -32,6 +44,10 @@ public class MessageTransform {
 		if( doc == null )
 			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije validan po Crypt semi.", TARGET_NAMESPACE);
 
+		boolean algo = checkAlgorithm(doc);
+		if(algo == false) {
+			return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije kriptovan odgovarajucim algoritmom.", TARGET_NAMESPACE);
+		}
 		URL url=null;
 		
 		if(schemaPrefix.toLowerCase().equals("faktura")) {
@@ -69,20 +85,139 @@ public class MessageTransform {
 		}
 		
 		String senderName = SecurityClass.getOwner(decrypt).toLowerCase();
-
 		Date dateFromXml = RESTUtil.getTimestampPoslednjePrimljene(senderName, propReceiver.getProperty("naziv"), entity, type);
-		//skidanje taga
-		//timestamp.getParentNode().removeChild(timestamp);
-
 		Element redniBrojPoruke = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
-
 		int rbrPoruke = Integer.parseInt(redniBrojPoruke.getTextContent());
 		int rbrPorukeFromXml = RESTUtil.getBrojPoslednjePrimljene(senderName, propReceiver.getProperty("naziv"), entity, type);
-		//skidanje taga
-		//redniBrojPoruke.getParentNode().removeChild(redniBrojPoruke);
+
 
 		if(rbrPoruke <= rbrPorukeFromXml || dateFromXml.after(date) || dateFromXml.equals(date)) {
 			return DocumentTransform.createNotificationResponse(schemaPrefix +" pokusaj napada.", TARGET_NAMESPACE);
+		}
+		
+		//provera lanca i crl
+		Document temp = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
+		X509Certificate cert = SecurityClass.getCertFromDocument(temp);
+		String issuerName = SecurityClass.getIssuer(temp);
+		Certificate certCentralna = null;
+		Certificate certIssuer = null;
+		
+		//provera za firme prvo
+		if(!issuerName.equalsIgnoreCase("centralnabanka")) {
+			try {
+				if(SecurityClass.isSelfSigned(cert)){
+					return DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+				}
+
+				File file = new File("temp.xml");
+				if(file.exists())
+					file.delete();
+				file.createNewFile();
+
+				downloadUsingStream("http://localhost:8080/"+issuerName+"/crl"+issuerName+".xml", "temp.xml");
+
+				Document crlDoc = Validation.buildDocumentWithoutValidation("temp.xml");
+				crlDoc = removeSignature(crlDoc);
+				DocumentTransform.transform(crlDoc, "temp.xml");
+				DocumentTransform.printDocument(crlDoc);
+				CrlBank crlBank = CrlBank.load("temp.xml");
+				for(Firm f : crlBank.getFirm()) {
+					for(String s: f.getCertificateID()){
+						if(Integer.parseInt(s) == Integer.parseInt(cert.getSerialNumber().toString())){
+							return DocumentTransform.createNotificationResponse(schemaPrefix +" nalazi se u CRL listi banke.", TARGET_NAMESPACE);
+						}
+					}
+				}
+
+				downloadUsingStream("http://localhost:8080/"+issuerName+"/"+issuerName+".cer", issuerName+".cer");
+				downloadUsingStream("http://localhost:8080/"+"centralnabanka"+"/"+"centralnabanka"+".cer", "centralnabanka"+".cer");
+				SecurityClass sc = new SecurityClass();
+				certIssuer = sc.readCertificateFromFile(new File(issuerName+".cer"));
+				System.out.println(certIssuer);
+				certCentralna = sc.readCertificateFromFile(new File("centralnabanka"+".cer"));
+
+				try {
+					cert.verify(((X509Certificate)certIssuer).getPublicKey());
+				} catch (CertificateException e1) {
+					e1.printStackTrace();
+					return DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+				}
+
+				try {
+					((X509Certificate)certIssuer).verify(((X509Certificate)certCentralna).getPublicKey());
+				} catch (CertificateException e1) {
+					e1.printStackTrace();
+					return DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+				}
+
+				cert = (X509Certificate)certIssuer;
+				issuerName = SecurityClass.getIssuerFromCert((X509Certificate)certIssuer);
+
+			} catch (CertificateException e1) {
+				e1.printStackTrace();
+			} catch (NoSuchAlgorithmException e1) {
+				e1.printStackTrace();
+			} catch (NoSuchProviderException e1) {
+				e1.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} 
+		//provera za banku
+		if(issuerName.equalsIgnoreCase("centralnabanka")) {
+			try {
+
+				File file = new File("temp2.xml");
+				if(file.exists())
+					file.delete();
+				file.createNewFile();
+
+				downloadUsingStream("http://localhost:8080/"+issuerName+"/crl"+issuerName+".xml", "temp2.xml");
+
+				Document crlDoc = Validation.buildDocumentWithoutValidation("temp2.xml");
+				crlDoc = removeSignature(crlDoc);
+				DocumentTransform.transform(crlDoc, "temp2.xml");
+				DocumentTransform.printDocument(crlDoc);
+				CrlCentralna crlCentralna = CrlCentralna.load("temp2.xml");
+				for(Bank b : crlCentralna.getBank()) {
+					for(String s: b.getCertificateID()){
+						if(Integer.parseInt(s) == Integer.parseInt(cert.getSerialNumber().toString())){
+							return DocumentTransform.createNotificationResponse(schemaPrefix +" nalazi se u CRL listi centralne banke.", TARGET_NAMESPACE);
+						}
+					}
+
+				}
+
+				downloadUsingStream("http://localhost:8080/"+"centralnabanka"+"/"+"centralnabanka"+".cer", "centralnabanka"+".cer");
+				SecurityClass sc = new SecurityClass();
+				certCentralna = sc.readCertificateFromFile(new File("centralnabanka"+".cer"));
+				
+				try {
+					cert.verify(((X509Certificate)certCentralna).getPublicKey());
+				} catch (CertificateException e1) {
+					e1.printStackTrace();
+					return DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+				}
+
+				if(!SecurityClass.isSelfSigned((X509Certificate)certCentralna)){
+					return DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+				}
+
+
+			} catch (CertificateException e1) {
+				e1.printStackTrace();
+			} catch (NoSuchAlgorithmException e1) {
+				e1.printStackTrace();
+			} catch (NoSuchProviderException e1) {
+				e1.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		}
 
 		return decrypt;
@@ -204,6 +339,16 @@ public class MessageTransform {
 		return doc;
 		
 	}
+	
+	public static boolean checkAlgorithm(Document doc) {
+		
+		Element encMethodEl = (Element)doc.getElementsByTagNameNS("http://www.w3.org/2001/04/xmlenc#", "EncryptionMethod").item(0);
+		if(encMethodEl.getAttribute("Algorithm").equalsIgnoreCase("http://www.w3.org/2001/04/xmlenc#aes128-cbc")) {
+			return true;
+		}
+		
+		return false;
+	}
 
 
 
@@ -232,6 +377,19 @@ public class MessageTransform {
 		return ans;
 	}
 
+	private static void downloadUsingStream(String urlStr, String file) throws IOException{
+        URL url = new URL(urlStr);
+        BufferedInputStream bis = new BufferedInputStream(url.openStream());
+        FileOutputStream fis = new FileOutputStream(file);
+        byte[] buffer = new byte[1024];
+        int count=0;
+        while((count = bis.read(buffer,0,1024)) != -1)
+        {
+            fis.write(buffer, 0, count);
+        }
+        fis.close();
+        bis.close();
+    }
 
 
 
