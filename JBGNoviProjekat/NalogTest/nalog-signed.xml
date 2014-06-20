@@ -14,7 +14,7 @@
     <iznos>100500</iznos>
     <oznakaValute>rsd</oznakaValute>
     <hitno>true</hitno>
-<timestamp>06/20/2014 12:58:14</timestamp><redniBrojPoruke>3</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<timestamp>06/20/2014 13:35:09</timestamp><redniBrojPoruke>4</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -24,13 +24,13 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>1uBqkUTM/EX3RN1cq9rKQ4eO9Tk=</ds:DigestValue>
+<ds:DigestValue>WWtGEcUzwFkMjziGKr6nUEoROF8=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-KlgmcyF7bkkRlLABAeiu2QQkwK7nqp2Gpy/8t982fiYTGLO21yq2LCOa62zlVEMgakO/Y/xLh+er
-0HSRcNlppve3uwauWCtVUGJaAnGQ/h9wxtgvyKCQJD281hywuXZdVtSIx/H2ZkQ9fKNrP2+V9lOK
-00O91KujG1ng7v/7Bsw=
+JAD1Zqivaw5YKVBuDbbrYl6rZMw1r/KCMmC/5CYB2NKj+wtiHAmJIg2PHHmMzfA35mLer1mc2r9Z
+HL7Mn2cOTB287PRj1ZyS2FTEQjeJzVuFZ6+sDlMMXaPiQE4S7tcTqGVId/AUkqHkuAKmanEyw1wn
+M8FOg2XV+KZke4wk1XU=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>

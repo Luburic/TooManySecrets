@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
@@ -19,13 +20,16 @@ import javax.xml.ws.Service;
 
 import org.apache.cxf.binding.soap.SoapFault;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
 import util.MyDatatypeConverter;
 import util.NSPrefixMapper;
 import util.Validation;
+import basexdb.RESTUtil;
 import beans.nalog.Nalog;
 
 public class NalogClient {
@@ -51,12 +55,24 @@ public class NalogClient {
 
 			Document encrypted = MessageTransform.packS("Nalog", "Nalog",inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD,"Nalog");
 
+			
 			if (encrypted != null) {
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 
 				if (response != null) {
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propSender,"firma", "Notif");
+					
+					Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD,"timestamp").item(0);
+					String dateString = timestamp.getTextContent();
+					Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+					String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+					RESTUtil.sacuvajEntitet(decryptedDocument,propSender.getProperty("naziv"), false, owner, date,"Notif", "firma");
+					decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument);
+					decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument);
+					decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
+					
+					
 					DocumentTransform.printDocument(decryptedDocument);
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 				}

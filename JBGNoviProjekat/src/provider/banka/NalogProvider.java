@@ -19,6 +19,7 @@ import javax.xml.ws.Service;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
 
+import org.apache.cxf.binding.soap.SoapFault;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,6 +29,7 @@ import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
 import util.MyDatatypeConverter;
+import util.Validation;
 import basexdb.RESTUtil;
 import beans.mt103.MT103;
 import beans.nalog.Nalog;
@@ -62,7 +64,6 @@ public class NalogProvider implements Provider<DOMSource> {
 			propReceiver.load(inputStreamReceiver);
 
 			Document decryptedDocument = MessageTransform.unpack(document,"Nalog", "Nalog",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propReceiver,"banka", "Nalog");
-
 
 			Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD,"timestamp").item(0);
 			String dateString = timestamp.getTextContent();
