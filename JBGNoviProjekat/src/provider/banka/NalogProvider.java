@@ -23,8 +23,6 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import client.banka.MT103Client;
-import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
@@ -65,21 +63,27 @@ public class NalogProvider implements Provider<DOMSource> {
 			propReceiver.load(inputStreamReceiver);
 
 			
-		//	Element esender = (Element) document.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD, "sender").item(0);
-		//	esender.getParentNode().removeChild(esender);
+			Element esender = (Element) document.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD, "sender").item(0);
+			
+			if(esender==null)
+				return new DOMSource(encrypted);
+			
+			String sender = esender.getTextContent();
+			System.out.println("****NALOG SENDER: "+sender);
+			esender.getParentNode().removeChild(esender);
 
 			
 			
 			Document decryptedDocument = MessageTransform.unpack(document,"Nalog", "Nalog",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propReceiver,"banka", "Nalog");
 			
 			if(decryptedDocument==null){ 
-				//encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+esender.getTextContent(),ConstantsXWS.NAMESPACE_XSD, "Notif");
+				encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+esender.getTextContent(),ConstantsXWS.NAMESPACE_XSD, "Notif");
 				return new DOMSource(encrypted);
 			}
 			
 			
 			
-			String sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+			//String sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
 			decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propReceiver, "banka", "Nalog");
 
 			
@@ -145,7 +149,7 @@ public class NalogProvider implements Provider<DOMSource> {
 		MT103 mt = null;
 		try {
 			mt = new MT103();
-			mt.setIdPoruke(MessageTransform.randomString(50));
+			/*mt.setIdPoruke(MessageTransform.randomString(50));
 			mt.setSwiftBankeDuznika(propReceiver.getProperty("swift"));
 			mt.setObracunskiRacunBankeDuznika(propReceiver.getProperty("obracunskiRac"));
 
@@ -187,9 +191,12 @@ public class NalogProvider implements Provider<DOMSource> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}*/
 		}
-
+		catch (Exception e) {
+			// TODO: handle exception
+		}
 		return mt;
 	}
-
+	
 }

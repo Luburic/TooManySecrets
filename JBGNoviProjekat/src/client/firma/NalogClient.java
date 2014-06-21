@@ -63,23 +63,40 @@ public class NalogClient {
 
 			
 			if (encrypted != null) {
+				
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 
+				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 				if (response != null) {
-					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-				
-					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propSender,"firma", "Notif");
 					
+					Document document = DocumentTransform.convertToDocument(response);
+					Element esender = (Element) document.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD, "sender").item(0);
+					if(esender==null) {
+						System.out.println("Nema informacije o posaljiocu.");
+						System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+						return;
+					}
+					
+					String server = esender.getTextContent();
+					System.out.println("****notification sender: "+server);
+					esender.getParentNode().removeChild(esender);
+					
+					
+					
+					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propSender,"firma", "Notif");
 					decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propSender, "firma", "Notif");
-
+					
 					if(decryptedDocument==null) {
 						System.out.println("Neuspesna obrada odgovora koji je stigao od web servisa.");
 					}else {
-					DocumentTransform.printDocument(decryptedDocument);
+						DocumentTransform.printDocument(decryptedDocument);
 					}
 					
-					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+					
+				}else {
+					System.out.println("Odgovor servera null.");
 				}
+				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 			}
 
 		} catch (MalformedURLException e) {

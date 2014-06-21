@@ -51,11 +51,12 @@ public class MessageTransform {
 			
 			boolean algo = checkAlgorithm(doc);
 			if(algo == false) {
-				return DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije kriptovan odgovarajucim algoritmom.", TARGET_NAMESPACE);
+				DocumentTransform.createNotificationResponse(schemaPrefix+" dokument nije kriptovan odgovarajucim algoritmom.", TARGET_NAMESPACE);
+				return null;
 			}	
 
 			URL url=null;
-			
+			//dodati za ostale sheme ako je potrebno
 			if(schemaPrefix.toLowerCase().equals("faktura")) {
 				url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 			}
@@ -85,7 +86,7 @@ public class MessageTransform {
 
 			//DocumentTransform.printDocument(forSave);
 
-			Element timestamp = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "timestamp").item(0);
+			Element timestamp = (Element) decrypt.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD, "timestamp").item(0);
 			String dateString = timestamp.getTextContent();
 
 			Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
@@ -93,7 +94,7 @@ public class MessageTransform {
 			
 			String senderName = SecurityClass.getOwner(decrypt).toLowerCase();
 			Date dateFromXml = RESTUtil.getTimestampPoslednjePrimljene(senderName, propReceiver.getProperty("naziv"), entity, type);
-			Element redniBrojPoruke = (Element) decrypt.getElementsByTagNameNS(NAMESPACE_XSD, "redniBrojPoruke").item(0);
+			Element redniBrojPoruke = (Element) decrypt.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD, "redniBrojPoruke").item(0);
 			int rbrPoruke = Integer.parseInt(redniBrojPoruke.getTextContent());
 			int rbrPorukeFromXml = RESTUtil.getBrojPoslednjePrimljene(senderName, propReceiver.getProperty("naziv"), entity, type);
 			
@@ -113,7 +114,8 @@ public class MessageTransform {
 			if(!issuerName.equalsIgnoreCase("centralnabanka")) {
 				try {
 					if(SecurityClass.isSelfSigned(cert)){
-						return DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						return null;
 					}
 
 					File file = new File("temp.xml");
@@ -131,7 +133,8 @@ public class MessageTransform {
 					for(Firm f : crlBank.getFirm()) {
 						for(String s: f.getCertificateID()){
 							if(Integer.parseInt(s) == Integer.parseInt(cert.getSerialNumber().toString())){
-								return DocumentTransform.createNotificationResponse(schemaPrefix +" nalazi se u CRL listi banke.", TARGET_NAMESPACE);
+								DocumentTransform.createNotificationResponse(schemaPrefix +" nalazi se u CRL listi banke.", TARGET_NAMESPACE);
+								return null;
 							}
 						}
 					}
@@ -147,14 +150,16 @@ public class MessageTransform {
 						cert.verify(((X509Certificate)certIssuer).getPublicKey());
 					} catch (CertificateException e1) {
 						e1.printStackTrace();
-						return DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						return null;
 					}
 
 					try {
 						((X509Certificate)certIssuer).verify(((X509Certificate)certCentralna).getPublicKey());
 					} catch (CertificateException e1) {
 						e1.printStackTrace();
-						return DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						return null;
 					}
 
 					cert = (X509Certificate)certIssuer;
@@ -191,7 +196,8 @@ public class MessageTransform {
 					for(Bank b : crlCentralna.getBank()) {
 						for(String s: b.getCertificateID()){
 							if(Integer.parseInt(s) == Integer.parseInt(cert.getSerialNumber().toString())){
-								return DocumentTransform.createNotificationResponse(schemaPrefix +" nalazi se u CRL listi centralne banke.", TARGET_NAMESPACE);
+								DocumentTransform.createNotificationResponse(schemaPrefix +" nalazi se u CRL listi centralne banke.", TARGET_NAMESPACE);
+								return null;
 							}
 						}
 
@@ -205,11 +211,13 @@ public class MessageTransform {
 						cert.verify(((X509Certificate)certCentralna).getPublicKey());
 					} catch (CertificateException e1) {
 						e1.printStackTrace();
-						return DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						return null;
 					}
 
 					if(!SecurityClass.isSelfSigned((X509Certificate)certCentralna)){
-						return DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						DocumentTransform.createNotificationResponse(schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						return null;
 					}
 
 
@@ -277,64 +285,80 @@ public class MessageTransform {
 
 	
 	public static Document packS(String serviceAdress,String schemaPrefix,String inputFile,Properties propSender, String receiver, String NAMESPACE_XSD, String type){
-		
 		Document document = null;
-		SecurityClass security =new SecurityClass();
-		if(!serviceAdress.equalsIgnoreCase("Notifikacija")) {
-			document = Validation.buildDocumentWithoutValidation("./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
-		} else {
-			document = Validation.buildDocumentWithoutValidation(inputFile);
-		}
-		System.out.println("****DOKUMENT :  "+ document);
+		Document cdoc = null;
 		
-		Element mt = (Element) document.getElementsByTagName(schemaPrefix.toLowerCase()).item(0);
-		mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-
-		if(!serviceAdress.equalsIgnoreCase("Notifikacija")){
-			security.saveDocument(document, "./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
-		} else {
-			security.saveDocument(document, inputFile);
-		}
-
-		String outputFile = inputFile.substring(0, inputFile.length()-4) + "-signed.xml";
-
-		int brojac = RESTUtil.getBrojPoslednjePoslate(propSender.getProperty("naziv"), type);
-		URL url = MessageTransform.class.getClassLoader().getResource(propSender.getProperty("jks"));
-		URL urlReceiver = MessageTransform.class.getClassLoader().getResource(propSender.getProperty(receiver));
-		Document signed = security.addTimestampAndSign(propSender.getProperty("naziv"), propSender.getProperty("pass"), url.toString().substring(6), propSender.getProperty("passKS"), inputFile, outputFile, brojac, " http://localhost:8080/"+schemaPrefix+"Signed.xsd", schemaPrefix.toLowerCase());
-
-		if( signed == null ) {
-			System.out.println("Greska u potpisivanju"+schemaPrefix+" dokumenta.");
-			return null;
-		}
-
-		RESTUtil.sacuvajEntitet(signed, propSender.getProperty("naziv"), true, propSender.getProperty("naziv"), null, type, null);
-
-		Document encrypted = null;
 		try {
-			encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificateFromFile(new File(urlReceiver.toString().substring(6))),NAMESPACE_XSD, schemaPrefix.toLowerCase());
+			
+			SecurityClass security =new SecurityClass();
+			
+			if(!serviceAdress.equalsIgnoreCase("Notifikacija")) {
+				document = Validation.buildDocumentWithoutValidation("./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+			} else {
+				document = Validation.buildDocumentWithoutValidation(inputFile);
+			}
+			System.out.println("****DOKUMENT :  "+ document);
+			
+			Element mt = (Element) document.getElementsByTagName(schemaPrefix.toLowerCase()).item(0);
+			mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+
+			if(!serviceAdress.equalsIgnoreCase("Notifikacija")){
+				security.saveDocument(document, "./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+			} else {
+				security.saveDocument(document, inputFile);
+			}
+
+			String outputFile = inputFile.substring(0, inputFile.length()-4) + "-signed.xml";
+			
+			
+			int brojac = RESTUtil.getBrojPoslednjePoslate(propSender.getProperty("naziv"), type);
+			URL url = MessageTransform.class.getClassLoader().getResource(propSender.getProperty("jks"));
+			URL urlReceiver = MessageTransform.class.getClassLoader().getResource(propSender.getProperty(receiver));
+			
+			System.out.println(brojac + "BROJAC");
+			System.out.println(url +"URL");
+			System.out.println(urlReceiver + "URLreciver");
+			
+			Document signed = security.addTimestampAndSign(propSender.getProperty("naziv"), propSender.getProperty("pass"), url.toString().substring(6), propSender.getProperty("passKS"), inputFile, outputFile, brojac, " http://localhost:8080/"+schemaPrefix+"Signed.xsd", schemaPrefix.toLowerCase());
+
+			if( signed == null ) {
+				System.out.println("Greska u potpisivanju"+schemaPrefix+" dokumenta.");
+				return null;
+			}
+
+			RESTUtil.sacuvajEntitet(signed, propSender.getProperty("naziv"), true, propSender.getProperty("naziv"), null, type, null);
+
+			Document encrypted = security.encrypt(signed, SecurityClass.generateDataEncryptionKey(), security.readCertificateFromFile(new File(urlReceiver.toString().substring(6))),NAMESPACE_XSD, schemaPrefix.toLowerCase());
+			
+			if(encrypted == null) {
+				System.out.println("Greska u enkripciji"+schemaPrefix+" dokumenta.");
+				return null;
+
+			}
+			security.saveDocument(encrypted, inputFile.substring(0, inputFile.length()-4) + "-crypted.xml");
+			
+			
+			cdoc = security.reserialize(encrypted);
+			
+			
+			Element root = (Element) cdoc.getElementsByTagNameNS(NAMESPACE_XSD,schemaPrefix.toLowerCase()).item(0);
+			
+			if(root!=null) {
+				Element esender = cdoc.createElementNS(NAMESPACE_XSD, "sender");
+				root.appendChild(esender);
+				esender.appendChild(cdoc.createTextNode(propSender.getProperty("naziv")));
+			} else {
+				System.out.println("root je null ***********");
+			}
+			
+		} catch (DOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		if(encrypted == null) {
-			System.out.println("Greska u enkripciji"+schemaPrefix+" dokumenta.");
-			return null;
-
-		}
-		security.saveDocument(encrypted, inputFile.substring(0, inputFile.length()-4) + "-crypted.xml");
-		
-		
-		/*Document forCrypted = security.reserialize(encrypted);
-		Element root = (Element) forCrypted.getElementsByTagNameNS(NAMESPACE_XSD, type.toLowerCase()).item(0);
-
-		Element esender = forCrypted.createElementNS(NAMESPACE_XSD, "sender");
-		root.appendChild(esender);
-		
-		esender.appendChild(forCrypted.createTextNode(propSender.getProperty("naziv")));
-		*/
-		return encrypted;
-
+		return cdoc;
 	}
 	
 	public static Document removeSignature(Document doc) {

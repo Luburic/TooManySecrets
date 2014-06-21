@@ -40,7 +40,7 @@ public class IzvodProvider implements Provider<DOMSource> {
 
 	@Override
 	public DOMSource invoke(DOMSource request) {
-		try {
+		/*try {
 
 			System.out.println("\nInvoking IzvodProvider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
@@ -165,10 +165,11 @@ public class IzvodProvider implements Provider<DOMSource> {
 			e1.printStackTrace();
 		}
 
-		return new DOMSource(encrypted);
+		return new DOMSource(encrypted);*/
+		return null;
 	}
 
-	private Presek createPresek(BigDecimal prethodnoStanje, List<NalogZaPrenos> naloziZaPresek,
+	/*private Presek createPresek(BigDecimal prethodnoStanje, List<NalogZaPrenos> naloziZaPresek,
 			ZahtevZaIzvod zahtevZaIzvod, int velicinaPreseka) {
 
 		Presek presek = new Presek();
@@ -230,6 +231,6 @@ public class IzvodProvider implements Provider<DOMSource> {
 		presek.setStavke(stavke);
 
 		return presek;
-	}
+	}*/
 
 }

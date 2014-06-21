@@ -495,16 +495,16 @@
 		<copy file="${webinf.dir}/keystores/B/firmaB.properties" todir="${src.dir}"/>
 	</target>
 
-	<target name="deploy" depends="war, war1, war2, war3, war4, utils">
+	<target name="deploy" depends="war, war2, war4, utils">
 			<copy todir="${tomee.dir}/webapps">
 				<fileset dir="${dist.dir}" includes="${war.name}"/>
 				
-				<fileset dir="${dist.dir}" includes="${war1.name}"/>
+				<!--fileset dir="${dist.dir}" includes="${war1.name}"/-->
 				
 				
 				<fileset dir="${dist.dir}" includes="${war2.name}"/>
 				
-				<fileset dir="${dist.dir}" includes="${war3.name}"/>
+				<!--fileset dir="${dist.dir}" includes="${war3.name}"/-->
 				<fileset dir="${dist.dir}" includes="${war4.name}"/>
 
 			</copy>
@@ -526,7 +526,7 @@
 			<delete dir="${tomee.dir}/webapps/${war2.folder}"/>
 			<delete dir="${tomee.dir}/webapps/${war3.folder}"/>
 			<delete dir="${tomee.dir}/webapps/${war4.folder}"/>
-			<delete dir="${tomee.dir}/webapps/BaseX75"/>
+			<!--delete dir="${tomee.dir}/webapps/BaseX75"/-->
 	</target>
 
 	<target name="main" depends="clean,deploy">
