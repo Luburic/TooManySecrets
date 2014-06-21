@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p:zahtevZaIzvod xmlns:p="http://www.toomanysecrets.com/tipovi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/tipovi ../WEB-INF/shema/ZahtevZaIzvodRaw.xsd ">
+  <p:brojRacuna>110111111111111155</p:brojRacuna>
+  <p:datum>2001-01-01</p:datum>
+  <p:redniBrojPreseka>1</p:redniBrojPreseka>
+</p:zahtevZaIzvod>
