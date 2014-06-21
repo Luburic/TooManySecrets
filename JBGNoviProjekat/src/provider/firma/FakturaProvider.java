@@ -56,18 +56,25 @@ public class FakturaProvider implements Provider<DOMSource> {
 			propReceiver = new Properties();
 			propReceiver.load(inputStreamReceiver);
 			
-		//	Element esender = (Element) document.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD, "sender").item(0);
-		//	esender.getParentNode().removeChild(esender);
-
+			Element esender = (Element) document.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD, "sender").item(0);
+			
+			if(esender==null)
+				return new DOMSource(encrypted);
+			
+			String sender = esender.getTextContent();
+			System.out.println("****FAKTURA SENDER: "+sender);
+			esender.getParentNode().removeChild(esender);
+			
+			
 			
 			Document decryptedDocument = MessageTransform.unpack(document, "Faktura", "Faktura",ConstantsXWS.TARGET_NAMESPACE_FIRMA, propReceiver, "firma", "Faktura");
 			if(decryptedDocument==null){ 
-				//encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+esender.getTextContent(),ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
+				encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD, "Notifikacija");
 				return new DOMSource(encrypted);
 			}
 			
 			
-			String sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+			//String sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
 			decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propReceiver, "firma", "Faktura");
 			
 			if(decryptedDocument==null){ 

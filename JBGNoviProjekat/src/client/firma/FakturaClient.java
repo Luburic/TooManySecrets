@@ -50,11 +50,22 @@ public class FakturaClient {
 			if (encrypted != null) {
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 				
+				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");					
 				if(response!=null) {
-					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");					
+					
+					Document document = DocumentTransform.convertToDocument(response);
+					Element esender = (Element) document.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD, "sender").item(0);
+					if(esender==null) {
+						System.out.println("Nema informacije o posaljiocu.");
+						System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+						return;
+					}
+					
+					String server = esender.getTextContent();
+					System.out.println("****notification sender: "+server);
+					esender.getParentNode().removeChild(esender);
 					
 					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "Faktura", "Notification",ConstantsXWS.TARGET_NAMESPACE_FIRMA, propSender, "firma", "Notifikacija");
-					
 					decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propSender, "firma", "Notifikacija");
 					
 					if(decryptedDocument==null) {
@@ -63,9 +74,11 @@ public class FakturaClient {
 						DocumentTransform.printDocument(decryptedDocument);
 					}
 					
-					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 				}	
-				
+				else {
+					System.out.println("Odgovor servera null.");
+				}
+				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

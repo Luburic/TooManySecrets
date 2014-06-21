@@ -76,8 +76,9 @@ public class NalogProvider implements Provider<DOMSource> {
 			
 			Document decryptedDocument = MessageTransform.unpack(document,"Nalog", "Nalog",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propReceiver,"banka", "Nalog");
 			
-			if(decryptedDocument==null){ 
-				encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+esender.getTextContent(),ConstantsXWS.NAMESPACE_XSD, "Notif");
+			if(decryptedDocument==null){
+				DocumentTransform.createNotificationResponse("Greska nakon dekripcije.", ConstantsXWS.NAMESPACE_XSD);
+				encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD, "Notif");
 				return new DOMSource(encrypted);
 			}
 			
