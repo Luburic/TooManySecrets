@@ -179,41 +179,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource> {
 	
 	
 	private class MT103Client {
-		/* JAXBContext con =JAXBContext.newInstance("beans.mt900"); 
-					  marshaller =con.createMarshaller(); 
-					  marshaller.setProperty(
-					  "com.sun.xml.bind.namespacePrefixMapper",new
-					  NSPrefixMapper());
-					  marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT
-					  ,Boolean.TRUE); marshaller.marshal(mt900, new
-					  File("./MT900Test/MT900.xml"));
-					  
-					  
-					  
-					  Document docum =
-					  Validation.buildDocumentWithoutValidation
-					  ("./MT900Test/MT900.xml"); Element mt = (Element)
-					  docum.getElementsByTagName("MT900").item(0);
-					  mt.setAttribute
-					  ("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"
-					  );
-					  
-					  
-					  SecurityClass security = new SecurityClass();
-					  security.saveDocument(docum, "./MT900Test/MT900.xml");
-					  String inputFile = "./MT900Test/MT900.xml";
-					  
-					  
-					  String alias=""; String password=""; String
-					  keystoreFile=""; String keystorePassword="";
-					  
-					 encryptedDocument = MessageTransform.pack("MT103",
-					 "MT900", inputFile, alias, password, keystoreFile,
-					  keystorePassword, TARGET_NAMESPACE, NAMESPACE_XSD);
-					  
-					  //ako je encryptedDocument uspesno snimljen u bazu, znaci
-					  da je pack uspesno izvrsen //if(encryptedDocument exist
-					  in centralaDatabase){ forwardMT103(); createMT910(); //}*/
+		
 	}
 
 }
