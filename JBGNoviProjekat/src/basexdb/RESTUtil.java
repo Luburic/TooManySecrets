@@ -139,10 +139,10 @@ public class RESTUtil {
 		
 		
 		
-		createResource("centralnabanka", "brojacPoslatihMT900A", DOM2InputStream(cntPoslateMT900A));
-		createResource("centralnabanka", "brojacPoslatihMT900B", DOM2InputStream(cntPoslateMT900B));
-		createResource("centralnabanka", "brojacPrimljenihMT103A", DOM2InputStream(ctnPrimljeneMT103A));
-		createResource("centralnabanka", "brojacPrimljenihMT103B", DOM2InputStream(ctnPrimljeneMT103B)); 
+		createResource("centralnabanka", "brojacPoslatihMT900bankaa", DOM2InputStream(cntPoslateMT900A));
+		createResource("centralnabanka", "brojacPoslatihMT900bankab", DOM2InputStream(cntPoslateMT900B));
+		createResource("centralnabanka", "brojacPrimljenihMT103bankaa", DOM2InputStream(ctnPrimljeneMT103A));
+		createResource("centralnabanka", "brojacPrimljenihMT103bankab", DOM2InputStream(ctnPrimljeneMT103B)); 
 		/*****************************************************************************************************************************/
 		
 		

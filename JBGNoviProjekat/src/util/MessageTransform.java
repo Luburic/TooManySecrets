@@ -22,6 +22,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import provider.banka.NalogProvider;
+import provider.centrala.MT103Provider;
 import provider.firma.FakturaProvider;
 import security.SecurityClass;
 import basexdb.RESTUtil;
@@ -59,6 +60,9 @@ public class MessageTransform {
 			url = NalogProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		}
 		
+		else if(schemaPrefix.toLowerCase().equals("mt103")){
+			url = MT103Provider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
+		}
 
 		Document decrypt = security.decrypt(doc, security.readPrivateKey(propReceiver.getProperty("naziv"), propReceiver.getProperty("pass"), url.toString().substring(6), propReceiver.getProperty("passKS")));
 		Reader reader1 = Validation.createReader(decrypt);

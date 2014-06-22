@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -35,12 +36,12 @@ import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
+import util.NSPrefixMapper;
 import util.Validation;
 import basexdb.RESTUtil;
 import beans.mt103.MT103;
 import beans.mt900.MT900;
 import beans.nalog.Nalog;
-import beans.notification.Notification;
 
 @Stateless
 @ServiceMode(value = Service.Mode.PAYLOAD)
@@ -201,6 +202,12 @@ public class NalogProvider implements Provider<DOMSource> {
 			mt.setPozivNaBrojOdobrenja(String.valueOf(nalog.getPozivNaBrojOdobrenja()));
 			mt.setIznos(nalog.getIznos());
 			mt.setSifraValute(nalog.getOznakaValute());
+			
+			JAXBContext context = JAXBContext.newInstance("beans.mt103");
+			Marshaller marshaller = context.createMarshaller();
+			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+			marshaller.marshal(mt, new File("./MT103Test/mt103.xml"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -215,7 +222,7 @@ public class NalogProvider implements Provider<DOMSource> {
 	
 	
 	
-	public class MT103Client {
+	private class MT103Client {
 		public void testIt(Properties propSender, String receiver, String cert,String inputFile) {
 			
 			try {
