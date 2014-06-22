@@ -1,25 +1,32 @@
 package provider.banka;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
 import javax.ejb.Stateless;
+import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.ws.Dispatch;
 import javax.xml.ws.Provider;
 import javax.xml.ws.Service;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
 
+import org.apache.cxf.binding.soap.SoapFault;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,11 +35,12 @@ import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
-import util.MyDatatypeConverter;
 import util.Validation;
 import basexdb.RESTUtil;
 import beans.mt103.MT103;
+import beans.mt900.MT900;
 import beans.nalog.Nalog;
+import beans.notification.Notification;
 
 @Stateless
 @ServiceMode(value = Service.Mode.PAYLOAD)
@@ -119,12 +127,11 @@ public class NalogProvider implements Provider<DOMSource> {
 						
 						MT103 mt103 = createMT103(nalog);
 						
-						if(mt103==null)
-							DocumentTransform.createNotificationResponse("Nije moguce kreirati mt103 na onovu primljenog naloga.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
-						
-						//MT103Client.testIt(propReceiver, "bankac","cerbankac","./MT103Test/mt103.xml" );
-						//bez obzira sta se desava dalje sa mt103 klijentu firme se kreira odgovor da je njegov nalog obradjen
-						DocumentTransform.createNotificationResponse("Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+						if(mt103!=null) {
+							MT103Client cl = new MT103Client();
+							cl.testIt(propReceiver, "centralnabanka","cerbankac","./MT103Test/mt103.xml" );
+							DocumentTransform.createNotificationResponse("Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+						}
 					} else {
 						// clearing
 
@@ -157,6 +164,7 @@ public class NalogProvider implements Provider<DOMSource> {
 
 		if (nalog.isHitno() || nalog.getIznos().compareTo(limit) != -1) {
 			// rtgs
+			//provera iznosa uplate sa iznosom na racunu
 		} else {
 			// clearing
 		}
@@ -203,6 +211,79 @@ public class NalogProvider implements Provider<DOMSource> {
 		}
 
 		return mt;
+	}
+	
+	
+	
+	public class MT103Client {
+		public void testIt(Properties propSender, String receiver, String cert,String inputFile) {
+			
+			try {
+				URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/CentralnaRTGSNalog?wsdl");
+				QName serviceName = new QName("http://www.toomanysecrets.com/CentralnaRTGSNalog", "CentralnaRTGSNalog");
+				QName portName = new QName("http://www.toomanysecrets.com/CentralnaRTGSNalog","CentralnaRTGSNalogPort");
+
+				Service service;
+				try {
+					service = Service.create(wsdlLocation, serviceName);
+				} catch (Exception e) {
+					throw Validation.generateSOAPFault("Server is not available.",
+							SoapFault.FAULT_CODE_CLIENT, null);
+				}
+				Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
+
+				
+				
+
+				Document encrypted = MessageTransform.packS("MT103", "MT103",inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD,"MT103");
+				
+				if (encrypted != null) {
+					DOMSource response = dispatch.invoke(new DOMSource(encrypted));
+					//ZADUZENJE
+					
+					if(response!=null) {
+						System.out.println("-------------------RESPONSE MESSAGE---------------------------------");	
+						Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "Zaduzenje", "MT900",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG, propSender, "banka", "MT900");
+					
+						DocumentTransform.printDocument(decryptedDocument);
+						System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+						Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD,"timestamp").item(0);
+						String dateString = timestamp.getTextContent();
+						Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+						String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+						RESTUtil.sacuvajEntitet(decryptedDocument,propSender.getProperty("naziv"), false, owner, date, "MT900", "banka");
+						decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument);
+						decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument);
+						decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
+						
+						SecurityClass sc = new SecurityClass();
+						sc.saveDocument(decryptedDocument, "./MT900Test/mt900.xml");
+					
+						JAXBContext context = JAXBContext.newInstance("beans.mt900");
+						Unmarshaller unmarshaller = context.createUnmarshaller();
+						MT900 mt900 = (MT900) unmarshaller.unmarshal(new File("./MT900Test/mt900.xml"));
+						
+						if(mt900!=null) {
+							// skini pare sa racuna klijenta
+							 // account from database - mt900.getIznos()
+							
+						}
+					
+					}
+				}
+
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (TransformerFactoryConfigurationError e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+
+	
+		
 	}
 
 }
