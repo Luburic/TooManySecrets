@@ -1,13 +1,16 @@
 package client.firma;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
+import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
@@ -18,13 +21,15 @@ import org.apache.cxf.binding.soap.SoapFault;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
 import util.Validation;
+import basexdb.RESTUtil;
+import beans.notification.Notification;
 
 public class FakturaClient {
-	
 	public void testIt(String sender, String receiver, String cert, String inputFile) {
 		try {
 			URL wsdlLocation = new URL("http://localhost:8080/" + receiver + "/services/Faktura?wsdl");
@@ -39,46 +44,45 @@ public class FakturaClient {
 			}
 			Dispatch<DOMSource> dispatch = service.createDispatch(portName, DOMSource.class, Service.Mode.PAYLOAD);
 
-			InputStream inputStreamSender = this.getClass().getClassLoader().getResourceAsStream(sender + ".properties");
+			InputStream inputStreamSender = this.getClass().getClassLoader()
+					.getResourceAsStream(sender + ".properties");
 			Properties propSender = new java.util.Properties();
 			propSender.load(inputStreamSender);
 
-			Document encrypted = MessageTransform.packS("Faktura", "Faktura", inputFile, propSender, cert,ConstantsXWS.NAMESPACE_XSD, "Faktura");
+			Document encrypted = MessageTransform.packS("Faktura", "Faktura", inputFile, propSender, cert,
+					ConstantsXWS.NAMESPACE_XSD, "Faktura");
 
-			
-			
 			if (encrypted != null) {
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 				
-				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");					
 				if(response!=null) {
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");					
+					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "Faktura", "Notification",
+							ConstantsXWS.TARGET_NAMESPACE_FIRMA, propSender, "firma", "Notifikacija");
+				
+					DocumentTransform.printDocument(decryptedDocument);
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+					Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD,"timestamp").item(0);
+					String dateString = timestamp.getTextContent();
+					Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+					String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+					RESTUtil.sacuvajEntitet(decryptedDocument,propSender.getProperty("naziv"), false, owner, date, "Notifikacija", "firma");
+					decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument);
+					decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument);
+					decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 					
-					Document document = DocumentTransform.convertToDocument(response);
-					Element esender = (Element) document.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD, "sender").item(0);
-					if(esender==null) {
-						System.out.println("Nema informacije o posaljiocu.");
-						System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-						return;
-					}
+					SecurityClass sc = new SecurityClass();
+					sc.saveDocument(decryptedDocument, "./FakturaTest/tempNot.xml");
+					//definisemo kontekst, tj. paket(e) u kome se nalaze bean-ovi
+					JAXBContext context = JAXBContext.newInstance("beans.notification");
+					Unmarshaller unmarshaller = context.createUnmarshaller();
+					Notification notification = (Notification) unmarshaller.unmarshal(new File("./FakturaTest/tempNot.xml"));
 					
-					String server = esender.getTextContent();
-					System.out.println("****notification sender: "+server);
-					esender.getParentNode().removeChild(esender);
-					
-					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "Faktura", "Notification",ConstantsXWS.TARGET_NAMESPACE_FIRMA, propSender, "firma", "Notifikacija");
-					decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propSender, "firma", "Notifikacija");
-					
-					if(decryptedDocument==null) {
-						System.out.println("Neuspesna obrada odgovora koji je stigao od web servisa.");
-					}else {
-						DocumentTransform.printDocument(decryptedDocument);
-					}
-					
+					JOptionPane.showMessageDialog(null,
+							notification.getNotificationstring(),
+							"Notification", JOptionPane.INFORMATION_MESSAGE);
 				}	
-				else {
-					System.out.println("Odgovor servera null.");
-				}
-				System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+				
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -93,7 +97,4 @@ public class FakturaClient {
 		FakturaClient fc = new FakturaClient();
 		fc.testIt("firmaB", "firmaa", "cerfirmaa", "./FakturaTest/faktura-example1.xml");
 	}
-	
-	
-	
 }

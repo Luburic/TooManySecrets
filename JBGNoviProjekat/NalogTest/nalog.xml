@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <nalog xmlns="http://www.toomanysecrets.com/tipovi">
-    <idPoruke>123456</idPoruke>
-    <duznikNalogodavac>pera</duznikNalogodavac>
-    <svrhaPlacanja>reket</svrhaPlacanja>
-    <primalacPoverilac>djoka</primalacPoverilac>
-    <datumNaloga>2014-06-21</datumNaloga>
-    <datumValute>2014-06-21</datumValute>
-    <racunDuznika>111111111222222222</racunDuznika>
+    <idPoruke>2</idPoruke>
+    <duznikNalogodavac>2</duznikNalogodavac>
+    <svrhaPlacanja>2</svrhaPlacanja>
+    <primalacPoverilac>2</primalacPoverilac>
+    <racunDuznika>121212121212121212</racunDuznika>
     <modelZaduzenja>97</modelZaduzenja>
-    <pozivNaBrojZaduzenja>111111</pozivNaBrojZaduzenja>
-    <racunPoverioca>222222222111111111</racunPoverioca>
-    <modelOdobrenja>97</modelOdobrenja>
-    <pozivNaBrojOdobrenja>111111</pozivNaBrojOdobrenja>
-    <iznos>100500</iznos>
-    <oznakaValute>rsd</oznakaValute>
+    <pozivNaBrojZaduzenja>23</pozivNaBrojZaduzenja>
+    <racunPoverioca>232323232323232323</racunPoverioca>
+    <modelOdobrenja>96</modelOdobrenja>
+    <pozivNaBrojOdobrenja>34</pozivNaBrojOdobrenja>
+    <iznos>23.0</iznos>
+    <oznakaValute>23</oznakaValute>
     <hitno>true</hitno>
 </nalog>

@@ -52,7 +52,7 @@ public class MT103Client {
 				return "Neuspesno raspakovana poruka na servisu centrale.";
 
 			
-			decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propSender, "firma", "Notif");
+			//decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propSender, "firma", "Notif");
 			if(decryptedDocument==null)
 				return "Neuspesna obrada dekriptovanog odgovora koji je stigao od web servisa centrale.";
 			

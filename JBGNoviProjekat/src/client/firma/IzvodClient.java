@@ -52,8 +52,7 @@ public class IzvodClient {
 					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),
 							"Presek", "Presek", ConstantsXWS.TARGET_NAMESPACE_FIRMA, propSender, "banka", "Presek");
 
-					decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propSender, "banka",
-							"Presek");
+					//decryptedDocument = DocumentTransform.postDecryptTransform(decryptedDocument, propSender, "banka","Presek");
 
 					if (decryptedDocument == null) {
 						System.out.println("Neuspesna obrada odgovora koji je stigao od web servisa.");
