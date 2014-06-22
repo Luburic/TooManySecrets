@@ -120,6 +120,35 @@ public class RESTUtil {
 		/************************************************************************************************************************/
 
 		
+		/*******************************************  banka <-> banka ***************************************************************/
+		DOMSource cntPoslateMT103A = brojacPoslatihDocument("","rbrPoslateMT103", 0);
+		DOMSource cntPoslateMT103B = brojacPoslatihDocument("","rbrPoslateMT103", 0);
+		DOMSource ctnPrimljeneMT900A = brojacPrimljenihDocument(null,"","primljeneMT900","banka", "centralnabanka", new Date(), 0); //bankaA
+		DOMSource ctnPrimljeneMT900B  = brojacPrimljenihDocument(null,"","primljeneMT900", "banka", "centralnabanka",  new Date(), 0); //bankaB
+		
+		
+		DOMSource cntPoslateMT900A = brojacPoslatihDocument("","rbrPoslateMT900", 0);
+		DOMSource cntPoslateMT900B = brojacPoslatihDocument("","rbrPoslateMT900", 0);
+		DOMSource ctnPrimljeneMT103A  = brojacPrimljenihDocument(null,"","primljeneMT103", "centralnabanka", "bankaa",  new Date(), 0);
+		DOMSource ctnPrimljeneMT103B  = brojacPrimljenihDocument(null,"","primljeneMT103", "centralnabanka", "bankab",  new Date(), 0);
+		
+		createResource("bankaa", "brojacPoslatihMT103", DOM2InputStream(cntPoslateMT103A));
+		createResource("bankab", "brojacPoslatihMT103", DOM2InputStream(cntPoslateMT103B));
+		createResource("bankaa", "brojacPrimljenihMT900", DOM2InputStream(ctnPrimljeneMT900A));
+		createResource("bankab", "brojacPrimljenihMT900", DOM2InputStream(ctnPrimljeneMT900B));
+		
+		
+		
+		createResource("centralnabanka", "brojacPoslatihMT900A", DOM2InputStream(cntPoslateMT900A));
+		createResource("centralnabanka", "brojacPoslatihMT900B", DOM2InputStream(cntPoslateMT900B));
+		createResource("centralnabanka", "brojacPrimljenihMT103A", DOM2InputStream(ctnPrimljeneMT103A));
+		createResource("centralnabanka", "brojacPrimljenihMT103B", DOM2InputStream(ctnPrimljeneMT103B)); 
+		/*****************************************************************************************************************************/
+		
+		
+		
+		
+		
 		
 		
 		
