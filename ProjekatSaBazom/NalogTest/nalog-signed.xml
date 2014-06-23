@@ -3,8 +3,8 @@
     <duznikNalogodavac>pera</duznikNalogodavac>
     <svrhaPlacanja>reket</svrhaPlacanja>
     <primalacPoverilac>djoka</primalacPoverilac>
-    <datumNaloga>2014-06-22</datumNaloga>
-    <datumValute>2014-06-22</datumValute>
+    <datumNaloga>2014-06-23</datumNaloga>
+    <datumValute>2014-06-23</datumValute>
     <racunDuznika>111111111222222222</racunDuznika>
     <modelZaduzenja>97</modelZaduzenja>
     <pozivNaBrojZaduzenja>111111</pozivNaBrojZaduzenja>
@@ -14,7 +14,7 @@
     <iznos>100500</iznos>
     <oznakaValute>rsd</oznakaValute>
     <hitno>true</hitno>
-<timestamp>06/22/2014 21:06:15</timestamp><redniBrojPoruke>1</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<timestamp>06/23/2014 20:02:04</timestamp><redniBrojPoruke>1</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -24,13 +24,13 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>rk698aS/0f1VWTqRwfG9NRQg5zU=</ds:DigestValue>
+<ds:DigestValue>JyEWYUgqOKek+0et3qQ6928+ucA=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-t/0CaCHQz2JOpwOdF5uRwGpzr53Ch6tHVKiE9oKbinD3GS6viM0Tteggss8K2Q8yik1ebDIuEP62
-f5JhWu7J9sQM+QHXqtz3jE0OB8zDZSDkmX1CF7BvvelgZA2QjdUqdX8Avy8F9HvvJ1cOd6g4yI7E
-veqngxvUmsIzCsIWtg0=
+Q+MKNDqqc+9nZD9BgVKgRsgc/K087SMcaKHW4nbhE4ysRI+jky8tgOXThoS6SfJz/NCHc9xT3I3P
+7cGOj32pb++cyo3q1Aa92VZZry69+SWMFO5TWH5+sJvsTiUqNVcEk+4KkVWyWP8gm0AkBWcGcc9Q
+oE9EYtgjswh6xa1BNyI=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>

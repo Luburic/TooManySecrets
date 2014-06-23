@@ -60,8 +60,9 @@ public class NalogClient {
 			Document encrypted = MessageTransform.packS("Nalog", "Nalog",inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_NALOG,"Nalog");
 
 			FirmeSema semaFirma = FirmaDBUtil.loadFirmaDatabase(propSender.getProperty("address"));
-			semaFirma.setBrojacPoslednjegPoslatogNaloga(semaFirma.getBrojacPoslednjegPoslatogNaloga()+1);
-			
+			if(encrypted != null) {
+				semaFirma.setBrojacPoslednjegPoslatogNaloga(semaFirma.getBrojacPoslednjegPoslatogNaloga()+1);
+			}
 			
 			
 			if (encrypted != null) {
@@ -72,7 +73,7 @@ public class NalogClient {
 					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification",ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, propSender,"banka", "Notifikacija");
 					DocumentTransform.printDocument(decryptedDocument);
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-					
+				if(decryptedDocument != null) {
 					Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NOTIFICATION,"timestamp").item(0);
 					String dateString = timestamp.getTextContent();
 					Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NOTIFICATION,"redniBrojPoruke").item(0);
@@ -100,9 +101,11 @@ public class NalogClient {
 					Notification notification = (Notification) unmarshaller.unmarshal(new File("./NalogTest/tempNot.xml"));
 					semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getBankaByNaziv(owner).setBrojac(rbrPoruke);
 					semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getBankaByNaziv(owner).setTimestamp(dateString);
-					FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
+					
 					
 					JOptionPane.showMessageDialog(null,notification.getNotificationstring(),"Notification", JOptionPane.INFORMATION_MESSAGE);
+				}
+				FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
 				}
 			}
 
