@@ -66,8 +66,11 @@ public class FakturaProvider implements Provider<DOMSource> {
 			Document decryptedDocument = MessageTransform.unpack(document, "Faktura", "Faktura",
 					ConstantsXWS.NAMESPACE_XSD_FAKTURA, propReceiver, "firma", "Faktura");
 			
-			Reader reader = Validation.createReader(decryptedDocument);
-			Document forSave = Validation.buildDocumentWithValidation(reader, new String[]{ "http://localhost:8080/FakturaSigned.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
+			Document forSave = null;
+			if(decryptedDocument != null) {
+				Reader reader = Validation.createReader(decryptedDocument);
+				forSave = Validation.buildDocumentWithValidation(reader, new String[]{ "http://localhost:8080/FakturaSigned.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
+			}
 			
 			
 			//Document valid = Validation.buildDocumentWithoutValidation(DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6));
@@ -145,7 +148,9 @@ public class FakturaProvider implements Provider<DOMSource> {
 			String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
 			
 			encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+sender ,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
-			semaFirma.setBrojacPoslednjePoslateNotifikacije(semaFirma.getBrojacPoslednjePoslateNotifikacije()+1);
+			if(encrypted != null) {
+				semaFirma.setBrojacPoslednjePoslateNotifikacije(semaFirma.getBrojacPoslednjePoslateNotifikacije()+1);
+			}
 			FirmaDBUtil.storeFirmaDatabase(semaFirma, propReceiver.getProperty("address"));
 			
 		} catch (IllegalArgumentException e) {

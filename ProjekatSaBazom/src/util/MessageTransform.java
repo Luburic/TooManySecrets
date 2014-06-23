@@ -54,22 +54,26 @@ public class MessageTransform {
 		} else if (dbType.equalsIgnoreCase("centralnabanka")) {
 			semaCentralna = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
 		} else {
-			return DocumentTransform.createNotificationResponse("470", "Greska u bazi", TARGET_NAMESPACE);
+			DocumentTransform.createNotificationResponse("470", "Greska u bazi", TARGET_NAMESPACE);
+			return null;
 		}
 		SecurityClass security = new SecurityClass();
 		Reader reader = Validation.createReader(document);
 		Document doc = Validation.buildDocumentWithValidation(reader,new String[]{ "http://localhost:8080/"+schemaPrefix+"Crypt.xsd","http://localhost:8080/xenc-schema.xsd"});
 
-		if( doc == null )
-			return DocumentTransform.createNotificationResponse("420", schemaPrefix+" dokument nije validan po Crypt semi.", TARGET_NAMESPACE);
+		if( doc == null ){
+			DocumentTransform.createNotificationResponse("420", schemaPrefix+" dokument nije validan po Crypt semi.", TARGET_NAMESPACE);
+			return null;
+		}
 
 		boolean algo = checkAlgorithm(doc);
 		if(algo == false) {
-			return DocumentTransform.createNotificationResponse("450", schemaPrefix+" dokument nije kriptovan odgovarajucim algoritmom.", TARGET_NAMESPACE);
+			DocumentTransform.createNotificationResponse("450", schemaPrefix+" dokument nije kriptovan odgovarajucim algoritmom.", TARGET_NAMESPACE);
+			return null;
 		}
 		URL url=null;
 		
-		if(schemaPrefix.toLowerCase().equals("faktura")) {
+		if(schemaPrefix.toLowerCase().equals("faktura") || schemaPrefix.toLowerCase().equals("notification")) {
 			url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		}
 		
@@ -82,11 +86,15 @@ public class MessageTransform {
 		Reader reader1 = Validation.createReader(decrypt);
 		decrypt = Validation.buildDocumentWithValidation(reader1, new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 
-		if(decrypt==null)
-			return DocumentTransform.createNotificationResponse("421", schemaPrefix+" dokument nije validan po Signed semi.",TARGET_NAMESPACE);
+		if(decrypt==null){
+			DocumentTransform.createNotificationResponse("421", schemaPrefix+" dokument nije validan po Signed semi.",TARGET_NAMESPACE);
+			return null;
+		}
 
-		if(!security.verifySignature(decrypt)) 
-			return DocumentTransform.createNotificationResponse("422", schemaPrefix+" dokument nije dobro potpisan.",TARGET_NAMESPACE);
+		if(!security.verifySignature(decrypt)) {
+			DocumentTransform.createNotificationResponse("422", schemaPrefix+" dokument nije dobro potpisan.",TARGET_NAMESPACE);
+			return null;
+		}
 
 		Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 
@@ -123,7 +131,8 @@ public class MessageTransform {
 		}
 		
 		if(rbrPoruke <= rbrPorukeFromXml || dateFromXml.after(date) || dateFromXml.equals(date)) {
-			return DocumentTransform.createNotificationResponse("451", schemaPrefix +" pokusaj napada.", TARGET_NAMESPACE);
+			DocumentTransform.createNotificationResponse("451", schemaPrefix +" pokusaj napada.", TARGET_NAMESPACE);
+			return null;
 		}
 		
 		//provera lanca i crl
@@ -137,7 +146,8 @@ public class MessageTransform {
 		if(!issuerName.equalsIgnoreCase("centralnabanka")) {
 			try {
 				if(SecurityClass.isSelfSigned(cert)){
-					return DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					return null;
 				}
 
 				
@@ -152,7 +162,8 @@ public class MessageTransform {
 				try {
 					cert.verify(((X509Certificate)certIssuer).getPublicKey());
 				} catch (SignatureException e1) {
-					return DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					return null;
 				} catch (CertificateException e1) {
 					e1.printStackTrace();
 				}
@@ -160,7 +171,8 @@ public class MessageTransform {
 				try {
 					((X509Certificate)certIssuer).verify(((X509Certificate)certCentralna).getPublicKey());
 				} catch (SignatureException e1) {
-					return DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					return null;
 				} catch (CertificateException e1) {
 					e1.printStackTrace();
 				}
@@ -180,7 +192,8 @@ public class MessageTransform {
 				for(Firm f : crlBank.getFirm()) {
 					for(String s: f.getCertificateID()){
 						if(Integer.parseInt(s) == Integer.parseInt(cert.getSerialNumber().toString())){
-							return DocumentTransform.createNotificationResponse("424", schemaPrefix +" nalazi se u CRL listi banke.", TARGET_NAMESPACE);
+							DocumentTransform.createNotificationResponse("424", schemaPrefix +" nalazi se u CRL listi banke.", TARGET_NAMESPACE);
+							return null;
 						}
 					}
 				}
@@ -213,13 +226,15 @@ public class MessageTransform {
 				try {
 					cert.verify(((X509Certificate)certCentralna).getPublicKey());
 				} catch (SignatureException e1) {
-						return DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						return null;
 				} catch (CertificateException e1) {
 					e1.printStackTrace();
 				}
 
 				if(!SecurityClass.isSelfSigned((X509Certificate)certCentralna)){
-					return DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					return null;
 				}
 				
 				File file = new File("temp2.xml");
@@ -237,7 +252,8 @@ public class MessageTransform {
 				for(Bank b : crlCentralna.getBank()) {
 					for(String s: b.getCertificateID()){
 						if(Integer.parseInt(s) == Integer.parseInt(cert.getSerialNumber().toString())){
-							return DocumentTransform.createNotificationResponse("424", schemaPrefix +" nalazi se u CRL listi centralne banke.", TARGET_NAMESPACE);
+							DocumentTransform.createNotificationResponse("424", schemaPrefix +" nalazi se u CRL listi centralne banke.", TARGET_NAMESPACE);
+							return null;
 						}
 					}
 

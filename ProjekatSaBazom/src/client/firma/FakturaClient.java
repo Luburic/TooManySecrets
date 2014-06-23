@@ -54,7 +54,9 @@ public class FakturaClient {
 					ConstantsXWS.NAMESPACE_XSD_FAKTURA, "Faktura");
 			
 			FirmeSema semaFirma = FirmaDBUtil.loadFirmaDatabase(propSender.getProperty("address"));
-			semaFirma.setBrojacPoslednjePoslateFakture(semaFirma.getBrojacPoslednjePoslateFakture()+1);
+			if(encrypted != null) {
+				semaFirma.setBrojacPoslednjePoslateFakture(semaFirma.getBrojacPoslednjePoslateFakture()+1);
+			}
 			//FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("naziv"));
 
 			if (encrypted != null) {
@@ -67,40 +69,45 @@ public class FakturaClient {
 				
 					DocumentTransform.printDocument(decryptedDocument);
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-					Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NOTIFICATION,"timestamp").item(0);
-					String dateString = timestamp.getTextContent();
-					Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NOTIFICATION,"redniBrojPoruke").item(0);
-					int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
-					Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
-					String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
-					
-					int brojac = semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getFirmaByNaziv(owner).getBrojac();
-					Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getFirmaByNaziv(owner).getTimestamp());
-					
-					if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
+					if(decryptedDocument != null){
+						Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NOTIFICATION,"timestamp").item(0);
+						String dateString = timestamp.getTextContent();
+						Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NOTIFICATION,"redniBrojPoruke").item(0);
+						int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
+						System.out.println("REDNI BROJ PRISTIGLE NOTIFIKACIJE IZ DOKUMENTA: "+rbrPoruke);
+						Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+						String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+						
+						int brojac = semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getFirmaByNaziv(owner).getBrojac();
+						System.out.println("REDNI BROJ POSLEDNJE PRIMLJENE IZ BAZE: "+brojac);
+						Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getFirmaByNaziv(owner).getTimestamp());
+						
+						if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
+							JOptionPane.showMessageDialog(null,
+									"Pokusaj napada",
+									"Warning!!!", JOptionPane.INFORMATION_MESSAGE);
+						}
+						//RESTUtil.sacuvajEntitet(decryptedDocument,propSender.getProperty("naziv"), false, owner, date, "Notifikacija", "firma");
+						decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
+						decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
+						decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
+						
+						SecurityClass sc = new SecurityClass();
+						sc.saveDocument(decryptedDocument, "./FakturaTest/tempNot.xml");
+						//definisemo kontekst, tj. paket(e) u kome se nalaze bean-ovi
+						JAXBContext context = JAXBContext.newInstance("beans.notification");
+						Unmarshaller unmarshaller = context.createUnmarshaller();
+						Notification notification = (Notification) unmarshaller.unmarshal(new File("./FakturaTest/tempNot.xml"));
+						
+						semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getFirmaByNaziv(owner).setBrojac(rbrPoruke);
+						semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getFirmaByNaziv(owner).setTimestamp(dateString);
+						
+						
 						JOptionPane.showMessageDialog(null,
-								"Pokusaj napada",
-								"Warning!!!", JOptionPane.INFORMATION_MESSAGE);
+								notification.getNotificationstring(),
+								"Notification", JOptionPane.INFORMATION_MESSAGE);
 					}
-					//RESTUtil.sacuvajEntitet(decryptedDocument,propSender.getProperty("naziv"), false, owner, date, "Notifikacija", "firma");
-					decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
-					decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
-					decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
-					
-					SecurityClass sc = new SecurityClass();
-					sc.saveDocument(decryptedDocument, "./FakturaTest/tempNot.xml");
-					//definisemo kontekst, tj. paket(e) u kome se nalaze bean-ovi
-					JAXBContext context = JAXBContext.newInstance("beans.notification");
-					Unmarshaller unmarshaller = context.createUnmarshaller();
-					Notification notification = (Notification) unmarshaller.unmarshal(new File("./FakturaTest/tempNot.xml"));
-					
-					semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getFirmaByNaziv(owner).setBrojac(rbrPoruke);
-					semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getFirmaByNaziv(owner).setTimestamp(dateString);
 					FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
-					
-					JOptionPane.showMessageDialog(null,
-							notification.getNotificationstring(),
-							"Notification", JOptionPane.INFORMATION_MESSAGE);
 				}	
 				
 			}
