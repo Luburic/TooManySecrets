@@ -109,13 +109,13 @@ public class RESTUtil {
 		
 		createResource("firmaa", "brojacPoslatihNalog", DOM2InputStream(cntPoslateNalogA));
 		createResource("firmab", "brojacPoslatihNalog", DOM2InputStream(cntPoslateNalogB));
-		createResource("firmaa", "brojacPrimljenihNotif", DOM2InputStream(cPrimljeneNotifA)); //od banke
+		/*createResource("firmaa", "brojacPrimljenihNotif", DOM2InputStream(cPrimljeneNotifA)); //od banke
 		createResource("firmab", "brojacPrimljenihNotif", DOM2InputStream(cPrimljeneNotifB)); //od banke
-		
+*/		
 		createResource("bankaa", "brojacPrimljenihNalog", DOM2InputStream(ctnPrimljeneNalogA));
 		createResource("bankab", "brojacPrimljenihNalog", DOM2InputStream(ctnPrimljeneNalogB));
-		createResource("bankaa", "brojacPoslatihNotif", DOM2InputStream(cPoslateNotifA));
-		createResource("bankab", "brojacPolatihNotif", DOM2InputStream(cPoslateNotifB));
+	/*	createResource("bankaa", "brojacPoslatihNotif", DOM2InputStream(cPoslateNotifA));
+		createResource("bankab", "brojacPolatihNotif", DOM2InputStream(cPoslateNotifB));*/
 		/************************************************************************************************************************/
 
 		

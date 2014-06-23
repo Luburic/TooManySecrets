@@ -5,12 +5,15 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
@@ -28,7 +31,10 @@ import util.MessageTransform;
 import util.MyDatatypeConverter;
 import util.NSPrefixMapper;
 import util.Validation;
+import basexdb.firma.FirmeSema;
+import basexdb.util.FirmaDBUtil;
 import beans.nalog.Nalog;
+import beans.notification.Notification;
 
 public class NalogClient {
 	public void testIt(String sender, String receiver, String cert,
@@ -53,14 +59,50 @@ public class NalogClient {
 
 			Document encrypted = MessageTransform.packS("Nalog", "Nalog",inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_NALOG,"Nalog");
 
+			FirmeSema semaFirma = FirmaDBUtil.loadFirmaDatabase(propSender.getProperty("address"));
+			semaFirma.setBrojacPoslednjegPoslatogNaloga(semaFirma.getBrojacPoslednjegPoslatogNaloga()+1);
+			
+			
+			
 			if (encrypted != null) {
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 
 				if (response != null) {
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
-					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification",ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, propSender,"firma", "Notif");
+					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification",ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, propSender,"banka", "Notifikacija");
 					DocumentTransform.printDocument(decryptedDocument);
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+					
+					Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NOTIFICATION,"timestamp").item(0);
+					String dateString = timestamp.getTextContent();
+					Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NOTIFICATION,"redniBrojPoruke").item(0);
+					
+					int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
+					Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+					String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+					int brojac = semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getBankaByNaziv(owner).getBrojac();
+					Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getBankaByNaziv(owner).getTimestamp());
+
+					if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
+						JOptionPane.showMessageDialog(null,
+								"Pokusaj napada",
+								"Warning!!!", JOptionPane.INFORMATION_MESSAGE);
+					}
+					decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
+					decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
+					decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
+					
+					SecurityClass sc = new SecurityClass();
+					sc.saveDocument(decryptedDocument, "./NalogTest/tempNot.xml");
+					
+					JAXBContext context = JAXBContext.newInstance("beans.notification");
+					Unmarshaller unmarshaller = context.createUnmarshaller();
+					Notification notification = (Notification) unmarshaller.unmarshal(new File("./NalogTest/tempNot.xml"));
+					semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getBankaByNaziv(owner).setBrojac(rbrPoruke);
+					semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getBankaByNaziv(owner).setTimestamp(dateString);
+					FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
+					
+					JOptionPane.showMessageDialog(null,notification.getNotificationstring(),"Notification", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 

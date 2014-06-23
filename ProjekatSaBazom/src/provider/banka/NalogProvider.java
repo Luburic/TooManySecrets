@@ -36,7 +36,7 @@ import beans.nalog.Nalog;
 
 @Stateless
 @ServiceMode(value = Service.Mode.PAYLOAD)
-@WebServiceProvider(portName = "BankaNalogPort", serviceName = "BankaNalog", targetNamespace = "http://www.toomanysecrets.com/BankaNalog", wsdlLocation = "WEB-INF/wsdl/BankaNalog.wsdl")
+@WebServiceProvider(portName = "BankaNalogPort", serviceName = "BankaNalog", targetNamespace = ConstantsXWS.NAMESPACE_XSD_NALOG, wsdlLocation = "WEB-INF/wsdl/BankaNalog.wsdl")
 public class NalogProvider implements Provider<DOMSource> {
 
 	private String message;
