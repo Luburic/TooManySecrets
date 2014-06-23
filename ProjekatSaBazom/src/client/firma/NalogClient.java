@@ -149,9 +149,8 @@ public class NalogClient {
 			nalog.setPozivNaBrojOdobrenja("111111");
 			nalog.setPozivNaBrojZaduzenja(String.valueOf(111111));
 
-			nalog.setRacunDuznika("111111111222222222");
-			String rac = "222222222111111111";
-			nalog.setRacunPoverioca(rac);
+			nalog.setRacunDuznika("111111111111111111");
+			nalog.setRacunPoverioca("222222222222222222");
 
 			nalog.setSvrhaPlacanja("reket");
 

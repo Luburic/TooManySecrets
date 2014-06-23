@@ -39,6 +39,7 @@ import util.MyDatatypeConverter;
 import util.Validation;
 import basexdb.RESTUtil;
 import basexdb.banka.BankeSema;
+import basexdb.banka.BankeSema.KorisnickiRacuni.Racun;
 import basexdb.firma.FirmeSema;
 import basexdb.util.BankaDBUtil;
 import basexdb.util.FirmaDBUtil;
@@ -56,7 +57,10 @@ public class NalogProvider implements Provider<DOMSource> {
 	private Document encrypted;
 	private BigDecimal limit = new BigDecimal(250000);
 	private Properties propReceiver;
-
+	private BankeSema semaBanka;
+	private String sender;
+	boolean rtgs;
+	
 	public NalogProvider() {
 	}
 
@@ -77,7 +81,7 @@ public class NalogProvider implements Provider<DOMSource> {
 			propReceiver.load(inputStreamReceiver);
 			
 			Element esender = (Element) document.getElementsByTagName("nalog").item(0);
-			String sender = esender.getAttribute("sender");
+			sender = esender.getAttribute("sender");
 
 			
 			
@@ -89,7 +93,7 @@ public class NalogProvider implements Provider<DOMSource> {
 				forSave = Validation.buildDocumentWithValidation(reader, new String[]{ "http://localhost:8080/NalogSigned.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 			}
 			
-			BankeSema semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 			
 			if (forSave != null) {
 				Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NALOG,"timestamp").item(0);
@@ -105,17 +109,27 @@ public class NalogProvider implements Provider<DOMSource> {
 				Unmarshaller unmarshaller = context.createUnmarshaller();
 				Nalog nalog = (Nalog) unmarshaller.unmarshal(decryptedDocument);
 				
+				rtgs = (nalog.isHitno() || nalog.getIznos().compareTo(limit) != -1);
+				
 				if (!validateContent(nalog)) {
 					DocumentTransform.createNotificationResponse("455", message,ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 				}
 
 				else {
-
-					if (nalog.isHitno() || nalog.getIznos().compareTo(limit) != -1) {
+					
+					if (rtgs) {
 						MT103 mt103 = createMT103(nalog);
 						if(mt103!=null) {
-							//MT103Client cl = new MT103Client();
-							//cl.testIt(propReceiver, "centralnabanka","cerbankac","./MT103Test/mt103.xml" );
+							MT103Client cl = new MT103Client();
+							
+							if(cl.testIt(propReceiver, "centralnabanka","cerbankac","./MT103Test/mt103.xml" )) {
+							
+							semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender).setStanje(
+									semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender).getStanje().subtract(nalog.getIznos()));
+							
+							//System.out.println("***STANJE***"+semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender).getStanje());
+							}
+
 						}
 						DocumentTransform.createNotificationResponse("200", "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 					} else {
@@ -152,13 +166,19 @@ public class NalogProvider implements Provider<DOMSource> {
 
 	private boolean validateContent(Nalog nalog) {
 		message = "";
-
-		if (nalog.isHitno() || nalog.getIznos().compareTo(limit) != -1) {
-			
-		} else {
-			
+		Racun racun = semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender);
+		
+		if(racun == null) {
+			message = "Racun korisnika nije registrovan.";
+			return false;
 		}
-
+		
+		if(rtgs && nalog.getIznos().compareTo(racun.getStanje()) == -1) {
+			message = "Na racunu korisnika nema dovoljno sredstava da bi se izvrsila uplata.";
+			return false;
+		}
+		
+		
 		return true;
 	}
 
@@ -206,7 +226,7 @@ public class NalogProvider implements Provider<DOMSource> {
 	
 	
 	private class MT103Client {
-		public void testIt(Properties propSender, String receiver, String cert,String inputFile) {
+		public boolean testIt(Properties propSender, String receiver, String cert,String inputFile) {
 			
 			try {
 				URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/CentralnaRTGSNalog?wsdl");
@@ -232,7 +252,7 @@ public class NalogProvider implements Provider<DOMSource> {
 				
 				
 				
-				if (encrypted != null) {
+				/*if (encrypted != null) {
 					DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 					//ZADUZENJE
 					
@@ -273,16 +293,17 @@ public class NalogProvider implements Provider<DOMSource> {
 							
 							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke);
 							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString);
-							
-							//skini pare sa racuna klijenta
-					
+							BankaDBUtil.storeBankaDatabase(semaBanka, propSender.getProperty("address"));
+							}else{
+								return false;
 							}
 						
-						BankaDBUtil.storeBankaDatabase(semaBanka, propSender.getProperty("address"));
-
-						
+						}else {
+							return false;
 						}
-					}
+					}else {
+						return false;
+					}*/
 				}catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (TransformerFactoryConfigurationError e) {
@@ -290,6 +311,8 @@ public class NalogProvider implements Provider<DOMSource> {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				return true;
+	
 			}
 		}
 	}

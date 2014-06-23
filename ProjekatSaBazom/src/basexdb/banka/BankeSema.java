@@ -1228,6 +1228,17 @@ public class BankeSema {
         }
 
 
+        
+        public BankeSema.KorisnickiRacuni.Racun getRacunByNazivKlijenta(String naziv) {
+        	for(BankeSema.KorisnickiRacuni.Racun r : getRacun()) {
+        		if(r.getVlasnik().equals(naziv))
+        			return r;
+        	}
+        	return null;
+        }
+        
+        
+        
         /**
          * <p>Java class for anonymous complex type.
          * 
