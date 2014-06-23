@@ -1,0 +1,539 @@
+<project name="WsImplement" default="main" basedir=".">
+
+	<property file="ant.properties" />
+
+	<property name="bin.dir" value="${basedir}/bin"/>
+	<property name="src.dir" value="${basedir}/src"/>
+	<property name="lib.dir" value="${basedir}/lib"/>
+	<property name="dist.dir" value="${basedir}/dist"/>
+	<property name="data.dir" value="${basedir}/data"/>
+	<property name="gen.dir" value="${basedir}/gen"/>
+	<property name="webinf.dir" value="${basedir}/WEB-INF"/>
+	<property name="wsdl.dir" value="${webinf.dir}/wsdl"/>
+	<property name="shema.dir" value="${webinf.dir}/shema"/>
+	<property name="keystores.dir" value="${webinf.dir}/keystores"/>
+	<property name="notif.dir" value="${basedir}/NotificationTest"/>
+	
+	
+	<!--Task za generisanje objektnog modela na osnovu XSD seme -->
+		<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+		  <classpath>
+		    <fileset dir="${lib.dir}" includes="*.jar" />
+		  </classpath>
+		</taskdef>
+		
+		<!--Task za generisanje XSD seme na osnovu objektnog modela -->
+		<taskdef name="schemagen" classname="com.sun.tools.jxc.SchemaGenTask">
+		  <classpath>
+		    <fileset dir="${lib.dir}" includes="*.jar" />
+		  </classpath>
+		</taskdef>
+	
+	<target name="generate_java" depends="init">
+			<xjc schema="${data.dir}/MT103Raw.xsd" destdir="${gen.dir}"/>
+	</target>
+	
+	
+	<target name="check-war-name" unless="war.name">
+		<fail>
+			Property "war.name" is not set. Please use the file
+			"ant.properties" in this directory ${basedir} to
+			set this property.
+		</fail>
+	</target>
+
+	<target name="check-tomee" unless="tomee.dir">
+		<fail>
+			Property "tomee.dir" is not set. Please use the file
+			"build.properties" in this directory ${basedir} to
+			set this property. It must point to the directory which
+			contains the following directory: "bin", "conf", "webapps"
+			etc.
+		</fail>
+	</target>
+	
+	<target name="check-environment">
+		<antcall target="check-war-name"/>
+		<antcall target="check-tomee"/>
+	</target>
+	
+	<target name="init" depends="check-environment">
+		<echo message="java.home = ${java.home}"/>
+		<echo message="deploy.dir = ${tomee.dir}"/>
+	</target>
+
+	<path id="cxf.classpath">
+		<pathelement location="${basedir}"/>
+		<pathelement location="${src.dir}"/>
+		<pathelement path="${bin.dir}"/>
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${tomee.dir}/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	
+	<macrodef name="java2ws">
+		<attribute name="destdir" default="${gen.dir}" />
+		<attribute name="sei.class"/>
+		<attribute name="wsdl.file"/>
+		<attribute name="service.name"/>
+		<attribute name="port.name"/>
+		<sequential>
+			<java classname="org.apache.cxf.tools.java2ws.JavaToWS" fork="true" failonerror="true">
+				<arg value="-verbose"/>
+				<arg value="-wsdl"/>
+				<arg value="-client"/>
+				<arg value="-wrapperbean"/>
+				<arg value="-server"/>
+				<arg value="-o"/>
+				<arg value="@{wsdl.file}"/>
+				<arg value="-d"/>
+				<arg value="@{destdir}"/>
+				<arg value="-s"/>
+				<arg value="@{destdir}"/>
+				<arg value="-servicename"/>
+				<arg value="@{service.name}"/>
+				<arg value="-portname"/>
+				<arg value="@{port.name}"/>
+				<arg value="@{sei.class}"/>
+				<classpath>
+					<path refid="cxf.classpath"/>
+				</classpath>
+			</java>
+		</sequential>
+	</macrodef>
+	
+	<target name="generate-code">
+		<echo level="info" message="Generating code using java2ws..."/>
+	</target>
+	
+	<target name="compile" depends="init">
+		<javac destdir="${bin.dir}" debug="on">
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+			<src path="${src.dir}"/>
+		</javac>
+	</target>
+
+	<target name="copy-non-java" depends="compile"
+			description="Copies non java files to bin directory">
+		<copy todir="${bin.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java"/>
+		</copy>
+	</target>
+	
+	<target name="war" depends="compile">
+		<delete file="${webinf.dir}/cxf-servlet.xml"/>
+		<delete file="${war.name}"/>
+		<delete file="${src.dir}/firma.properties"/>
+		<delete file="${bin.dir}/firma.properties"/>
+		<delete file="${src.dir}/firmaa.cer"/>
+		<delete file="${src.dir}/firmaa.jks"/>
+		<delete file="${src.dir}/firmab.cer"/>
+		<delete file="${src.dir}/firmab.jks"/>
+		<delete file="${src.dir}/bankaa.cer"/>
+		<delete file="${src.dir}/bankaa.jks"/>
+		<delete file="${src.dir}/bankab.cer"/>
+		<delete file="${src.dir}/bankab.jks"/>
+		<delete file="${src.dir}/centralnabanka.cer"/>
+		<delete file="${src.dir}/centralnabanka.jks"/>
+		<delete file="${bin.dir}/firmaa.cer"/>
+		<delete file="${bin.dir}/firmaa.jks"/>
+		<delete file="${bin.dir}/firmab.cer"/>
+		<delete file="${bin.dir}/firmab.jks"/>
+		<delete file="${bin.dir}/bankaa.cer"/>
+		<delete file="${bin.dir}/bankaa.jks"/>
+		<delete file="${bin.dir}/bankab.cer"/>
+		<delete file="${bin.dir}/bankab.jks"/>
+		<delete file="${bin.dir}/centralnabanka.cer"/>
+		<delete file="${bin.dir}/centralnabanka.jks"/>
+		<copy file="${webinf.dir}/keystores/A/cxf-servlet.xml" todir="${webinf.dir}"/>
+		<copy file="${webinf.dir}/keystores/A/firma.properties" todir="${bin.dir}"/>
+		<copy file="${webinf.dir}/keystores/A/firmaa.cer" todir="${bin.dir}"/>
+		<copy file="${webinf.dir}/keystores/A/firmaa.jks" todir="${bin.dir}"/>
+		<copy file="${webinf.dir}/keystores/A/firmab.cer" todir="${bin.dir}"/>
+		<copy file="${webinf.dir}/keystores/A/bankaa.cer" todir="${bin.dir}"/>
+		<copy file="${webinf.dir}/keystores/A/bankab.cer" todir="${bin.dir}"/>
+		<copy file="${webinf.dir}/keystores/A/centralnabanka.cer" todir="${bin.dir}"/>
+		<war warfile="${dist.dir}/${war.name}" webxml="${webinf.dir}/web.xml">
+			<classes dir="${bin.dir}">
+				<exclude name="**/client/*.class"/>
+				<include name="**/*.class"/>
+				<exclude name="**/provider/banka/*.class"/>
+				<exclude name="**/provider/centrala/*.class"/>
+				<include name="**/*.properties"/>
+				<exclude name="**/firmaB.properties"/>
+				<include name="**/*.jks"/>
+				<exclude name="**/firmab.jks"/>
+				<include name="**/*.cer"/>
+				<include name="**/*.xml"/>
+			</classes>
+			<lib dir="${lib.dir}">
+				<include name="spring-*.jar"/>
+				<include name="bcprov-jdk16-141.jar"/>
+				<include name="commons-*.jar"/>
+			</lib>
+			<webinf dir="${webinf.dir}">
+				<include name="wsdl/**"/>
+				<exclude name="wsdl/CentralnaClearingNalog.wsdl"/>
+				<exclude name="wsdl/CentralnaRTGSNalog.wsdl"/>
+				<exclude name="wsdl/BankaNalog.wsdl"/>
+				<exclude name="wsdl/BankaRTGSNalog.wsdl"/>
+				<exclude name="wsdl/BankaIzvod.wsdl"/>
+				<include name="shema/**"/>
+				<include name="keystores/*.cer"/>
+				<include name="keystores/*.jks"/>
+				<include name="cxf-servlet.xml"/>
+			</webinf>
+			<fileset dir="${bin.dir}">
+				<include name="firmaa.cer"/>
+			</fileset>
+		</war>
+	</target>
+	
+	<target name="war1" depends="compile">
+			<delete file="${webinf.dir}/cxf-servlet.xml"/>
+			<delete file="${war1.name}"/>
+			<delete file="${src.dir}/firma.properties"/>
+			<delete file="${bin.dir}/firma.properties"/>
+			<delete file="${src.dir}/firmaa.cer"/>
+			<delete file="${src.dir}/firmaa.jks"/>
+			<delete file="${src.dir}/firmab.cer"/>
+			<delete file="${src.dir}/firmab.jks"/>
+			<delete file="${src.dir}/bankaa.cer"/>
+			<delete file="${src.dir}/bankaa.jks"/>
+			<delete file="${src.dir}/bankab.cer"/>
+			<delete file="${src.dir}/bankab.jks"/>
+			<delete file="${src.dir}/centralnabanka.cer"/>
+			<delete file="${src.dir}/centralnabanka.jks"/>
+			<delete file="${bin.dir}/firmaa.cer"/>
+			<delete file="${bin.dir}/firmaa.jks"/>
+			<delete file="${bin.dir}/firmab.cer"/>
+			<delete file="${bin.dir}/firmab.jks"/>
+			<delete file="${bin.dir}/bankaa.cer"/>
+			<delete file="${bin.dir}/bankaa.jks"/>
+			<delete file="${bin.dir}/bankab.cer"/>
+			<delete file="${bin.dir}/bankab.jks"/>
+			<delete file="${bin.dir}/centralnabanka.cer"/>
+			<delete file="${bin.dir}/centralnabanka.jks"/>
+			<copy file="${webinf.dir}/keystores/B/cxf-servlet.xml" todir="${webinf.dir}"/>
+			<copy file="${keystores.dir}/B/firma.properties" todir="${bin.dir}"/>
+			<copy file="${webinf.dir}/keystores/B/firmaa.cer" todir="${bin.dir}"/>
+			<copy file="${webinf.dir}/keystores/B/firmab.cer" todir="${bin.dir}"/>
+			<copy file="${webinf.dir}/keystores/B/firmab.jks" todir="${bin.dir}"/>
+			<copy file="${webinf.dir}/keystores/B/bankaa.cer" todir="${bin.dir}"/>
+			<copy file="${webinf.dir}/keystores/B/bankab.cer" todir="${bin.dir}"/>
+			<copy file="${webinf.dir}/keystores/B/centralnabanka.cer" todir="${bin.dir}"/>
+			<war warfile="${dist.dir}/${war1.name}" webxml="${webinf.dir}/web.xml">
+				<classes dir="${bin.dir}">
+					<exclude name="**/client/*.class"/>
+					<include name="**/*.class"/>
+					<exclude name="**/provider/banka/*.class"/>
+					<exclude name="**/provider/centrala/*.class"/>
+					<include name="**/*.properties"/>
+					<exclude name="**/firmaA.properties"/>
+					<include name="**/*.jks"/>
+					<exclude name="**/firmaa.jks"/>
+					<include name="**/*.cer"/>
+					<include name="**/*.xml"/>
+				</classes>
+				<lib dir="${lib.dir}">
+					<include name="spring-*.jar"/>
+					<include name="bcprov-jdk16-141.jar"/>
+					<include name="commons-*.jar"/>
+				</lib>
+				<lib dir="${notif.dir}">
+					<include name="Notification.xml"/>
+				</lib>
+				<webinf dir="${webinf.dir}">
+					<include name="wsdl/**"/>
+					<exclude name="wsdl/CentralnaClearingNalog.wsdl"/>
+					<exclude name="wsdl/CentralnaRTGSNalog.wsdl"/>
+					<exclude name="wsdl/BankaNalog.wsdl"/>
+					<exclude name="wsdl/BankaRTGSNalog.wsdl"/>
+					<exclude name="wsdl/BankaIzvod.wsdl"/>
+					<include name="shema/**"/>
+					<include name="keystores/*.cer"/>
+					<include name="keystores/*.jks"/>
+					<include name="cxf-servlet.xml"/>
+				</webinf>
+				<fileset dir="${bin.dir}">
+					<include name="firmab.cer"/>
+				</fileset>
+			</war>
+	</target>
+	
+	<target name="war2" depends="compile">
+				<delete file="${webinf.dir}/cxf-servlet.xml"/>
+				<delete file="${war2.name}"/>
+				<delete file="${src.dir}/banka.properties"/>
+				<delete file="${bin.dir}/banka.properties"/>
+				<delete file="${src.dir}/firmaa.cer"/>
+				<delete file="${src.dir}/firmaa.jks"/>
+				<delete file="${src.dir}/firmab.cer"/>
+				<delete file="${src.dir}/firmab.jks"/>
+				<delete file="${src.dir}/bankaa.cer"/>
+				<delete file="${src.dir}/bankaa.jks"/>
+				<delete file="${src.dir}/bankab.cer"/>
+				<delete file="${src.dir}/bankab.jks"/>
+				<delete file="${src.dir}/centralnabanka.cer"/>
+				<delete file="${src.dir}/centralnabanka.jks"/>
+				<delete file="${bin.dir}/firmaa.cer"/>
+				<delete file="${bin.dir}/firmaa.jks"/>
+				<delete file="${bin.dir}/firmab.cer"/>
+				<delete file="${bin.dir}/firmab.jks"/>
+				<delete file="${bin.dir}/bankaa.jks"/>
+				<delete file="${bin.dir}/bankab.cer"/>
+				<delete file="${bin.dir}/bankab.jks"/>
+				<delete file="${bin.dir}/centralnabanka.cer"/>
+				<delete file="${bin.dir}/centralnabanka.jks"/>
+				<copy file="${webinf.dir}/keystores/BankaA/banka.properties" todir="${bin.dir}"/>
+				<copy file="${webinf.dir}/keystores/BankaA/cxf-servlet.xml" todir="${webinf.dir}"/>
+				<copy file="${webinf.dir}/keystores/BankaA/firmaa.cer" todir="${bin.dir}"/>
+				<copy file="${webinf.dir}/keystores/BankaA/firmab.cer" todir="${bin.dir}"/>
+				<copy file="${webinf.dir}/keystores/BankaA/bankaa.cer" todir="${bin.dir}"/>
+				<copy file="${webinf.dir}/keystores/BankaA/bankaa.jks" todir="${bin.dir}"/>
+				<copy file="${webinf.dir}/keystores/BankaA/bankab.cer" todir="${bin.dir}"/>
+				<copy file="${webinf.dir}/keystores/BankaA/centralnabanka.cer" todir="${bin.dir}"/>
+				<copy file="${webinf.dir}/crl/crlbankaa.xml" todir="${bin.dir}"/>
+				<war warfile="${dist.dir}/${war2.name}" webxml="${webinf.dir}/web.xml">
+					<classes dir="${bin.dir}">
+						<exclude name="**/client/*.class"/>
+						<include name="**/*.class"/>
+						<exclude name="**/provider/firma/*.class"/>
+						<exclude name="**/provider/centrala/*.class"/>
+						<include name="**/*.properties"/>
+						<exclude name="**/firmaA.properties"/>
+						<exclude name="**/firmaB.properties"/>
+						<include name="**/*.jks"/>
+						<exclude name="**/firmaa.jks"/>
+						<exclude name="**/firmab.jks"/>
+						<include name="**/*.cer"/>
+						<include name="**/*.xml"/>
+					</classes>
+					<lib dir="${lib.dir}">
+						<include name="spring-*.jar"/>
+						<include name="bcprov-jdk16-141.jar"/>
+						<include name="commons-*.jar"/>
+					</lib>
+					<webinf dir="${webinf.dir}">
+						<include name="wsdl/**"/>
+						<exclude name="wsdl/Firma.wsdl"/>
+						<exclude name="wsdl/CentralnaClearingNalog.wsdl"/>
+						<exclude name="wsdl/CentralnaRTGSNalog.wsdl"/>
+						<include name="shema/**"/>
+						<include name="keystores/*.cer"/>
+						<include name="keystores/*.jks"/>
+						<include name="cxf-servlet.xml"/>
+					</webinf>
+					<fileset dir="${bin.dir}">
+					    <include name="crlbankaa.xml"/>
+						<include name="bankaa.cer"/>
+					</fileset>
+				</war>
+	</target>
+	
+	<target name="war3" depends="compile">
+					<delete file="${webinf.dir}/cxf-servlet.xml"/>
+					<delete file="${war3.name}"/>
+					<delete file="${src.dir}/banka.properties"/>
+					<delete file="${bin.dir}/banka.properties"/>
+					<delete file="${src.dir}/firmaa.cer"/>
+					<delete file="${src.dir}/firmaa.jks"/>
+					<delete file="${src.dir}/firmab.cer"/>
+					<delete file="${src.dir}/firmab.jks"/>
+					<delete file="${src.dir}/bankaa.cer"/>
+					<delete file="${src.dir}/bankaa.jks"/>
+					<delete file="${src.dir}/bankab.cer"/>
+					<delete file="${src.dir}/bankab.jks"/>
+					<delete file="${src.dir}/centralnabanka.cer"/>
+					<delete file="${src.dir}/centralnabanka.jks"/>
+					<delete file="${bin.dir}/firmaa.cer"/>
+					<delete file="${bin.dir}/firmaa.jks"/>
+					<delete file="${bin.dir}/firmab.cer"/>
+					<delete file="${bin.dir}/firmab.jks"/>
+					<delete file="${bin.dir}/bankaa.jks"/>
+					<delete file="${bin.dir}/bankab.cer"/>
+					<delete file="${bin.dir}/bankab.jks"/>
+					<delete file="${bin.dir}/centralnabanka.cer"/>
+					<delete file="${bin.dir}/centralnabanka.jks"/>
+					<copy file="${webinf.dir}/keystores/BankaB/banka.properties" todir="${bin.dir}"/>
+					<copy file="${webinf.dir}/keystores/BankaB/cxf-servlet.xml" todir="${webinf.dir}"/>
+					<copy file="${webinf.dir}/keystores/BankaA/firmaa.cer" todir="${bin.dir}"/>
+					<copy file="${webinf.dir}/keystores/BankaB/firmab.cer" todir="${bin.dir}"/>
+					<copy file="${webinf.dir}/keystores/BankaB/bankaa.cer" todir="${bin.dir}"/>
+					<copy file="${webinf.dir}/keystores/BankaB/bankab.cer" todir="${bin.dir}"/>
+					<copy file="${webinf.dir}/keystores/BankaB/bankab.jks" todir="${bin.dir}"/>
+					<copy file="${webinf.dir}/keystores/BankaB/centralnabanka.cer" todir="${bin.dir}"/>
+					<copy file="${webinf.dir}/crl/crlbankab.xml" todir="${bin.dir}"/>
+					<war warfile="${dist.dir}/${war3.name}" webxml="${webinf.dir}/web.xml">
+						<classes dir="${bin.dir}">
+							<exclude name="**/client/*.class"/>
+							<include name="**/*.class"/>
+							<exclude name="**/provider/firma/*.class"/>
+							<exclude name="**/provider/centrala/*.class"/>
+							<include name="**/*.properties"/>
+							<exclude name="**/firmaA.properties"/>
+							<exclude name="**/firmaB.properties"/>
+							<include name="**/*.jks"/>
+							<exclude name="**/firmaa.jks"/>
+							<exclude name="**/firmab.jks"/>
+							<include name="**/*.cer"/>
+							<include name="**/*.xml"/>
+						</classes>
+						<lib dir="${lib.dir}">
+							<include name="spring-*.jar"/>
+							<include name="bcprov-jdk16-141.jar"/>
+							<include name="commons-*.jar"/>
+						</lib>
+						<webinf dir="${webinf.dir}">
+							<include name="wsdl/**"/>
+							<exclude name="wsdl/Firma.wsdl"/>
+							<exclude name="wsdl/CentralnaClearingNalog.wsdl"/>
+							<exclude name="wsdl/CentralnaRTGSNalog.wsdl"/>
+							<include name="shema/**"/>
+							<include name="keystores/*.cer"/>
+							<include name="keystores/*.jks"/>
+							<include name="cxf-servlet.xml"/>
+						</webinf>
+						<fileset dir="${bin.dir}">
+							<include name="crlbankab.xml"/>
+							<include name="bankab.cer"/>
+						</fileset>
+					</war>
+		</target>
+	
+		<target name="war4" depends="compile">
+						<delete file="${webinf.dir}/cxf-servlet.xml"/>
+						<delete file="${war4.name}"/>
+						<delete file="${src.dir}/banka.properties"/>
+						<delete file="${bin.dir}/banka.properties"/>
+						<delete file="${src.dir}/firmaa.cer"/>
+						<delete file="${src.dir}/firmaa.jks"/>
+						<delete file="${src.dir}/firmab.cer"/>
+						<delete file="${src.dir}/firmab.jks"/>
+						<delete file="${src.dir}/bankaa.cer"/>
+						<delete file="${src.dir}/bankaa.jks"/>
+						<delete file="${src.dir}/bankab.cer"/>
+						<delete file="${src.dir}/bankab.jks"/>
+						<delete file="${src.dir}/centralnabanka.cer"/>
+						<delete file="${src.dir}/centralnabanka.jks"/>
+						<delete file="${bin.dir}/firmaa.cer"/>
+						<delete file="${bin.dir}/firmaa.jks"/>
+						<delete file="${bin.dir}/firmab.cer"/>
+						<delete file="${bin.dir}/firmab.jks"/>
+						<delete file="${bin.dir}/bankaa.jks"/>
+						<delete file="${bin.dir}/bankab.cer"/>
+						<delete file="${bin.dir}/bankab.jks"/>
+						<delete file="${bin.dir}/centralnabanka.cer"/>
+						<delete file="${bin.dir}/centralnabanka.jks"/>
+						<copy file="${webinf.dir}/keystores/CentralnaBanka/banka.properties" todir="${bin.dir}"/>
+						<copy file="${webinf.dir}/keystores/CentralnaBanka/cxf-servlet.xml" todir="${webinf.dir}"/>
+						<copy file="${webinf.dir}/keystores/CentralnaBanka/firmaa.cer" todir="${bin.dir}"/>
+						<copy file="${webinf.dir}/keystores/CentralnaBanka/firmab.cer" todir="${bin.dir}"/>
+						<copy file="${webinf.dir}/keystores/CentralnaBanka/bankaa.cer" todir="${bin.dir}"/>
+						<copy file="${webinf.dir}/keystores/CentralnaBanka/bankab.cer" todir="${bin.dir}"/>
+						<copy file="${webinf.dir}/keystores/CentralnaBanka/centralnabanka.cer" todir="${bin.dir}"/>
+						<copy file="${webinf.dir}/keystores/CentralnaBanka/centralnabanka.jks" todir="${bin.dir}"/>
+						<copy file="${webinf.dir}/keystores/CentralnaBanka/centralnabanka.properties" todir="${bin.dir}"/>
+						<copy file="${webinf.dir}/crl/crlcentralnabanka.xml" todir="${bin.dir}"/>
+						<war warfile="${dist.dir}/${war4.name}" webxml="${webinf.dir}/web.xml">
+							<classes dir="${bin.dir}">
+								<exclude name="**/client/*.class"/>
+								<include name="**/*.class"/>
+								<exclude name="**/provider/firma/*.class"/>
+								<exclude name="**/provider/banka/*.class"/>
+								<include name="**/*.properties"/>
+								<exclude name="**/firmaA.properties"/>
+								<exclude name="**/firmaB.properties"/>
+								<exclude name="**/firma.properties"/>
+								<include name="**/*.jks"/>
+								<exclude name="**/firmaa.jks"/>
+								<exclude name="**/firmab.jks"/>
+								<include name="**/*.cer"/>
+								<include name="**/*.xml"/>
+							</classes>
+							<lib dir="${lib.dir}">
+								<include name="spring-*.jar"/>
+								<include name="bcprov-jdk16-141.jar"/>
+								<include name="commons-*.jar"/>
+							</lib>
+							<webinf dir="${webinf.dir}">
+								<include name="wsdl/**"/>
+								<exclude name="wsdl/Firma.wsdl"/>
+								<exclude name="wsdl/BankaNalog.wsdl"/>
+								<exclude name="wsdl/BankaRTGSNalog.wsdl"/>
+								<exclude name="wsdl/BankaIzvod.wsdl"/>
+								<include name="shema/**"/>
+								<include name="keystores/*.cer"/>
+								<include name="keystores/*.jks"/>
+								<include name="cxf-servlet.xml"/>
+							</webinf>
+							<fileset dir="${bin.dir}">
+								<include name="crlcentralnabanka.xml"/>
+								<include name="centralnabanka.cer"/>
+							</fileset>
+						</war>
+		</target>
+	
+	<target name="utils" depends="compile">
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/firmaa.cer" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/firmaa.jks" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/firmab.cer" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/firmab.jks" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/bankaa.cer" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/bankaa.jks" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/bankab.cer" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/bankab.jks" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/centralnabanka.cer" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/centralnabanka.jks" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/A/firmaA.properties" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/B/firmaB.properties" todir="${src.dir}"/>
+		<copy file="${webinf.dir}/keystores/A/firmaA.properties" todir="${bin.dir}"/>
+		<copy file="${webinf.dir}/keystores/B/firmaB.properties" todir="${bin.dir}"/>
+		<copy file="${webinf.dir}/keystores/CentralnaBanka/centralnabanka.properties" todir="${bin.dir}"/>
+	</target>
+
+	<target name="deploy" depends="war, war1, war2, war3, war4, utils">
+			<copy todir="${tomee.dir}/webapps">
+				<fileset dir="${dist.dir}" includes="${war.name}"/>
+				
+				<fileset dir="${dist.dir}" includes="${war1.name}"/>
+				
+				
+				<fileset dir="${dist.dir}" includes="${war2.name}"/>
+				
+				<fileset dir="${dist.dir}" includes="${war3.name}"/>
+				<fileset dir="${dist.dir}" includes="${war4.name}"/>
+
+			</copy>
+		</target>
+
+	<target name="clean">
+			<delete file="${dist.dir}/${war.name}"/>
+			<delete file="${tomee.dir}/webapps/${war.name}"/>
+			<delete file="${dist.dir}/${war1.name}"/>
+			<delete file="${tomee.dir}/webapps/${war1.name}"/>
+			<delete file="${dist.dir}/${war2.name}"/>
+			<delete file="${tomee.dir}/webapps/${war2.name}"/>
+			<delete file="${dist.dir}/${war3.name}"/>
+			<delete file="${tomee.dir}/webapps/${war3.name}"/>
+			<delete file="${dist.dir}/${war4.name}"/>
+			<delete file="${tomee.dir}/webapps/${war4.name}"/>
+			<delete dir="${tomee.dir}/webapps/${war.folder}"/>
+			<delete dir="${tomee.dir}/webapps/${war1.folder}"/>
+			<delete dir="${tomee.dir}/webapps/${war2.folder}"/>
+			<delete dir="${tomee.dir}/webapps/${war3.folder}"/>
+			<delete dir="${tomee.dir}/webapps/${war4.folder}"/>
+			<delete dir="${tomee.dir}/webapps/BaseX75"/>
+	</target>
+
+	<target name="main" depends="clean,deploy">
+	</target>
+
+</project>

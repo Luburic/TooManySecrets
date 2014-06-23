@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<firmeSema xmlns="http://www.toomanysecrets.com/firmesema"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.toomanysecrets.com/firmesema file:../shema/firmeSema.xsd">
+    <informacijeOFirmi xmlns="">
+        <naziv>firmab</naziv>
+        <pib>pib0</pib>
+        <adresa>adresa0</adresa>
+    </informacijeOFirmi>
+    <informacijeOBankama xmlns="">
+        <banka>
+            <naziv>bankab</naziv>
+            <swift>BBBBBB00</swift>
+            <brojRacuna>222222222222222222</brojRacuna>
+        </banka>
+    </informacijeOBankama>
+    <placeneFakture xmlns="">
+        <faktura xmlns="http://www.toomanysecrets.com/faktura" sender="firmaa">
+            <zaglavlje idPoruke="idPoruke0">
+                <nazivDobavljaca>nazivDobavljaca0</nazivDobavljaca>
+                <adresaDobavljaca>adresaDobavljaca0</adresaDobavljaca>
+                <pibDobavljaca>pibDobavlja</pibDobavljaca>
+                <nazivKupca>nazivKupca0</nazivKupca>
+                <adresaKupca>adresaKupca0</adresaKupca>
+                <pibKupca>pibKupca0</pibKupca>
+                <brojRacuna>0</brojRacuna>
+                <datumRacuna>2006-05-04</datumRacuna>
+                <vrednostRobe>0.00</vrednostRobe>
+                <vrednostUsluga>0.00</vrednostUsluga>
+                <ukupnoRobaIUsluge>0.00</ukupnoRobaIUsluge>
+                <ukupanRabat>0.00</ukupanRabat>
+                <ukupanPorez>0.00</ukupanPorez>
+                <oznakaValute>ozn</oznakaValute>
+                <iznosZaUplatu>0.00</iznosZaUplatu>
+                <uplataNaRacun>000000000000000000</uplataNaRacun>
+                <datumValute>2006-05-04</datumValute>
+            </zaglavlje>
+            <stavka redniBroj="0">
+                <nazivRobeIliUsluge>nazivRobeIliUsluge0</nazivRobeIliUsluge>
+                <kolicina>0.00</kolicina>
+                <jedinicaMere>jedini</jedinicaMere>
+                <jedinicnaCena>0.00</jedinicnaCena>
+                <vrednost>0.00</vrednost>
+                <procenatRabata>0.00</procenatRabata>
+                <iznosRabata>0.00</iznosRabata>
+                <umanjenoZaRabat>0.00</umanjenoZaRabat>
+                <ukupanPorez>0.00</ukupanPorez>
+            </stavka>
+            <stavka redniBroj="0">
+                <nazivRobeIliUsluge>nazivRobeIliUsluge1</nazivRobeIliUsluge>
+                <kolicina>0.00</kolicina>
+                <jedinicaMere>jedini</jedinicaMere>
+                <jedinicnaCena>0.00</jedinicnaCena>
+                <vrednost>0.00</vrednost>
+                <procenatRabata>0.00</procenatRabata>
+                <iznosRabata>0.00</iznosRabata>
+                <umanjenoZaRabat>0.00</umanjenoZaRabat>
+                <ukupanPorez>0.00</ukupanPorez>
+            </stavka>
+        </faktura>
+    </placeneFakture>
+    <neplaceneFakture>
+    </neplaceneFakture>
+    <brojacPoslednjePoslateFakture xmlns="">0</brojacPoslednjePoslateFakture>
+    <brojacPoslednjegPoslatogNaloga xmlns="">0</brojacPoslednjegPoslatogNaloga>
+    <brojacPoslednjegZahtevaZaIzvod xmlns="">0</brojacPoslednjegZahtevaZaIzvod>
+    <brojacPoslednjePoslateNotifikacije xmlns="">0</brojacPoslednjePoslateNotifikacije>
+    <brojacPoslednjePrimljeneFakture xmlns="">
+        <firma>
+            <nazivFirme>firmaa</nazivFirme>
+            <brojac>0</brojac>
+            <timestamp>05/04/2006 04:12:55</timestamp>
+        </firma>
+    </brojacPoslednjePrimljeneFakture>
+    <brojacPoslednjegPrimljenogPreseka xmlns="">
+        <banka>
+            <nazivBanke>bankab</nazivBanke>
+            <brojac>0</brojac>
+            <timestamp>05/04/2006 04:12:55</timestamp>
+        </banka>
+    </brojacPoslednjegPrimljenogPreseka>
+    <brojacPoslednjePrimljeneNotifikacije xmlns="">
+        <banka>
+            <nazivBanke>bankab</nazivBanke>
+            <brojac>0</brojac>
+            <timestamp>05/04/2006 04:12:55</timestamp>
+        </banka>
+        <firma>
+            <nazivFirme>firmaa</nazivFirme>
+            <brojac>0</brojac>
+            <timestamp>05/04/2006 04:12:55</timestamp>
+        </firma>
+    </brojacPoslednjePrimljeneNotifikacije>
+</firmeSema>

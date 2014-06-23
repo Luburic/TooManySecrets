@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.toomanysecrets.com/bankesema"
+    targetNamespace="http://www.toomanysecrets.com/bankesema"
+    xmlns:nalog="http://www.toomanysecrets.com/nalog">
+
+    <xs:import namespace="http://www.toomanysecrets.com/nalog" schemaLocation="NalogRaw.xsd"/>
+    <xs:element name="bankeSema">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="swift">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:pattern value="[A-Z]{4}[A-Z]{2}[0-9A-Z]{2}([0-9A-Z]{3})?"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="adresa">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:maxLength value="255"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="obracunskiRacun">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:length value="18"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="korisnickiRacuni">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded">
+                            <xs:element name="racun">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="brojRacuna">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:length value="18"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="vlasnik">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:maxLength value="255"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="pib">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:maxLength value="11"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="stanje">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="15"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="blokiran" type="xs:boolean"/>
+                                        <xs:element name="rezervisano">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:decimal">
+                                                  <xs:totalDigits value="15"/>
+                                                  <xs:fractionDigits value="2"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="realizovaniNalozi">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="nalog:nalog"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="nerealizovaniNalozi">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element name="nerealizovanNalog">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="vrstaNaloga" type="xs:string"/>
+                                        <xs:element ref="nalog:nalog"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="brojacStavkiZaKliring" type="xs:int"/>
+                <xs:element name="brojacStavkiZaPresek" type="xs:int"/>
+                <xs:element minOccurs="0" name="brojacPoslednjegPoslatogPreseka" type="xs:int"/>
+                <xs:element minOccurs="0" name="brojacPoslednjegPoslatogMTNaloga" type="xs:int"/>
+                <xs:element minOccurs="0" name="brojacPoslednjePoslateNotifikacije" type="xs:int"/>
+                <xs:element minOccurs="0" name="brojacPoslednjePrimljeneNotifikacije">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element maxOccurs="1" minOccurs="0" name="centralnabanka">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="brojac" type="xs:int"/>
+                                        <xs:element name="timestamp" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element minOccurs="0" name="brojacPoslednjegPrimljenogNaloga">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="1" minOccurs="1">
+                            <xs:element maxOccurs="unbounded" minOccurs="0" name="firma">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="nazivFirme">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:maxLength value="255"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="brojac" type="xs:int"/>
+                                        <xs:element name="timestamp" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element minOccurs="0" name="brojacPoslednjegPrimljenogZahtevaZaIzvod">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="1" minOccurs="1">
+                            <xs:element maxOccurs="unbounded" minOccurs="0" name="firma">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="nazivFirme">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:maxLength value="255"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="brojac" type="xs:int"/>
+                                        <xs:element name="timestamp" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

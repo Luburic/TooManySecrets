@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><faktura xmlns="http://www.toomanysecrets.com/faktura" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="firmaa">
+    <zaglavlje idPoruke="1">
+        <nazivDobavljaca>1</nazivDobavljaca>
+        <adresaDobavljaca>1</adresaDobavljaca>
+        <pibDobavljaca>12312312312</pibDobavljaca>
+        <nazivKupca>1</nazivKupca>
+        <adresaKupca>1</adresaKupca>
+        <pibKupca>12312312312</pibKupca>
+        <brojRacuna>1</brojRacuna>
+        <datumRacuna>2014-06-18</datumRacuna>
+        <vrednostRobe>1.0</vrednostRobe>
+        <vrednostUsluga>1.0</vrednostUsluga>
+        <ukupnoRobaIUsluge>1.0</ukupnoRobaIUsluge>
+        <ukupanRabat>1.0</ukupanRabat>
+        <ukupanPorez>1.0</ukupanPorez>
+        <oznakaValute>1</oznakaValute>
+        <iznosZaUplatu>1.0</iznosZaUplatu>
+        <uplataNaRacun>123123123123123123</uplataNaRacun>
+        <datumValute>2014-06-05</datumValute>
+    </zaglavlje>
+    <stavka redniBroj="1">
+        <nazivRobeIliUsluge>1</nazivRobeIliUsluge>
+        <kolicina>1.0</kolicina>
+        <jedinicaMere>1</jedinicaMere>
+        <jedinicnaCena>1.0</jedinicnaCena>
+        <vrednost>11.0</vrednost>
+        <procenatRabata>1.0</procenatRabata>
+        <iznosRabata>1.0</iznosRabata>
+        <umanjenoZaRabat>111.0</umanjenoZaRabat>
+        <ukupanPorez>1.0</ukupanPorez>
+    </stavka>
+<timestamp>06/23/2014 09:57:33</timestamp><redniBrojPoruke>3</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<ds:Reference URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>slE9XL7lmz+vPL8hYruD3lVl68s=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+ceSLc4QfFXTIayEwHg8AexR+SbHALBxehp/323vx+kACLr+TB4RhiEqvpC3dtc6+ovkOaJL8ZjEa
+AyoltESEyvdNg/I+9ouqaS8EC+opymVzKU9MgbR61cA8DWQOx5X/tIDTgzIjJYquWU0vCBhCDsdB
+Gep4nAxHbDUE5AdqRBM=
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+uFZYu65LzMmJl5jbOBD2omGHToyrfQOgbHkBWKc2XihFPYzTavy6UmuhY3DqYl5Qoo7Z6W5ENLF1
+BYl4RCyqKyZ70GVYG1V71PfBDGkY3sn11uT1a4x8MYnxSDvcdZZDJaaFQyLKt9MSEbAzQBLKrYLh
+SjfDkbzo7p/qvbk/hwE=
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+<ds:X509Data>
+<ds:X509Certificate>
+MIICjzCCAfigAwIBAgIBAjANBgkqhkiG9w0BAQUFADCBjDEPMA0GA1UEAwwGYmFua2FhMQ8wDQYD
+VQQKDAZiYW5rYWExDzANBgNVBAsMBmJhbmthYTEMMAoGA1UEBhMDU1JCMQ4wDAYDVQQHDAUxMTAw
+MDEfMB0GCSqGSIb3DQEJARYQYmFua2FhQGJhbmthLmNvbTEYMBYGCgmSJomT8ixkAQEMCEJOS0FT
+UjExMB4XDTE0MDYyMDIxMjAxNloXDTE1MDYyMDIxMjAxNlowgY0xDzANBgNVBAMMBmZpcm1hYTEP
+MA0GA1UECgwGZmlybWFhMQ8wDQYDVQQLDAZmaXJtYWExDDAKBgNVBAYTA1NSQjEOMAwGA1UEBwwF
+MTEwMDAxHzAdBgkqhkiG9w0BCQEWEGZpcm1hYUBmaXJtYS5jb20xGTAXBgoJkiaJk/IsZAEBDAlw
+aWJmaXJtYWEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALhWWLuuS8zJiZeY2zgQ9qJhh06M
+q30DoGx5AVinNl4oRT2M02r8ulJroWNw6mJeUKKO2eluRDSxdQWJeEQsqisme9BlWBtVe9T3wQxp
+GN7J9dbk9WuMfDGJ8Ug73HWWQyWmhUMiyrfTEhGwM0ASyq2C4Uo3w5G86O6f6r25P4cBAgMBAAEw
+DQYJKoZIhvcNAQEFBQADgYEAHuPwNHEcLtLS9s0K2tRgUXSxbsTiAtjpAt7MG9rZ7Vm50ks0f2Vy
+nViDhm3ErVYP5eDpyJYwSM+ZMBYFlyosYkJmRPIfalyv8DSEM2p4LROLZvwabJkU79sybSV1D/v8
+la85WVTpf59eNJfgjWLgOOGbQvIWeRmHY1NWfQLAYXE=
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+</ds:Signature></faktura>

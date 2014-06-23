@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bankeSema
+ xmlns="http://www.toomanysecrets.com/bankesema"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.toomanysecrets.com/bankesema file:../shema/bankeSema.xsd">
+    <swift xmlns="">BBBBBB00</swift>
+    <adresa xmlns="">adresa0</adresa>
+    <obracunskiRacun xmlns="">444444444444444444</obracunskiRacun>
+    <korisnickiRacuni xmlns="">
+        <racun>
+            <brojRacuna>222222222222222222</brojRacuna>
+            <vlasnik>firmab</vlasnik>
+            <pib>pib0</pib>
+            <stanje>200000.00</stanje>
+            <blokiran>false</blokiran>
+            <rezervisano>0.00</rezervisano>
+        </racun>
+    </korisnickiRacuni>
+    <realizovaniNalozi xmlns="">
+        <nalog xmlns="http://www.toomanysecrets.com/nalog" sender="firmab">
+            <idPoruke>idPoruke0</idPoruke>
+            <duznikNalogodavac>duznikNalogodavac0</duznikNalogodavac>
+            <svrhaPlacanja>svrhaPlacanja0</svrhaPlacanja>
+            <primalacPoverilac>primalacPoverilac0</primalacPoverilac>
+            <datumNaloga>2006-05-04</datumNaloga>
+            <datumValute>2006-05-04</datumValute>
+            <racunDuznika>000000000000000000</racunDuznika>
+            <modelZaduzenja>0</modelZaduzenja>
+            <pozivNaBrojZaduzenja>pozivNaBrojZaduzenja</pozivNaBrojZaduzenja>
+            <racunPoverioca>000000000000000000</racunPoverioca>
+            <modelOdobrenja>0</modelOdobrenja>
+            <pozivNaBrojOdobrenja>pozivNaBrojOdobrenja</pozivNaBrojOdobrenja>
+            <iznos>0.00</iznos>
+            <oznakaValute>ozn</oznakaValute>
+            <hitno>false</hitno>
+        </nalog>
+    </realizovaniNalozi>
+    <nerealizovaniNalozi xmlns="">
+    </nerealizovaniNalozi>
+    <brojacStavkiZaKliring xmlns="">0</brojacStavkiZaKliring>
+    <brojacStavkiZaPresek xmlns="">0</brojacStavkiZaPresek>
+    <brojacPoslednjegPoslatogPreseka xmlns="">0</brojacPoslednjegPoslatogPreseka>
+    <brojacPoslednjegPoslatogMTNaloga xmlns="">0</brojacPoslednjegPoslatogMTNaloga>
+    <brojacPoslednjePoslateNotifikacije xmlns="">0</brojacPoslednjePoslateNotifikacije>
+    <brojacPoslednjePrimljeneNotifikacije xmlns="">
+        <centralnabanka>
+            <brojac>0</brojac>
+            <timestamp>05/04/2006 04:12:55</timestamp>
+        </centralnabanka>
+    </brojacPoslednjePrimljeneNotifikacije>
+    <brojacPoslednjegPrimljenogNaloga xmlns="">
+        <firma>
+            <nazivFirme>firmab</nazivFirme>
+            <brojac>0</brojac>
+            <timestamp>05/04/2006 04:12:55</timestamp>
+        </firma>
+    </brojacPoslednjegPrimljenogNaloga>
+    <brojacPoslednjegPrimljenogZahtevaZaIzvod xmlns="">
+        <firma>
+            <nazivFirme>firmab</nazivFirme>
+            <brojac>0</brojac>
+            <timestamp>05/04/2006 04:12:55</timestamp>
+        </firma>
+    </brojacPoslednjegPrimljenogZahtevaZaIzvod>
+</bankeSema>

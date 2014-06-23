@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.toomanysecrets.com/faktura"
+    targetNamespace="http://www.toomanysecrets.com/faktura"
+    xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.w3.org/2001/04/xmlenc#" schemaLocation="xenc-schema.xsd"/>
+    <xs:element name="faktura">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="xenc:EncryptedData"/>
+            </xs:sequence>
+            <xs:attribute name="sender" type="xs:string" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

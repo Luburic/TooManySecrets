@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><crlBank xmlns="http://www.toomanysecrets.com/bankecrl">
+    <firm>
+        <name>firmab</name>
+        <date>2014-06-19</date>
+        <certificateID>21</certificateID>
+    </firm>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<ds:Reference URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>JZt83V8+Xeu8LuWflr6xVX1aY08=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+Q+Yr1OLdbEgroENjexREgwm3WpDgsmQ07c/flm+SzOJMnK3+gGOhTOVMbC71SAwcocs3wk8IBuQ3
+fYhGAjx0sOTX62iC0W1AUw8bz5zQiiOvB6lc0xCC0rSXr/lOWXtMrzSwAMh5h4d4MP53KY7OJiWh
+gAmonfqm0o5pBe1b7XY=
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+s/eEiGjTrGYpu2URXAht1sHDLUv49ZZTADprlLW008Q5MgRt6Fxy9VVmAiB6Ywfm7FH3c/GAvXAy
+9p+pfXSaFi6fma1i/TIuddoBjZ42auY5v78KnsCEPVTtUGDXuEYItb0DkWyxACR239nbm5Dt7ZZ2
+f7ZPQlOKtu7PKgOw3rs=
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+<ds:X509Data>
+<ds:X509Certificate>
+MIICpDCCAg2gAwIBAgIBRDANBgkqhkiG9w0BAQUFADCBojEXMBUGA1UEAwwOY2VudHJhbG5hYmFu
+a2ExFzAVBgNVBAoMDmNlbnRyYWxuYWJhbmthMRcwFQYDVQQLDA5jZW50cmFsbmFiYW5rYTEMMAoG
+A1UEBhMDU1JCMQ4wDAYDVQQHDAUxMTAwMDEiMCAGCSqGSIb3DQEJARYTY2VudHJhbG5hQGJhbmth
+LmNvbTETMBEGCgmSJomT8ixkAQEMAzEwMDAeFw0xNDA2MTkxOTE3MTlaFw0xNTA2MTkxOTE3MTla
+MIGMMQ8wDQYDVQQDDAZiYW5rYWIxDzANBgNVBAoMBmJhbmthYjEPMA0GA1UECwwGYmFua2FiMQww
+CgYDVQQGEwNTUkIxDjAMBgNVBAcMBTIxMDAwMR8wHQYJKoZIhvcNAQkBFhBiYW5rYWJAYmFua2Eu
+Y29tMRgwFgYKCZImiZPyLGQBAQwIQk5LQlNSMjEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGB
+ALP3hIho06xmKbtlEVwIbdbBwy1L+PWWUwA6a5S1tNPEOTIEbehccvVVZgIgemMH5uxR93PxgL1w
+MvafqX10mhYun5mtYv0yLnXaAY2eNmrmOb+/Cp7AhD1U7VBg17hGCLW9A5FssQAkdt/Z25uQ7e2W
+dn+2T0JTirbuzyoDsN67AgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAOCPfo4NRQdJF957rWrbrK9Th
+CLGNUtOJGSRydlL4C8Xdcmop4V1qI9XIaaT48htOT2ppOVOudYIp8bgE7CFtDcRWAVoyYVh+iwZJ
+zF3XkwnUBORiMehJ2jkrFqO/EgQUhoeAbkIF9PS9tpVnz9I8fHU+6wozjfnmkefGMXmRiLc=
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+</ds:Signature></crlBank>

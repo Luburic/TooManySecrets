@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<notification xmlns="http://www.toomanysecrets.com/tipovi">
+    <notificationstring>Greska: Vrednost stavke 1. ne odgovara proizvodu kolicine i jedinicne cene.</notificationstring>
+</notification>
