@@ -135,6 +135,7 @@ public class NalogProvider implements Provider<DOMSource> {
 					if (rtgs) {
 						MT103 mt103 = createMT103(nalog);
 						if(mt103!=null) {
+							BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 							MT103Client cl = new MT103Client();
 							String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
 							if(cl.testIt(propReceiver, "centralnabanka","cercentralnabanka", apsolute )) {
@@ -156,6 +157,7 @@ public class NalogProvider implements Provider<DOMSource> {
 			encrypted = MessageTransform.packS("Notifikacija", "Notification",apsoluteNot, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 		
 			if(encrypted != null) {
+				semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 				semaBanka.setBrojacPoslednjePoslateNotifikacije(semaBanka.getBrojacPoslednjePoslateNotifikacije()+1);
 			}
 			BankaDBUtil.storeBankaDatabase(semaBanka,  propReceiver.getProperty("address"));
@@ -232,11 +234,11 @@ public class NalogProvider implements Provider<DOMSource> {
 			
 			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
 			if(doc==null){
-				System.out.println();
+				System.out.println("NULL JE DOCUMENT MT103");
 			}
 			Element mt103 = (Element) doc.getElementsByTagName("MT103").item(0);
 			mt103.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			//mt103.setAttribute("sender",propReceiver.getProperty("naziv"));
+			mt103.setAttribute("sender",propReceiver.getProperty("naziv"));
 			SecurityClass sc = new SecurityClass();
 			sc.saveDocument(doc, apsolute);
 

@@ -30,13 +30,6 @@
 		endpointName="ws:BankaIzvodPort"
 		/>
 		
-		<jaxws:endpoint 
-		id="mt"
-		address="/BankaMT"
-		implementor="provider.banka.MTProvider"
-		wsdlLocation="WEB-INF/wsdl/OdobrenjeMt.wsdl"
-		/>
-		
 		
 </beans>
   

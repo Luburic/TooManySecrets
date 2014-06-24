@@ -1,30 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><presek xmlns="http://www.toomanysecrets.com/presek" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="bankaa">
     <zaglavlje xmlns="http://www.toomanysecrets.com/presek" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <brojRacuna>000000000000000000</brojRacuna>
+        <brojRacuna>111111111111111111</brojRacuna>
         <datumNaloga>2014-06-24</datumNaloga>
-        <brojPreseka>0</brojPreseka>
-        <prethodnoStanje>0</prethodnoStanje>
+        <brojPreseka>3</brojPreseka>
+        <prethodnoStanje>201000.00</prethodnoStanje>
         <brojPromenaUKorist>0</brojPromenaUKorist>
         <ukupnoUKorist>0</ukupnoUKorist>
-        <brojPromenaNaTeret>0</brojPromenaNaTeret>
-        <ukupnoNaTeret>0</ukupnoNaTeret>
-        <novoStanje>0</novoStanje>
+        <brojPromenaNaTeret>2</brojPromenaNaTeret>
+        <ukupnoNaTeret>1000.00</ukupnoNaTeret>
+        <novoStanje>200000.00</novoStanje>
     </zaglavlje>
-    <stavke>
-        <stavka>
-            <duznikNalogodavac>0</duznikNalogodavac>
-            <svrhaPlacanja>0</svrhaPlacanja>
-            <primalacPoverilac>0</primalacPoverilac>
-            <datumNaloga>2014-06-24</datumNaloga>
-            <datumValute>2014-06-24</datumValute>
-            <racunDuznika>000000000000000000</racunDuznika>
-            <modelZaduzenja>0</modelZaduzenja>
-            <pozivNaBrojZaduzenja>0</pozivNaBrojZaduzenja>
-            <racunPoverioca>000000000000000000</racunPoverioca>
-            <modelOdobrenja>0</modelOdobrenja>
-            <pozivNaBrojOdobrenja>0</pozivNaBrojOdobrenja>
-            <iznos>0</iznos>
-            <smer>-</smer>
-        </stavka>
-    </stavke>
+    <stavke/>
 </presek>

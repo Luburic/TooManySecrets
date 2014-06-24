@@ -229,70 +229,81 @@ public class MessageTransform {
 			}
 		} 
 		//provera za banku
-		if(issuerName.equalsIgnoreCase("centralnabanka")) {
-			try {
-
-				downloadUsingStream("http://localhost:8080/"+"centralnabanka"+"/"+"centralnabanka"+".cer", "centralnabanka"+".cer");
-				SecurityClass sc = new SecurityClass();
-				certCentralna = sc.readCertificateFromFile(new File("centralnabanka"+".cer"));
-
+		try {
+			if(issuerName.equalsIgnoreCase("centralnabanka") && !SecurityClass.isSelfSigned(cert)) {
 				try {
-					cert.verify(((X509Certificate)certCentralna).getPublicKey());
-				} catch (SignatureException e1) {
-					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
-					return null;
-				} catch (CertificateException e1) {
-					e1.printStackTrace();
-				}
 
-				if(!SecurityClass.isSelfSigned((X509Certificate)certCentralna)){
-					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
-					return null;
-				}
+					downloadUsingStream("http://localhost:8080/"+"centralnabanka"+"/"+"centralnabanka"+".cer", "centralnabanka"+".cer");
+					SecurityClass sc = new SecurityClass();
+					certCentralna = sc.readCertificateFromFile(new File("centralnabanka"+".cer"));
 
-				File file = new File("temp2.xml");
-				if(file.exists())
-					file.delete();
-				file.createNewFile();
-
-				downloadUsingStream("http://localhost:8080/"+issuerName+"/crl"+issuerName+".xml", "temp2.xml");
-
-				Document crlDoc = Validation.buildDocumentWithoutValidation("temp2.xml");
-				X509Certificate certCrl = SecurityClass.getCertFromDocument(crlDoc);
-				try {
-					certCrl.verify(((X509Certificate)certCentralna).getPublicKey());
-				} catch (SignatureException e1) {
-					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
-					return null;
-				} catch (CertificateException e1) {
-					e1.printStackTrace();
-				}
-				crlDoc = removeSignature(crlDoc);
-				DocumentTransform.transform(crlDoc, "temp2.xml");
-				DocumentTransform.printDocument(crlDoc);
-				CrlCentralna crlCentralna = CrlCentralna.load("temp2.xml");
-				for(Bank b : crlCentralna.getBank()) {
-					for(String s: b.getCertificateID()){
-						if(Integer.parseInt(s) == Integer.parseInt(cert.getSerialNumber().toString())){
-							DocumentTransform.createNotificationResponse("424", schemaPrefix +" nalazi se u CRL listi centralne banke.", TARGET_NAMESPACE);
-							return null;
-						}
+					try {
+						cert.verify(((X509Certificate)certCentralna).getPublicKey());
+					} catch (SignatureException e1) {
+						DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						return null;
+					} catch (CertificateException e1) {
+						e1.printStackTrace();
 					}
 
+					if(!SecurityClass.isSelfSigned((X509Certificate)certCentralna)){
+						DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						return null;
+					}
+
+					File file = new File("temp2.xml");
+					if(file.exists())
+						file.delete();
+					file.createNewFile();
+
+					downloadUsingStream("http://localhost:8080/"+issuerName+"/crl"+issuerName+".xml", "temp2.xml");
+
+					Document crlDoc = Validation.buildDocumentWithoutValidation("temp2.xml");
+					X509Certificate certCrl = SecurityClass.getCertFromDocument(crlDoc);
+					try {
+						certCrl.verify(((X509Certificate)certCentralna).getPublicKey());
+					} catch (SignatureException e1) {
+						DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+						return null;
+					} catch (CertificateException e1) {
+						e1.printStackTrace();
+					}
+					crlDoc = removeSignature(crlDoc);
+					DocumentTransform.transform(crlDoc, "temp2.xml");
+					DocumentTransform.printDocument(crlDoc);
+					CrlCentralna crlCentralna = CrlCentralna.load("temp2.xml");
+					for(Bank b : crlCentralna.getBank()) {
+						for(String s: b.getCertificateID()){
+							if(Integer.parseInt(s) == Integer.parseInt(cert.getSerialNumber().toString())){
+								DocumentTransform.createNotificationResponse("424", schemaPrefix +" nalazi se u CRL listi centralne banke.", TARGET_NAMESPACE);
+								return null;
+							}
+						}
+
+					}
+
+
+				} catch (CertificateException e1) {
+					e1.printStackTrace();
+				} catch (NoSuchAlgorithmException e1) {
+					e1.printStackTrace();
+				} catch (NoSuchProviderException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-
-
-			} catch (CertificateException e1) {
-				e1.printStackTrace();
-			} catch (NoSuchAlgorithmException e1) {
-				e1.printStackTrace();
-			} catch (NoSuchProviderException e1) {
-				e1.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
+		} catch (CertificateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return decrypt;

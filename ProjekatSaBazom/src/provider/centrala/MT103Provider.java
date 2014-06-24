@@ -122,6 +122,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					//return null;
 					return new DOMSource(null);
 				}else {
+					CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 					//call clients
 					MT900 mt900 = createMT900(mt103);
 					encryptedDocument = MessageTransform.packS("MT900", "MT900", apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
