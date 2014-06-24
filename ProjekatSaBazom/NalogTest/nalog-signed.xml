@@ -1,20 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?><nalog xmlns="http://www.toomanysecrets.com/nalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="firmaa">
+<?xml version="1.0" encoding="UTF-8"?><nalog xmlns="http://www.toomanysecrets.com/nalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="">
     <idPoruke>123456</idPoruke>
     <duznikNalogodavac>pera</duznikNalogodavac>
     <svrhaPlacanja>reket</svrhaPlacanja>
     <primalacPoverilac>djoka</primalacPoverilac>
-    <datumNaloga>2014-06-23</datumNaloga>
-    <datumValute>2014-06-23</datumValute>
-    <racunDuznika>111111111222222222</racunDuznika>
+    <datumNaloga>2014-06-24</datumNaloga>
+    <datumValute>2014-06-24</datumValute>
+    <racunDuznika>111111111111111111</racunDuznika>
     <modelZaduzenja>97</modelZaduzenja>
     <pozivNaBrojZaduzenja>111111</pozivNaBrojZaduzenja>
-    <racunPoverioca>222222222111111111</racunPoverioca>
+    <racunPoverioca>222222222222222222</racunPoverioca>
     <modelOdobrenja>97</modelOdobrenja>
     <pozivNaBrojOdobrenja>111111</pozivNaBrojOdobrenja>
-    <iznos>100500</iznos>
+    <iznos>10</iznos>
     <oznakaValute>rsd</oznakaValute>
     <hitno>true</hitno>
-<timestamp>06/23/2014 20:02:04</timestamp><redniBrojPoruke>1</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<timestamp>06/24/2014 16:33:41</timestamp><redniBrojPoruke>1</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -24,13 +24,13 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>JyEWYUgqOKek+0et3qQ6928+ucA=</ds:DigestValue>
+<ds:DigestValue>d84nJMzVcT/OYEsNFp+RA7qnyYs=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-Q+MKNDqqc+9nZD9BgVKgRsgc/K087SMcaKHW4nbhE4ysRI+jky8tgOXThoS6SfJz/NCHc9xT3I3P
-7cGOj32pb++cyo3q1Aa92VZZry69+SWMFO5TWH5+sJvsTiUqNVcEk+4KkVWyWP8gm0AkBWcGcc9Q
-oE9EYtgjswh6xa1BNyI=
+M9zBQ8UAXcgxZZVqjfkBZNbJnbN3P/qmRgQmE0aUZLn9VP8BftC+CuEqr8S2tftg+BpoBr55bIWN
+pcKqz/yqHmfjuL2WTw+WK/EqS2mat4Gx/2bOIVg0PauaAOvEfZg51T70JrZfo8uVxS07Sf4ZxS5f
+bCo4R1H+3b1a0URaYRc=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>

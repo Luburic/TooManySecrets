@@ -3,9 +3,9 @@
  xmlns:ns2="http://www.toomanysecrets.com/bankesema"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.toomanysecrets.com/bankesema file:../shema/bankeSema.xsd">
-    <swift xmlns="">AAAAAA00</swift>
+    <swift xmlns="">ERSTSR20</swift>
     <adresa xmlns="">adresa0</adresa>
-    <obracunskiRacun xmlns="">333333333333333333</obracunskiRacun>
+    <obracunskiRacun xmlns="">123456789012345678</obracunskiRacun>
     <korisnickiRacuni xmlns="">
         <racun>
             <brojRacuna>111111111111111111</brojRacuna>

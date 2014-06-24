@@ -4,9 +4,9 @@
  xsi:schemaLocation="http://www.toomanysecrets.com/centralnasema file:../shema/centralnaSema.xsd">
     <banke xmlns="">
         <naziv>bankaa</naziv>
-        <swift>AAAAAA00</swift>
+        <swift>ERSTSR20</swift>
         <stanje>300000.00</stanje>
-        <racun>333333333333333333</racun>
+        <racun>123456789012345678</racun>
     </banke>
     <banke xmlns="">
         <naziv>bankab</naziv>

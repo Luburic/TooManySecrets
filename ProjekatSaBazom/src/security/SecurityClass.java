@@ -93,7 +93,12 @@ public class SecurityClass {
 
 		Document forSign = reserialize(doc);
 
-		Element faktura = (Element) forSign.getElementsByTagNameNS(namespace, element).item(0);
+		Element faktura = null;
+		if(element.equalsIgnoreCase("MT103") || element.equalsIgnoreCase("MT102") || element.equalsIgnoreCase("MT900") || element.equalsIgnoreCase("MT910")) {
+			faktura = (Element) forSign.getElementsByTagNameNS(namespace, element.toUpperCase()).item(0);
+		} else {
+			faktura = (Element) forSign.getElementsByTagNameNS(namespace, element).item(0);
+		}
 
 		//faktura.removeAttribute("xsi:schemaLocation");
 		//faktura.setAttribute("xsi:schemaLocation", schemaLocation);
@@ -436,7 +441,12 @@ public class SecurityClass {
 			encryptedData.setKeyInfo(keyInfo);
 
 			//trazi se element ciji sadrzaj se kriptuje
-			NodeList elements = doc.getElementsByTagNameNS(namespace,node);
+			NodeList elements = null;
+			if(node.equalsIgnoreCase("MT103") || node.equalsIgnoreCase("MT102") || node.equalsIgnoreCase("MT900") || node.equalsIgnoreCase("MT910")) {
+				elements = doc.getElementsByTagNameNS(namespace, node.toUpperCase());
+			} else {
+				elements = doc.getElementsByTagNameNS(namespace, node);
+			}
 
 			Element element = (Element) elements.item(0);
 

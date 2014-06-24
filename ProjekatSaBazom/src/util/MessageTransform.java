@@ -24,6 +24,8 @@ import org.w3c.dom.Element;
 import client.firma.ZahtevZaIzvodClient;
 import provider.banka.IzvodProvider;
 import provider.banka.NalogProvider;
+import provider.centrala.MT102Provider;
+import provider.centrala.MT103Provider;
 import provider.firma.FakturaProvider;
 import security.SecurityClass;
 import basexdb.banka.BankeSema;
@@ -83,6 +85,10 @@ public class MessageTransform {
 			url = IzvodProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		} else if(schemaPrefix.toLowerCase().equals("presek")){
 			url = ZahtevZaIzvodClient.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
+		} else if(schemaPrefix.toLowerCase().equals("mt103") || schemaPrefix.toLowerCase().equals("mt900") || schemaPrefix.toLowerCase().equals("mt910")){
+			url = MT103Provider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
+		} else if(schemaPrefix.toLowerCase().equals("mt102")){
+			url = MT102Provider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		}
 
 
@@ -318,7 +324,12 @@ public class MessageTransform {
 		}
 		System.out.println("****DOKUMENT :  "+ document);
 
-		Element mt = (Element) document.getElementsByTagName(schemaPrefix.toLowerCase()).item(0);
+		Element mt = null;
+		if(schemaPrefix.equals("MT103") || schemaPrefix.equals("MT102") || schemaPrefix.equals("MT900") || schemaPrefix.equals("MT910")) {
+			mt = (Element) document.getElementsByTagName(schemaPrefix).item(0);
+		} else {
+			mt = (Element) document.getElementsByTagName(schemaPrefix.toLowerCase()).item(0);
+		}
 		mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 
 		if(!serviceAdress.equalsIgnoreCase("Notifikacija")){

@@ -104,17 +104,6 @@ public class NalogProvider implements Provider<DOMSource> {
 				String dateString = timestamp.getTextContent();
 				Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
 				sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
-				Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NALOG,"redniBrojPoruke").item(0);
-				int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
-				int brojac = semaBanka.getBrojacPoslednjegPrimljenogNaloga().getFirmaByNaziv(sender).getBrojac();
-				Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaBanka.getBrojacPoslednjegPrimljenogNaloga().getFirmaByNaziv(sender).getTimestamp());
-
-				if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
-					JOptionPane.showMessageDialog(null,
-							"Pokusaj napada",
-							"Warning!!!", JOptionPane.INFORMATION_MESSAGE);
-					return null;
-				}
 				
 				decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NALOG);
 				decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NALOG);
@@ -128,16 +117,14 @@ public class NalogProvider implements Provider<DOMSource> {
 				
 				if (!validateContent(nalog)) {
 					DocumentTransform.createNotificationResponse("455", message,ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
-				}
-
-				else {
+				} else {
 					
 					if (rtgs) {
 						MT103 mt103 = createMT103(nalog);
 						if(mt103!=null) {
 							MT103Client cl = new MT103Client();
-							
-							if(cl.testIt(propReceiver, "centralnabanka","cerbankac","./MT103Test/mt103.xml" )) {
+							String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
+							if(cl.testIt(propReceiver, "centralnabanka","cercentralnabanka", apsolute )) {
 							
 							semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender).setStanje(
 									semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender).getStanje().subtract(nalog.getIznos()));
@@ -201,12 +188,13 @@ public class NalogProvider implements Provider<DOMSource> {
 		MT103 mt = null;
 		try {
 			mt = new MT103();
+			mt.setSender(sender);
 			mt.setIdPoruke(MessageTransform.randomString(50));
 			mt.setSwiftBankeDuznika(propReceiver.getProperty("swift"));
 			mt.setObracunskiRacunBankeDuznika(propReceiver.getProperty("obracunskiRac"));
 
-			mt.setSwiftBankePoverioca("");
-			mt.setObracunskiRacunBankePoverioca("");
+			mt.setSwiftBankePoverioca("BBBBBB00");
+			mt.setObracunskiRacunBankePoverioca("444444444444444444");
 
 			mt.setDuznik(nalog.getDuznikNalogodavac());
 			mt.setSvrhaPlacanja(nalog.getSvrhaPlacanja());
@@ -232,9 +220,12 @@ public class NalogProvider implements Provider<DOMSource> {
 			
 			
 			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
-			Element mt103 = (Element) doc.getElementsByTagName("mt103").item(0);
+			if(doc==null){
+				System.out.println();
+			}
+			Element mt103 = (Element) doc.getElementsByTagName("MT103").item(0);
 			mt103.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			mt103.setAttribute("sender",propReceiver.getProperty("naziv"));
+			//mt103.setAttribute("sender",propReceiver.getProperty("naziv"));
 			SecurityClass sc = new SecurityClass();
 			sc.saveDocument(doc, apsolute);
 
@@ -293,13 +284,6 @@ public class NalogProvider implements Provider<DOMSource> {
 							int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
 							Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
 							//String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
-							int brojac = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getBrojac();
-							Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp());
-							
-							if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
-								JOptionPane.showMessageDialog(null,"Pokusaj napada","Warning!!!", JOptionPane.INFORMATION_MESSAGE);
-								return false;
-							}
 							
 							decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT900);
 							decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT900);
@@ -312,6 +296,7 @@ public class NalogProvider implements Provider<DOMSource> {
 							JAXBContext context = JAXBContext.newInstance("beans.mt900");
 							Unmarshaller unmarshaller = context.createUnmarshaller();
 							MT900 mt900 = (MT900) unmarshaller.unmarshal(new File(apsolute));
+							
 							
 							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke); //poslednje primljen mt
 							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString); //poslednje primljen mt
