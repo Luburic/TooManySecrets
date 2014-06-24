@@ -8,7 +8,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.StringTokenizer;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -30,7 +29,7 @@ import org.w3c.dom.Element;
 
 import security.SecurityClass;
 import util.ConstantsXWS;
-import util.MyDatatypeConverter;
+import util.DateLabelFormatter;
 import util.NSPrefixMapper;
 import util.Validation;
 import util.accessControl.TAkcija;
@@ -82,7 +81,8 @@ public class ZaglavljeDialog extends JDialog {
 	private JTextField tfPibKup = new JTextField();
 
 	private JTextField tfBrRac = new JTextField();
-	private JDatePickerImpl tfDatRac = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(new Date())));
+	private JDatePickerImpl tfDatRac = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(new Date())),
+			new DateLabelFormatter());
 
 	private JTextField tfVrRob = new JTextField();
 	private JTextField tfVrUsl = new JTextField();
@@ -96,7 +96,8 @@ public class ZaglavljeDialog extends JDialog {
 	private JTextField tfIznUpl = new JTextField();
 	private JTextField tfUplRac = new JTextField();
 
-	private JDatePickerImpl tfDatVal = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(new Date())));
+	private JDatePickerImpl tfDatVal = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(new Date())),
+			new DateLabelFormatter());
 
 	/**************** **************************/
 	private JButton btnOk = new JButton("Potvrdi");
@@ -412,18 +413,8 @@ public class ZaglavljeDialog extends JDialog {
 				zaglavlje.setBrojRacuna(brRac);
 				zaglavlje.setVrednostRobe(vr);
 
-				StringTokenizer st = new StringTokenizer(tfDatRac.getJFormattedTextField().getText(), ".");
-				String dd = st.nextToken();
-				String mm = st.nextToken();
-				String yyyy = st.nextToken();
-
-				zaglavlje.setDatumRacuna(MyDatatypeConverter.parseDate(yyyy + "-" + mm + "-" + dd));
-
-				StringTokenizer stt = new StringTokenizer(tfDatVal.getJFormattedTextField().getText(), ".");
-				String ddd = stt.nextToken();
-				String mmm = stt.nextToken();
-				String yyyyy = stt.nextToken();
-				zaglavlje.setDatumValute(MyDatatypeConverter.parseDate(yyyyy + "-" + mmm + "-" + ddd));
+				zaglavlje.setDatumRacuna((Date) tfDatRac.getJDateInstantPanel().getModel().getValue());
+				zaglavlje.setDatumValute((Date) tfDatRac.getJDateInstantPanel().getModel().getValue());
 
 				zaglavlje.setIdPoruke(tfIdPor.getText());
 				zaglavlje.setIznosZaUplatu(iz);
