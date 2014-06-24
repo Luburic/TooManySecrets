@@ -512,8 +512,6 @@ public class ZaglavljeDialog extends JDialog {
 					FakturaClient fc = new FakturaClient();
 					fc.testIt("firmaA", "firmab", "cerfirmab","./FakturaTest/Faktura2.xml");
 
-					String message ="";
-					JOptionPane.showMessageDialog(null,message,"Kreiranje fakture", JOptionPane.INFORMATION_MESSAGE);
 					setVisible(false);
 					
 					

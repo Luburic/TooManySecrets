@@ -289,10 +289,6 @@ public class NalogDialog extends JDialog{
 						);*/
 				nc.createNalog();
 				nc.testIt("firmaA", "bankaa", "cerbankaa", "./NalogTest/nalog.xml");
-				
-				String message="";
-				
-				JOptionPane.showMessageDialog(null,message,"Kreiranje naloga", JOptionPane.INFORMATION_MESSAGE);
 				setVisible(false);
 				
 		}});

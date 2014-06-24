@@ -104,6 +104,17 @@ public class NalogProvider implements Provider<DOMSource> {
 				String dateString = timestamp.getTextContent();
 				Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
 				sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+				Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NALOG,"redniBrojPoruke").item(0);
+				int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
+				int brojac = semaBanka.getBrojacPoslednjegPrimljenogNaloga().getFirmaByNaziv(sender).getBrojac();
+				Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaBanka.getBrojacPoslednjegPrimljenogNaloga().getFirmaByNaziv(sender).getTimestamp());
+
+				if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
+					JOptionPane.showMessageDialog(null,
+							"Pokusaj napada",
+							"Warning!!!", JOptionPane.INFORMATION_MESSAGE);
+					return null;
+				}
 				
 				decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NALOG);
 				decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NALOG);
@@ -238,7 +249,7 @@ public class NalogProvider implements Provider<DOMSource> {
 	private class MT103Client {
 		public boolean testIt(Properties propSender, String receiver, String cert,String inputFile) {
 			
-			/*try {
+			try {
 				URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/CentralnaRTGSNalog?wsdl");
 				QName serviceName = new QName("http://www.toomanysecrets.com/CentralnaRTGSNalog", "CentralnaRTGSNalog");
 				QName portName = new QName("http://www.toomanysecrets.com/CentralnaRTGSNalog","CentralnaRTGSNalogPort");
@@ -284,9 +295,7 @@ public class NalogProvider implements Provider<DOMSource> {
 							Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp());
 							
 							if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
-								JOptionPane.showMessageDialog(null,
-										"Pokusaj napada",
-										"Warning!!!", JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.showMessageDialog(null,"Pokusaj napada","Warning!!!", JOptionPane.INFORMATION_MESSAGE);
 								return false;
 							}
 							
@@ -319,7 +328,7 @@ public class NalogProvider implements Provider<DOMSource> {
 					e.printStackTrace();
 				} catch (Exception e) {
 					e.printStackTrace();
-				}*/
+				}
 				return true;
 	
 			}
