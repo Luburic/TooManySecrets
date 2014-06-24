@@ -7,6 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 import javax.swing.JButton;
@@ -22,24 +23,27 @@ import javax.xml.bind.PropertyException;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import client.firma.FakturaClient;
 import security.SecurityClass;
+import util.ConstantsXWS;
 import util.MyDatatypeConverter;
 import util.NSPrefixMapper;
 import util.Validation;
+import util.accessControl.TAkcija;
 import beans.faktura.Faktura;
 import beans.faktura.Faktura.Zaglavlje;
+import client.firma.FakturaClient;
 import firma.gui.MainFrame;
 
 @SuppressWarnings("serial")
 public class ZaglavljeDialog extends JDialog {
 
 	private JLabel lbIdPor = new JLabel("Id poruke:");
-	private JLabel lbNazivDob = new JLabel("Naziv dobavljaèa:");
+	private JLabel lbNazivDob = new JLabel("Naziv dobavljaÄa:");
 	private JLabel lbAdrDob = new JLabel("Adresa dobavljaca:");
 
 	private JLabel lbPibDob = new JLabel("Pib dobavljaca(11):");
@@ -78,8 +82,7 @@ public class ZaglavljeDialog extends JDialog {
 	private JTextField tfPibKup = new JTextField();
 
 	private JTextField tfBrRac = new JTextField();
-	private JDatePickerImpl tfDatRac = new JDatePickerImpl(new JDatePanelImpl(
-			null));
+	private JDatePickerImpl tfDatRac = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(new Date())));
 
 	private JTextField tfVrRob = new JTextField();
 	private JTextField tfVrUsl = new JTextField();
@@ -93,8 +96,7 @@ public class ZaglavljeDialog extends JDialog {
 	private JTextField tfIznUpl = new JTextField();
 	private JTextField tfUplRac = new JTextField();
 
-	private JDatePickerImpl tfDatVal = new JDatePickerImpl(new JDatePanelImpl(
-			null));
+	private JDatePickerImpl tfDatVal = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(new Date())));
 
 	/**************** **************************/
 	private JButton btnOk = new JButton("Potvrdi");
@@ -104,19 +106,18 @@ public class ZaglavljeDialog extends JDialog {
 
 	private Faktura faktura;
 	private int brRac = 0;
-	private BigDecimal vr =null; //vrsta robe
-	private BigDecimal vu =null; //vrsta usluge
-	private BigDecimal iz =null; //iznos uplate
-	private BigDecimal uru =null; //ukupno robaIusluga
-	private BigDecimal um =null; //ukupan rabat
-	private BigDecimal up =null; // ukupan porez
+	private BigDecimal vr = null; // vrsta robe
+	private BigDecimal vu = null; // vrsta usluge
+	private BigDecimal iz = null; // iznos uplate
+	private BigDecimal uru = null; // ukupno robaIusluga
+	private BigDecimal um = null; // ukupan rabat
+	private BigDecimal up = null; // ukupan porez
 	private ZaglavljeDialog fd;
-	
 
 	private Marshaller marshaller;
 
-	public ZaglavljeDialog(MainFrame instance) {
-		super(instance);
+	public ZaglavljeDialog(Faktura f) {
+		super(MainFrame.getInstance());
 		fd = this;
 
 		if (fd.getFaktura() == null) {
@@ -128,11 +129,46 @@ public class ZaglavljeDialog extends JDialog {
 		setResizable(false);
 		setSize(new Dimension(400, 300));
 		setLayout(new MigLayout("fill"));
-		
+
 		initialize();
-		
+		for (TAkcija akcija : ConstantsXWS.AKTIVNA_ROLA.getAkcije().getAkcija()) {
+			if (akcija.getNazivAkcije().equals("izmenaCeneFakture")) {
+				Zaglavlje zag = f.getZaglavlje();
+				tfIdPor.setText(zag.getIdPoruke());
+				tfIdPor.setEditable(false);
+				tfNazivDob.setText(zag.getNazivDobavljaca());
+				tfNazivDob.setEditable(false);
+				tfAdrDob.setText(zag.getAdresaDobavljaca());
+				tfAdrDob.setEditable(false);
+				tfNazKup.setText(zag.getNazivKupca());
+				tfNazKup.setEditable(false);
+				tfAdrKup.setText(zag.getAdresaKupca());
+				tfAdrKup.setEditable(false);
+				tfPibKup.setText(zag.getPibKupca());
+				tfPibKup.setEditable(false);
+				tfBrRac.setText(String.valueOf(zag.getBrojRacuna()));
+				tfBrRac.setEditable(false);
+				tfVrRob.setText(zag.getVrednostRobe().toString());
+				tfVrRob.setEditable(false);
+				tfVrUsl.setText(zag.getVrednostUsluga().toString());
+				tfVrUsl.setEditable(false);
+				tfUkupRU.setText(zag.getUkupnoRobaIUsluge().toString());
+				tfUkupRU.setEditable(false);
+				tfUkupRab.setText(zag.getUkupanRabat().toString());
+				tfUkupRab.setEditable(false);
+				tfUkuPor.setText(zag.getUkupanPorez().toString());
+				tfUkuPor.setEditable(false);
+				tfOznVal.setText(zag.getOznakaValute());
+				tfOznVal.setEditable(false);
+				tfIznUpl.setText(zag.getIznosZaUplatu().toString());
+				tfIznUpl.setEditable(false);
+				tfUplRac.setText(zag.getUplataNaRacun());
+				tfUplRac.setEditable(false);
+				break;
+			}
+		}
 		pack();
-		setLocationRelativeTo(instance);
+		setLocationRelativeTo(MainFrame.getInstance());
 
 		btnCancel.addActionListener(new ActionListener() {
 
@@ -146,317 +182,249 @@ public class ZaglavljeDialog extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				if (("").equals(tfIdPor.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos id-a poruke!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos id-a poruke!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfIdPor.requestFocus();
 					return;
 				}
 
-				
 				if (("").equals(tfNazivDob.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos naziva dobavljaca!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos naziva dobavljaca!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfNazivDob.requestFocus();
 					return;
 				}
 
 				if (("").equals(tfAdrDob.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos adrese dobavljaca!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos adrese dobavljaca!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfAdrDob.requestFocus();
 					return;
 				}
-				
-				
+
 				if (("").equals(tfPibDob.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos pib-a dobavljaca!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos pib-a dobavljaca!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfPibDob.requestFocus();
 					return;
 				}
-				
-				
-				
-				if(tfPibDob.getText().length()!=11) {
-					JOptionPane.showMessageDialog(null,
-							"Neispravna duzina za pib dobavljaca!", "Greska",
+
+				if (tfPibDob.getText().length() != 11) {
+					JOptionPane.showMessageDialog(null, "Neispravna duzina za pib dobavljaca!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfPibDob.requestFocus();
 					return;
 				}
-				
-				
-				
-				
+
 				if (("").equals(tfNazKup.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos naziva kupca!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos naziva kupca!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfNazKup.requestFocus();
 					return;
 				}
 
 				if (("").equals(tfAdrKup.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos adrese kupca!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos adrese kupca!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfAdrKup.requestFocus();
 					return;
 				}
 
-				
-				
 				if (("").equals(tfPibKup.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos pib-a kupca!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos pib-a kupca!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfPibKup.requestFocus();
 					return;
 				}
-				
-				
-				if(tfPibKup.getText().length()!=11) {
-					JOptionPane.showMessageDialog(null,
-							"Neispravna duzina za pib kupca!", "Greska",
+
+				if (tfPibKup.getText().length() != 11) {
+					JOptionPane.showMessageDialog(null, "Neispravna duzina za pib kupca!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfPibKup.requestFocus();
 					return;
 				}
-				
-				
-				
+
 				if (("").equals(tfBrRac.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos broja racuna!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos broja racuna!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfBrRac.requestFocus();
 					return;
 				}
-				
-				if (tfBrRac.getText().length()!=6){
-					JOptionPane.showMessageDialog(null,
-							"Neodgovarajuca duzina racuna!", "Greska",
+
+				if (tfBrRac.getText().length() != 6) {
+					JOptionPane.showMessageDialog(null, "Neodgovarajuca duzina racuna!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfBrRac.requestFocus();
 					return;
 				}
-				
-				
 
 				try {
 					brRac = Integer.valueOf(tfBrRac.getText());
 				} catch (NumberFormatException e1) {
-					JOptionPane.showMessageDialog(null,
-							"Pogresno unet broj racuna!", "Greska",
+					JOptionPane.showMessageDialog(null, "Pogresno unet broj racuna!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfBrRac.requestFocus();
 					return;
 				}
-				
-				
+
 				if (("").equals(tfDatRac.getJFormattedTextField().getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos datuma racuna!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos datuma racuna!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfDatRac.requestFocus();
 					return;
 				}
-				
-				
-				
-				
-				
-				
-
-				
-			
 
 				if (("").equals(tfVrRob.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos vrednosti robe!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos vrednosti robe!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfVrRob.requestFocus();
 					return;
 				}
 
-				
 				try {
-					vr= BigDecimal.valueOf(new Double(tfVrRob.getText()));
+					vr = BigDecimal.valueOf(new Double(tfVrRob.getText()));
 				} catch (NumberFormatException e1) {
-					JOptionPane.showMessageDialog(null,
-							"Nevalidna vrednost robe!",
-							"Greska", JOptionPane.ERROR_MESSAGE);
+					JOptionPane
+							.showMessageDialog(null, "Nevalidna vrednost robe!", "Greska", JOptionPane.ERROR_MESSAGE);
 					tfVrRob.requestFocus();
 					return;
 				}
-				
-				
+
 				if (("").equals(tfVrUsl.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos vrednosti usluge!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos vrednosti usluge!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfVrUsl.requestFocus();
 					return;
 				}
-				
-				
+
 				try {
-					vu= BigDecimal.valueOf(new Double(tfVrUsl.getText()));
+					vu = BigDecimal.valueOf(new Double(tfVrUsl.getText()));
 				} catch (NumberFormatException e1) {
-					JOptionPane.showMessageDialog(null,
-							"Nevalidna vrednost usluge!",
-							"Greska", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Nevalidna vrednost usluge!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
 					tfVrUsl.requestFocus();
 					return;
 				}
-				
 
 				if (("").equals(tfUkupRU.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos ukupne robe/usluge!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos ukupne robe/usluge!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfUkupRU.requestFocus();
 					return;
 				}
-				
-				
+
 				try {
-					uru= BigDecimal.valueOf(new Double(tfUkupRU.getText()));
+					uru = BigDecimal.valueOf(new Double(tfUkupRU.getText()));
 				} catch (NumberFormatException e1) {
-					JOptionPane.showMessageDialog(null,
-							"Nevalidna vrednost za ukupano robe i usluge!",
-							"Greska", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Nevalidna vrednost za ukupano robe i usluge!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
 					tfUkupRU.requestFocus();
 					return;
 				}
 				/***/
-				
 
 				if (("").equals(tfUkupRab.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos ukupnog rabata!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos ukupnog rabata!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfUkupRab.requestFocus();
 					return;
 				}
-				
-				
+
 				try {
-					um= BigDecimal.valueOf(new Double(tfUkupRab.getText()));
+					um = BigDecimal.valueOf(new Double(tfUkupRab.getText()));
 				} catch (NumberFormatException e1) {
-					JOptionPane.showMessageDialog(null,
-							"Nevalidna vrednost za ukupan rabat!",
-							"Greska", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Nevalidna vrednost za ukupan rabat!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
 					tfUkupRab.requestFocus();
 					return;
 				}
 
 				if (("").equals(tfUkuPor.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos ukupnog poreza!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos ukupnog poreza!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfUkuPor.requestFocus();
 					return;
 				}
-			
+
 				try {
 					up = BigDecimal.valueOf(new Double(tfUkuPor.getText()));
 				} catch (NumberFormatException e1) {
-					JOptionPane.showMessageDialog(null,
-							"Nevalidna vrednost za ukupan porez!",
-							"Greska", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Nevalidna vrednost za ukupan porez!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
 					tfUkuPor.requestFocus();
 					return;
 				}
 
 				/***/
-				
+
 				if (("").equals(tfOznVal.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos oznake valute!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos oznake valute!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfOznVal.requestFocus();
 					return;
 				}
 
 				if (("").equals(tfIznUpl.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos iznosa uplate!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos iznosa uplate!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfIznUpl.requestFocus();
 					return;
 				}
-				
-				
+
 				try {
 					iz = BigDecimal.valueOf(new Double(tfIznUpl.getText()));
 				} catch (NumberFormatException e1) {
-					JOptionPane.showMessageDialog(null,
-							"Nevalidna vrednost iznosa uplate!",
-							"Greska", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Nevalidna vrednost iznosa uplate!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
 					tfIznUpl.requestFocus();
 					return;
 				}
 				/***/
-				
-				
 
 				if (("").equals(tfUplRac.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos racuna na koji se uplacuje!",
-							"Greska", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Obavezan unos racuna na koji se uplacuje!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
 					tfUplRac.requestFocus();
 					return;
 				}
 
-				
-				if (tfUplRac.getText().length()!=18) {
-					JOptionPane.showMessageDialog(null,
-							"Neispravna duzina racuna!",
-							"Greska", JOptionPane.ERROR_MESSAGE);
+				if (tfUplRac.getText().length() != 18) {
+					JOptionPane.showMessageDialog(null, "Neispravna duzina racuna!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
 					tfUplRac.requestFocus();
 					return;
-					
+
 				}
-				
+
 				if (("").equals(tfDatVal.getJFormattedTextField().getText())) {
-					JOptionPane.showMessageDialog(null,
-							"Obavezan unos datuma valute!", "Greska",
+					JOptionPane.showMessageDialog(null, "Obavezan unos datuma valute!", "Greska",
 							JOptionPane.ERROR_MESSAGE);
 					tfDatVal.requestFocus();
 					return;
 				}
-				
+
 				Zaglavlje zaglavlje = new Zaglavlje();
 
 				zaglavlje.setAdresaDobavljaca(tfAdrDob.getText());
 				zaglavlje.setAdresaKupca(tfAdrKup.getText());
 				zaglavlje.setBrojRacuna(brRac);
 				zaglavlje.setVrednostRobe(vr);
-				
-				
+
 				StringTokenizer st = new StringTokenizer(tfDatRac.getJFormattedTextField().getText(), ".");
-				String dd = st.nextToken();	
+				String dd = st.nextToken();
 				String mm = st.nextToken();
 				String yyyy = st.nextToken();
-				
-				zaglavlje.setDatumRacuna(MyDatatypeConverter.parseDate(yyyy+"-"+mm+"-"+dd));
-				
-				
-				
+
+				zaglavlje.setDatumRacuna(MyDatatypeConverter.parseDate(yyyy + "-" + mm + "-" + dd));
+
 				StringTokenizer stt = new StringTokenizer(tfDatVal.getJFormattedTextField().getText(), ".");
 				String ddd = stt.nextToken();
 				String mmm = stt.nextToken();
 				String yyyyy = stt.nextToken();
-				zaglavlje.setDatumValute(MyDatatypeConverter.parseDate(yyyyy+"-"+mmm+"-"+ddd));
-				
-				
+				zaglavlje.setDatumValute(MyDatatypeConverter.parseDate(yyyyy + "-" + mmm + "-" + ddd));
+
 				zaglavlje.setIdPoruke(tfIdPor.getText());
 				zaglavlje.setIznosZaUplatu(iz);
 				zaglavlje.setNazivDobavljaca(tfNazivDob.getText());
@@ -467,7 +435,7 @@ public class ZaglavljeDialog extends JDialog {
 				zaglavlje.setUkupanPorez(up);
 				zaglavlje.setUkupanRabat(um);
 				zaglavlje.setUkupnoRobaIUsluge(uru);
-				
+
 				zaglavlje.setVrednostUsluga(vu);
 				zaglavlje.setUplataNaRacun(tfUplRac.getText());
 
@@ -495,26 +463,24 @@ public class ZaglavljeDialog extends JDialog {
 					Faktura fakturaZaSlanje = fd.getFaktura();
 
 					JAXBContext context = JAXBContext.newInstance("beans.faktura");
-				
+
 					marshaller = context.createMarshaller();
-				
-					marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("faktura"));
-					marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+
+					marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new NSPrefixMapper("faktura"));
+					marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 					marshaller.marshal(fakturaZaSlanje, new File("./FakturaTest/Faktura2.xml"));
-					
+
 					Document doc = Validation.buildDocumentWithoutValidation("./FakturaTest/Faktura2.xml");
 					Element faktura = (Element) doc.getElementsByTagName("faktura").item(0);
-					faktura.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+					faktura.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 					SecurityClass sc = new SecurityClass();
 					sc.saveDocument(doc, "./FakturaTest/Faktura2.xml");
-					
-					
+
 					FakturaClient fc = new FakturaClient();
-					fc.testIt("firmaA", "firmab", "cerfirmab","./FakturaTest/Faktura2.xml");
+					fc.testIt("firmaA", "firmab", "cerfirmab", "./FakturaTest/Faktura2.xml");
 
 					setVisible(false);
-					
-					
+
 				} catch (PropertyException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -523,237 +489,205 @@ public class ZaglavljeDialog extends JDialog {
 					e1.printStackTrace();
 				}
 
-				
 			}
 		});
 
 	}
-	
-	
-	
-	
-	
-	public void initialize(){
-		
+
+	public void initialize() {
 
 		tfIdPor.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfIdPor.getText().length()>49){
-					tfIdPor.setText(tfIdPor.getText().substring(0,tfIdPor.getText().length()-1));
+				if (tfIdPor.getText().length() > 49) {
+					tfIdPor.setText(tfIdPor.getText().substring(0, tfIdPor.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
+
 		tfNazivDob.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfNazivDob.getText().length()>254){
-					tfNazivDob.setText(tfNazivDob.getText().substring(0,tfNazivDob.getText().length()-1));
+				if (tfNazivDob.getText().length() > 254) {
+					tfNazivDob.setText(tfNazivDob.getText().substring(0, tfNazivDob.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
-		
-		
+
 		tfAdrDob.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfAdrDob.getText().length()>49){
-					tfAdrDob.setText(tfAdrDob.getText().substring(0,tfAdrDob.getText().length()-1));
+				if (tfAdrDob.getText().length() > 49) {
+					tfAdrDob.setText(tfAdrDob.getText().substring(0, tfAdrDob.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
-		
+
 		tfPibDob.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfPibDob.getText().length()>10){
-					tfPibDob.setText(tfPibDob.getText().substring(0,tfPibDob.getText().length()-1));
+				if (tfPibDob.getText().length() > 10) {
+					tfPibDob.setText(tfPibDob.getText().substring(0, tfPibDob.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
+
 		tfPibKup.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfPibKup.getText().length()>10){
-					tfPibKup.setText(tfPibKup.getText().substring(0,tfPibKup.getText().length()-1));
+				if (tfPibKup.getText().length() > 10) {
+					tfPibKup.setText(tfPibKup.getText().substring(0, tfPibKup.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
-		
+
 		tfNazKup.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfNazKup.getText().length()>54){
-					tfNazKup.setText(tfNazKup.getText().substring(0,tfNazKup.getText().length()-1));
+				if (tfNazKup.getText().length() > 54) {
+					tfNazKup.setText(tfNazKup.getText().substring(0, tfNazKup.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
-		
-		
+
 		tfAdrKup.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfAdrKup.getText().length()>54){
-					tfAdrKup.setText(tfAdrKup.getText().substring(0,tfAdrKup.getText().length()-1));
+				if (tfAdrKup.getText().length() > 54) {
+					tfAdrKup.setText(tfAdrKup.getText().substring(0, tfAdrKup.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
+
 		tfBrRac.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfBrRac.getText().length()>5){
-					tfBrRac.setText(tfBrRac.getText().substring(0,tfBrRac.getText().length()-1));
+				if (tfBrRac.getText().length() > 5) {
+					tfBrRac.setText(tfBrRac.getText().substring(0, tfBrRac.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
-		
+
 		tfVrRob.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfVrRob.getText().length()>17){
-					tfVrRob.setText(tfVrRob.getText().substring(0,tfVrRob.getText().length()-1));
+				if (tfVrRob.getText().length() > 17) {
+					tfVrRob.setText(tfVrRob.getText().substring(0, tfVrRob.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
+
 		tfVrUsl.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfVrUsl.getText().length()>17){
-					tfVrUsl.setText(tfVrUsl.getText().substring(0,tfVrUsl.getText().length()-1));
+				if (tfVrUsl.getText().length() > 17) {
+					tfVrUsl.setText(tfVrUsl.getText().substring(0, tfVrUsl.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
-		
+
 		tfUkupRU.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfUkupRU.getText().length()>17){
-					tfUkupRU.setText(tfUkupRU.getText().substring(0,tfUkupRU.getText().length()-1));
+				if (tfUkupRU.getText().length() > 17) {
+					tfUkupRU.setText(tfUkupRU.getText().substring(0, tfUkupRU.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
+
 		tfUkupRab.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfUkupRab.getText().length()>17){
-					tfUkupRab.setText(tfUkupRab.getText().substring(0,tfUkupRab.getText().length()-1));
+				if (tfUkupRab.getText().length() > 17) {
+					tfUkupRab.setText(tfUkupRab.getText().substring(0, tfUkupRab.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
-		
+
 		tfUkuPor.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfUkuPor.getText().length()>17){
-					tfUkuPor.setText(tfUkuPor.getText().substring(0,tfUkuPor.getText().length()-1));
+				if (tfUkuPor.getText().length() > 17) {
+					tfUkuPor.setText(tfUkuPor.getText().substring(0, tfUkuPor.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
-		
+
 		tfOznVal.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfOznVal.getText().length()>2){
-					tfOznVal.setText(tfOznVal.getText().substring(0,tfOznVal.getText().length()-1));
+				if (tfOznVal.getText().length() > 2) {
+					tfOznVal.setText(tfOznVal.getText().substring(0, tfOznVal.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
+
 		tfIznUpl.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfIznUpl.getText().length()>17){
-					tfIznUpl.setText(tfIznUpl.getText().substring(0,tfIznUpl.getText().length()-1));
+				if (tfIznUpl.getText().length() > 17) {
+					tfIznUpl.setText(tfIznUpl.getText().substring(0, tfIznUpl.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
+
 		tfUplRac.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if(tfUplRac.getText().length()>17){
-					tfUplRac.setText(tfUplRac.getText().substring(0,tfUplRac.getText().length()-1));
+				if (tfUplRac.getText().length() > 17) {
+					tfUplRac.setText(tfUplRac.getText().substring(0, tfUplRac.getText().length() - 1));
 					return;
 				}
 			}
-			
+
 		});
-		
-		
-		
+
 		add(lbIdPor);
 		tfIdPor.setMinimumSize(new Dimension(140, 20));
 		add(tfIdPor, "wrap");
@@ -866,10 +800,4 @@ public class ZaglavljeDialog extends JDialog {
 		this.btnZav = btnZav;
 	}
 
-
-	
-	
-	
-	
-	
 }

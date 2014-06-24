@@ -1,6 +1,7 @@
 package util;
 
 import util.accessControl.TKorisnik;
+import util.accessControl.TRola;
 
 public class ConstantsXWS {
 	// public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
@@ -22,7 +23,7 @@ public class ConstantsXWS {
 	public static final String TARGET_NAMESPACE_BANKA_MT = "http://www.toomanysecrets.com/OdobrenjeMt";
 	public static final String TARGET_NAMESPACE_CENTRALNA_BANKA_MT102 = "http://www.toomanysecrets.com/CentralnaClearingNalog";
 	public static final String TARGET_NAMESPACE_CENTRALNA_BANKA_MT103 = "http://www.toomanysecrets.com/CentralnaRTGSNalog";
-	
 
+	public static TRola AKTIVNA_ROLA = null;
 	public static TKorisnik TRENUTNI_KORISNIK = null;
 }

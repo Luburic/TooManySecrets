@@ -7,11 +7,15 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import basexdb.firma.FirmeSema;
+import basexdb.util.FirmaDBUtil;
+
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
 
 	private static MainFrame instance = null;
 	private MenuBar menuBar;
+	private FirmeSema semaFirma;
 
 	private MainFrame() {
 		setSize(new Dimension(700, 500));
@@ -29,12 +33,18 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
+		semaFirma = FirmaDBUtil.loadFirmaDatabase("http://localhost:8081/BaseX75/rest/firmaa");
+
 		setJMenuBar(menuBar);
 		setVisible(true);
 	}
 
 	private void setUpMenu() {
 		menuBar = new MenuBar();
+	}
+
+	public FirmeSema getBaza() {
+		return semaFirma;
 	}
 
 	public static MainFrame getInstance() {

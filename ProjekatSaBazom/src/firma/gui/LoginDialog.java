@@ -68,6 +68,7 @@ public class LoginDialog extends JFrame {
 					if (uname.equals(korisnik.getUsername())) {
 						if (TKorisnik.checkPassword(pwd, korisnik.getPasswordSalt(), korisnik.getPassword())) {
 							ConstantsXWS.TRENUTNI_KORISNIK = korisnik;
+							ConstantsXWS.AKTIVNA_ROLA = korisnik.getRola();
 							MainFrame.getInstance();
 							dispose();
 						}

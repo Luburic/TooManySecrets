@@ -6,22 +6,20 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
-import firma.gui.dialogs.ZaglavljeDialog;
-
 @SuppressWarnings("serial")
-public class FakturaAction extends AbstractAction {
+public class NalogViewAction extends AbstractAction {
 
-	public FakturaAction() {
+	public NalogViewAction() {
 		KeyStroke ctrlDKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlDKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Kreiranje nove fakture");
-		putValue(NAME, "Faktura");
+		putValue(SHORT_DESCRIPTION, "Pregled faktura");
+		putValue(NAME, "Pregled faktura");
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		ZaglavljeDialog fakturaDialog = new ZaglavljeDialog(null);
-		fakturaDialog.setVisible(true);
+		// ZaglavljeDialog fakturaDialog = new ZaglavljeDialog(null);
+		// fakturaDialog.setVisible(true);
 	}
 
 }
