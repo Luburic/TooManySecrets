@@ -37,6 +37,8 @@ import beans.nalog.Nalog;
 import beans.notification.Notification;
 
 public class NalogClient {
+	private Properties propSender;
+	
 	public void testIt(String sender, String receiver, String cert,
 			String inputFile) {
 		try {
@@ -54,7 +56,7 @@ public class NalogClient {
 			Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
 
 			InputStream inputStreamSender = this.getClass().getClassLoader().getResourceAsStream(sender + ".properties");
-			Properties propSender = new java.util.Properties();
+			propSender = new java.util.Properties();
 			propSender.load(inputStreamSender);
 
 			Document encrypted = MessageTransform.packS("Nalog", "Nalog",inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_NALOG,"Nalog");
@@ -140,14 +142,14 @@ public class NalogClient {
 
 			nalog.setHitno(true);
 
-			nalog.setIznos(new BigDecimal(100500));
+			nalog.setIznos(new BigDecimal(10.00));
 
 			nalog.setModelOdobrenja(97);
 			nalog.setModelZaduzenja(97);
 
 			nalog.setOznakaValute("rsd");
 			nalog.setPozivNaBrojOdobrenja("111111");
-			nalog.setPozivNaBrojZaduzenja(String.valueOf(111111));
+			nalog.setPozivNaBrojZaduzenja("111111");
 
 			nalog.setRacunDuznika("111111111111111111");
 			nalog.setRacunPoverioca("222222222222222222");
@@ -157,15 +159,16 @@ public class NalogClient {
 			JAXBContext context = JAXBContext.newInstance("beans.nalog");
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("nalog"));
+			
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			marshaller.marshal(nalog, new File("./NalogTest/nalog.xml"));
+			marshaller.marshal(nalog, new File("./NalogTest/nalog.xml")); 
 			
 			Document doc = Validation.buildDocumentWithoutValidation("./NalogTest/nalog.xml");
-			Element faktura = (Element) doc.getElementsByTagName("nalog").item(0);
-			faktura.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			faktura.setAttribute("sender", "firmaa");
+			Element nal = (Element) doc.getElementsByTagName("nalog").item(0);
+			nal.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+			nal.setAttribute("sender",propSender.getProperty("naziv"));
 			SecurityClass sc = new SecurityClass();
-			sc.saveDocument(doc, "./NalogTest/nalog.xml");
+			sc.saveDocument(doc,"./NalogTest/nalog.xml");
 
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block

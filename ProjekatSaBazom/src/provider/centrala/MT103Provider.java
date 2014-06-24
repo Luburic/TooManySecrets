@@ -1,11 +1,20 @@
 package provider.centrala;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
 
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
@@ -18,12 +27,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import security.SecurityClass;
+import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
 import util.NSPrefixMapper;
 import util.Validation;
+import basexdb.banka.BankeSema;
+import basexdb.util.BankaDBUtil;
 import beans.mt103.MT103;
 import beans.mt900.MT900;
+import beans.nalog.Nalog;
 
 
 @Stateless
@@ -34,11 +47,15 @@ import beans.mt900.MT900;
 					wsdlLocation = "WEB-INF/wsdl/CentralnaRTGSNalog.wsdl")
 public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
-	public static final String TARGET_NAMESPACE = "http://www.toomanysecrets.com/bankaServis";
-	public static final String NAMESPACE_SPEC_NS = "http://www.w3.org/2000/xmlns/";
-	public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
-	private Marshaller marshaller;
 	private Document encryptedDocument;
+	private BankeSema semaBanka;
+	private String message;
+	private Properties propReceiver;
+	
+	public MT103Provider() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	
 	@Override
 	public DOMSource invoke(DOMSource request) {
@@ -47,41 +64,136 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
     		
     		System.out.println("\nInvoking MT103Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
-			//Document document =DocumentTransform.convertToDocument(request);
-			//DocumentTransform.printDocument(document);
+			Document document =DocumentTransform.convertToDocument(request);
+			DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
+			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("banka.properties");
+			propReceiver = new Properties();
+			propReceiver.load(inputStreamReceiver);
 			
+			Element esender = (Element) document.getElementsByTagName("mt103").item(0);
+			String sender = esender.getAttribute("sender");
 			
-			//Document decryptedDocument =MessageTransform.unpack(document, "MT103", "MT103", TARGET_NAMESPACE, null);
+			Document decryptedDocument = MessageTransform.unpack(document,"MT103", "MT103",ConstantsXWS.NAMESPACE_XSD_MT103, propReceiver,"banka", "MT103");
 
+			Document forSave = null;
+			if(decryptedDocument != null) {
+				Reader reader = Validation.createReader(decryptedDocument);
+				forSave = Validation.buildDocumentWithValidation(reader, new String[]{ "http://localhost:8080/MT103Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
+			}
 			
-			JAXBContext context = JAXBContext.newInstance("beans.mt103");
-			Unmarshaller unmarshaller = context.createUnmarshaller();
+			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+			
+			
+			
+			if (forSave != null) {
+			
+				Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_MT103,"timestamp").item(0);
+				String dateString = timestamp.getTextContent();
+				Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+				sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+				
+				decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
+				decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
+				decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
+			
+			
+				JAXBContext context = JAXBContext.newInstance("beans.mt103");
+				Unmarshaller unmarshaller = context.createUnmarshaller();
+				MT103 mt103 = (MT103) unmarshaller.unmarshal(decryptedDocument);
+			
+			
+				if(!validateContent(mt103)) {
+					DocumentTransform.createNotificationResponse("455", message,ConstantsXWS.TARGET_NAMESPACE_CENTRALNA_BANKA_MT103);
+					return null;
+				}else {
+					//call clients
+					MT900 mt900 = createMT900(mt103);
+					encryptedDocument = MessageTransform.packS("MT900", "MT900","./MT900Test/mt900.xml", propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
+				}
+				
+			
+			}
+			
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (DOMException e) {
+			e.printStackTrace();
+		} catch (TransformerFactoryConfigurationError e) {
+			e.printStackTrace();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new DOMSource(encryptedDocument);
 		
+	}
+	
+	
+	
+	
+	private MT900 createMT900(MT103 mt103){
+		MT900 mt = null;
+		try {
+			mt = new MT900();
+			/*mt.setIdPorukeNaloga(mt103.getIdPoruke());
+			mt.setDatumValute(mt103.getDatumValute());
+			mt.setIdPoruke(MessageTransform.randomString(50));
+			mt.setIznos(mt103.getIznos());
+			mt.setObracunskiRacunBankeDuzinka(mt103.getObracunskiRacunBankeDuznika());
+			mt.setSifraValute(mt103.getSifraValute());
+			mt.setSwiftBankeDuznika(mt.getSwiftBankeDuznika());
 			
-			MT103 mt103=null;
-			/*try {
-				mt103 = (MT103) unmarshaller.unmarshal(decryptedDocument);
-			} catch (Exception e) {
-				return new DOMSource(decryptedDocument);
-			}*/
+			JAXBContext context = JAXBContext.newInstance("beans.mt900");
+			Marshaller marshaller = context.createMarshaller();
+			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+			marshaller.marshal(mt, new File("./MT900Test/mt900.xml"));
 			
-			if(!validateContent(mt103))
-				return new DOMSource(DocumentTransform.createNotificationResponse("455", "Dokument nije validan po sadrzaju.",TARGET_NAMESPACE));
+			Document doc = Validation.buildDocumentWithoutValidation("./MT900Test/mt900.xml");
+			Element mt900 = (Element) doc.getElementsByTagName("mt900").item(0);
+			mt900.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+			mt900.setAttribute("sender",propReceiver.getProperty("naziv") );
+			SecurityClass sc = new SecurityClass();
+			sc.saveDocument(doc, "./MT900Test/mt900.xml");*/
 			
-			
-			//sve je ok, MT103 se snimi u bazu centrale
-			
-			
-			
+		}/* catch (PropertyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/ catch (DOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		/*} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		*/}
+		return mt;
+		
+	}
+	
+	
+	public boolean validateContent(MT103 mt103){
+		return true;
+	}
+
+	
+	
+	private class MT910Client{
+		/*
 			//kreira se zaduzenje kao odgovor
 			
 			MT900 mt900 = createMT900(mt103);
 			JAXBContext con = JAXBContext.newInstance("beans.mt900");
 			marshaller = con.createMarshaller();
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt900"));
+			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(mt900, new File("./MT900Test/MT900.xml"));
 			
@@ -96,64 +208,16 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			security.saveDocument(docum, "./MT900Test/MT900.xml");
 			String inputFile =  "./MT900Test/MT900.xml";
 			
-			
-			String alias="";
-			String password="";
-			String keystoreFile="";
-			String keystorePassword="";
-			
-			//encryptedDocument = MessageTransform.pack("MT103", "MT900", inputFile, alias, password, keystoreFile, keystorePassword, TARGET_NAMESPACE, NAMESPACE_XSD);
-
-			//ako je encryptedDocument uspesno snimljen u bazu, znaci da je pack uspesno izvrsen
-			//if(encryptedDocument exist in centralaDatabase){
+		
 				forwardMT103(); 
-				createMT910(); 
-				//}
-			
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (DOMException e) {
-			e.printStackTrace();
-		} catch (TransformerFactoryConfigurationError e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return new DOMSource(encryptedDocument);
+				createMT910(); */
+	}
+	
+	private class MT103Client{
 		
 	}
 	
 	
-	
-	
-	private MT900 createMT900(MT103 mt103){
-		MT900 mt = new MT900();
-		mt.setIdPorukeNaloga(mt103.getIdPoruke());
-		mt.setDatumValute(mt103.getDatumValute());
-		mt.setIdPoruke("");
-		mt.setIznos(mt103.getIznos());
-		mt.setObracunskiRacunBankeDuzinka(mt103.getObracunskiRacunBankeDuznika());
-		mt.setSifraValute(mt103.getSifraValute());
-		mt.setSwiftBankeDuznika("");
-		return mt;
-		
-	}
-	
-	private DOMSource createMT910(){
-		return null;
-	}
-	
-	
-	private DOMSource forwardMT103(){
-		return null;
-	}
-	
-	
-	
-	public boolean validateContent(MT103 mt103){
-		return true;
-	}
 	
 }
 

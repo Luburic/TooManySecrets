@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -36,6 +37,7 @@ import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
 import util.MyDatatypeConverter;
+import util.NSPrefixMapper;
 import util.Validation;
 import basexdb.RESTUtil;
 import basexdb.banka.BankeSema;
@@ -59,7 +61,9 @@ public class NalogProvider implements Provider<DOMSource> {
 	private Properties propReceiver;
 	private BankeSema semaBanka;
 	private String sender;
-	boolean rtgs;
+	private boolean rtgs;
+	private Racun racunPosaljioca;
+	private Racun racunPrimaoca;
 	
 	public NalogProvider() {
 	}
@@ -166,14 +170,14 @@ public class NalogProvider implements Provider<DOMSource> {
 
 	private boolean validateContent(Nalog nalog) {
 		message = "";
-		Racun racun = semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender);
+		racunPosaljioca = semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender);
 		
-		if(racun == null) {
+		if(racunPosaljioca == null) {
 			message = "Racun korisnika nije registrovan.";
 			return false;
 		}
 		
-		if(rtgs && nalog.getIznos().compareTo(racun.getStanje()) == -1) {
+		if(rtgs && racunPosaljioca.getStanje().compareTo(nalog.getIznos()) == -1) {
 			message = "Na racunu korisnika nema dovoljno sredstava da bi se izvrsila uplata.";
 			return false;
 		}
@@ -190,13 +194,8 @@ public class NalogProvider implements Provider<DOMSource> {
 			mt.setSwiftBankeDuznika(propReceiver.getProperty("swift"));
 			mt.setObracunskiRacunBankeDuznika(propReceiver.getProperty("obracunskiRac"));
 
-			String bankPropertiesFileName = MessageTransform.checkBank(nalog.getRacunPoverioca().substring(0, 3));
-			InputStream is = this.getClass().getClassLoader().getResourceAsStream(bankPropertiesFileName + ".properties");
-			Properties reciver = new Properties();
-			reciver.load(is);
-
-			mt.setSwiftBankePoverioca(reciver.getProperty("swift"));
-			mt.setObracunskiRacunBankePoverioca(reciver.getProperty("obracunskiRac"));
+			mt.setSwiftBankePoverioca("");
+			mt.setObracunskiRacunBankePoverioca("");
 
 			mt.setDuznik(nalog.getDuznikNalogodavac());
 			mt.setSvrhaPlacanja(nalog.getSvrhaPlacanja());
@@ -208,13 +207,24 @@ public class NalogProvider implements Provider<DOMSource> {
 			mt.setPozivNaBrojZaduzenja(nalog.getPozivNaBrojZaduzenja());
 			mt.setRacunPoverioca(nalog.getRacunPoverioca());
 			mt.setModelOdobrenja(nalog.getModelOdobrenja());
-			mt.setPozivNaBrojOdobrenja(String.valueOf(nalog.getPozivNaBrojOdobrenja()));
+			mt.setPozivNaBrojOdobrenja(nalog.getPozivNaBrojOdobrenja());
 			mt.setIznos(nalog.getIznos());
 			mt.setSifraValute(nalog.getOznakaValute());
+			
+			
+			JAXBContext context = JAXBContext.newInstance("beans.mt103");
+			Marshaller marshaller = context.createMarshaller();
+			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+			marshaller.marshal(mt, new File("./MT103Test/mt103.xml"));
+			
+			Document doc = Validation.buildDocumentWithoutValidation("./MT103Test/mt103.xml");
+			Element mt103 = (Element) doc.getElementsByTagName("mt103").item(0);
+			mt103.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+			mt103.setAttribute("sender",propReceiver.getProperty("naziv"));
+			SecurityClass sc = new SecurityClass();
+			sc.saveDocument(doc, "./MT103Test/mt103.xml");*/
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();*/
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -252,7 +262,7 @@ public class NalogProvider implements Provider<DOMSource> {
 				
 				
 				
-				/*if (encrypted != null) {
+				if (encrypted != null) {
 					DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 					//ZADUZENJE
 					
@@ -270,7 +280,6 @@ public class NalogProvider implements Provider<DOMSource> {
 							int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
 							Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
 							//String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
-							
 							int brojac = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getBrojac();
 							Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp());
 							
@@ -278,21 +287,21 @@ public class NalogProvider implements Provider<DOMSource> {
 								JOptionPane.showMessageDialog(null,
 										"Pokusaj napada",
 										"Warning!!!", JOptionPane.INFORMATION_MESSAGE);
+								return false;
 							}
 							
-							decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
-							decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
+							decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT900);
+							decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT900);
 							decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 							
-							SecurityClass sc = new SecurityClass();
+							/*SecurityClass sc = new SecurityClass();
 							sc.saveDocument(decryptedDocument, "./MT900Test/mt900.xml");
-							//definisemo kontekst, tj. paket(e) u kome se nalaze bean-ovi
 							JAXBContext context = JAXBContext.newInstance("beans.mt900");
 							Unmarshaller unmarshaller = context.createUnmarshaller();
-							MT900 mt900 = (MT900) unmarshaller.unmarshal(new File("./MT900Test/mt900.xml"));
+							MT900 mt900 = (MT900) unmarshaller.unmarshal(new File("./MT900Test/mt900.xml"));*/
 							
-							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke);
-							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString);
+							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke); //poslednje primljen mt
+							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString); //poslednje primljen mt
 							BankaDBUtil.storeBankaDatabase(semaBanka, propSender.getProperty("address"));
 							}else{
 								return false;
@@ -303,7 +312,7 @@ public class NalogProvider implements Provider<DOMSource> {
 						}
 					}else {
 						return false;
-					}*/
+					}
 				}catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (TransformerFactoryConfigurationError e) {
