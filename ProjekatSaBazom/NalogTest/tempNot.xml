@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?><notification xmlns="http://www.toomanysecrets.com/notification" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <code xmlns="http://www.toomanysecrets.com/notification" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">200</code>
-    <notificationstring>Nalog uspesno obradjen.</notificationstring>
+    <code xmlns="http://www.toomanysecrets.com/notification" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">423</code>
+    <notificationstring>Nalog nije uspesno obradjen.</notificationstring>
 </notification>

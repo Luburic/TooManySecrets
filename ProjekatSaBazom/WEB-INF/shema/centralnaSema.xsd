@@ -46,8 +46,8 @@
                 <xs:element minOccurs="0" name="brojacPoslednjegPoslatogMTNaloga" type="xs:int"/>
                 <xs:element minOccurs="0" name="brojacPoslednjegPrimljenogMTNaloga">
                     <xs:complexType>
-                        <xs:sequence maxOccurs="1" minOccurs="1">
-                            <xs:element maxOccurs="unbounded" minOccurs="0" name="banka">
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element maxOccurs="1" minOccurs="1" name="banka">
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="nazivBanke">

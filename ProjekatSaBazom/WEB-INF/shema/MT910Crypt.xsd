@@ -9,6 +9,13 @@
             <xs:sequence>
                 <xs:element ref="xenc:EncryptedData"/>
             </xs:sequence>
+            <xs:attribute form="unqualified" name="idPoruke" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="50"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
 </xs:schema>

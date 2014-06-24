@@ -522,6 +522,9 @@ public class MessageTransform {
 		} else if (semaCentralna != null) {
 			System.out.println("USAO KOD CENTRALNE U BAZU");
 			CentralnaSema.BrojacPoslednjegPrimljenogMTNaloga.Banka cMTNalog = semaCentralna.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(senderName);
+			if(cMTNalog == null){
+				System.out.println("NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLAAAAAAAAAAAAAAAASDASDASDASDASDASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			}
 			rbrPorukeFromXml = cMTNalog.getBrojac();
 		}
 
@@ -568,7 +571,12 @@ public class MessageTransform {
 			}
 
 		} else if (semaCentralna != null) {
+			System.out.println("USAO U MESSAGE TRANSFORM U GET KURCINA");
+			System.out.println("SENDER NAME: "+senderName);
 			CentralnaSema.BrojacPoslednjegPrimljenogMTNaloga.Banka cMTNalog = semaCentralna.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(senderName);
+			if(cMTNalog == null){
+				System.out.println("NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLAAAAAAAAAAAAAAAASDASDASDASDASDASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			}
 			dateFromXml = cMTNalog.getTimestamp();
 		}
 

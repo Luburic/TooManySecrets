@@ -133,6 +133,7 @@ public class NalogClient {
 		Nalog nalog = null;
 		try {
 			nalog = new Nalog();
+			nalog.setSender(sender);
 			nalog.setIdPoruke("123456");
 
 			nalog.setDuznikNalogodavac("pera");
