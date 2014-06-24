@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?><presek xmlns="http://www.toomanysecrets.com/presek" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="bankaa">
     <zaglavlje xmlns="http://www.toomanysecrets.com/presek" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <brojRacuna>111111111111111111</brojRacuna>
+        <brojRacuna>000000000000000000</brojRacuna>
         <datumNaloga>2014-06-24</datumNaloga>
-        <brojPreseka>1</brojPreseka>
-        <prethodnoStanje>201000.00</prethodnoStanje>
+        <brojPreseka>0</brojPreseka>
+        <prethodnoStanje>0</prethodnoStanje>
         <brojPromenaUKorist>0</brojPromenaUKorist>
         <ukupnoUKorist>0</ukupnoUKorist>
-        <brojPromenaNaTeret>2</brojPromenaNaTeret>
-        <ukupnoNaTeret>1000.00</ukupnoNaTeret>
-        <novoStanje>200000.00</novoStanje>
+        <brojPromenaNaTeret>0</brojPromenaNaTeret>
+        <ukupnoNaTeret>0</ukupnoNaTeret>
+        <novoStanje>0</novoStanje>
     </zaglavlje>
     <stavke>
         <stavka>
-            <duznikNalogodavac>firmaa</duznikNalogodavac>
-            <svrhaPlacanja>svrhaPlacanja0</svrhaPlacanja>
-            <primalacPoverilac>firmab</primalacPoverilac>
+            <duznikNalogodavac>0</duznikNalogodavac>
+            <svrhaPlacanja>0</svrhaPlacanja>
+            <primalacPoverilac>0</primalacPoverilac>
             <datumNaloga>2014-06-24</datumNaloga>
             <datumValute>2014-06-24</datumValute>
-            <racunDuznika>111111111111111111</racunDuznika>
+            <racunDuznika>000000000000000000</racunDuznika>
             <modelZaduzenja>0</modelZaduzenja>
-            <pozivNaBrojZaduzenja>pozivNaBrojZaduzenja</pozivNaBrojZaduzenja>
+            <pozivNaBrojZaduzenja>0</pozivNaBrojZaduzenja>
             <racunPoverioca>000000000000000000</racunPoverioca>
             <modelOdobrenja>0</modelOdobrenja>
-            <pozivNaBrojOdobrenja>pozivNaBrojOdobrenja</pozivNaBrojOdobrenja>
-            <iznos>500.00</iznos>
+            <pozivNaBrojOdobrenja>0</pozivNaBrojOdobrenja>
+            <iznos>0</iznos>
             <smer>-</smer>
         </stavka>
     </stavke>

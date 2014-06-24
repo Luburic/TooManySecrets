@@ -33,7 +33,8 @@ import beans.presek.Presek;
 
 public class ZahtevZaIzvodClient {
 	
-	public void testIt(String sender, String receiver, String cert, String inputFile) {
+	public Presek testIt(String sender, String receiver, String cert, String inputFile) {
+		Presek presek = null;
 		try {
 			URL wsdlLocation = new URL("http://localhost:8080/" + receiver + "/services/BankaIzvod?wsdl");
 			QName serviceName = new QName("http://www.toomanysecrets.com/BankaIzvod", "BankaIzvod");
@@ -58,10 +59,6 @@ public class ZahtevZaIzvodClient {
 			FirmeSema semaFirma = FirmaDBUtil.loadFirmaDatabase(propSender.getProperty("address"));
 			if(encrypted != null) {
 				semaFirma.setBrojacPoslednjegZahtevaZaIzvod(semaFirma.getBrojacPoslednjegZahtevaZaIzvod()+1);
-			}
-			//FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("naziv"));
-
-			if (encrypted != null) {
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 				
 				if(response!=null) {
@@ -94,23 +91,25 @@ public class ZahtevZaIzvodClient {
 						
 						DocumentTransform.printDocument(decryptedDocument);
 						
-						List<Presek> preseci = new ArrayList<>();
+
 						SecurityClass sc = new SecurityClass();
 						sc.saveDocument(decryptedDocument, "./PresekTest/presek.xml");
 						//definisemo kontekst, tj. paket(e) u kome se nalaze bean-ovi
 						JAXBContext context = JAXBContext.newInstance("beans.presek");
 						Unmarshaller unmarshaller = context.createUnmarshaller();
-						Presek presek = (Presek) unmarshaller.unmarshal(new File("./PresekTest/presek.xml"));
-						preseci.add(presek);
+						presek = (Presek) unmarshaller.unmarshal(new File("./PresekTest/presek.xml"));
 						
 						semaFirma.getBrojacPoslednjegPrimljenogPreseka().getBankaByNaziv(owner).setBrojac(rbrPoruke);
 						semaFirma.getBrojacPoslednjegPrimljenogPreseka().getBankaByNaziv(owner).setTimestamp(dateString);
 						
 					} else {
 						System.out.println("Ne postoji racun u banci");
+						return null;
 					}
 					FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
-				}	
+				} else {
+					System.out.println("Greska!");
+				}
 				
 			}
 		} catch (MalformedURLException e) {
@@ -120,11 +119,23 @@ public class ZahtevZaIzvodClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return presek;
 	}
 
 	public static void main(String[] args) {
 		ZahtevZaIzvodClient zzi = new ZahtevZaIzvodClient();
-		zzi.testIt("firmaA", "bankaa", "cerbankaa", "./IzvodTest/izvod.xml");
+		int cnt = 0;
+		List<Presek> preseci = new ArrayList<>();
+		Presek presek = zzi.testIt("firmaA", "bankaa", "cerbankaa", "./IzvodTest/izvod.xml");
+		while((presek.getStavke().getStavka().size() > 0 && !presek.getZaglavlje().getBrojRacuna().equals("000000000000000000")) && (presek != null)) {
+			preseci.add(presek);
+			presek = zzi.testIt("firmaA", "bankaa", "cerbankaa", "./IzvodTest/izvod"+(++cnt)+".xml");
+		}
+		for(Presek p : preseci) {
+			System.out.println("ZAGLAVLJE: "+p.getZaglavlje().getNovoStanje());
+			System.out.println("STAVKE: "+p.getStavke().getStavka().get(0).getDuznikNalogodavac());
+		}
 	}
 
 }

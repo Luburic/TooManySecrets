@@ -236,6 +236,8 @@ public class IzvodProvider  implements Provider<DOMSource>{
 					}
 					
 				}
+			} else {
+				return new DOMSource(null);
 			}
 			
 			BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));

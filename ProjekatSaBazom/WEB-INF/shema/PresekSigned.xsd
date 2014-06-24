@@ -93,7 +93,7 @@
                 <xs:element name="stavke">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element maxOccurs="unbounded" name="stavka">
+                            <xs:element maxOccurs="unbounded" name="stavka" minOccurs="0">
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="duznikNalogodavac">

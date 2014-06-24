@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><izvod xmlns="http://www.toomanysecrets.com/zahtevzaizvod" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="firmaa"><xenc:EncryptedData xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" Type="http://www.w3.org/2001/04/xmlenc#Content"><xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#"/><ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:KeyName>Kriptovani tajni kljuc</ds:KeyName>
+<xenc:EncryptedKey xmlns:xenc="http://www.w3.org/2001/04/xmlenc#"><xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#"/><xenc:CipherData xmlns:xenc="http://www.w3.org/2001/04/xmlenc#"><xenc:CipherValue xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">NTA5cbAMEly0vaeEY2t2E9SO+e2PpCoHvjhT8Ru9sogniOuB5iqz89lIOtFB7OlbsjNOkvxys18Z
+qzr528DMP10/gYqoLPvLx/DZ+aFCjmwDFKbzQLzk9U5PhSWXIFYiE+e+/Mc76wfRUb+gfLu/GwME
+AQxoM5nWUhehUwjLSd8=</xenc:CipherValue></xenc:CipherData></xenc:EncryptedKey></ds:KeyInfo><xenc:CipherData xmlns:xenc="http://www.w3.org/2001/04/xmlenc#"><xenc:CipherValue xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">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
+0WSzmrjZYKROoLQ=</xenc:CipherValue></xenc:CipherData></xenc:EncryptedData></izvod>
