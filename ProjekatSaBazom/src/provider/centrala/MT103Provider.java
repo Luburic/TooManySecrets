@@ -41,7 +41,7 @@ import beans.mt900.MT900;
 @ServiceMode(value = Service.Mode.PAYLOAD)
 @WebServiceProvider(portName = "CentralnaRTGSNalogPort", 
 					serviceName = "CentralnaRTGSNalog",
-					targetNamespace = "http://www.toomanysecrets.com/CentralnaRTGSNalog",
+					targetNamespace = ConstantsXWS.TARGET_NAMESPACE_CENTRALNA_BANKA_MT103,
 					wsdlLocation = "WEB-INF/wsdl/CentralnaRTGSNalog.wsdl")
 public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 

@@ -19,8 +19,10 @@ public class ConstantsXWS {
 	public static final String TARGET_NAMESPACE_FIRMA = "http://www.toomanysecrets.com/firmaServis";
 	public static final String TARGET_NAMESPACE_BANKA_NALOG = "http://www.toomanysecrets.com/BankaNalog";
 	public static final String TARGET_NAMESPACE_BANKA_IZVOD = "http://www.toomanysecrets.com/BankaIzvod";
+	public static final String TARGET_NAMESPACE_BANKA_MT = "http://www.toomanysecrets.com/OdobrenjeMt";
 	public static final String TARGET_NAMESPACE_CENTRALNA_BANKA_MT102 = "http://www.toomanysecrets.com/CentralnaClearingNalog";
 	public static final String TARGET_NAMESPACE_CENTRALNA_BANKA_MT103 = "http://www.toomanysecrets.com/CentralnaRTGSNalog";
+	
 
 	public static TKorisnik TRENUTNI_KORISNIK = null;
 }
