@@ -63,7 +63,8 @@ public class NalogProvider implements Provider<DOMSource> {
 	private String sender;
 	private boolean rtgs;
 	private Racun racunPosaljioca;
-	private Racun racunPrimaoca;
+	String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
+
 	
 	public NalogProvider() {
 	}
@@ -125,15 +126,15 @@ public class NalogProvider implements Provider<DOMSource> {
 							MT103Client cl = new MT103Client();
 							String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
 							if(cl.testIt(propReceiver, "centralnabanka","cercentralnabanka", apsolute )) {
-							
+
 							semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender).setStanje(
 									semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender).getStanje().subtract(nalog.getIznos()));
 							
 							//System.out.println("***STANJE***"+semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender).getStanje());
 							}
-
+							DocumentTransform.createNotificationResponse("200", "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 						}
-						DocumentTransform.createNotificationResponse("200", "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+						
 					} else {
 						
 
@@ -215,7 +216,6 @@ public class NalogProvider implements Provider<DOMSource> {
 			Marshaller marshaller = context.createMarshaller();
 			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt103"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
 			marshaller.marshal(mt, new File(apsolute));
 			
 			

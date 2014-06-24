@@ -54,6 +54,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 	private CentralnaSema semaBanka;
 	private String message;
 	private Properties propReceiver;
+	String apsolute = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
 	
 	public MT103Provider() {
 		// TODO Auto-generated constructor stub
@@ -165,7 +166,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			Marshaller marshaller = context.createMarshaller();
 			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt900"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			String apsolute = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
+			
 			marshaller.marshal(mt, new File(apsolute));
 			
 			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
