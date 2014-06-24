@@ -34,7 +34,9 @@ import util.MessageTransform;
 import util.NSPrefixMapper;
 import util.Validation;
 import basexdb.banka.BankeSema;
+import basexdb.centralna.CentralnaSema;
 import basexdb.util.BankaDBUtil;
+import basexdb.util.CentralnaDBUtil;
 import beans.mt103.MT103;
 import beans.mt900.MT900;
 import beans.nalog.Nalog;
@@ -49,7 +51,7 @@ import beans.nalog.Nalog;
 public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 	private Document encryptedDocument;
-	private BankeSema semaBanka;
+	private CentralnaSema semaBanka;
 	private String message;
 	private Properties propReceiver;
 	
@@ -85,7 +87,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				forSave = Validation.buildDocumentWithValidation(reader, new String[]{ "http://localhost:8080/MT103Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 			}
 			
-			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+			semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
 			
 			
 			
@@ -98,12 +100,12 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
 				sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
 			
-				/*int brojac = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getBrojac();
-				Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp());
+				int brojac = semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(sender).getBrojac();
+				Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(sender).getTimestamp());
 				if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
 					JOptionPane.showMessageDialog(null,"Pokusaj napada","Warning!!!", JOptionPane.INFORMATION_MESSAGE);
 					return null;
-				}*/
+				}
 				
 				
 				
@@ -166,7 +168,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt900");
 			Marshaller marshaller = context.createMarshaller();
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt900"));
+			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt900"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(mt, new File("./MT900Test/mt900.xml"));
 			

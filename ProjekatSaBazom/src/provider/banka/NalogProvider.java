@@ -225,7 +225,7 @@ public class NalogProvider implements Provider<DOMSource> {
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt103");
 			Marshaller marshaller = context.createMarshaller();
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt103"));
+			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt103"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(mt, new File("./MT103Test/mt103.xml"));
 			

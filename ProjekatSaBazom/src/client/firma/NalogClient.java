@@ -159,7 +159,7 @@ public class NalogClient {
 
 			JAXBContext context = JAXBContext.newInstance("beans.nalog");
 			Marshaller marshaller = context.createMarshaller();
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("nalog"));
+			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("nalog"));
 			
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(nalog, new File("./NalogTest/nalog.xml")); 
