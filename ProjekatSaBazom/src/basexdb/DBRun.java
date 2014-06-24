@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 public class DBRun {
 
 	public static void init(){
-		if(RESTUtility.isRunning("http://localhost:8080/BaseX75/rest")){
+		if(RESTUtility.isRunning("http://localhost:8081/BaseX75/rest")){
 			initBanke();
 			initCentralna();
 			initFirme();

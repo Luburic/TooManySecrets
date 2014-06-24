@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.Properties;
 
 import javax.ejb.Stateless;
-import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -41,7 +40,7 @@ import beans.mt900.MT900;
 @ServiceMode(value = Service.Mode.PAYLOAD)
 @WebServiceProvider(portName = "CentralnaRTGSNalogPort", 
 					serviceName = "CentralnaRTGSNalog",
-					targetNamespace = ConstantsXWS.TARGET_NAMESPACE_CENTRALNA_BANKA_MT103,
+					targetNamespace = "http://www.toomanysecrets.com/CentralnaRTGSNalog",
 					wsdlLocation = "WEB-INF/wsdl/CentralnaRTGSNalog.wsdl")
 public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
@@ -75,9 +74,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			Element esender = (Element) document.getElementsByTagName("MT103").item(0);
 			String sender = esender.getAttribute("sender");
 			
-			Document decryptedDocument = MessageTransform.unpack(document,"MT103", "MT103",ConstantsXWS.NAMESPACE_XSD_MT103, propReceiver,"banka", "MT103");
-			
-			DocumentTransform.printDocument(decryptedDocument);
+			Document decryptedDocument = MessageTransform.unpack(document,"MT103", "MT103", ConstantsXWS.NAMESPACE_XSD_MT103, propReceiver, "banka", "MT103");
 
 			Document forSave = null;
 			if(decryptedDocument != null) {
@@ -97,20 +94,14 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
 				Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
 				sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
-				int brojac = semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(sender).getBrojac();
-				Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse( semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(sender).getTimestamp());
 
-				if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
-					JOptionPane.showMessageDialog(null,
-							"Pokusaj napada",
-							"Warning!!!", JOptionPane.INFORMATION_MESSAGE);
-					return null;
-				}
 				
 				decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
 				decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
 				decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
-			
+				
+				
+				DocumentTransform.printDocument(decryptedDocument);
 			
 				JAXBContext context = JAXBContext.newInstance("beans.mt103");
 				Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -122,7 +113,6 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					//return null;
 					return new DOMSource(null);
 				}else {
-					CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 					//call clients
 					MT900 mt900 = createMT900(mt103);
 					encryptedDocument = MessageTransform.packS("MT900", "MT900", apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
@@ -174,9 +164,9 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			marshaller.marshal(mt, new File(apsolute));
 			
 			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
-			Element mt900 = (Element) doc.getElementsByTagName("mt900").item(0);
+			Element mt900 = (Element) doc.getElementsByTagName("MT900").item(0);
 			mt900.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			//mt900.setAttribute("sender",propReceiver.getProperty("naziv"));
+			mt900.setAttribute("idPoruke", mt103.getIdPoruke());
 			SecurityClass sc = new SecurityClass();
 			sc.saveDocument(doc, apsolute);
 			
