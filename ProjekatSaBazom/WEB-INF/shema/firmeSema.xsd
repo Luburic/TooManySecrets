@@ -77,6 +77,20 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="faktureZaSefa">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element ref="faktura:faktura"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="faktureZaDirektora">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element ref="faktura:faktura"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
                 <xs:element minOccurs="0" name="brojacPoslednjePoslateFakture" type="xs:int"/>
                 <xs:element minOccurs="0" name="brojacPoslednjegPoslatogNaloga" type="xs:int"/>
                 <xs:element minOccurs="0" name="brojacPoslednjegZahtevaZaIzvod" type="xs:int"/>
