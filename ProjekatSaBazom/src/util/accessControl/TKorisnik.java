@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
+
 /**
  * <p>
  * Java class for t_korisnik complex type.

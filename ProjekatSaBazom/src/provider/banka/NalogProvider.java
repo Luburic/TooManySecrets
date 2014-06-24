@@ -270,6 +270,8 @@ public class NalogProvider implements Provider<DOMSource> {
 
 				Document encrypted = MessageTransform.packS("MT103", "MT103",inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_MT103,"MT103");
 				
+				DocumentTransform.printDocument(encrypted);
+				
 				BankeSema semaBanka = BankaDBUtil.loadBankaDatabase(propSender.getProperty("address"));
 				if(encrypted != null) {
 					semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);

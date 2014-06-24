@@ -14,6 +14,9 @@
 		address="/Faktura"
 		implementor="provider.firma.FakturaProvider"
 		wsdlLocation="WEB-INF/wsdl/Firma.wsdl"
+		xmlns:ws="http://www.toomanysecrets.com/firmaServis"
+		serviceName="ws:FirmaServis"
+		endpointName="ws:FakturaPort"
 		/>
 		
 </beans>

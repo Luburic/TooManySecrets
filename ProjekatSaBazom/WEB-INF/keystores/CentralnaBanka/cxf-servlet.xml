@@ -13,6 +13,9 @@
 		address="/CentralnaRTGSNalog"
 		implementor="provider.centrala.MT103Provider"
 		wsdlLocation="WEB-INF/wsdl/CentralnaRTGSNalog.wsdl"
+		xmlns:ws="http://www.toomanysecrets.com/CentralnaRTGSNalog"
+		serviceName="ws:CentralnaRTGSNalog"
+		endpointName="ws:CentralnaRTGSNalogPort"
 		/>
 		
 		<jaxws:endpoint 
@@ -20,6 +23,9 @@
 		address="/CentralnaClearingNalog"
 		implementor="provider.centrala.MT102Provider"
 		wsdlLocation="WEB-INF/wsdl/CentralnaClearingNalog.wsdl"
+		xmlns:ws="http://www.toomanysecrets.com/CentralnaClearingNalog"
+		serviceName="ws:CentralnaClearingNalog"
+		endpointName="ws:CentralnaClearingNalogPort"
 		/>
 		
 		

@@ -76,6 +76,8 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			String sender = esender.getAttribute("sender");
 			
 			Document decryptedDocument = MessageTransform.unpack(document,"MT103", "MT103",ConstantsXWS.NAMESPACE_XSD_MT103, propReceiver,"banka", "MT103");
+			
+			DocumentTransform.printDocument(decryptedDocument);
 
 			Document forSave = null;
 			if(decryptedDocument != null) {

@@ -13,6 +13,9 @@
 		address="/BankaNalog"
 		implementor="provider.banka.NalogProvider"
 		wsdlLocation="WEB-INF/wsdl/BankaNalog.wsdl"
+		xmlns:ws="http://www.toomanysecrets.com/BankaNalog"
+		serviceName="ws:BankaNalog"
+		endpointName="ws:BankaNalogPort"
 		/>
 
 		
@@ -22,6 +25,9 @@
 		address="/BankaIzvod"
 		implementor="provider.banka.IzvodProvider"
 		wsdlLocation="WEB-INF/wsdl/BankaIzvod.wsdl"
+		xmlns:ws="http://www.toomanysecrets.com/BankaIzvod"
+		serviceName="ws:BankaIzvod"
+		endpointName="ws:BankaIzvodPort"
 		/>
 		
 		<jaxws:endpoint 

@@ -509,6 +509,7 @@ public class MessageTransform {
 			}
 
 		} else if (semaCentralna != null) {
+			System.out.println("USAO KOD CENTRALNE U BAZU");
 			CentralnaSema.BrojacPoslednjegPrimljenogMTNaloga.Banka cMTNalog = semaCentralna.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(senderName);
 			rbrPorukeFromXml = cMTNalog.getBrojac();
 		}
