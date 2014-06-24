@@ -54,6 +54,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 	private CentralnaSema semaBanka;
 	private String message;
 	private Properties propReceiver;
+	String apsolute = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
 	
 	public MT103Provider() {
 		// TODO Auto-generated constructor stub
@@ -125,7 +126,8 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				}else {
 					//call clients
 					MT900 mt900 = createMT900(mt103);
-					encryptedDocument = MessageTransform.packS("MT900", "MT900","./MT900Test/mt900.xml", propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
+					System.out.println("JESAM******************************");
+					encryptedDocument = MessageTransform.packS("MT900", "MT900",apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
 				}
 				
 			
@@ -170,7 +172,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			Marshaller marshaller = context.createMarshaller();
 			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt900"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			String apsolute = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
+			
 			marshaller.marshal(mt, new File(apsolute));
 			
 			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
