@@ -10,7 +10,7 @@ public class ConstantsXWS {
 	public static final String NAMESPACE_XSD_MT910 = "http://www.toomanysecrets.com/mt910";
 	public static final String NAMESPACE_XSD_NALOG = "http://www.toomanysecrets.com/nalog";
 	public static final String NAMESPACE_XSD_PRESEK = "http://www.toomanysecrets.com/presek";
-	public static final String NAMESPACE_XSD_ZAHTEV = "http://www.toomanysecrets.com/zahtevzapresek";
+	public static final String NAMESPACE_XSD_ZAHTEV = "http://www.toomanysecrets.com/zahtevzaizvod";
 	public static final String NAMESPACE_XSD_NOTIFICATION = "http://www.toomanysecrets.com/notification";
 	public static final String NAMESPACE_XSD_FAULT = "http://www.toomanysecrets.com/fault";
 

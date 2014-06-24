@@ -211,6 +211,7 @@
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="timestamp" type="xs:string"/>
+                <xs:element name="redniBrojPoruke" type="xs:int"/>
                 <xs:element ref="ds:Signature"/>
             </xs:sequence>
             <xs:attribute name="sender" type="xs:string"/>

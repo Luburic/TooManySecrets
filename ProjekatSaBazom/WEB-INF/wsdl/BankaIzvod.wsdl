@@ -10,13 +10,13 @@
 
 
 	<wsdl:import namespace="http://www.toomanysecrets.com/zahtevzaizvod"
-		location="http://localhost:8080/ZahtevZaIzvodCrypt.xsd" />
+		location="http://localhost:8080/IzvodCrypt.xsd" />
 	<wsdl:import namespace="http://www.toomanysecrets.com/presek"
 		location="http://localhost:8080/PresekCrypt.xsd" />
 
 
 	<wsdl:message name="izvodRequest">
-		<wsdl:part name="izvod" element="external:zahtevZaIzvod" />
+		<wsdl:part name="izvod" element="external:izvod" />
 	</wsdl:message>
 
 	<wsdl:message name="presekResponse">

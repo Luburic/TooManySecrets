@@ -81,7 +81,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			MT900 mt900 = createMT900(mt103);
 			JAXBContext con = JAXBContext.newInstance("beans.mt900");
 			marshaller = con.createMarshaller();
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
+			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt900"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(mt900, new File("./MT900Test/MT900.xml"));
 			

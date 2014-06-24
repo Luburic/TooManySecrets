@@ -21,6 +21,8 @@ import java.util.Random;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import client.firma.ZahtevZaIzvodClient;
+import provider.banka.IzvodProvider;
 import provider.banka.NalogProvider;
 import provider.firma.FakturaProvider;
 import security.SecurityClass;
@@ -75,10 +77,12 @@ public class MessageTransform {
 		
 		if(schemaPrefix.toLowerCase().equals("faktura") || schemaPrefix.toLowerCase().equals("notification")) {
 			url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
-		}
-		
-		else if(schemaPrefix.toLowerCase().equals("nalog") || schemaPrefix.toLowerCase().equals("notification")){
+		} else if(schemaPrefix.toLowerCase().equals("nalog") || schemaPrefix.toLowerCase().equals("notification")){
 			url = NalogProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
+		} else if(schemaPrefix.toLowerCase().equals("izvod") || schemaPrefix.toLowerCase().equals("notification")){
+			url = IzvodProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
+		} else if(schemaPrefix.toLowerCase().equals("presek")){
+			url = ZahtevZaIzvodClient.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		}
 		
 
@@ -296,7 +300,8 @@ public class MessageTransform {
 		Document document = null;
 		SecurityClass security =new SecurityClass();
 		if(!serviceAdress.equalsIgnoreCase("Notifikacija")) {
-			document = Validation.buildDocumentWithoutValidation("./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+			//document = Validation.buildDocumentWithoutValidation("./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+			document = Validation.buildDocumentWithoutValidation(inputFile);
 		} else {
 			document = Validation.buildDocumentWithoutValidation(inputFile);
 		}
@@ -306,7 +311,8 @@ public class MessageTransform {
 		mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 
 		if(!serviceAdress.equalsIgnoreCase("Notifikacija")){
-			security.saveDocument(document, "./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+			//security.saveDocument(document, "./"+schemaPrefix+"Test/"+schemaPrefix+".xml");
+			security.saveDocument(document, inputFile);
 		} else {
 			security.saveDocument(document, inputFile);
 		}

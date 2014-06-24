@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bankeSema
- xmlns="http://www.toomanysecrets.com/bankesema"
+<ns2:bankeSema
+ xmlns:ns2="http://www.toomanysecrets.com/bankesema"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.toomanysecrets.com/bankesema file:../shema/bankeSema.xsd">
     <swift xmlns="">AAAAAA00</swift>
@@ -17,23 +17,44 @@
         </racun>
     </korisnickiRacuni>
     <realizovaniNalozi xmlns="">
-        <nalog xmlns="http://www.toomanysecrets.com/nalog" sender="firmaa">
-            <idPoruke>idPoruke0</idPoruke>
-            <duznikNalogodavac>duznikNalogodavac0</duznikNalogodavac>
-            <svrhaPlacanja>svrhaPlacanja0</svrhaPlacanja>
-            <primalacPoverilac>primalacPoverilac0</primalacPoverilac>
-            <datumNaloga>2006-05-04</datumNaloga>
-            <datumValute>2006-05-04</datumValute>
-            <racunDuznika>000000000000000000</racunDuznika>
-            <modelZaduzenja>0</modelZaduzenja>
-            <pozivNaBrojZaduzenja>pozivNaBrojZaduzenja</pozivNaBrojZaduzenja>
-            <racunPoverioca>000000000000000000</racunPoverioca>
-            <modelOdobrenja>0</modelOdobrenja>
-            <pozivNaBrojOdobrenja>pozivNaBrojOdobrenja</pozivNaBrojOdobrenja>
-            <iznos>0.00</iznos>
-            <oznakaValute>ozn</oznakaValute>
-            <hitno>false</hitno>
-        </nalog>
+        <realizovanNalog xmlns="">
+            <nalog xmlns="http://www.toomanysecrets.com/nalog" sender="firmaa">
+	            <idPoruke>idPoruke0</idPoruke>
+	            <duznikNalogodavac>firmaa</duznikNalogodavac>
+	            <svrhaPlacanja>svrhaPlacanja0</svrhaPlacanja>
+	            <primalacPoverilac>firmab</primalacPoverilac>
+	            <datumNaloga>2014-06-24</datumNaloga>
+	            <datumValute>2014-06-24</datumValute>
+	            <racunDuznika>111111111111111111</racunDuznika>
+	            <modelZaduzenja>0</modelZaduzenja>
+	            <pozivNaBrojZaduzenja>pozivNaBrojZaduzenja</pozivNaBrojZaduzenja>
+	            <racunPoverioca>000000000000000000</racunPoverioca>
+	            <modelOdobrenja>0</modelOdobrenja>
+	            <pozivNaBrojOdobrenja>pozivNaBrojOdobrenja</pozivNaBrojOdobrenja>
+	            <iznos>500.00</iznos>
+	            <oznakaValute>ozn</oznakaValute>
+            	<hitno>false</hitno>
+        	</nalog>
+        </realizovanNalog>
+        <realizovanNalog xmlns="">
+            <nalog xmlns="http://www.toomanysecrets.com/nalog" sender="firmaa">
+	            <idPoruke>idPoruke0</idPoruke>
+	            <duznikNalogodavac>firmaa</duznikNalogodavac>
+	            <svrhaPlacanja>svrhaPlacanja0</svrhaPlacanja>
+	            <primalacPoverilac>firmab</primalacPoverilac>
+	            <datumNaloga>2014-06-24</datumNaloga>
+	            <datumValute>2014-06-24</datumValute>
+	            <racunDuznika>111111111111111111</racunDuznika>
+	            <modelZaduzenja>0</modelZaduzenja>
+	            <pozivNaBrojZaduzenja>pozivNaBrojZaduzenja</pozivNaBrojZaduzenja>
+	            <racunPoverioca>000000000000000000</racunPoverioca>
+	            <modelOdobrenja>0</modelOdobrenja>
+	            <pozivNaBrojOdobrenja>pozivNaBrojOdobrenja</pozivNaBrojOdobrenja>
+	            <iznos>500.00</iznos>
+	            <oznakaValute>ozn</oznakaValute>
+	            <hitno>false</hitno>
+        	</nalog>
+        </realizovanNalog>
     </realizovaniNalozi>
     <nerealizovaniNalozi xmlns="">
     </nerealizovaniNalozi>
@@ -45,21 +66,21 @@
     <brojacPoslednjePrimljeneNotifikacije xmlns="">
         <centralnabanka>
             <brojac>0</brojac>
-            <timestamp>05/04/2006 04:12:55</timestamp>
+            <timestamp>06/23/2014 23:38:12</timestamp>
         </centralnabanka>
     </brojacPoslednjePrimljeneNotifikacije>
     <brojacPoslednjegPrimljenogNaloga xmlns="">
         <firma>
             <nazivFirme>firmaa</nazivFirme>
             <brojac>0</brojac>
-            <timestamp>05/04/2006 04:12:55</timestamp>
+            <timestamp>06/23/2014 23:38:12</timestamp>
         </firma>
     </brojacPoslednjegPrimljenogNaloga>
     <brojacPoslednjegPrimljenogZahtevaZaIzvod xmlns="">
         <firma>
             <nazivFirme>firmaa</nazivFirme>
             <brojac>0</brojac>
-            <timestamp>05/04/2006 04:12:55</timestamp>
+            <timestamp>06/23/2014 23:38:12</timestamp>
         </firma>
     </brojacPoslednjegPrimljenogZahtevaZaIzvod>
-</bankeSema>
+</ns2:bankeSema>

@@ -212,7 +212,7 @@ public class Validation {
 
 			JAXBContext context = JAXBContext.newInstance("beans.fault");
 			Marshaller marshaller= context.createMarshaller();
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
+			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("fault"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(fault,System.out);
 

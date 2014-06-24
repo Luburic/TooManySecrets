@@ -570,7 +570,7 @@ public class ZaglavljeDialog extends JDialog {
 					// namespace
 					marshaller.setProperty(
 							"com.sun.xml.bind.namespacePrefixMapper",
-							new NSPrefixMapper());
+							new NSPrefixMapper("faktura"));
 					marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
 							Boolean.TRUE);
 					marshaller.marshal(fakturaZaSlanje, new File(

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><presek xmlns="http://www.toomanysecrets.com/presek" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="bankaa">
+    <zaglavlje xmlns="http://www.toomanysecrets.com/presek" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <brojRacuna>111111111111111111</brojRacuna>
+        <datumNaloga>2014-06-24</datumNaloga>
+        <brojPreseka>1</brojPreseka>
+        <prethodnoStanje>201000.00</prethodnoStanje>
+        <brojPromenaUKorist>0</brojPromenaUKorist>
+        <ukupnoUKorist>0</ukupnoUKorist>
+        <brojPromenaNaTeret>2</brojPromenaNaTeret>
+        <ukupnoNaTeret>1000.00</ukupnoNaTeret>
+        <novoStanje>200000.00</novoStanje>
+    </zaglavlje>
+    <stavke>
+        <stavka>
+            <duznikNalogodavac>firmaa</duznikNalogodavac>
+            <svrhaPlacanja>svrhaPlacanja0</svrhaPlacanja>
+            <primalacPoverilac>firmab</primalacPoverilac>
+            <datumNaloga>2014-06-24</datumNaloga>
+            <datumValute>2014-06-24</datumValute>
+            <racunDuznika>111111111111111111</racunDuznika>
+            <modelZaduzenja>0</modelZaduzenja>
+            <pozivNaBrojZaduzenja>pozivNaBrojZaduzenja</pozivNaBrojZaduzenja>
+            <racunPoverioca>000000000000000000</racunPoverioca>
+            <modelOdobrenja>0</modelOdobrenja>
+            <pozivNaBrojOdobrenja>pozivNaBrojOdobrenja</pozivNaBrojOdobrenja>
+            <iznos>500.00</iznos>
+            <smer>-</smer>
+        </stavka>
+    </stavke>
+</presek>

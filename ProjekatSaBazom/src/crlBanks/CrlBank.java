@@ -9,10 +9,7 @@
 package crlBanks;
 
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,8 +19,6 @@ import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -31,8 +26,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import util.NSPrefixMapper;
 
 /**
  * <p>Java class for anonymous complex type.
@@ -298,37 +291,6 @@ public class CrlBank {
 			return null;
 		}
 		//Sad moze da se menja objeknti model
-	}
-	
-	public void store(List<CrlBank.Firm> firms, String name) {
-		
-		//Objeknti model -> XML
-		
-		//Definisemo kontekst, tj. paket(e) u kome se nalaze bean-ovi
-		//Posto je isti kontekst moze se koristiti i klasa context1
-		try {
-			JAXBContext context2 = JAXBContext.newInstance("crlBanks");
-			//Klasa za transformisanje objektnog modela u XML
-			Marshaller marshaller = context2.createMarshaller();
-			//na ovaj naci se setuje koji prefiks se koristi za koji namespace
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new NSPrefixMapper());
-			//da se radi identacija
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			//serijaliacija na System.out stream
-			CrlBank crlBank = new CrlBank();
-			crlBank.setFirm(firms);
-			marshaller.marshal(crlBank, new BufferedWriter(new FileWriter(new File(name))));
-			
-		} catch (PropertyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 }

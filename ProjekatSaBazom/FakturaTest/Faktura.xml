@@ -7,26 +7,26 @@
         <adresaKupca>1</adresaKupca>
         <pibKupca>12312312312</pibKupca>
         <brojRacuna>1</brojRacuna>
-        <datumRacuna>2014-06-18</datumRacuna>
+        <datumRacuna>2014-06-05</datumRacuna>
         <vrednostRobe>1.0</vrednostRobe>
         <vrednostUsluga>1.0</vrednostUsluga>
-        <ukupnoRobaIUsluge>1.0</ukupnoRobaIUsluge>
+        <ukupnoRobaIUsluge>11.0</ukupnoRobaIUsluge>
         <ukupanRabat>1.0</ukupanRabat>
         <ukupanPorez>1.0</ukupanPorez>
-        <oznakaValute>1</oznakaValute>
+        <oznakaValute>11</oznakaValute>
         <iznosZaUplatu>1.0</iznosZaUplatu>
         <uplataNaRacun>123123123123123123</uplataNaRacun>
-        <datumValute>2014-06-05</datumValute>
+        <datumValute>2014-06-12</datumValute>
     </zaglavlje>
     <stavka redniBroj="1">
         <nazivRobeIliUsluge>1</nazivRobeIliUsluge>
         <kolicina>1.0</kolicina>
-        <jedinicaMere>1</jedinicaMere>
+        <jedinicaMere>11</jedinicaMere>
         <jedinicnaCena>1.0</jedinicnaCena>
-        <vrednost>11.0</vrednost>
-        <procenatRabata>1.0</procenatRabata>
+        <vrednost>1.0</vrednost>
+        <procenatRabata>111.0</procenatRabata>
         <iznosRabata>1.0</iznosRabata>
-        <umanjenoZaRabat>111.0</umanjenoZaRabat>
+        <umanjenoZaRabat>1.0</umanjenoZaRabat>
         <ukupanPorez>1.0</ukupanPorez>
     </stavka>
 </faktura>

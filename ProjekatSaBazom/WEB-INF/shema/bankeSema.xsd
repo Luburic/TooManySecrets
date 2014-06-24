@@ -81,8 +81,14 @@
                 </xs:element>
                 <xs:element name="realizovaniNalozi">
                     <xs:complexType>
-                        <xs:sequence>
-                            <xs:element ref="nalog:nalog"/>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element name="realizovanNalog">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="nalog:nalog"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
