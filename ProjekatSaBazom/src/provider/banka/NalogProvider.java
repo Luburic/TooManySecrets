@@ -227,14 +227,16 @@ public class NalogProvider implements Provider<DOMSource> {
 			Marshaller marshaller = context.createMarshaller();
 			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt103"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			marshaller.marshal(mt, new File("./MT103Test/mt103.xml"));
+			String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
+			marshaller.marshal(mt, new File(apsolute));
 			
-			Document doc = Validation.buildDocumentWithoutValidation("./MT103Test/mt103.xml");
+			
+			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
 			Element mt103 = (Element) doc.getElementsByTagName("mt103").item(0);
 			mt103.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 			mt103.setAttribute("sender",propReceiver.getProperty("naziv"));
 			SecurityClass sc = new SecurityClass();
-			sc.saveDocument(doc, "./MT103Test/mt103.xml");
+			sc.saveDocument(doc, apsolute);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -303,11 +305,13 @@ public class NalogProvider implements Provider<DOMSource> {
 							decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT900);
 							decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 							
+							String apsolute = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
+							
 							SecurityClass sc = new SecurityClass();
-							sc.saveDocument(decryptedDocument, "./MT900Test/mt900.xml");
+							sc.saveDocument(decryptedDocument, apsolute);
 							JAXBContext context = JAXBContext.newInstance("beans.mt900");
 							Unmarshaller unmarshaller = context.createUnmarshaller();
-							MT900 mt900 = (MT900) unmarshaller.unmarshal(new File("./MT900Test/mt900.xml"));
+							MT900 mt900 = (MT900) unmarshaller.unmarshal(new File(apsolute));
 							
 							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke); //poslednje primljen mt
 							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString); //poslednje primljen mt

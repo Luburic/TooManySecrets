@@ -170,14 +170,15 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			Marshaller marshaller = context.createMarshaller();
 			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt900"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			marshaller.marshal(mt, new File("./MT900Test/mt900.xml"));
+			String apsolute = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
+			marshaller.marshal(mt, new File(apsolute));
 			
-			Document doc = Validation.buildDocumentWithoutValidation("./MT900Test/mt900.xml");
+			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
 			Element mt900 = (Element) doc.getElementsByTagName("mt900").item(0);
 			mt900.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 			mt900.setAttribute("sender",propReceiver.getProperty("naziv"));
 			SecurityClass sc = new SecurityClass();
-			sc.saveDocument(doc, "./MT900Test/mt900.xml");
+			sc.saveDocument(doc, apsolute);
 			
 		} catch (PropertyException e) {
 			// TODO Auto-generated catch block
