@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,15 +30,11 @@ import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
-import util.NSPrefixMapper;
 import util.Validation;
-import basexdb.banka.BankeSema;
 import basexdb.centralna.CentralnaSema;
-import basexdb.util.BankaDBUtil;
 import basexdb.util.CentralnaDBUtil;
 import beans.mt103.MT103;
 import beans.mt900.MT900;
-import beans.nalog.Nalog;
 
 
 @Stateless
@@ -100,8 +95,15 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
 				Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
 				sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
-				
-				
+				int brojac = semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(sender).getBrojac();
+				Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse( semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(sender).getTimestamp());
+
+				if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
+					JOptionPane.showMessageDialog(null,
+							"Pokusaj napada",
+							"Warning!!!", JOptionPane.INFORMATION_MESSAGE);
+					return null;
+				}
 				
 				decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
 				decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
@@ -120,7 +122,6 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				}else {
 					//call clients
 					MT900 mt900 = createMT900(mt103);
-					String apsolute = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
 					encryptedDocument = MessageTransform.packS("MT900", "MT900", apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
 				}
 				

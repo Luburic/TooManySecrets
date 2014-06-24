@@ -6,6 +6,9 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
+import firma.gui.MainFrame;
+import firma.gui.dialogs.NalogDialog;
+
 @SuppressWarnings("serial")
 public class NalogAction extends AbstractAction{
 	
@@ -21,7 +24,8 @@ public class NalogAction extends AbstractAction{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		NalogDialog nalog = new NalogDialog(MainFrame.getInstance());
+		nalog.setVisible(true);
 	}
 
 }

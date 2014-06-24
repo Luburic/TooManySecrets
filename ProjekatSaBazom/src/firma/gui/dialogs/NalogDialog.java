@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import util.DocumentTransform;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
@@ -288,7 +289,8 @@ public class NalogDialog extends JDialog{
 						tfSvr.getText()
 						);*/
 				nc.createNalog();
-				nc.testIt("firmaA", "bankaa", "cerbankaa", "./NalogTest/nalog.xml");
+				String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
+				nc.testIt("firmaA", "bankaa", "cerbankaa", apsolute);
 				setVisible(false);
 				
 		}});
