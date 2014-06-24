@@ -74,7 +74,7 @@ public class MessageTransform {
 			return null;
 		}
 		URL url=null;
-		
+
 		if(schemaPrefix.toLowerCase().equals("faktura") || schemaPrefix.toLowerCase().equals("notification")) {
 			url = FakturaProvider.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		} else if(schemaPrefix.toLowerCase().equals("nalog") || schemaPrefix.toLowerCase().equals("notification")){
@@ -84,7 +84,7 @@ public class MessageTransform {
 		} else if(schemaPrefix.toLowerCase().equals("presek")){
 			url = ZahtevZaIzvodClient.class.getClassLoader().getResource(propReceiver.getProperty("jks"));
 		}
-		
+
 
 		Document decrypt = security.decrypt(doc, security.readPrivateKey(propReceiver.getProperty("naziv"), propReceiver.getProperty("pass"), url.toString().substring(6), propReceiver.getProperty("passKS")));
 		Reader reader1 = Validation.createReader(decrypt);
@@ -114,18 +114,16 @@ public class MessageTransform {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		String senderName = SecurityClass.getOwner(decrypt).toLowerCase();
-		//Date dateFromXml = RESTUtil.getTimestampPoslednjePrimljene(senderName, propReceiver.getProperty("naziv"), entity, type);
 		Date dateFromXml = getTimeStampPoslednjePrimljenePoruke(semaFirma, semaBanka, semaCentralna, type, senderName, entity);
 
 		Element redniBrojPoruke = (Element) decrypt.getElementsByTagNameNS(TARGET_NAMESPACE, "redniBrojPoruke").item(0);
 		int rbrPoruke = Integer.parseInt(redniBrojPoruke.getTextContent());
-		//int rbrPorukeFromXml = RESTUtil.getBrojPoslednjePrimljene(senderName, propReceiver.getProperty("naziv"), entity, type);
 		int rbrPorukeFromXml = getBrojPoslednjePrimljenePoruke(semaFirma, semaBanka, semaCentralna, type, senderName, entity);
 
 		if(dbType.equalsIgnoreCase("firma")) {
-			 FirmaDBUtil.storeFirmaDatabase(semaFirma, propReceiver.getProperty("address"));
+			FirmaDBUtil.storeFirmaDatabase(semaFirma, propReceiver.getProperty("address"));
 		} else if (dbType.equalsIgnoreCase("banka")) {
 			BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 		} else if (dbType.equalsIgnoreCase("centralnabanka")) {
@@ -133,19 +131,19 @@ public class MessageTransform {
 		} else {
 			return DocumentTransform.createNotificationResponse("470", "Greska u bazi", TARGET_NAMESPACE);
 		}
-		
+
 		if(rbrPoruke <= rbrPorukeFromXml || dateFromXml.after(date) || dateFromXml.equals(date)) {
 			DocumentTransform.createNotificationResponse("451", schemaPrefix +" pokusaj napada.", TARGET_NAMESPACE);
 			return null;
 		}
-		
+
 		//provera lanca i crl
 		Document temp = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 		X509Certificate cert = SecurityClass.getCertFromDocument(temp);
 		String issuerName = SecurityClass.getIssuer(temp);
 		Certificate certCentralna = null;
 		Certificate certIssuer = null;
-		
+
 		//provera za firme prvo
 		if(!issuerName.equalsIgnoreCase("centralnabanka")) {
 			try {
@@ -153,9 +151,7 @@ public class MessageTransform {
 					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
 					return null;
 				}
-
 				
-
 				downloadUsingStream("http://localhost:8080/"+issuerName+"/"+issuerName+".cer", issuerName+".cer");
 				downloadUsingStream("http://localhost:8080/"+"centralnabanka"+"/"+"centralnabanka"+".cer", "centralnabanka"+".cer");
 				SecurityClass sc = new SecurityClass();
@@ -180,7 +176,7 @@ public class MessageTransform {
 				} catch (CertificateException e1) {
 					e1.printStackTrace();
 				}
-				
+
 				File file = new File("temp.xml");
 				if(file.exists())
 					file.delete();
@@ -189,6 +185,15 @@ public class MessageTransform {
 				downloadUsingStream("http://localhost:8080/"+issuerName+"/crl"+issuerName+".xml", "temp.xml");
 
 				Document crlDoc = Validation.buildDocumentWithoutValidation("temp.xml");
+				X509Certificate certCrl = SecurityClass.getCertFromDocument(crlDoc);
+				try {
+					certCrl.verify(((X509Certificate)certCentralna).getPublicKey());
+				} catch (SignatureException e1) {
+					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					return null;
+				} catch (CertificateException e1) {
+					e1.printStackTrace();
+				}
 				crlDoc = removeSignature(crlDoc);
 				DocumentTransform.transform(crlDoc, "temp.xml");
 				DocumentTransform.printDocument(crlDoc);
@@ -221,17 +226,15 @@ public class MessageTransform {
 		if(issuerName.equalsIgnoreCase("centralnabanka")) {
 			try {
 
-				
-
 				downloadUsingStream("http://localhost:8080/"+"centralnabanka"+"/"+"centralnabanka"+".cer", "centralnabanka"+".cer");
 				SecurityClass sc = new SecurityClass();
 				certCentralna = sc.readCertificateFromFile(new File("centralnabanka"+".cer"));
-				
+
 				try {
 					cert.verify(((X509Certificate)certCentralna).getPublicKey());
 				} catch (SignatureException e1) {
-						DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
-						return null;
+					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					return null;
 				} catch (CertificateException e1) {
 					e1.printStackTrace();
 				}
@@ -240,7 +243,7 @@ public class MessageTransform {
 					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
 					return null;
 				}
-				
+
 				File file = new File("temp2.xml");
 				if(file.exists())
 					file.delete();
@@ -249,6 +252,15 @@ public class MessageTransform {
 				downloadUsingStream("http://localhost:8080/"+issuerName+"/crl"+issuerName+".xml", "temp2.xml");
 
 				Document crlDoc = Validation.buildDocumentWithoutValidation("temp2.xml");
+				X509Certificate certCrl = SecurityClass.getCertFromDocument(crlDoc);
+				try {
+					certCrl.verify(((X509Certificate)certCentralna).getPublicKey());
+				} catch (SignatureException e1) {
+					DocumentTransform.createNotificationResponse("423", schemaPrefix +" neispravan sertifikat.", TARGET_NAMESPACE);
+					return null;
+				} catch (CertificateException e1) {
+					e1.printStackTrace();
+				}
 				crlDoc = removeSignature(crlDoc);
 				DocumentTransform.transform(crlDoc, "temp2.xml");
 				DocumentTransform.printDocument(crlDoc);
@@ -275,15 +287,14 @@ public class MessageTransform {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 		}
 
 		return decrypt;
 	}
 
-	
+
 	public static Document packS(String serviceAdress,String schemaPrefix,String inputFile,Properties propSender, String receiver, String NAMESPACE_XSD, String type){
-		
+
 		FirmeSema semaFirma = null;
 		BankeSema semaBanka = null;
 		CentralnaSema semaCentralna = null;
@@ -306,7 +317,7 @@ public class MessageTransform {
 			document = Validation.buildDocumentWithoutValidation(inputFile);
 		}
 		System.out.println("****DOKUMENT :  "+ document);
-		
+
 		Element mt = (Element) document.getElementsByTagName(schemaPrefix.toLowerCase()).item(0);
 		mt.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 
@@ -321,9 +332,9 @@ public class MessageTransform {
 
 		//int brojac = RESTUtil.getBrojPoslednjePoslate(propSender.getProperty("naziv"), type);
 		int brojac = getBrojPoslednjePoslatePoruke(semaFirma, semaBanka, semaCentralna, type);
-		
+
 		if(dbType.equalsIgnoreCase("firma")) {
-			 FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
+			FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
 		} else if (dbType.equalsIgnoreCase("banka")) {
 			BankaDBUtil.storeBankaDatabase(semaBanka, propSender.getProperty("address"));
 		} else if (dbType.equalsIgnoreCase("centralnabanka")) {
@@ -335,11 +346,11 @@ public class MessageTransform {
 		URL url = MessageTransform.class.getClassLoader().getResource(propSender.getProperty("jks"));
 
 		URL urlReceiver = MessageTransform.class.getClassLoader().getResource(propSender.getProperty(receiver));
-		
+
 		System.out.println("URL: "+url);
 		System.out.println("URL RECEIVER: "+urlReceiver);
 		System.out.println("INPUT FILE: "+inputFile);
-		
+
 
 		Document signed = security.addTimestampAndSign(propSender.getProperty("naziv"), propSender.getProperty("pass"), url.toString().substring(6), propSender.getProperty("passKS"), inputFile, outputFile, brojac, " http://localhost:8080/"+schemaPrefix+"Signed.xsd", schemaPrefix.toLowerCase(), NAMESPACE_XSD);
 
@@ -365,46 +376,46 @@ public class MessageTransform {
 
 		}
 		security.saveDocument(encrypted, inputFile.substring(0, inputFile.length()-4) + "-crypted.xml");
-		
+
 
 		return encrypted;
 
 
 	}
-	
+
 	public static Document removeSignature(Document doc) {
-		
+
 		Element signature = (Element) doc.getElementsByTagName("ds:Signature").item(0);
 		signature.getParentNode().removeChild(signature);
-		
+
 		return doc;
 	}
-	
+
 	public static Document removeRedniBrojPoruke(Document doc, String TARGET_NAMESPACE) {
-		
+
 		Element redniBrojPoruke = (Element) doc.getElementsByTagNameNS(TARGET_NAMESPACE, "redniBrojPoruke").item(0);
 		redniBrojPoruke.getParentNode().removeChild(redniBrojPoruke);
-		
+
 		return doc;
-		
+
 	}
-	
+
 	public static Document removeTimestamp(Document doc, String TARGET_NAMESPACE) {
-		
+
 		Element timestamp = (Element) doc.getElementsByTagNameNS(TARGET_NAMESPACE, "timestamp").item(0);
 		timestamp.getParentNode().removeChild(timestamp);
-		
+
 		return doc;
-		
+
 	}
-	
+
 	public static boolean checkAlgorithm(Document doc) {
-		
+
 		Element encMethodEl = (Element)doc.getElementsByTagNameNS("http://www.w3.org/2001/04/xmlenc#", "EncryptionMethod").item(0);
 		if(encMethodEl.getAttribute("Algorithm").equalsIgnoreCase("http://www.w3.org/2001/04/xmlenc#aes128-cbc")) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -436,19 +447,19 @@ public class MessageTransform {
 	}
 
 	private static void downloadUsingStream(String urlStr, String file) throws IOException{
-        URL url = new URL(urlStr);
-        BufferedInputStream bis = new BufferedInputStream(url.openStream());
-        FileOutputStream fis = new FileOutputStream(file);
-        byte[] buffer = new byte[1024];
-        int count=0;
-        while((count = bis.read(buffer,0,1024)) != -1)
-        {
-            fis.write(buffer, 0, count);
-        }
-        fis.close();
-        bis.close();
-    }
-	
+		URL url = new URL(urlStr);
+		BufferedInputStream bis = new BufferedInputStream(url.openStream());
+		FileOutputStream fis = new FileOutputStream(file);
+		byte[] buffer = new byte[1024];
+		int count=0;
+		while((count = bis.read(buffer,0,1024)) != -1)
+		{
+			fis.write(buffer, 0, count);
+		}
+		fis.close();
+		bis.close();
+	}
+
 	public static int getBrojPoslednjePrimljenePoruke(FirmeSema semaFirma, BankeSema semaBanka, CentralnaSema semaCentralna, String type, String senderName, String entity) {
 		int rbrPorukeFromXml = 0;
 		if(semaFirma != null) {
@@ -485,15 +496,15 @@ public class MessageTransform {
 				rbrPorukeFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getBrojac();
 				break;
 			}
-			
+
 		} else if (semaCentralna != null) {
 			CentralnaSema.BrojacPoslednjegPrimljenogMTNaloga.Banka cMTNalog = semaCentralna.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(senderName);
 			rbrPorukeFromXml = cMTNalog.getBrojac();
 		}
-		
+
 		return rbrPorukeFromXml;
 	}
-	
+
 	public static Date getTimeStampPoslednjePrimljenePoruke(FirmeSema semaFirma, BankeSema semaBanka, CentralnaSema semaCentralna, String type, String senderName, String entity) {
 		Date date = null;
 		String dateFromXml = null;
@@ -532,12 +543,12 @@ public class MessageTransform {
 				dateFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp();
 				break;
 			}
-			
+
 		} else if (semaCentralna != null) {
 			CentralnaSema.BrojacPoslednjegPrimljenogMTNaloga.Banka cMTNalog = semaCentralna.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(senderName);
 			dateFromXml = cMTNalog.getTimestamp();
 		}
-		
+
 		try {
 			date = sdf.parse(dateFromXml);
 		} catch (ParseException e) {
@@ -546,7 +557,7 @@ public class MessageTransform {
 		}
 		return date;
 	}
-	
+
 	public static int getBrojPoslednjePoslatePoruke(FirmeSema semaFirma, BankeSema semaBanka, CentralnaSema semaCentralna, String type) {
 		int rbrPorukeFromXml = 0;
 		if(semaFirma != null) {
@@ -577,7 +588,7 @@ public class MessageTransform {
 				rbrPorukeFromXml = semaBanka.getBrojacPoslednjePoslateNotifikacije();
 				break;
 			}
-			
+
 		} else if (semaCentralna != null) {
 			switch(type.toLowerCase()) {
 			case "notifikacija":
@@ -588,7 +599,7 @@ public class MessageTransform {
 				break;
 			}
 		}
-		
+
 		return rbrPorukeFromXml;
 	}
 
