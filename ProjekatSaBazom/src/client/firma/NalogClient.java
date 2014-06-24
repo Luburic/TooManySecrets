@@ -37,7 +37,7 @@ import beans.nalog.Nalog;
 import beans.notification.Notification;
 
 public class NalogClient {
-	private Properties propSender;
+	private String sender;
 	
 	public void testIt(String sender, String receiver, String cert,
 			String inputFile) {
@@ -56,9 +56,10 @@ public class NalogClient {
 			Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
 
 			InputStream inputStreamSender = this.getClass().getClassLoader().getResourceAsStream(sender + ".properties");
-			propSender = new java.util.Properties();
+			Properties propSender = new java.util.Properties();
 			propSender.load(inputStreamSender);
-
+			sender = propSender.getProperty("naziv");
+			
 			Document encrypted = MessageTransform.packS("Nalog", "Nalog",inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_NALOG,"Nalog");
 
 			FirmeSema semaFirma = FirmaDBUtil.loadFirmaDatabase(propSender.getProperty("address"));
@@ -166,7 +167,7 @@ public class NalogClient {
 			Document doc = Validation.buildDocumentWithoutValidation("./NalogTest/nalog.xml");
 			Element nal = (Element) doc.getElementsByTagName("nalog").item(0);
 			nal.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			nal.setAttribute("sender",propSender.getProperty("naziv"));
+			nal.setAttribute("sender",sender);
 			SecurityClass sc = new SecurityClass();
 			sc.saveDocument(doc,"./NalogTest/nalog.xml");
 

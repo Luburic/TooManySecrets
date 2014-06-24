@@ -3,6 +3,8 @@ package firma.gui.dialogs;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 
 import javax.swing.JButton;
@@ -64,56 +66,8 @@ public class StavkaDialog extends JDialog{
 		setSize(new Dimension(400,300));
 		setLayout(new MigLayout("fill"));
 		
+		initialize();
 		
-		add(lbRbr);
-		tfRbr.setMinimumSize(new Dimension(80, 20));
-		add(tfRbr, "wrap");
-		
-		add(lbNazRU);
-		tfNazRU.setMinimumSize(new Dimension(80, 20));
-		add(tfNazRU, "wrap");
-		
-		add(lbKol);
-		tfKol.setMinimumSize(new Dimension(80, 20));
-		add(tfKol, "wrap");
-		
-	
-		
-
-		add(lbJedMer);
-		tfJedMer.setMinimumSize(new Dimension(80, 20));
-		add(tfJedMer, "wrap");
-		
-		add(lbJedCena);
-		tfJedCena.setMinimumSize(new Dimension(80, 20));
-		add(tfJedCena, "wrap");
-		
-		add(lbVred);
-		tfVred.setMinimumSize(new Dimension(80, 20));
-		add(tfVred, "wrap");
-		
-		add(lbProcRab);
-		tfProcRab.setMinimumSize(new Dimension(80, 20));
-		add(tfProcRab, "wrap");
-		
-	
-		
-		add(lbIznRab);
-		tfIznRab.setMinimumSize(new Dimension(80, 20));
-		add(tfIznRab, "wrap");
-		
-		add(lbUmRab);
-		tfUmRab.setMinimumSize(new Dimension(80, 20));
-		add(tfUmRab, "wrap");
-		
-		add(lbUkPor);
-		tfUkPor.setMinimumSize(new Dimension(80, 20));
-		add(tfUkPor, "wrap");
-		
-		
-		
-		add(btnOk, "gapleft 70");
-		add(btnCancel);
 		pack();
 		setLocationRelativeTo(MainFrame.getInstance());
 		
@@ -125,8 +79,6 @@ public class StavkaDialog extends JDialog{
 			}
 		});
 
-		
-		
 		btnOk.addActionListener(new ActionListener() {
 
 			@Override
@@ -296,6 +248,196 @@ public class StavkaDialog extends JDialog{
 			}
 
 		});
+	}
+	
+	
+	public void initialize(){
+		
+		
+		
+		tfRbr.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfRbr.getText().length()>2){
+					tfRbr.setText(tfRbr.getText().substring(0,tfRbr.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		tfNazRU.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfNazRU.getText().length()>121){
+					tfNazRU.setText(tfNazRU.getText().substring(0,tfNazRU.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		
+		tfKol.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfKol.getText().length()>12){
+					tfKol.setText(tfKol.getText().substring(0,tfKol.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		tfJedMer.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfJedMer.getText().length()>5){
+					tfJedMer.setText(tfJedMer.getText().substring(0,tfJedMer.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+
+		tfJedCena.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfJedCena.getText().length()>12){
+					tfJedCena.setText(tfJedCena.getText().substring(0,tfJedCena.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		tfVred.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfVred.getText().length()>14){
+					tfVred.setText(tfVred.getText().substring(0,tfVred.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		tfProcRab.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfProcRab.getText().length()>7){
+					tfProcRab.setText(tfProcRab.getText().substring(0,tfProcRab.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		tfIznRab.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfIznRab.getText().length()>14){
+					tfIznRab.setText(tfIznRab.getText().substring(0,tfIznRab.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		tfUmRab.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfUmRab.getText().length()>14){
+					tfUmRab.setText(tfUmRab.getText().substring(0,tfUmRab.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		tfUkPor.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfUkPor.getText().length()>14){
+					tfUkPor.setText(tfUkPor.getText().substring(0,tfUkPor.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		add(lbRbr);
+		tfRbr.setMinimumSize(new Dimension(40, 20));
+		add(tfRbr, "wrap");
+		
+		add(lbNazRU);
+		tfNazRU.setMinimumSize(new Dimension(140, 20));
+		add(tfNazRU, "wrap");
+		
+		add(lbKol);
+		tfKol.setMinimumSize(new Dimension(140, 20));
+		add(tfKol, "wrap");
+		
+	
+		
+
+		add(lbJedMer);
+		tfJedMer.setMinimumSize(new Dimension(60, 20));
+		add(tfJedMer, "wrap");
+		
+		add(lbJedCena);
+		tfJedCena.setMinimumSize(new Dimension(120, 20));
+		add(tfJedCena, "wrap");
+		
+		add(lbVred);
+		tfVred.setMinimumSize(new Dimension(140, 20));
+		add(tfVred, "wrap");
+		
+		add(lbProcRab);
+		tfProcRab.setMinimumSize(new Dimension(70, 20));
+		add(tfProcRab, "wrap");
+		
+	
+		
+		add(lbIznRab);
+		tfIznRab.setMinimumSize(new Dimension(140, 20));
+		add(tfIznRab, "wrap");
+		
+		add(lbUmRab);
+		tfUmRab.setMinimumSize(new Dimension(140, 20));
+		add(tfUmRab, "wrap");
+		
+		add(lbUkPor);
+		tfUkPor.setMinimumSize(new Dimension(140, 20));
+		add(tfUkPor, "wrap");
+		
+		
+		
+		add(btnOk, "gapleft 70");
+		add(btnCancel);
 	}
 	
 }

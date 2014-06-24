@@ -238,7 +238,7 @@ public class NalogProvider implements Provider<DOMSource> {
 	private class MT103Client {
 		public boolean testIt(Properties propSender, String receiver, String cert,String inputFile) {
 			
-			try {
+			/*try {
 				URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/CentralnaRTGSNalog?wsdl");
 				QName serviceName = new QName("http://www.toomanysecrets.com/CentralnaRTGSNalog", "CentralnaRTGSNalog");
 				QName portName = new QName("http://www.toomanysecrets.com/CentralnaRTGSNalog","CentralnaRTGSNalogPort");
@@ -294,11 +294,11 @@ public class NalogProvider implements Provider<DOMSource> {
 							decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT900);
 							decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 							
-							/*SecurityClass sc = new SecurityClass();
+							SecurityClass sc = new SecurityClass();
 							sc.saveDocument(decryptedDocument, "./MT900Test/mt900.xml");
 							JAXBContext context = JAXBContext.newInstance("beans.mt900");
 							Unmarshaller unmarshaller = context.createUnmarshaller();
-							MT900 mt900 = (MT900) unmarshaller.unmarshal(new File("./MT900Test/mt900.xml"));*/
+							MT900 mt900 = (MT900) unmarshaller.unmarshal(new File("./MT900Test/mt900.xml"));
 							
 							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke); //poslednje primljen mt
 							semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString); //poslednje primljen mt
@@ -319,7 +319,7 @@ public class NalogProvider implements Provider<DOMSource> {
 					e.printStackTrace();
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				}*/
 				return true;
 	
 			}

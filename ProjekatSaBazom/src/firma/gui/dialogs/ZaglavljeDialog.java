@@ -3,6 +3,8 @@ package firma.gui.dialogs;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.StringTokenizer;
@@ -37,16 +39,16 @@ import firma.gui.MainFrame;
 public class ZaglavljeDialog extends JDialog {
 
 	private JLabel lbIdPor = new JLabel("Id poruke:");
-	private JLabel lbNazivDob = new JLabel("Naziv dobavljaca:");
+	private JLabel lbNazivDob = new JLabel("Naziv dobavljaèa:");
 	private JLabel lbAdrDob = new JLabel("Adresa dobavljaca:");
 
-	private JLabel lbPibDob = new JLabel("Pib dobavljaca:");
+	private JLabel lbPibDob = new JLabel("Pib dobavljaca(11):");
 	private JLabel lbNazKup = new JLabel("Naziv kupca:");
 
 	private JLabel lbAdrKup = new JLabel("Adresa kupca:");
-	private JLabel lbPibKup = new JLabel("Pib kupca:");
+	private JLabel lbPibKup = new JLabel("Pib kupca(11):");
 
-	private JLabel lbBrRac = new JLabel("Broj racuna:");
+	private JLabel lbBrRac = new JLabel("Broj racuna(6):");
 	private JLabel lbDatRac = new JLabel("Datum racuna:");
 
 	private JLabel lbVrRob = new JLabel("Vrednost robe:");
@@ -59,7 +61,7 @@ public class ZaglavljeDialog extends JDialog {
 	private JLabel lbOznVal = new JLabel("Oznaka valute:");
 
 	private JLabel lbIznUpl = new JLabel("Iznos za uplatu:");
-	private JLabel lbUplRac = new JLabel("Uplata na racun:");
+	private JLabel lbUplRac = new JLabel("Uplata na racun(18):");
 
 	private JLabel lbDatVal = new JLabel("Datum valute:");
 
@@ -101,7 +103,15 @@ public class ZaglavljeDialog extends JDialog {
 	private JButton btnZav = new JButton("Zavrsi");
 
 	private Faktura faktura;
+	private int brRac = 0;
+	private BigDecimal vr =null; //vrsta robe
+	private BigDecimal vu =null; //vrsta usluge
+	private BigDecimal iz =null; //iznos uplate
+	private BigDecimal uru =null; //ukupno robaIusluga
+	private BigDecimal um =null; //ukupan rabat
+	private BigDecimal up =null; // ukupan porez
 	private ZaglavljeDialog fd;
+	
 
 	private Marshaller marshaller;
 
@@ -118,86 +128,9 @@ public class ZaglavljeDialog extends JDialog {
 		setResizable(false);
 		setSize(new Dimension(400, 300));
 		setLayout(new MigLayout("fill"));
-
-		add(lbIdPor);
-		tfIdPor.setMinimumSize(new Dimension(80, 20));
-		add(tfIdPor, "wrap");
-
-		add(lbNazivDob);
-		tfNazivDob.setMinimumSize(new Dimension(80, 20));
-		add(tfNazivDob, "wrap");
-
-		add(lbAdrDob);
-		tfAdrDob.setMinimumSize(new Dimension(80, 20));
-		add(tfAdrDob, "wrap");
-
-		add(lbPibDob);
-		tfPibDob.setMinimumSize(new Dimension(80, 20));
-		add(tfPibDob, "wrap");
-
-		add(lbNazKup);
-		tfNazKup.setMinimumSize(new Dimension(80, 20));
-		add(tfNazKup, "wrap");
-
-		add(lbAdrKup);
-		tfAdrKup.setMinimumSize(new Dimension(80, 20));
-		add(tfAdrKup, "wrap");
-		tfDatRac.setFocusable(true);
-
-		add(lbPibKup);
-		tfPibKup.setMinimumSize(new Dimension(80, 20));
-		add(tfPibKup, "wrap");
-
-		add(lbBrRac);
-		tfBrRac.setMinimumSize(new Dimension(80, 20));
-		add(tfBrRac, "wrap");
-
-		add(lbDatRac);
-		// tfDatRac.setMinimumSize(new Dimension(40, 20));
-		add(tfDatRac);
-
-		add(lbVrRob);
-		tfVrRob.setMinimumSize(new Dimension(50, 20));
-		add(tfVrRob, "wrap");
-
-		add(lbVrUsl);
-		tfVrUsl.setMinimumSize(new Dimension(80, 20));
-		add(tfVrUsl, "wrap");
-
-		add(lbUkupRU);
-		tfUkupRU.setMinimumSize(new Dimension(80, 20));
-		add(tfUkupRU, "wrap");
-
-		add(lbUkupRab);
-		tfUkupRab.setMinimumSize(new Dimension(80, 20));
-		add(tfUkupRab, "wrap");
-
-		add(lbUkuPor);
-		tfUkuPor.setMinimumSize(new Dimension(80, 20));
-		add(tfUkuPor, "wrap");
-
-		add(lbOznVal);
-		tfOznVal.setMinimumSize(new Dimension(80, 20));
-		add(tfOznVal, "wrap");
-
-		add(lbIznUpl);
-		tfIznUpl.setMinimumSize(new Dimension(80, 20));
-		add(tfIznUpl, "wrap");
-
-		add(lbUplRac);
-		tfUplRac.setMinimumSize(new Dimension(80, 20));
-		add(tfUplRac, "wrap");
-
-		add(lbDatVal);
-		tfDatVal.setMinimumSize(new Dimension(80, 20));
-		add(tfDatVal, "wrap");
-
-		add(btnStv, "gapleft 70");
-		add(btnZav);
-
-		add(btnOk, "gapleft 10");
-		add(btnCancel);
-
+		
+		initialize();
+		
 		pack();
 		setLocationRelativeTo(instance);
 
@@ -213,7 +146,7 @@ public class ZaglavljeDialog extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				
 				if (("").equals(tfIdPor.getText())) {
 					JOptionPane.showMessageDialog(null,
 							"Obavezan unos id-a poruke!", "Greska",
@@ -306,13 +239,15 @@ public class ZaglavljeDialog extends JDialog {
 					return;
 				}
 				
+				if (tfBrRac.getText().length()!=6){
+					JOptionPane.showMessageDialog(null,
+							"Neodgovarajuca duzina racuna!", "Greska",
+							JOptionPane.ERROR_MESSAGE);
+					tfBrRac.requestFocus();
+					return;
+				}
 				
 				
-				
-				
-				
-
-				int brRac = 0;
 
 				try {
 					brRac = Integer.valueOf(tfBrRac.getText());
@@ -350,7 +285,7 @@ public class ZaglavljeDialog extends JDialog {
 					return;
 				}
 
-				BigDecimal vr =null;
+				
 				try {
 					vr= BigDecimal.valueOf(new Double(tfVrRob.getText()));
 				} catch (NumberFormatException e1) {
@@ -370,7 +305,7 @@ public class ZaglavljeDialog extends JDialog {
 					return;
 				}
 				
-				BigDecimal vu =null;
+				
 				try {
 					vu= BigDecimal.valueOf(new Double(tfVrUsl.getText()));
 				} catch (NumberFormatException e1) {
@@ -380,7 +315,6 @@ public class ZaglavljeDialog extends JDialog {
 					tfVrUsl.requestFocus();
 					return;
 				}
-				/***/
 				
 
 				if (("").equals(tfUkupRU.getText())) {
@@ -391,7 +325,7 @@ public class ZaglavljeDialog extends JDialog {
 					return;
 				}
 				
-				BigDecimal uru =null;
+				
 				try {
 					uru= BigDecimal.valueOf(new Double(tfUkupRU.getText()));
 				} catch (NumberFormatException e1) {
@@ -412,8 +346,7 @@ public class ZaglavljeDialog extends JDialog {
 					return;
 				}
 				
-				/***/
-				BigDecimal um =null;
+				
 				try {
 					um= BigDecimal.valueOf(new Double(tfUkupRab.getText()));
 				} catch (NumberFormatException e1) {
@@ -431,7 +364,7 @@ public class ZaglavljeDialog extends JDialog {
 					tfUkuPor.requestFocus();
 					return;
 				}
-				BigDecimal up =null;
+			
 				try {
 					up = BigDecimal.valueOf(new Double(tfUkuPor.getText()));
 				} catch (NumberFormatException e1) {
@@ -460,7 +393,7 @@ public class ZaglavljeDialog extends JDialog {
 					return;
 				}
 				
-				BigDecimal iz =null;
+				
 				try {
 					iz = BigDecimal.valueOf(new Double(tfIznUpl.getText()));
 				} catch (NumberFormatException e1) {
@@ -499,8 +432,7 @@ public class ZaglavljeDialog extends JDialog {
 					tfDatVal.requestFocus();
 					return;
 				}
-
-
+				
 				Zaglavlje zaglavlje = new Zaglavlje();
 
 				zaglavlje.setAdresaDobavljaca(tfAdrDob.getText());
@@ -562,36 +494,26 @@ public class ZaglavljeDialog extends JDialog {
 				try {
 					Faktura fakturaZaSlanje = fd.getFaktura();
 
-					JAXBContext context = JAXBContext
-							.newInstance("beans.faktura");
-					// Klasa za transformisanje objektnog modela u XML
+					JAXBContext context = JAXBContext.newInstance("beans.faktura");
+				
 					marshaller = context.createMarshaller();
-					// na ovaj naci se setuje koji prefiks se koristi za koji
-					// namespace
-					marshaller.setProperty(
-							"com.sun.xml.bind.namespacePrefixMapper",
-							new NSPrefixMapper("faktura"));
-					marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
-							Boolean.TRUE);
-					marshaller.marshal(fakturaZaSlanje, new File(
-							"./FakturaTest/Faktura.xml"));
+				
+					marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("faktura"));
+					marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+					marshaller.marshal(fakturaZaSlanje, new File("./FakturaTest/Faktura2.xml"));
 					
-					Document doc = Validation.buildDocumentWithoutValidation("./FakturaTest/Faktura.xml");
+					Document doc = Validation.buildDocumentWithoutValidation("./FakturaTest/Faktura2.xml");
 					Element faktura = (Element) doc.getElementsByTagName("faktura").item(0);
 					faktura.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-					faktura.setAttribute("sender", "firmaa");
-					//faktura.setAttribute("xsi:schemaLocation", "http://www.toomanysecrets.com/tipovi file:/http://localhost:8080/ws_style/services/Faktura?xsd=../shema/FakturaRaw.xsd");
 					SecurityClass sc = new SecurityClass();
-					sc.saveDocument(doc, "./FakturaTest/Faktura.xml");
+					sc.saveDocument(doc, "./FakturaTest/Faktura2.xml");
 					
 					
-					// isto ce se informacije o firmi (password i putanja i tako to citati iz nekog properties fajla pa ce se prosledjivati testIt metodi)
 					FakturaClient fc = new FakturaClient();
-					fc.testIt("firmaA", "firmab", "cerfirmab","./FakturaTest/Faktura.xml");
+					fc.testIt("firmaA", "firmab", "cerfirmab","./FakturaTest/Faktura2.xml");
 
-					/*JOptionPane.showMessageDialog(null,
-							"Uspesno kreirana(i poslata*) faktura.",
-							"Kreiranje fakture", JOptionPane.INFORMATION_MESSAGE);*/
+					String message ="";
+					JOptionPane.showMessageDialog(null,message,"Kreiranje fakture", JOptionPane.INFORMATION_MESSAGE);
 					setVisible(false);
 					
 					
@@ -607,6 +529,311 @@ public class ZaglavljeDialog extends JDialog {
 			}
 		});
 
+	}
+	
+	
+	
+	
+	
+	public void initialize(){
+		
+
+		tfIdPor.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfIdPor.getText().length()>49){
+					tfIdPor.setText(tfIdPor.getText().substring(0,tfIdPor.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		tfNazivDob.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfNazivDob.getText().length()>254){
+					tfNazivDob.setText(tfNazivDob.getText().substring(0,tfNazivDob.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		
+		tfAdrDob.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfAdrDob.getText().length()>49){
+					tfAdrDob.setText(tfAdrDob.getText().substring(0,tfAdrDob.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		tfPibDob.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfPibDob.getText().length()>10){
+					tfPibDob.setText(tfPibDob.getText().substring(0,tfPibDob.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		tfPibKup.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfPibKup.getText().length()>10){
+					tfPibKup.setText(tfPibKup.getText().substring(0,tfPibKup.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		tfNazKup.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfNazKup.getText().length()>54){
+					tfNazKup.setText(tfNazKup.getText().substring(0,tfNazKup.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		
+		tfAdrKup.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfAdrKup.getText().length()>54){
+					tfAdrKup.setText(tfAdrKup.getText().substring(0,tfAdrKup.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		tfBrRac.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfBrRac.getText().length()>5){
+					tfBrRac.setText(tfBrRac.getText().substring(0,tfBrRac.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		tfVrRob.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfVrRob.getText().length()>17){
+					tfVrRob.setText(tfVrRob.getText().substring(0,tfVrRob.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		tfVrUsl.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfVrUsl.getText().length()>17){
+					tfVrUsl.setText(tfVrUsl.getText().substring(0,tfVrUsl.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		tfUkupRU.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfUkupRU.getText().length()>17){
+					tfUkupRU.setText(tfUkupRU.getText().substring(0,tfUkupRU.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		tfUkupRab.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfUkupRab.getText().length()>17){
+					tfUkupRab.setText(tfUkupRab.getText().substring(0,tfUkupRab.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		tfUkuPor.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfUkuPor.getText().length()>17){
+					tfUkuPor.setText(tfUkuPor.getText().substring(0,tfUkuPor.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		tfOznVal.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfOznVal.getText().length()>2){
+					tfOznVal.setText(tfOznVal.getText().substring(0,tfOznVal.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		tfIznUpl.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfIznUpl.getText().length()>17){
+					tfIznUpl.setText(tfIznUpl.getText().substring(0,tfIznUpl.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		tfUplRac.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(tfUplRac.getText().length()>17){
+					tfUplRac.setText(tfUplRac.getText().substring(0,tfUplRac.getText().length()-1));
+					return;
+				}
+			}
+			
+		});
+		
+		
+		
+		add(lbIdPor);
+		tfIdPor.setMinimumSize(new Dimension(140, 20));
+		add(tfIdPor, "wrap");
+
+		add(lbNazivDob);
+		tfNazivDob.setMinimumSize(new Dimension(140, 20));
+		add(tfNazivDob, "wrap");
+
+		add(lbAdrDob);
+		tfAdrDob.setMinimumSize(new Dimension(140, 20));
+		add(tfAdrDob, "wrap");
+
+		add(lbPibDob);
+		tfPibDob.setMinimumSize(new Dimension(140, 20));
+		add(tfPibDob, "wrap");
+
+		add(lbNazKup);
+		tfNazKup.setMinimumSize(new Dimension(140, 20));
+		add(tfNazKup, "wrap");
+
+		add(lbAdrKup);
+		tfAdrKup.setMinimumSize(new Dimension(140, 20));
+		add(tfAdrKup, "wrap");
+		tfDatRac.setFocusable(true);
+
+		add(lbPibKup);
+		tfPibKup.setMinimumSize(new Dimension(140, 20));
+		add(tfPibKup, "wrap");
+
+		add(lbBrRac);
+		tfBrRac.setMinimumSize(new Dimension(60, 20));
+		add(tfBrRac, "wrap");
+
+		add(lbDatRac);
+		tfDatRac.setMinimumSize(new Dimension(140, 20));
+		add(tfDatRac);
+
+		add(lbVrRob);
+		tfVrRob.setMinimumSize(new Dimension(140, 20));
+		add(tfVrRob, "wrap");
+
+		add(lbVrUsl);
+		tfVrUsl.setMinimumSize(new Dimension(140, 20));
+		add(tfVrUsl, "wrap");
+
+		add(lbUkupRU);
+		tfUkupRU.setMinimumSize(new Dimension(140, 20));
+		add(tfUkupRU, "wrap");
+
+		add(lbUkupRab);
+		tfUkupRab.setMinimumSize(new Dimension(140, 20));
+		add(tfUkupRab, "wrap");
+
+		add(lbUkuPor);
+		tfUkuPor.setMinimumSize(new Dimension(140, 20));
+		add(tfUkuPor, "wrap");
+
+		add(lbOznVal);
+		tfOznVal.setMinimumSize(new Dimension(40, 20));
+		add(tfOznVal, "wrap");
+
+		add(lbIznUpl);
+		tfIznUpl.setMinimumSize(new Dimension(140, 20));
+		add(tfIznUpl, "wrap");
+
+		add(lbUplRac);
+		tfUplRac.setMinimumSize(new Dimension(140, 20));
+		add(tfUplRac, "wrap");
+
+		add(lbDatVal);
+		tfDatVal.setMinimumSize(new Dimension(140, 20));
+		add(tfDatVal, "wrap");
+
+		add(btnStv, "gapleft 70");
+		add(btnZav);
+
+		add(btnOk, "gapleft 10");
+		add(btnCancel);
 	}
 
 	public Faktura getFaktura() {
@@ -641,4 +868,10 @@ public class ZaglavljeDialog extends JDialog {
 		this.btnZav = btnZav;
 	}
 
+
+	
+	
+	
+	
+	
 }
