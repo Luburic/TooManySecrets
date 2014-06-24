@@ -34,12 +34,12 @@ import beans.faktura.Faktura;
 @ServiceMode(value = Service.Mode.PAYLOAD)
 @WebServiceProvider(portName = "FakturaPort", serviceName = "FirmaServis", targetNamespace = ConstantsXWS.TARGET_NAMESPACE_FIRMA, wsdlLocation = "WEB-INF/wsdl/Firma.wsdl")
 public class FakturaProvider implements Provider<DOMSource> {
-	
+
 	//public static final String NAMESPACE_XSD = "http://www.toomanysecrets.com/tipovi";
 	private Properties propReceiver;
 	private String message;
 	private Document encrypted;
-	
+
 	public FakturaProvider() {
 	}
 
@@ -58,59 +58,38 @@ public class FakturaProvider implements Provider<DOMSource> {
 			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("firma.properties");
 			propReceiver = new Properties();
 			propReceiver.load(inputStreamReceiver);
-			
-			
+
+
 			Element esender = (Element) document.getElementsByTagName("faktura").item(0);
 			String sender = esender.getAttribute("sender");
 
 			Document decryptedDocument = MessageTransform.unpack(document, "Faktura", "Faktura",
 					ConstantsXWS.NAMESPACE_XSD_FAKTURA, propReceiver, "firma", "Faktura");
-			
+
 			Document forSave = null;
 			if(decryptedDocument != null) {
 				Reader reader = Validation.createReader(decryptedDocument);
 				forSave = Validation.buildDocumentWithValidation(reader, new String[]{ "http://localhost:8080/FakturaSigned.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 			}
-			
-			
-			//Document valid = Validation.buildDocumentWithoutValidation(DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6));
-			//Element notification = (Element) valid.getElementsByTagName("notification").item(0);
-			/*Document valid = Validation.buildDocumentWithoutValidation(DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6));
-			Element notification = (Element) valid.getElementsByTagName("notification").item(0);
-			boolean flag = false;
-			if(notification.getChildNodes().item(0).getTextContent().contains("Faktura"))
-				flag = true;*/
-			
+
 			FirmeSema semaFirma = FirmaDBUtil.loadFirmaDatabase(propReceiver.getProperty("address"));
-			
+
 			if (forSave != null) {
 				Element timestamp = (Element) decryptedDocument
 						.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_FAKTURA, "timestamp")
 						.item(0);
 				String dateString = timestamp.getTextContent();
-				/*Date date = null;
-				try {
-					date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
-							.parse(dateString);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
+
 				sender = SecurityClass.getOwner(decryptedDocument)
 						.toLowerCase();
-				/*RESTUtil.sacuvajEntitet(decryptedDocument,
-						propReceiver.getProperty("naziv"), false, sender, date,
-						"Faktura", "firma");*/
+
 				decryptedDocument = MessageTransform
 						.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_FAKTURA);
 				decryptedDocument = MessageTransform
 						.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_FAKTURA);
 				decryptedDocument = MessageTransform
 						.removeSignature(decryptedDocument);
-				
-				//Element root = (Element) decryptedDocument.getElementsByTagName("faktura").item(0);
-				//root.removeAttribute("sender");
-				
+
 				JAXBContext context = JAXBContext.newInstance("beans.faktura");
 				Unmarshaller unmarshaller = context.createUnmarshaller();
 				Faktura faktura = null;
@@ -120,39 +99,34 @@ public class FakturaProvider implements Provider<DOMSource> {
 				} catch (JAXBException e) {
 					return new DOMSource(decryptedDocument);
 				}
-				if (!validateContent(faktura)) {
+				
+				if(!faktura.getZaglavlje().getPibKupca().equals(propReceiver.getProperty("pib"))) {
+					DocumentTransform.createNotificationResponse("444",
+							"Faktura nije namenjena za ovu firmu.",
+							ConstantsXWS.TARGET_NAMESPACE_FIRMA);
+		        } else if (!validateContent(faktura)) {
 					DocumentTransform.createNotificationResponse("455", message,
 							ConstantsXWS.TARGET_NAMESPACE_FIRMA);
-					/*RESTUtil.sacuvajEntitet(forSave,
-							propReceiver.getProperty("naziv"), false, sender, date,
-							"Faktura", "firma");*/
-					//update brojac
-					semaFirma.getBrojacPoslednjePrimljeneFakture().getFirmaByNaziv(sender).setBrojac(
-							semaFirma.getBrojacPoslednjePrimljeneFakture().getFirmaByNaziv(sender).getBrojac()+1);
-					semaFirma.getBrojacPoslednjePrimljeneFakture().getFirmaByNaziv(sender).setTimestamp(dateString);
-					semaFirma.getNeplaceneFakture().getFaktura().add(faktura);
 				} else {
 					DocumentTransform.createNotificationResponse("200",
 							"Faktura uspesno obradjena.",
 							ConstantsXWS.TARGET_NAMESPACE_FIRMA);
-					/*RESTUtil.sacuvajEntitet(forSave,
-							propReceiver.getProperty("naziv"), false, sender, date,
-							"Faktura", "firma");*/
+
 					semaFirma.getBrojacPoslednjePrimljeneFakture().getFirmaByNaziv(sender).setBrojac(
 							semaFirma.getBrojacPoslednjePrimljeneFakture().getFirmaByNaziv(sender).getBrojac()+1);
 					semaFirma.getBrojacPoslednjePrimljeneFakture().getFirmaByNaziv(sender).setTimestamp(dateString);
 					semaFirma.getNeplaceneFakture().getFaktura().add(faktura);
 				}
 			}
-			//propSender=proprReciver
-			String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
 			
+			String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
+
 			encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+sender ,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 			if(encrypted != null) {
 				semaFirma.setBrojacPoslednjePoslateNotifikacije(semaFirma.getBrojacPoslednjePoslateNotifikacije()+1);
 			}
 			FirmaDBUtil.storeFirmaDatabase(semaFirma, propReceiver.getProperty("address"));
-			
+
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (DOMException e) {
@@ -168,9 +142,9 @@ public class FakturaProvider implements Provider<DOMSource> {
 		return new DOMSource(encrypted);
 	}
 
-public boolean validateContent(Faktura fak) {
-		
-		
+	public boolean validateContent(Faktura fak) {
+
+
 		double tempKolicina, tempJedinicnaCena, tempVrednost, tempProcenatRabata, tempUmanjenoZaRabat, tempPorez, tempIznosRabata;
 		double ukupnoRobeIUsluge, zaUplatu, ukupanPorez, ukupanRabat, vrednostRobe, vrednostUsluga, ukupnoStavke, zaUplatuStavke, ukupanPorezStavke, ukupanRabatStavke;
 
@@ -181,9 +155,6 @@ public boolean validateContent(Faktura fak) {
 
 		List<Faktura.Stavka> stavke = fak.getStavka();
 
-		
-		
-		
 		for (Faktura.Stavka stavka : stavke) {
 
 			tempKolicina = stavka.getKolicina().doubleValue();
