@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.toomanysecrets.com/akcije"
+    xmlns:akcije="http://www.toomanysecrets.com/akcije">
+    <xs:element name="akcije">
+        <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="akcija" type="akcije:t_akcija"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="t_akcija">
+        <xs:sequence>
+            <xs:element name="nazivAkcije" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

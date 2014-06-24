@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.toomanysecrets.com/korisnici"
+    xmlns:korisnici="http://www.toomanysecrets.com/korisnici" xmlns:rola="http://www.toomanysecrets.com/role">
+    <xs:import namespace="http://www.toomanysecrets.com/role" schemaLocation="./role.xsd"/>
+    <xs:element name="korisnici">
+        <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="korisnik" type="korisnici:t_korisnik"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="t_korisnik">
+        <xs:sequence>
+            <xs:element name="username" type="xs:string"/>
+            <xs:element name="password" type="xs:string"/>
+            <xs:element name="passwordSalt" type="xs:string"/>
+            <xs:element name="rola" type="rola:t_rola"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

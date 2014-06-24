@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.toomanysecrets.com/role"
+    xmlns:rola="http://www.toomanysecrets.com/role" xmlns:act="http://www.toomanysecrets.com/akcije">
+    <xs:import namespace="http://www.toomanysecrets.com/akcije" schemaLocation="./akcije.xsd"/>
+    <xs:element name="role">
+        <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="rola" type="rola:t_rola"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="t_rola">
+        <xs:sequence>
+            <xs:element name="roleName" type="xs:string"/>
+            <xs:element name="akcije">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element name="akcija" type="act:t_akcija"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

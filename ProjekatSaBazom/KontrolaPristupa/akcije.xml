@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<akcije:akcije xmlns:akcije="http://www.toomanysecrets.com/akcije" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/akcije akcije.xsd ">
+  <akcija>
+    <nazivAkcije>unosFakture</nazivAkcije>
+  </akcija>
+  <akcija>
+    <nazivAkcije>unosNaloga</nazivAkcije>
+  </akcija>
+  <akcija>
+    <nazivAkcije>izmenaCeneFakture</nazivAkcije>
+  </akcija>
+  <akcija>
+    <nazivAkcije>izmenaDatumaIPrioritetaNaloga</nazivAkcije>
+  </akcija>
+  <akcija>
+    <nazivAkcije>odbijanjeFakture</nazivAkcije>
+  </akcija>
+  <akcija>
+    <nazivAkcije>odbijanjeNaloga</nazivAkcije>
+  </akcija>
+  <akcija>
+    <nazivAkcije>odobrenjeNalogaIspodGranice</nazivAkcije>
+  </akcija>
+  <akcija>
+    <nazivAkcije>odobrenjeFaktureIspodGranice</nazivAkcije>
+  </akcija>
+  <akcija>
+    <nazivAkcije>odobrenjeFaktureIznadGranice</nazivAkcije>
+  </akcija>
+  <akcija>
+    <nazivAkcije>odobrenjeFaktureIznadGranice</nazivAkcije>
+  </akcija>
+</akcije:akcije>
