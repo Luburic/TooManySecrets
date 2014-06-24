@@ -59,8 +59,12 @@
             </stavka>
         </faktura>
     </placeneFakture>
-    <neplaceneFakture>
+    <neplaceneFakture xmlns="">
     </neplaceneFakture>
+    <faktureZaSefa xmlns="">
+    </faktureZaSefa>
+    <faktureZaDirektora xmlns="">
+    </faktureZaDirektora>
     <brojacPoslednjePoslateFakture xmlns="">0</brojacPoslednjePoslateFakture>
     <brojacPoslednjegPoslatogNaloga xmlns="">0</brojacPoslednjegPoslatogNaloga>
     <brojacPoslednjegZahtevaZaIzvod xmlns="">0</brojacPoslednjegZahtevaZaIzvod>
