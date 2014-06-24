@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import javax.ejb.Stateless;
+import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -92,8 +93,19 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			
 				Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_MT103,"timestamp").item(0);
 				String dateString = timestamp.getTextContent();
+				Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_MT103,"redniBrojPoruke").item(0);
+				int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
 				Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
 				sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+			
+				/*int brojac = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getBrojac();
+				Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp());
+				if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
+					JOptionPane.showMessageDialog(null,"Pokusaj napada","Warning!!!", JOptionPane.INFORMATION_MESSAGE);
+					return null;
+				}*/
+				
+				
 				
 				decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
 				decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
@@ -144,7 +156,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		MT900 mt = null;
 		try {
 			mt = new MT900();
-			/*mt.setIdPorukeNaloga(mt103.getIdPoruke());
+			mt.setIdPorukeNaloga(mt103.getIdPoruke());
 			mt.setDatumValute(mt103.getDatumValute());
 			mt.setIdPoruke(MessageTransform.randomString(50));
 			mt.setIznos(mt103.getIznos());
@@ -154,27 +166,27 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt900");
 			Marshaller marshaller = context.createMarshaller();
-			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
+			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt900"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(mt, new File("./MT900Test/mt900.xml"));
 			
 			Document doc = Validation.buildDocumentWithoutValidation("./MT900Test/mt900.xml");
 			Element mt900 = (Element) doc.getElementsByTagName("mt900").item(0);
 			mt900.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			mt900.setAttribute("sender",propReceiver.getProperty("naziv") );
+			mt900.setAttribute("sender",propReceiver.getProperty("naziv"));
 			SecurityClass sc = new SecurityClass();
-			sc.saveDocument(doc, "./MT900Test/mt900.xml");*/
+			sc.saveDocument(doc, "./MT900Test/mt900.xml");
 			
-		}/* catch (PropertyException e) {
+		} catch (PropertyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/ catch (DOMException e) {
+		} catch (DOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		/*} catch (JAXBException e) {
+		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		*/}
+		}
 		return mt;
 		
 	}

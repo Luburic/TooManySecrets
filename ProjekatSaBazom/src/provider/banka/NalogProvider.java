@@ -201,7 +201,7 @@ public class NalogProvider implements Provider<DOMSource> {
 		MT103 mt = null;
 		try {
 			mt = new MT103();
-			/*mt.setIdPoruke(MessageTransform.randomString(50));
+			mt.setIdPoruke(MessageTransform.randomString(50));
 			mt.setSwiftBankeDuznika(propReceiver.getProperty("swift"));
 			mt.setObracunskiRacunBankeDuznika(propReceiver.getProperty("obracunskiRac"));
 
@@ -225,7 +225,7 @@ public class NalogProvider implements Provider<DOMSource> {
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt103");
 			Marshaller marshaller = context.createMarshaller();
-			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper());
+			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("mt103"));
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(mt, new File("./MT103Test/mt103.xml"));
 			
@@ -234,7 +234,7 @@ public class NalogProvider implements Provider<DOMSource> {
 			mt103.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 			mt103.setAttribute("sender",propReceiver.getProperty("naziv"));
 			SecurityClass sc = new SecurityClass();
-			sc.saveDocument(doc, "./MT103Test/mt103.xml");*/
+			sc.saveDocument(doc, "./MT103Test/mt103.xml");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
