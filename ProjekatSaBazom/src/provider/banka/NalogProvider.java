@@ -344,7 +344,9 @@ public class NalogProvider implements Provider<DOMSource> {
 
 
 	private boolean createOrUpdateMT102(Nalog nalog) {
-	 	BankeSema semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+		Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
+
+		BankeSema semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 	 	int clCounter = 0;
 	 	
 	 	NerealizovanNalog nrn = new NerealizovanNalog();
@@ -361,8 +363,30 @@ public class NalogProvider implements Provider<DOMSource> {
 	 	if(clCounter++ ==3){
 	 		MT102 mt102 = new MT102();
 	 		ZaglavljeMT102 zag = new ZaglavljeMT102();
+	 		zag.setIdPoruke(MessageTransform.randomString(50));
+	 		
+	 		zag.setSwiftBankeDuznika(propReceiver.getProperty("swift"));
+	 		zag.setObracunskiRacunBankeDuzinka(propReceiver.getProperty("obracunskiRac"));
+	 		//moze da se izvuce iz poslednjeg naloga zato sto su svi nalozi grupisani za jednu banku
+	 		zag.setSwiftBankePoverioca(registar.getBanke().getBankaByCode(nalog.getRacunPoverioca().substring(0,3)).getSwift());
+	 		zag.setObracunskiRacunBankePoverioca(registar.getBanke().getBankaByCode(nalog.getRacunPoverioca().substring(0,3)).getRacun());
+	 		
+	 		BigDecimal sum = new BigDecimal(0);
+	 		
+	 		for (PojedinacnaUplata stavka: stavke.getPojedinacnaUplata()) {
+				sum= sum.add(stavka.getIznos());
+			}
+	 		
+	 		zag.setUkupanIznos(sum);
+	 		zag.setSifraValute(stavke.getPojedinacnaUplata().get(0).getSifraValute());
+	 		zag.setDatumValute(nalog.getDatumValute());
+	 		zag.setDatum(new Date());
+	 		
+	 		
 	 		mt102.setZaglavljeMT102(zag);
 	 		mt102.setPojedinacneUplate(stavke);
+	 		stavke.getPojedinacnaUplata().clear();
+	 		
 	 		for(int i=0; i<semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().size(); i++){
 		 		if(semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().get(i).getVrstaNaloga().equalsIgnoreCase("mt102")){
 		 			semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().remove(i);
@@ -372,8 +396,21 @@ public class NalogProvider implements Provider<DOMSource> {
 	 		return true;
 	 	}else{
 	 		PojedinacnaUplata pu = new PojedinacnaUplata();
+	 		
+	 		pu.setIdNalogaZaPlacanje(MessageTransform.randomString(50));
+	 		pu.setDuznik(nalog.getDuznikNalogodavac());
+	 		pu.setSvrhaUplate(nalog.getSvrhaPlacanja());
+	 		pu.setPrimalac(nalog.getPrimalacPoverilac());
 	 		pu.setDatumNaloga(nalog.getDatumNaloga());
-	 	
+	 		pu.setRacunDuznika(nalog.getRacunDuznika());
+	 		pu.setModelZaduzenja(nalog.getModelZaduzenja());
+	 		pu.setPozivNaBrojZaduzenja(nalog.getPozivNaBrojZaduzenja());
+	 		pu.setRacunPoverioca(nalog.getRacunPoverioca());
+	 		pu.setModelOdobrenja(nalog.getModelOdobrenja());
+	 		pu.setPozivNaBrojOdobrenja(nalog.getPozivNaBrojOdobrenja());
+	 		pu.setIznos(nalog.getIznos());
+	 		pu.setSifraValute(nalog.getOznakaValute());
+	 		
 	 		stavke.getPojedinacnaUplata().add(pu);
 			BankaDBUtil.storeBankaDatabase(semaBanka,  propReceiver.getProperty("address"));
 	 		return false;
