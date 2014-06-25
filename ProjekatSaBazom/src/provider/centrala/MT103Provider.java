@@ -34,27 +34,23 @@ import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
-import util.MyDatatypeConverter;
 import util.Validation;
-import basexdb.banka.BankeSema;
 import basexdb.centralna.CentralnaSema;
 import basexdb.registar.Registar;
-import basexdb.util.BankaDBUtil;
 import basexdb.util.CentralnaDBUtil;
 import basexdb.util.RegistarDBUtil;
 import beans.mt103.MT103;
 import beans.mt900.MT900;
 import beans.mt910.MT910;
-import beans.nalog.Nalog;
 import beans.notification.Notification;
 
 
 @Stateless
 @ServiceMode(value = Service.Mode.PAYLOAD)
 @WebServiceProvider(portName = "CentralnaRTGSNalogPort", 
-					serviceName = "CentralnaRTGSNalog",
-					targetNamespace = "http://www.toomanysecrets.com/CentralnaRTGSNalog",
-					wsdlLocation = "WEB-INF/wsdl/CentralnaRTGSNalog.wsdl")
+serviceName = "CentralnaRTGSNalog",
+targetNamespace = "http://www.toomanysecrets.com/CentralnaRTGSNalog",
+wsdlLocation = "WEB-INF/wsdl/CentralnaRTGSNalog.wsdl")
 public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 	private Document encryptedDocument;
@@ -65,31 +61,31 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 	private String apsolutePath = DocumentTransform.class.getClassLoader().getResource("mt910.xml").toString().substring(6);
 	private String apsolutePath103 = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
 	private MT103 mt103;
-	
+
 	public MT103Provider() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	
+
+
 	@Override
 	public DOMSource invoke(DOMSource request) {
-		
+
 		try {
-    		
-    		System.out.println("\nInvoking MT103Provider\n");
+
+			System.out.println("\nInvoking MT103Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			Document document =DocumentTransform.convertToDocument(request);
 			DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
-			
+
 			InputStream inputStreamReceiver = this.getClass().getClassLoader().getResourceAsStream("banka.properties");
 			propReceiver = new Properties();
 			propReceiver.load(inputStreamReceiver);
-			
+
 			Element esender = (Element) document.getElementsByTagName("MT103").item(0);
 			String sender = esender.getAttribute("sender");
-			
+
 			Document decryptedDocument = MessageTransform.unpack(document,"MT103", "MT103", ConstantsXWS.NAMESPACE_XSD_MT103, propReceiver, "banka", "MT103");
 
 			Document forSave = null;
@@ -97,65 +93,53 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				Reader reader = Validation.createReader(decryptedDocument);
 				forSave = Validation.buildDocumentWithValidation(reader, new String[]{ "http://localhost:8080/MT103Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 			}
-			
+
 			semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
-			
-			
-			
+
+
+
 			if (forSave != null) {
-			
+
 				Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_MT103,"timestamp").item(0);
 				String dateString = timestamp.getTextContent();
 				Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_MT103,"redniBrojPoruke").item(0);
 				int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
-				Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
 				sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
 
-				
+
 				decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
 				decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
 				decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
-				
-				
+
+
 				System.out.println("UUUUSAOOOOOOOOOOOOOO U MT103 PROVIDERRRRRRRRRRRRRRRRRRRRRRRRRRRsdasfhgjgfdsfdgh");
 				DocumentTransform.printDocument(decryptedDocument);
 				System.out.println("UUUUSAOOOOOOOOOOOOOO U MT103 PROVIDERRRRRRRRRRRRRRRRRRRRRRRRRRRsdasfhgjgfdsfdgh");
-			
+
 				JAXBContext context = JAXBContext.newInstance("beans.mt103");
 				Unmarshaller unmarshaller = context.createUnmarshaller();
 				mt103 = (MT103) unmarshaller.unmarshal(decryptedDocument);
-			
-			
+				
+				if(mt103 == null) {
+					System.out.println("MT103 JE NULLL");
+				}
+
+
 				if(!validateContent(mt103)) {
-					//DocumentTransform.createNotificationResponse("455", message,ConstantsXWS.TARGET_NAMESPACE_CENTRALNA_BANKA_MT103);
-					//return null;
 					return new DOMSource(null);
 				} else {
 					
-					/*MT103 mt103Temp = createMT103(mt103);
-					String reciver = null;
 					for(CentralnaSema.Banke b : semaBanka.getBanke()) {
-						if(b.getSwift().equals(mt103Temp.getSwiftBankePoverioca())) {
-							reciver = b.getNaziv();
+						if(b.getRacun().equals(mt103.getObracunskiRacunBankeDuznika())) {
+							b.setStanje(b.getStanje().subtract(mt103.getIznos()));
+						} else if (b.getRacun().equals(mt103.getObracunskiRacunBankePoverioca())) {
+							b.setStanje(b.getStanje().add(mt103.getIznos()));
 						}
 					}
-					MT910 mt910Temp = createMT910(mt103);
-					for(CentralnaSema.Banke b : semaBanka.getBanke()) {
-						if(b.getSwift().equals(mt910Temp.getSwiftBankePoverioca())) {
-							reciver = b.getNaziv();
-						}
-					}
-					if(testIt103(propReceiver, reciver, "cer"+reciver, apsolutePath103) &&
-							testIt910(propReceiver, reciver, "cer"+reciver, apsolutePath)) {
-						System.out.println("Sve je ok.");
-					} else {
-						System.out.println("Error.");
-					}*/
-					
 					//call clients
 					createMT910(mt103);
 					String reciver = null;
-					/*int size = semaBanka.getBanke().size();
+					int size = semaBanka.getBanke().size();
 					System.out.println("VELICINA LISTE "+size);
 					for(CentralnaSema.Banke b : semaBanka.getBanke()) {
 						System.out.println("SWIFT SVAKE BANKE: " + b.getSwift());
@@ -164,18 +148,26 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 						if(b.getSwift().equals(mt103.getSwiftBankePoverioca())) {
 							reciver = b.getNaziv();
 						}
-					}*/
-					if(testIt910(propReceiver, "bankab", "cer"+"bankab", apsolutePath)) {
+					}
+					if(testIt910(propReceiver, reciver, "cer"+reciver, apsolutePath)) {
+						System.out.println("USPESNO PROSAO!!!");
+					} else {
+						System.out.println("NIJE USPESNO PROSAO!!!");
+					}
+					if(testIt103(propReceiver, reciver, "cer"+reciver, apsolutePath103)) {
 						System.out.println("USPESNO PROSAO!!!");
 					} else {
 						System.out.println("NIJE USPESNO PROSAO!!!");
 					}
 					createMT900(mt103);
 					encryptedDocument = MessageTransform.packS("MT900", "MT900", apsolute, propReceiver, "cer"+sender, ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
+					semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(reciver).setBrojac(rbrPoruke);
+					semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(reciver).setTimestamp(dateString);
+					CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 				}
-			
+
 			}
-			
+
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (DOMException e) {
@@ -185,20 +177,17 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new DOMSource(encryptedDocument);
-		
+
 	}
-	
-	
-	
-	
+
+
+
+
 	private void createMT900(MT103 mt103) {
 		MT900 mt = null;
 		try {
@@ -210,13 +199,13 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			mt.setObracunskiRacunBankeDuzinka(mt103.getObracunskiRacunBankeDuznika());
 			mt.setSifraValute(mt103.getSifraValute());
 			mt.setSwiftBankeDuznika(mt103.getSwiftBankeDuznika());
-			
+
 			JAXBContext context = JAXBContext.newInstance("beans.mt900");
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			
+
 			marshaller.marshal(mt, new File(apsolute));
-			
+
 			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
 			Element mt900 = (Element) doc.getElementsByTagName("MT900").item(0);
 			mt900.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
@@ -224,7 +213,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			SecurityClass sc = new SecurityClass();
 			String apsolute1 = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
 			sc.saveDocument(doc, apsolute1);
-			
+
 		} catch (PropertyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -235,47 +224,57 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	private MT103 createMT103(MT103 mt103) {
 
 		Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
 
-			try {
-				JAXBContext context = JAXBContext.newInstance("beans.mt103");
-				Marshaller marshaller = context.createMarshaller();
-				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-				marshaller.marshal(mt103, new File(apsolute));
-			} catch (PropertyException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JAXBException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			JAXBContext context = JAXBContext.newInstance("beans.mt103");
+			Marshaller marshaller = context.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+			marshaller.marshal(mt103, new File(apsolutePath103));
+		} catch (PropertyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 
-			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
-			if(doc==null){
-				System.out.println("NULL JE DOCUMENT MT103");
-			}
-			Element mt103El = (Element) doc.getElementsByTagName("MT103").item(0);
-			mt103El.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			mt103El.setAttribute("sender", "centralnabanka");
-			SecurityClass sc = new SecurityClass();
-			sc.saveDocument(doc, apsolutePath103);
+		Document doc = Validation.buildDocumentWithoutValidation(apsolutePath103);
+		if(doc==null){
+			System.out.println("NULL JE DOCUMENT MT103");
+		}
+		Element mt103El = (Element) doc.getElementsByTagName("MT103").item(0);
+		mt103El.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+		mt103El.setAttribute("sender", "centralnabanka");
+		SecurityClass sc = new SecurityClass();
+		sc.saveDocument(doc, apsolutePath103);
 
 
 		RegistarDBUtil.storeRegistarDatabase(registar, "http://localhost:8081/BaseX75/rest/registar");
 		return mt103;
 	}
-	
-	
+
+
 	public boolean validateContent(MT103 mt103){
+		/*if(semaBanka == null) {
+			System.out.println("SEMA JE NULLL U VALIDACIJI");
+		}
+		for (CentralnaSema.Banke b : semaBanka.getBanke()) {
+			if(b.getSwift().equals(mt103.getSwiftBankeDuznika()) || b.getSwift().equals(mt103.getSwiftBankePoverioca())) {
+				message = "Ne postoji banka sa dostavljenim swift kodom";
+				return true;
+			}
+		}
+		return false;*/
 		return true;
 	}
-	
+
 	private void createMT910(MT103 mt103) {
 		MT910 mt = null;
 		try {
@@ -287,21 +286,21 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			mt.setObracunskiRacunBankePoverioca(mt103.getObracunskiRacunBankeDuznika());
 			mt.setSifraValute(mt103.getSifraValute());
 			mt.setSwiftBankePoverioca(mt103.getSwiftBankeDuznika());
-			
+
 			JAXBContext context = JAXBContext.newInstance("beans.mt910");
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			
+
 			String apsolutePathTemp = DocumentTransform.class.getClassLoader().getResource("mt910.xml").toString().substring(6);
 			marshaller.marshal(mt, new File(apsolutePathTemp));
-			
+
 			Document doc = Validation.buildDocumentWithoutValidation(apsolutePathTemp);
 			Element mt910 = (Element) doc.getElementsByTagName("MT910").item(0);
 			mt910.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 			mt910.setAttribute("idPoruke", "MT910");
 			SecurityClass sc = new SecurityClass();
 			sc.saveDocument(doc, apsolutePathTemp);
-			
+
 		} catch (PropertyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -312,172 +311,167 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	
-		
-		public boolean testIt103(Properties propSender, String receiver, String cert,String inputFile) {
 
+
+
+	public boolean testIt910(Properties propSender, String receiver, String cert,String inputFile) {
+
+		try {
+			URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/MT910Response?wsdl");
+			QName serviceName = new QName("http://www.toomanysecrets.com/MT910Response", "MT910Response");
+			QName portName = new QName("http://www.toomanysecrets.com/MT910Response","MT910ResponsePort");
+
+			Service service;
 			try {
-				URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/MT910Response?wsdl");
-				QName serviceName = new QName("http://www.toomanysecrets.com/MT910Response", "MT910Response");
-				QName portName = new QName("http://www.toomanysecrets.com/MT910Response","MT910ResponsePort");
+				service = Service.create(wsdlLocation, serviceName);
+			} catch (Exception e) {
+				throw Validation.generateSOAPFault("Server is not available.",
+						SoapFault.FAULT_CODE_CLIENT, null);
+			}
+			Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
 
-				Service service;
-				try {
-					service = Service.create(wsdlLocation, serviceName);
-				} catch (Exception e) {
-					throw Validation.generateSOAPFault("Server is not available.",
-							SoapFault.FAULT_CODE_CLIENT, null);
-				}
-				Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
 
-				createMT910(mt103);
-				Document encrypted = MessageTransform.packS("MT910", "MT910", inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_MT910, "MT910");
+			Document encrypted = MessageTransform.packS("MT910", "MT910", inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_MT910, "MT910");
 
-				DocumentTransform.printDocument(encrypted);
+			DocumentTransform.printDocument(encrypted);
 
-				BankeSema semaBanka = BankaDBUtil.loadBankaDatabase(propSender.getProperty("address"));
-				if(encrypted != null) {
-					semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
-					BankaDBUtil.storeBankaDatabase(semaBanka, propSender.getProperty("address"));
-				}
+			if(encrypted != null) {
+				semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
+				CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propSender.getProperty("address"));
+			}
 
 
 
-				if (encrypted != null) {
-					DOMSource response = dispatch.invoke(new DOMSource(encrypted));
+			if (encrypted != null) {
+				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 
-					if(response!=null) {
-						System.out.println("-------------------RESPONSE MESSAGE---------------------------------");	
-						Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification", ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, propSender,"banka", "Notifikacija");
+				if(response!=null) {
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");	
+					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification", ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, propSender,"banka", "Notifikacija");
 
-						DocumentTransform.printDocument(decryptedDocument);
-						System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+					DocumentTransform.printDocument(decryptedDocument);
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 
-						if(decryptedDocument != null){
+					if(decryptedDocument != null){
 
-							decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
-							decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
-							decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
-
-							
-							SecurityClass sc = new SecurityClass();
-							sc.saveDocument(decryptedDocument, apsolute);
-							JAXBContext context = JAXBContext.newInstance("beans.notification");
-							Unmarshaller unmarshaller = context.createUnmarshaller();
-							Notification notification = (Notification) unmarshaller.unmarshal(new File(apsolute));
-							
-							System.out.println("Notification message: " + notification.getNotificationstring());
-							
-							return true;
+						decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
+						decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
+						decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 
 
-						}else{
-							return false;
-						}
+						SecurityClass sc = new SecurityClass();
+						sc.saveDocument(decryptedDocument, apsolute);
+						JAXBContext context = JAXBContext.newInstance("beans.notification");
+						Unmarshaller unmarshaller = context.createUnmarshaller();
+						Notification notification = (Notification) unmarshaller.unmarshal(new File(apsolute));
 
-					}else {
+						System.out.println("Notification message: " + notification.getNotificationstring());
+
+						return true;
+
+
+					}else{
 						return false;
 					}
+
 				}else {
 					return false;
 				}
-			}catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (TransformerFactoryConfigurationError e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
+			}else {
+				return false;
 			}
-			return true;
-
+		}catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (TransformerFactoryConfigurationError e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		
-	
-		
-		public boolean testIt910(Properties propSender, String receiver, String cert,String inputFile) {
+		return true;
 
+	}
+
+	public boolean testIt103(Properties propSender, String receiver, String cert,String inputFile) {
+
+		try {
+			URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/MT103Response?wsdl");
+			QName serviceName = new QName("http://www.toomanysecrets.com/MT910Response", "MT103Response");
+			QName portName = new QName("http://www.toomanysecrets.com/MT910Response","MT103ResponsePort");
+
+			Service service;
 			try {
-				URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/MT910Response?wsdl");
-				QName serviceName = new QName("http://www.toomanysecrets.com/MT103Response", "MT9103Response");
-				QName portName = new QName("http://www.toomanysecrets.com/MT103Response","MT910ResponsePort");
-
-				Service service;
-				try {
-					service = Service.create(wsdlLocation, serviceName);
-				} catch (Exception e) {
-					throw Validation.generateSOAPFault("Server is not available.",
-							SoapFault.FAULT_CODE_CLIENT, null);
-				}
-				Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
+				service = Service.create(wsdlLocation, serviceName);
+			} catch (Exception e) {
+				throw Validation.generateSOAPFault("Server is not available.",
+						SoapFault.FAULT_CODE_CLIENT, null);
+			}
+			Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
 
 
-				Document encrypted = MessageTransform.packS("MT910", "MT910", inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_MT910, "MT910");
+			Document encrypted = MessageTransform.packS("MT103", "MT103", inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_MT103, "MT103");
 
-				DocumentTransform.printDocument(encrypted);
+			DocumentTransform.printDocument(encrypted);
 
-				BankeSema semaBanka = BankaDBUtil.loadBankaDatabase(propSender.getProperty("address"));
-				if(encrypted != null) {
-					semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
-					BankaDBUtil.storeBankaDatabase(semaBanka, propSender.getProperty("address"));
-				}
+			if(encrypted != null) {
+				semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
+				CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propSender.getProperty("address"));
+			}
 
 
 
-				if (encrypted != null) {
-					DOMSource response = dispatch.invoke(new DOMSource(encrypted));
+			if (encrypted != null) {
+				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 
-					if(response!=null) {
-						System.out.println("-------------------RESPONSE MESSAGE---------------------------------");	
-						Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification", ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, propSender,"banka", "Notifikacija");
+				if(response!=null) {
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");	
+					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification", ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, propSender,"banka", "Notifikacija");
 
-						DocumentTransform.printDocument(decryptedDocument);
-						System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+					DocumentTransform.printDocument(decryptedDocument);
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 
-						if(decryptedDocument != null){
+					if(decryptedDocument != null){
 
-							decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
-							decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
-							decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
-
-							
-							SecurityClass sc = new SecurityClass();
-							sc.saveDocument(decryptedDocument, apsolute);
-							JAXBContext context = JAXBContext.newInstance("beans.notification");
-							Unmarshaller unmarshaller = context.createUnmarshaller();
-							Notification notification = (Notification) unmarshaller.unmarshal(new File(apsolute));
-							
-							System.out.println("Notification message: " + notification.getNotificationstring());
-							
-							return true;
+						decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
+						decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
+						decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 
 
-						}else{
-							return false;
-						}
+						SecurityClass sc = new SecurityClass();
+						sc.saveDocument(decryptedDocument, apsolute);
+						JAXBContext context = JAXBContext.newInstance("beans.notification");
+						Unmarshaller unmarshaller = context.createUnmarshaller();
+						Notification notification = (Notification) unmarshaller.unmarshal(new File(apsolute));
 
-					}else {
+						System.out.println("Notification message: " + notification.getNotificationstring());
+
+						return true;
+
+
+					}else{
 						return false;
 					}
+
 				}else {
 					return false;
 				}
-			}catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (TransformerFactoryConfigurationError e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
+			}else {
+				return false;
 			}
-			return true;
-
+		}catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (TransformerFactoryConfigurationError e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-	
-	
-	
+		return true;
+
+	}
+
+
+
 }
 
 

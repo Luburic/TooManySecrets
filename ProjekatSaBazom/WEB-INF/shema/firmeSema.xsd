@@ -2,8 +2,10 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns="http://www.toomanysecrets.com/firmesema"
     targetNamespace="http://www.toomanysecrets.com/firmesema"
-    xmlns:faktura="http://www.toomanysecrets.com/faktura">
+    xmlns:faktura="http://www.toomanysecrets.com/faktura"
+    xmlns:nalog="http://www.toomanysecrets.com/nalog">
     <xs:import namespace="http://www.toomanysecrets.com/faktura" schemaLocation="FakturaRaw.xsd"/>
+    <xs:import namespace="http://www.toomanysecrets.com/nalog" schemaLocation="NalogRaw.xsd"/>
     <xs:element name="firmeSema">
         <xs:complexType>
             <xs:sequence>
@@ -88,6 +90,20 @@
                     <xs:complexType>
                         <xs:sequence maxOccurs="unbounded" minOccurs="0">
                             <xs:element ref="faktura:faktura"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="naloziZaSefa">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element ref="nalog:nalog"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="naloziZaDirektora">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element ref="nalog:nalog"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
