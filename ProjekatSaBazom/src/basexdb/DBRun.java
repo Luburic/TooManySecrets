@@ -11,6 +11,7 @@ public class DBRun {
 			initBanke();
 			initCentralna();
 			initFirme();
+			initRegistar();
 			System.out.println("Inicijalizacija baze uspesno zavrsena");
 		}else{
 			System.out.println("Baza nije aktivna");
@@ -55,6 +56,19 @@ public class DBRun {
 
 			RESTUtility.createResource("http://localhost:8081/BaseX75/rest/firmaa", "firma.xml", new FileInputStream(new File("WEB-INF/database/firmaa_init.xml")));
 			RESTUtility.createResource("http://localhost:8081/BaseX75/rest/firmab", "firma.xml", new FileInputStream(new File("WEB-INF/database/firmab_init.xml")));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public static void initRegistar(){
+		try{
+
+			RESTUtility.dropSchema("http://localhost:8081/BaseX75/rest/registar");
+			RESTUtility.createSchema("http://localhost:8081/BaseX75/rest/registar");
+
+			RESTUtility.createResource("http://localhost:8081/BaseX75/rest/registar", "registar.xml", new FileInputStream(new File("WEB-INF/database/registar_init.xml")));
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://www.toomanysecrets.com/MT103Response"
+	xmlns:ws="http://www.toomanysecrets.com/MT103Response" xmlns:external="http://www.toomanysecrets.com/mt103"
+	xmlns:external1="http://www.toomanysecrets.com/notification"
+
+	name="MT103Response" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+	<wsdl:import namespace="http://www.toomanysecrets.com/mt103"
+		location="http://localhost:8080/MT103Crypt.xsd" />
+	<wsdl:import namespace="http://www.toomanysecrets.com/notification"
+		location="http://localhost:8080/NotificationCrypt.xsd" />
+
+	<wsdl:message name="MT103ResponseRequest">
+		<wsdl:part name="MT103ResponseReq" element="external:MT103" />
+	</wsdl:message>
+
+
+	<wsdl:message name="notifikacija">
+		<wsdl:part name="notif" element="external1:notification" />
+	</wsdl:message>
+
+
+	<wsdl:portType name="MT103ResponsePortType">
+
+		<!--request-response -->
+		<wsdl:operation name="PrimiMT103Response">
+			<wsdl:input name="MT103ResponseInput" message="ws:MT103ResponseRequest" />
+			<wsdl:output name="strOutput" message="ws:notifikacija" />
+		</wsdl:operation>
+
+
+	</wsdl:portType>
+
+	<wsdl:binding name="MT103ResponseBinding" type="ws:MT103ResponsePortType">
+
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+			style="document" />
+
+		<wsdl:operation name="PrimiMT103Response">
+
+			<soap:operation soapAction="" style="document" />
+
+			<wsdl:input name="MT103ResponseInput">
+				<soap:body use="literal" />
+			</wsdl:input>
+
+			<wsdl:output name="strOutput">
+				<soap:body use="literal" />
+			</wsdl:output>
+
+
+		</wsdl:operation>
+
+	</wsdl:binding>
+
+
+
+	<wsdl:service name="MT103Response">
+
+		<wsdl:port name="MT103ResponsePort" binding="ws:MT103ResponseBinding">
+			<soap:address location="http://localhost:8080/MT103ResponsePort" />
+		</wsdl:port>
+
+	</wsdl:service>
+
+
+</wsdl:definitions>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:registar xmlns:ns1="http://www.toomanysecrets.com/registar"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.toomanysecrets.com/registar file:/C:/Users/Milan/Documents/GitHub/TooManySecrets/ProjekatSaBazom/WEB-INF/shema/registar.xsd">
+    <banke>
+        <banka>
+            <naziv>bankaa</naziv>
+            <swift>ERSTSR20</swift>
+            <adresa>adresa0</adresa>
+        </banka>
+        <banka>
+            <naziv>bankab</naziv>
+            <swift>AAAAAA00</swift>
+            <adresa>adresa1</adresa>
+        </banka>
+    </banke>
+    <firme>
+        <firma>
+            <naziv>firmaa</naziv>
+            <pib>pib0</pib>
+            <adresa>adresa2</adresa>
+        </firma>
+        <firma>
+            <naziv>firmab</naziv>
+            <pib>pib1</pib>
+            <adresa>adresa3</adresa>
+        </firma>
+    </firme>
+</ns1:registar>

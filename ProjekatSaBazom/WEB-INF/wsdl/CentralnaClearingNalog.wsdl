@@ -2,8 +2,6 @@
 <wsdl:definitions targetNamespace="http://www.toomanysecrets.com/CentralnaClearingNalog"
 	xmlns:ws="http://www.toomanysecrets.com/CentralnaClearingNalog" xmlns:external="http://www.toomanysecrets.com/mt102"
 	xmlns:external1="http://www.toomanysecrets.com/mt900"
-	xmlns:external2="http://www.toomanysecrets.com/mt910"
-	xmlns:external3="http://www.toomanysecrets.com/notification"
 	name="CentralnaClearingNalog" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
 	xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
 	xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
@@ -13,7 +11,6 @@
 	
 	<wsdl:import namespace="http://www.toomanysecrets.com/mt102" location="http://localhost:8080/MT102Crypt.xsd" />
 	<wsdl:import namespace="http://www.toomanysecrets.com/mt900" location="http://localhost:8080/MT900Crypt.xsd" />
-	<wsdl:import namespace="http://www.toomanysecrets.com/mt910" location="http://localhost:8080/MT910Crypt.xsd" />
 	<wsdl:import namespace="http://www.toomanysecrets.com/notification" location="http://localhost:8080/NotificationCrypt.xsd" />
 
 
@@ -21,16 +18,8 @@
 		<wsdl:part name="clearing" element="external:MT102"/>
 	</wsdl:message>
 
-	<wsdl:message name="odobrenjeClearingResponse">
-	    <wsdl:part name="odobrenje" element="external2:MT910"/>
-	</wsdl:message>
-
 	<wsdl:message name="zaduzenjeClearingResponse">
 	    <wsdl:part name="zaduzenje" element="external1:MT900"/>
-	</wsdl:message>
-	
-	<wsdl:message name="notifikacija">
-	    <wsdl:part name="notif" type="external3:notification"/>
 	</wsdl:message>
 	
 	<wsdl:portType name="CentralnaClearingNalogPortType">
@@ -39,15 +28,6 @@
 		    <wsdl:output name="zaduzanjeClearingOutput" message="ws:zaduzenjeClearingResponse"/>
 		</wsdl:operation>
 		
-		<wsdl:operation name="ProslediClearingOdgovor">
-		    <wsdl:input name="clearingNalogInput" message="ws:clearingRequest"/>
-		    <wsdl:output name="strOutput" message="ws:notifikacija"/>
-		</wsdl:operation>
-		
-		<wsdl:operation name="ProslediClearingOdobrenje">
-		    <wsdl:input name="clearingOdobrenjeInput" message="ws:odobrenjeClearingResponse"/>
-		    <wsdl:output name="strOutput" message="ws:notifikacija"/>
-		</wsdl:operation>
 	</wsdl:portType>
 	<wsdl:binding name="CentralnaClearingNalogSOAP" type="ws:CentralnaClearingNalogPortType">
 		<soap:binding style="document"
@@ -57,19 +37,7 @@
 	        <wsdl:input name="clearingNalogInput"><soap:body use="literal"/></wsdl:input>
 	        <wsdl:output name="zaduzanjeClearingOutput"><soap:body use="literal"/></wsdl:output>
 	    </wsdl:operation>
-	    
-	    <wsdl:operation name="ProslediClearingOdgovor">
-	        <soap:operation soapAction="" style="document"/>
-	        <wsdl:input name="clearingNalogInput"><soap:body use="literal"/></wsdl:input>
-	        <wsdl:output name="strOutput"><soap:body use="literal"/></wsdl:output>
-	    </wsdl:operation>
-	    
-	    <wsdl:operation name="ProslediClearingOdobrenje">
-	        <soap:operation soapAction="" style="document"/>
-	        <wsdl:input name="clearingOdobrenjeInput"><soap:body use="literal"/></wsdl:input>
-	        <wsdl:output name="strOutput"><soap:body use="literal"/></wsdl:output>
-	    </wsdl:operation>
-	    
+
 	</wsdl:binding>
 	<wsdl:service name="CentralnaClearingNalog">
 		<wsdl:port binding="ws:CentralnaClearingNalogSOAP" name="CentralnaClearingNalogPort">

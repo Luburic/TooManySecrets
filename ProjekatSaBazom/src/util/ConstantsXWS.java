@@ -23,6 +23,9 @@ public class ConstantsXWS {
 	public static final String TARGET_NAMESPACE_BANKA_MT = "http://www.toomanysecrets.com/OdobrenjeMt";
 	public static final String TARGET_NAMESPACE_CENTRALNA_BANKA_MT102 = "http://www.toomanysecrets.com/CentralnaClearingNalog";
 	public static final String TARGET_NAMESPACE_CENTRALNA_BANKA_MT103 = "http://www.toomanysecrets.com/CentralnaRTGSNalog";
+	public static final String TARGET_NAMESPACE_CENTRALNA_BANKA_MT102_RESPONSE = "http://www.toomanysecrets.com/MT102Response";
+	public static final String TARGET_NAMESPACE_CENTRALNA_BANKA_MT103_RESPONSE = "http://www.toomanysecrets.com/MT103Response";
+	public static final String TARGET_NAMESPACE_CENTRALNA_BANKA_MT910_RESPONSE = "http://www.toomanysecrets.com/MT910Response";
 
 	public static TRola AKTIVNA_ROLA = null;
 	public static TKorisnik TRENUTNI_KORISNIK = null;

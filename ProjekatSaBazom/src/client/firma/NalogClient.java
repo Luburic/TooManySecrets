@@ -82,16 +82,7 @@ public class NalogClient {
 					Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NOTIFICATION,"redniBrojPoruke").item(0);
 					
 					int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
-					Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
 					String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
-					int brojac = semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getBankaByNaziv(owner).getBrojac();
-					Date dateFromDb = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(semaFirma.getBrojacPoslednjePrimljeneNotifikacije().getBankaByNaziv(owner).getTimestamp());
-
-					if(rbrPoruke <= brojac || dateFromDb.after(date) || dateFromDb.equals(date)) {
-						JOptionPane.showMessageDialog(null,
-								"Pokusaj napada",
-								"Warning!!!", JOptionPane.INFORMATION_MESSAGE);
-					}
 					decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
 					decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION);
 					decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
@@ -109,6 +100,8 @@ public class NalogClient {
 					JOptionPane.showMessageDialog(null,notification.getNotificationstring(),"Notification", JOptionPane.INFORMATION_MESSAGE);
 				}
 				FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
+				} else {
+					JOptionPane.showMessageDialog(null,"Ne postoji racun u banci.","Notification", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 
@@ -136,7 +129,7 @@ public class NalogClient {
 			nalog.setSender(sender);
 			nalog.setIdPoruke("123456");
 
-			nalog.setDuznikNalogodavac("pera");
+			nalog.setDuznikNalogodavac("firmaa");
 			nalog.setPrimalacPoverilac("djoka");
 
 			nalog.setDatumNaloga(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
@@ -153,7 +146,7 @@ public class NalogClient {
 			nalog.setPozivNaBrojOdobrenja("111111");
 			nalog.setPozivNaBrojZaduzenja("111111");
 
-			nalog.setRacunDuznika("111111111111111111");
+			nalog.setRacunDuznika("123123123123123123");
 			nalog.setRacunPoverioca("222222222222222222");
 
 			nalog.setSvrhaPlacanja("reket");

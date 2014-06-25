@@ -30,6 +30,37 @@
 		endpointName="ws:BankaIzvodPort"
 		/>
 		
+				<jaxws:endpoint 
+		id="mt102Response"
+		address="/MT102Response"
+		implementor="provider.banka.MT102ResponseProvider"
+		wsdlLocation="WEB-INF/wsdl/MT102Response.wsdl"
+		xmlns:ws="http://www.toomanysecrets.com/MT102Response"
+		serviceName="ws:MT102Response"
+		endpointName="ws:MT102ResponsePort"
+		/>
+		
+		<jaxws:endpoint 
+		id="mt103Response"
+		address="/MT103Response"
+		implementor="provider.banka.MT103ResponseProvider"
+		wsdlLocation="WEB-INF/wsdl/MT103Response.wsdl"
+		xmlns:ws="http://www.toomanysecrets.com/MT103Response"
+		serviceName="ws:MT103Response"
+		endpointName="ws:MT103ResponsePort"
+		/>
+		
+		<jaxws:endpoint 
+		id="mt910Response"
+		address="/MT910Response"
+		implementor="provider.banka.MT910ResponseProvider"
+		wsdlLocation="WEB-INF/wsdl/MT910Response.wsdl"
+		xmlns:ws="http://www.toomanysecrets.com/MT910Response"
+		serviceName="ws:MT910Response"
+		endpointName="ws:MT910ResponsePort"
+		/>
+		
+		
 		
 </beans>
   
