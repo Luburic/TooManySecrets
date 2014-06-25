@@ -8,6 +8,12 @@
       <roleName>direktor</roleName>
       <akcije>
 		<akcija>
+		  <nazivAkcije>izmenaCeneFakture</nazivAkcije>
+		</akcija>
+		<akcija>
+		  <nazivAkcije>izmenaDatumaIPrioritetaNaloga</nazivAkcije>
+		</akcija>
+		<akcija>
 		  <nazivAkcije>odbijanjeFakture</nazivAkcije>
 		</akcija>
 		<akcija>

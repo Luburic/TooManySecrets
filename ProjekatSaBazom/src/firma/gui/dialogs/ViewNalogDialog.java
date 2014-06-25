@@ -46,7 +46,6 @@ public class ViewNalogDialog extends AbstractViewDialog {
 		setTitle("Pregled naloga");
 		setLayout(new MigLayout("fill"));
 		setSize(1000, 600);
-
 		List<Nalog> nalozi = new ArrayList<Nalog>();
 		for (TAkcija akcija : ConstantsXWS.AKTIVNA_ROLA.getAkcije().getAkcija()) {
 			if (akcija.getNazivAkcije().equals("odobrenjeNalogIspodGranice")) {
@@ -57,16 +56,15 @@ public class ViewNalogDialog extends AbstractViewDialog {
 				nalozi = MainFrame.getInstance().getBaza().getNaloziZaDirektora().getNalog();
 				break;
 			}
-
 		}
 
 		ListTableModel model = new ListTableModel(Arrays.asList(new String[] { "nalog hold", "Dužnik",
 				"Svrha plaćanja", "Primalac", "Iznos" }));
-/*
+
 		for (Nalog n : nalozi) {
 			Object[] row = { n, n.getDuznikNalogodavac(), n.getSvrhaPlacanja(), n.getPrimalacPoverilac(), n.getIznos() };
 			model.addRow(row);
-		}*/
+		}
 
 		model.setModelEditable(false);
 		table = new JTable(model);

@@ -13,6 +13,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
+import basexdb.util.FirmaDBUtil;
 import beans.faktura.Faktura;
 import beans.faktura.Faktura.Stavka;
 import beans.faktura.Faktura.Zaglavlje;
@@ -91,11 +92,15 @@ public class ViewStavkeDialog extends JDialog {
 				faktura.getZaglavlje().setUkupanRabat(BigDecimal.valueOf(ukupanRabatStavke));
 
 				if (zaUplatuStavke > 50000) {
-					// TODO: izbrisi iz liste od sefa racunovodstva i upisi fakturu u listu direktora.
+					MainFrame.getInstance().getBaza().getFaktureZaSefa().getFaktura().remove(faktura);
+					MainFrame.getInstance().getBaza().getFaktureZaDirektora().getFaktura().add(faktura);
+					FirmaDBUtil.storeFirmaDatabase(MainFrame.getInstance().getBaza(),
+							"http://localhost:8081/BaseX75/rest/firmaa");
 					((ListTableModel) parent.getTable().getModel()).removeRows(ViewStavkeDialog.this.index);
 					;
 				} else {
-					// TODO: Sacuvaj izmenjenu fakturu u bazu kod sefa
+					FirmaDBUtil.storeFirmaDatabase(MainFrame.getInstance().getBaza(),
+							"http://localhost:8081/BaseX75/rest/firmaa");
 					Zaglavlje z = faktura.getZaglavlje();
 					((ListTableModel) parent.getTable().getModel()).replaceRow(
 							ViewStavkeDialog.this.index,

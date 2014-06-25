@@ -7,35 +7,35 @@ import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import basexdb.util.FirmaDBUtil;
-import beans.faktura.Faktura;
+import beans.nalog.Nalog;
 import firma.gui.MainFrame;
 import firma.gui.dialogs.AbstractViewDialog;
 import firma.gui.tables.ListTableModel;
 
 @SuppressWarnings("serial")
-public class ApproveAction extends AbstractAction {
+public class ApproveNalogAction extends AbstractAction {
 	private AbstractViewDialog dialog;
 
-	public ApproveAction(AbstractViewDialog dialog) {
+	public ApproveNalogAction(AbstractViewDialog dialog) {
 		this.dialog = dialog;
 		KeyStroke ctrlDKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK);
 		putValue(ACCELERATOR_KEY, ctrlDKeyStroke);
-		putValue(SHORT_DESCRIPTION, "Odobri fakturu");
-		putValue(NAME, "Odobri fakturu");
+		putValue(SHORT_DESCRIPTION, "Odobri nalog");
+		putValue(NAME, "Odobri nalog");
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int i = dialog.getTable().getSelectedRow();
 		if (i != -1) {
-			Faktura faktura = (Faktura) ((ListTableModel) dialog.getTable().getModel()).getRow(i).get(0);
+			Nalog nalog = (Nalog) ((ListTableModel) dialog.getTable().getModel()).getRow(i).get(0);
 			((ListTableModel) dialog.getTable().getModel()).removeRows(i);
 
-			MainFrame.getInstance().getBaza().getFaktureZaSefa().getFaktura().remove(faktura);
-			MainFrame.getInstance().getBaza().getFaktureZaDirektora().getFaktura().remove(faktura);
+			MainFrame.getInstance().getBaza().getNaloziZaSefa().getNalog().remove(nalog);
+			MainFrame.getInstance().getBaza().getNaloziZaDirektora().getNalog().remove(nalog);
 			FirmaDBUtil.storeFirmaDatabase(MainFrame.getInstance().getBaza(),
 					"http://localhost:8081/BaseX75/rest/firmaa");
-			// TODO: Kod za slanje fakture
+			// TODO: Kod za slanje naloga
 		}
 	}
 
