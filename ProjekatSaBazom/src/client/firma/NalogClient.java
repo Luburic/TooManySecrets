@@ -130,7 +130,7 @@ public class NalogClient {
 			nalog.setIdPoruke("123456");
 
 			nalog.setDuznikNalogodavac("firmaa");
-			nalog.setPrimalacPoverilac("djoka");
+			nalog.setPrimalacPoverilac("firmab");
 
 			nalog.setDatumNaloga(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
 			nalog.setDatumValute(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
@@ -146,14 +146,13 @@ public class NalogClient {
 			nalog.setPozivNaBrojOdobrenja("111111");
 			nalog.setPozivNaBrojZaduzenja("111111");
 
-			nalog.setRacunDuznika("123123123123123123");
-			nalog.setRacunPoverioca("222222222222222222");
+			nalog.setRacunDuznika("340111111111111111");
+			nalog.setRacunPoverioca("360222222222222222");
 
 			nalog.setSvrhaPlacanja("reket");
 
 			JAXBContext context = JAXBContext.newInstance("beans.nalog");
 			Marshaller marshaller = context.createMarshaller();
-			//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NSPrefixMapper("nalog"));
 			
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			marshaller.marshal(nalog, new File("./NalogTest/nalog.xml")); 

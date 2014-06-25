@@ -314,7 +314,7 @@
 						<exclude name="**/client/*.class"/>
 						<include name="**/*.class"/>
 						<exclude name="**/provider/firma/*.class"/>
-						<exclude name="**/provider/centrala/*.class"/>
+						<!--exclude name="**/provider/centrala/*.class"/-->
 						<include name="**/*.properties"/>
 						<exclude name="**/firmaA.properties"/>
 						<exclude name="**/firmaB.properties"/>
@@ -334,8 +334,8 @@
 					<webinf dir="${webinf.dir}">
 						<include name="wsdl/**"/>
 						<exclude name="wsdl/Firma.wsdl"/>
-						<exclude name="wsdl/CentralnaClearingNalog.wsdl"/>
-						<exclude name="wsdl/CentralnaRTGSNalog.wsdl"/>
+						<!--exclude name="wsdl/CentralnaClearingNalog.wsdl"/>
+						<exclude name="wsdl/CentralnaRTGSNalog.wsdl"/-->
 						<include name="shema/**"/>
 						<include name="keystores/*.cer"/>
 						<include name="keystores/*.jks"/>
@@ -386,7 +386,7 @@
 							<exclude name="**/client/*.class"/>
 							<include name="**/*.class"/>
 							<exclude name="**/provider/firma/*.class"/>
-							<exclude name="**/provider/centrala/*.class"/>
+							<!--exclude name="**/provider/centrala/*.class"/-->
 							<include name="**/*.properties"/>
 							<exclude name="**/firmaA.properties"/>
 							<exclude name="**/firmaB.properties"/>
@@ -406,8 +406,8 @@
 						<webinf dir="${webinf.dir}">
 							<include name="wsdl/**"/>
 							<exclude name="wsdl/Firma.wsdl"/>
-							<exclude name="wsdl/CentralnaClearingNalog.wsdl"/>
-							<exclude name="wsdl/CentralnaRTGSNalog.wsdl"/>
+							<!--exclude name="wsdl/CentralnaClearingNalog.wsdl"/>
+							<exclude name="wsdl/CentralnaRTGSNalog.wsdl"/-->
 							<include name="shema/**"/>
 							<include name="keystores/*.cer"/>
 							<include name="keystores/*.jks"/>
@@ -459,7 +459,7 @@
 								<exclude name="**/client/*.class"/>
 								<include name="**/*.class"/>
 								<exclude name="**/provider/firma/*.class"/>
-								<exclude name="**/provider/banka/*.class"/>
+								<!--exclude name="**/provider/banka/*.class"/-->
 								<include name="**/*.properties"/>
 								<exclude name="**/firmaA.properties"/>
 								<exclude name="**/firmaB.properties"/>
@@ -480,11 +480,11 @@
 							<webinf dir="${webinf.dir}">
 								<include name="wsdl/**"/>
 								<exclude name="wsdl/Firma.wsdl"/>
-								<exclude name="wsdl/BankaNalog.wsdl"/>
-								<exclude name="wsdl/BankaIzvod.wsdl"/>
-								<exclude name="wsdl/MT102Response.wsdl"/>
+								<!--exclude name="wsdl/BankaNalog.wsdl"/>
+								<exclude name="wsdl/BankaIzvod.wsdl"/-->
+								<!--exclude name="wsdl/MT102Response.wsdl"/>
 								<exclude name="wsdl/MT103Response.wsdl"/>
-								<exclude name="wsdl/MT910Response.wsdl"/>
+								<exclude name="wsdl/MT910Response.wsdl"/-->
 								<include name="shema/**"/>
 								<include name="keystores/*.cer"/>
 								<include name="keystores/*.jks"/>

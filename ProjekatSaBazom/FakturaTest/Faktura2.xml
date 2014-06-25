@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><faktura xmlns="http://www.toomanysecrets.com/faktura" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <zaglavlje idPoruke="1">
-        <nazivDobavljaca>1</nazivDobavljaca>
-        <adresaDobavljaca>1</adresaDobavljaca>
+    <zaglavlje idPoruke="123">
+        <nazivDobavljaca>123</nazivDobavljaca>
+        <adresaDobavljaca>123</adresaDobavljaca>
         <pibDobavljaca>12312312312</pibDobavljaca>
-        <nazivKupca>123</nazivKupca>
+        <nazivKupca>1</nazivKupca>
         <adresaKupca>1</adresaKupca>
         <pibKupca>12312312312</pibKupca>
-        <brojRacuna>111111</brojRacuna>
-        <datumRacuna>2014-06-11</datumRacuna>
+        <brojRacuna>123123</brojRacuna>
+        <datumRacuna>2014-06-25</datumRacuna>
         <vrednostRobe>1.0</vrednostRobe>
         <vrednostUsluga>1.0</vrednostUsluga>
         <ukupnoRobaIUsluge>1.0</ukupnoRobaIUsluge>
         <ukupanRabat>1.0</ukupanRabat>
         <ukupanPorez>1.0</ukupanPorez>
-        <oznakaValute>1</oznakaValute>
-        <iznosZaUplatu>1.0</iznosZaUplatu>
+        <oznakaValute>123</oznakaValute>
+        <iznosZaUplatu>2123.0</iznosZaUplatu>
         <uplataNaRacun>111111111111111111</uplataNaRacun>
-        <datumValute>2014-06-19</datumValute>
+        <datumValute>2014-06-25</datumValute>
     </zaglavlje>
     <stavka redniBroj="1">
         <nazivRobeIliUsluge>1</nazivRobeIliUsluge>

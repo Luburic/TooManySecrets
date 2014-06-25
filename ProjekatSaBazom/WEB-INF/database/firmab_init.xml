@@ -10,8 +10,8 @@
     <informacijeOBankama xmlns="">
         <banka>
             <naziv>bankab</naziv>
-            <swift>BBBBBB00</swift>
-            <brojRacuna>222222222222222222</brojRacuna>
+            <swift>COMBSR20</swift>
+            <brojRacuna>360222222222222222</brojRacuna>
         </banka>
     </informacijeOBankama>
     <placeneFakture xmlns="">

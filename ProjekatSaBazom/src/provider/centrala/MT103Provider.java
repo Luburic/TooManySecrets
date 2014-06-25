@@ -117,7 +117,9 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 				
 				
+				System.out.println("UUUUSAOOOOOOOOOOOOOO U MT103 PROVIDERRRRRRRRRRRRRRRRRRRRRRRRRRRsdasfhgjgfdsfdgh");
 				DocumentTransform.printDocument(decryptedDocument);
+				System.out.println("UUUUSAOOOOOOOOOOOOOO U MT103 PROVIDERRRRRRRRRRRRRRRRRRRRRRRRRRRsdasfhgjgfdsfdgh");
 			
 				JAXBContext context = JAXBContext.newInstance("beans.mt103");
 				Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -128,16 +130,31 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					//DocumentTransform.createNotificationResponse("455", message,ConstantsXWS.TARGET_NAMESPACE_CENTRALNA_BANKA_MT103);
 					//return null;
 					return new DOMSource(null);
-				}else {
+				} else {
+					
+					/*MT103 mt103Temp = createMT103(mt103);
+					String reciver = null;
+					for(CentralnaSema.Banke b : semaBanka.getBanke()) {
+						if(b.getSwift().equals(mt103Temp.getSwiftBankePoverioca())) {
+							reciver = b.getNaziv();
+						}
+					}
+					MT910 mt910Temp = createMT910(mt103);
+					for(CentralnaSema.Banke b : semaBanka.getBanke()) {
+						if(b.getSwift().equals(mt910Temp.getSwiftBankePoverioca())) {
+							reciver = b.getNaziv();
+						}
+					}
+					if(testIt103(propReceiver, reciver, "cer"+reciver, apsolutePath103) &&
+							testIt910(propReceiver, reciver, "cer"+reciver, apsolutePath)) {
+						System.out.println("Sve je ok.");
+					} else {
+						System.out.println("Error.");
+					}*/
+					
 					//call clients
 					createMT900(mt103);
-					encryptedDocument = MessageTransform.packS("MT900", "MT900", apsolute, propReceiver, "cer"+sender,ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
-				}
-				MT910Client mt910Client = new MT910Client();
-				MT103Client mt103Client = new MT103Client();
-				if(mt910Client.testIt(propReceiver, mt103.getPrimalac(), "cer"+mt103.getPrimalac(), apsolutePath) &&
-						mt103Client.testIt(propReceiver, mt103.getPrimalac(), "cer"+mt103.getPrimalac(), apsolutePath103)) {
-					System.out.println("Sve je ok.");
+					encryptedDocument = MessageTransform.packS("MT900", "MT900", apsolute, propReceiver, "cer"+sender, ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
 				}
 			
 			}
@@ -175,7 +192,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			mt.setIznos(mt103.getIznos());
 			mt.setObracunskiRacunBankeDuzinka(mt103.getObracunskiRacunBankeDuznika());
 			mt.setSifraValute(mt103.getSifraValute());
-			mt.setSwiftBankeDuznika(mt.getSwiftBankeDuznika());
+			mt.setSwiftBankeDuznika(mt103.getSwiftBankeDuznika());
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt900");
 			Marshaller marshaller = context.createMarshaller();
@@ -186,9 +203,10 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
 			Element mt900 = (Element) doc.getElementsByTagName("MT900").item(0);
 			mt900.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			mt900.setAttribute("idPoruke", mt103.getIdPoruke());
+			mt900.setAttribute("idPoruke", "MT900");
 			SecurityClass sc = new SecurityClass();
-			sc.saveDocument(doc, apsolute);
+			String apsolute1 = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
+			sc.saveDocument(doc, apsolute1);
 			
 		} catch (PropertyException e) {
 			// TODO Auto-generated catch block
@@ -203,54 +221,37 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		
 	}
 	
-	private void createMT103(Nalog nalog) {
+	private MT103 createMT103(MT103 mt103) {
 
 		Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
-		MT103 mt = null;
-		try {
-			mt = new MT103();
-			mt.setSender(propReceiver.getProperty("naziv"));
-			mt.setIdPoruke("103");
-			mt.setSwiftBankeDuznika(propReceiver.getProperty("swift"));
-			mt.setObracunskiRacunBankeDuznika(propReceiver.getProperty("obracunskiRac"));
-			mt.setSwiftBankePoverioca(registar.getBanke().getBankaByCode(nalog.getRacunPoverioca().substring(0,3)).getSwift());
-			mt.setObracunskiRacunBankePoverioca(registar.getBanke().getBankaByCode(nalog.getRacunPoverioca().substring(0,3)).getRacun());
-			mt.setDuznik(nalog.getDuznikNalogodavac());
-			mt.setSvrhaPlacanja(nalog.getSvrhaPlacanja());
-			mt.setPrimalac(nalog.getPrimalacPoverilac());
-			mt.setDatumNaloga(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
-			mt.setDatumValute(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
-			mt.setRacunDuznika(nalog.getRacunDuznika());
-			mt.setModelZaduzenja(nalog.getModelZaduzenja());
-			mt.setPozivNaBrojZaduzenja(nalog.getPozivNaBrojZaduzenja());
-			mt.setRacunPoverioca(nalog.getRacunPoverioca());
-			mt.setModelOdobrenja(nalog.getModelOdobrenja());
-			mt.setPozivNaBrojOdobrenja(nalog.getPozivNaBrojOdobrenja());
-			mt.setIznos(nalog.getIznos());
-			mt.setSifraValute(nalog.getOznakaValute());
 
-
-			JAXBContext context = JAXBContext.newInstance("beans.mt103");
-			Marshaller marshaller = context.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
-			marshaller.marshal(mt, new File(apsolute));
+			try {
+				JAXBContext context = JAXBContext.newInstance("beans.mt103");
+				Marshaller marshaller = context.createMarshaller();
+				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+				marshaller.marshal(mt103, new File(apsolute));
+			} catch (PropertyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JAXBException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 
 			Document doc = Validation.buildDocumentWithoutValidation(apsolute);
 			if(doc==null){
 				System.out.println("NULL JE DOCUMENT MT103");
 			}
-			Element mt103 = (Element) doc.getElementsByTagName("MT103").item(0);
-			mt103.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			mt103.setAttribute("sender",propReceiver.getProperty("naziv"));
+			Element mt103El = (Element) doc.getElementsByTagName("MT103").item(0);
+			mt103El.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+			mt103El.setAttribute("sender", "centralnabanka");
 			SecurityClass sc = new SecurityClass();
-			sc.saveDocument(doc, apsolute);
+			sc.saveDocument(doc, apsolutePath103);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		RegistarDBUtil.storeRegistarDatabase(registar, "http://localhost:8081/BaseX75/rest/registar");
+		return mt103;
 	}
 	
 	
@@ -259,7 +260,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 	}
 	
 	
-	private void createMT910(MT103 mt103){
+	private MT910 createMT910(MT103 mt103){
 		MT910 mt = null;
 		try {
 			mt = new MT910();
@@ -269,7 +270,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			mt.setIznos(mt103.getIznos());
 			mt.setObracunskiRacunBankePoverioca(mt103.getObracunskiRacunBankePoverioca());
 			mt.setSifraValute(mt103.getSifraValute());
-			mt.setSwiftBankePoverioca(mt.getSwiftBankePoverioca());
+			mt.setSwiftBankePoverioca(mt103.getSwiftBankePoverioca());
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt910");
 			Marshaller marshaller = context.createMarshaller();
@@ -283,7 +284,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			mt910.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 			mt910.setAttribute("idPoruke", "MT103");
 			SecurityClass sc = new SecurityClass();
-			sc.saveDocument(doc, apsolute);
+			sc.saveDocument(doc, apsolutePath);
 			
 		} catch (PropertyException e) {
 			// TODO Auto-generated catch block
@@ -295,13 +296,12 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		return mt;
 	}
 	
 	
-	private class MT910Client {
 		
-		public boolean testIt(Properties propSender, String receiver, String cert,String inputFile) {
+		public boolean testIt103(Properties propSender, String receiver, String cert,String inputFile) {
 
 			try {
 				URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/MT910Response?wsdl");
@@ -380,11 +380,9 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		}
 		
 		
-	}
 	
-	private class MT103Client{
 		
-		public boolean testIt(Properties propSender, String receiver, String cert,String inputFile) {
+		public boolean testIt910(Properties propSender, String receiver, String cert,String inputFile) {
 
 			try {
 				URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/MT103Response?wsdl");
@@ -461,10 +459,6 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			return true;
 
 		}
-		
-		
-		
-	}
 	
 	
 	

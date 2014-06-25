@@ -7,13 +7,13 @@
             <naziv>bankaa</naziv>
             <swift>ERSTSR20</swift>
             <stanje>300000.00</stanje>
-            <racun>123456789012345678</racun>
+            <racun>340111111111111111</racun>
         </banka>
         <banka>
             <naziv>bankab</naziv>
-            <swift>BBBBBB00</swift>
+            <swift>COMBSR20</swift>
             <stanje>300000.00</stanje>
-            <racun>222222222222222222</racun>
+            <racun>360222222222222222</racun>
         </banka>
     </banke>
     <brojacPoslednjePoslateNotifikacije xmlns="">0</brojacPoslednjePoslateNotifikacije>

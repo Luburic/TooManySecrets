@@ -112,6 +112,8 @@ public class MessageTransform {
 
 		Element timestamp = (Element) decrypt.getElementsByTagNameNS(TARGET_NAMESPACE, "timestamp").item(0);
 		String dateString = timestamp.getTextContent();
+		
+		System.out.println("TIME STAMP GDE PUCA KOD MT900 "+ dateString );
 
 		Date date = null;
 		try {
@@ -135,7 +137,8 @@ public class MessageTransform {
 		} else if (dbType.equalsIgnoreCase("centralnabanka")) {
 			CentralnaDBUtil.storeCentralnaDatabase(semaCentralna, propReceiver.getProperty("address"));
 		} else {
-			return DocumentTransform.createNotificationResponse("470", "Greska u bazi", TARGET_NAMESPACE);
+			DocumentTransform.createNotificationResponse("470", "Greska u bazi", TARGET_NAMESPACE);
+			return null;
 		}
 
 		if(rbrPoruke <= rbrPorukeFromXml || dateFromXml.after(date) || dateFromXml.equals(date)) {
@@ -323,7 +326,8 @@ public class MessageTransform {
 		} else if (dbType.equalsIgnoreCase("centralnabanka")) {
 			semaCentralna = CentralnaDBUtil.loadCentralnaDatabase(propSender.getProperty("address"));
 		} else {
-			return DocumentTransform.createNotificationResponse("470", "Greska u bazi", NAMESPACE_XSD);
+			DocumentTransform.createNotificationResponse("470", "Greska u bazi", NAMESPACE_XSD);
+			return null;
 		}
 		Document document = null;
 		SecurityClass security =new SecurityClass();
@@ -362,7 +366,8 @@ public class MessageTransform {
 		} else if (dbType.equalsIgnoreCase("centralnabanka")) {
 			CentralnaDBUtil.storeCentralnaDatabase(semaCentralna, propSender.getProperty("address"));
 		} else {
-			return DocumentTransform.createNotificationResponse("470", "Greska u bazi", NAMESPACE_XSD);
+			DocumentTransform.createNotificationResponse("470", "Greska u bazi", NAMESPACE_XSD);
+			return null;
 		}
 
 		URL url = MessageTransform.class.getClassLoader().getResource(propSender.getProperty("jks"));
@@ -517,6 +522,18 @@ public class MessageTransform {
 			case "notifikacija":
 				rbrPorukeFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getBrojac();
 				break;
+			case "mt900":
+				rbrPorukeFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getBrojac();
+				break;
+			case "mt910":
+				rbrPorukeFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getBrojac();
+				break;
+			case "mt103":
+				rbrPorukeFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getBrojac();
+				break;
+			case "mt102":
+				rbrPorukeFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getBrojac();
+				break;
 			}
 
 		} else if (semaCentralna != null) {
@@ -568,11 +585,25 @@ public class MessageTransform {
 			case "notifikacija":
 				dateFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp();
 				break;
+			case "mt900":
+				dateFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp();
+				break;
+			case "mt910":
+				dateFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp();
+				break;
+			case "mt103":
+				dateFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp();
+				break;
+			case "mt102":
+				dateFromXml = semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().getTimestamp();
+				break;
 			}
+			
 
 		} else if (semaCentralna != null) {
 			System.out.println("USAO U MESSAGE TRANSFORM U GET KURCINA");
 			System.out.println("SENDER NAME: "+senderName);
+			
 			CentralnaSema.BrojacPoslednjegPrimljenogMTNaloga.Banka cMTNalog = semaCentralna.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(senderName);
 			if(cMTNalog == null){
 				System.out.println("NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLAAAAAAAAAAAAAAAASDASDASDASDASDASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -612,7 +643,10 @@ public class MessageTransform {
 			case "presek":
 				rbrPorukeFromXml = semaBanka.getBrojacPoslednjegPoslatogPreseka();
 				break;
-			case "mtnalog":
+			case "mt103":
+				rbrPorukeFromXml = semaBanka.getBrojacPoslednjegPoslatogMTNaloga();
+				break;
+			case "mt102":
 				rbrPorukeFromXml = semaBanka.getBrojacPoslednjegPoslatogMTNaloga();
 				break;
 			case "notifikacija":
@@ -625,9 +659,13 @@ public class MessageTransform {
 			case "notifikacija":
 				rbrPorukeFromXml = semaCentralna.getBrojacPoslednjePoslateNotifikacije();
 				break;
-			case "mtnalog":
+			case "mt103":
 				rbrPorukeFromXml = semaCentralna.getBrojacPoslednjegPoslatogMTNaloga();
 				break;
+			case "mt102":
+				rbrPorukeFromXml = semaCentralna.getBrojacPoslednjegPoslatogMTNaloga();
+				break;
+				
 			}
 		}
 

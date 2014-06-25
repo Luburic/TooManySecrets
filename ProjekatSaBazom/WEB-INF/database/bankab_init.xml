@@ -5,10 +5,10 @@
  xsi:schemaLocation="http://www.toomanysecrets.com/bankesema file:../shema/bankeSema.xsd">
     <swift xmlns="">BBBBBB00</swift>
     <adresa xmlns="">adresa0</adresa>
-    <obracunskiRacun xmlns="">444444444444444444</obracunskiRacun>
+    <obracunskiRacun xmlns="">360444444444444444</obracunskiRacun>
     <korisnickiRacuni xmlns="">
         <racun>
-            <brojRacuna>222222222222222222</brojRacuna>
+            <brojRacuna>360222222222222222</brojRacuna>
             <vlasnik>firmab</vlasnik>
             <pib>pib0</pib>
             <stanje>200000.00</stanje>

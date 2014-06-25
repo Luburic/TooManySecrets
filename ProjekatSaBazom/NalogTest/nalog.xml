@@ -2,13 +2,13 @@
     <idPoruke>123456</idPoruke>
     <duznikNalogodavac>firmaa</duznikNalogodavac>
     <svrhaPlacanja>reket</svrhaPlacanja>
-    <primalacPoverilac>firmaa</primalacPoverilac>
+    <primalacPoverilac>firmab</primalacPoverilac>
     <datumNaloga>2014-06-25</datumNaloga>
     <datumValute>2014-06-25</datumValute>
-    <racunDuznika>123123123123123123</racunDuznika>
+    <racunDuznika>340111111111111111</racunDuznika>
     <modelZaduzenja>97</modelZaduzenja>
     <pozivNaBrojZaduzenja>111111</pozivNaBrojZaduzenja>
-    <racunPoverioca>222222222222222222</racunPoverioca>
+    <racunPoverioca>360222222222222222</racunPoverioca>
     <modelOdobrenja>97</modelOdobrenja>
     <pozivNaBrojOdobrenja>111111</pozivNaBrojOdobrenja>
     <iznos>10</iznos>

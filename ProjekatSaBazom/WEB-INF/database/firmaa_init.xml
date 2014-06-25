@@ -4,14 +4,14 @@
  xsi:schemaLocation="http://www.toomanysecrets.com/firmesema file:../shema/firmeSema.xsd">
     <informacijeOFirmi xmlns="">
         <naziv>firmaa</naziv>
-        <pib>pib0</pib>
+        <pib>pib1</pib>
         <adresa>adresa0</adresa>
     </informacijeOFirmi>
     <informacijeOBankama xmlns="">
         <banka>
             <naziv>bankaa</naziv>
-            <swift>AAAAAA00</swift>
-            <brojRacuna>111111111111111111</brojRacuna>
+            <swift>ERSTSR20</swift>
+            <brojRacuna>340111111111111111</brojRacuna>
         </banka>
     </informacijeOBankama>
     <placeneFakture xmlns="">

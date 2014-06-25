@@ -67,13 +67,16 @@ public class MT910ResponseProvider implements Provider<DOMSource> {
 			
 			Document decryptedDocument = MessageTransform.unpack(document,"MT910", "MT910", ConstantsXWS.NAMESPACE_XSD_MT910, propReceiver, "banka", "MT910");
 
+			System.out.println("STIGAO U MT910 PROVIDERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+			DocumentTransform.printDocument(decryptedDocument);
+			
 			Document forSave = null;
 			if(decryptedDocument != null) {
 				Reader reader = Validation.createReader(decryptedDocument);
 				forSave = Validation.buildDocumentWithValidation(reader, new String[]{ "http://localhost:8080/MT910Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 			}
 			
-			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+			//semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 			
 			Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
 			
@@ -98,18 +101,18 @@ public class MT910ResponseProvider implements Provider<DOMSource> {
 				MT910 mt910 = (MT910) unmarshaller.unmarshal(decryptedDocument);
 			
 			
-				if(registar.getBanke().getBankaByCode(mt910.getSwiftBankePoverioca()) != null) {
+				/*if(registar.getBanke().getBankaByCode(mt910.getSwiftBankePoverioca()) != null) {
 					semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke);
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString);
 					BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 					DocumentTransform.createNotificationResponse("423", "Izvrsena radnja.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
-				} else {
+				} else {*/
 					
 					DocumentTransform.createNotificationResponse("424", "Nije izvrsena radnja.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
-				}
+				//}
 				
 			
 			}
