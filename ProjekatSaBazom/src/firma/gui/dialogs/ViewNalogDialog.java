@@ -62,11 +62,11 @@ public class ViewNalogDialog extends AbstractViewDialog {
 
 		ListTableModel model = new ListTableModel(Arrays.asList(new String[] { "nalog hold", "Dužnik",
 				"Svrha plaćanja", "Primalac", "Iznos" }));
-
+/*
 		for (Nalog n : nalozi) {
 			Object[] row = { n, n.getDuznikNalogodavac(), n.getSvrhaPlacanja(), n.getPrimalacPoverilac(), n.getIznos() };
 			model.addRow(row);
-		}
+		}*/
 
 		model.setModelEditable(false);
 		table = new JTable(model);

@@ -63,7 +63,7 @@ public class NalogProvider implements Provider<DOMSource> {
 	private String sender;
 	private boolean rtgs;
 	private Racun racunPosaljioca;
-	private Racun racunPrimaoca;
+	
 	private String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
 	private BigDecimal usluga = new BigDecimal(55.00);
 
@@ -133,10 +133,14 @@ public class NalogProvider implements Provider<DOMSource> {
 							RealizovanNalog rn = new RealizovanNalog();
 							rn.setNalog(nalog);
 							semaBanka.getRealizovaniNalozi().getRealizovanNalog().add(rn);
-							semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().remove(nalog);
 							
-							//sema banke poverioca ? !
-							//semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(propReceiver.getProperty("naziv")).setStanje(racunPrimaoca.getStanje().add(nalog.getIznos()));
+							NerealizovanNalog nrn = new NerealizovanNalog();
+							nrn.setNalog(nalog);
+							semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().remove(nrn);
+							
+							Racun racunPrimaoca=semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(reg.getFirme().getFirmaByRacun(nalog.getRacunPoverioca()).getNaziv());
+							//semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(reg.getFirme().getFirmaByRacun(nalog.getRacunPoverioca()).getNaziv()).setStanje(racunPrimaoca.getStanje().add(nalog.getIznos()));
+							racunPrimaoca.setStanje(racunPrimaoca.getStanje().add(nalog.getIznos()));
 							BankaDBUtil.storeBankaDatabase(semaBanka,  propReceiver.getProperty("address"));
 							DocumentTransform.createNotificationResponse("200", "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 
@@ -147,7 +151,10 @@ public class NalogProvider implements Provider<DOMSource> {
 							RealizovanNalog rn = new RealizovanNalog();
 							rn.setNalog(nalog);
 							semaBanka.getRealizovaniNalozi().getRealizovanNalog().add(rn);
-							semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().remove(nalog);
+							
+							NerealizovanNalog nrn = new NerealizovanNalog();
+							nrn.setNalog(nalog);
+							semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().remove(nrn);
 							BankaDBUtil.storeBankaDatabase(semaBanka,  propReceiver.getProperty("address"));
 							DocumentTransform.createNotificationResponse("200", "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 						} else {
@@ -226,6 +233,7 @@ public class NalogProvider implements Provider<DOMSource> {
 				message = "Medju registrovanim firmama ne postoji ona kojoj se vrši uplata.";
 				return false;
 			} 
+			
 			
 			
 			
