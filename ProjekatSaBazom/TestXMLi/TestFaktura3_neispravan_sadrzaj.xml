@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faktura xmlns="http://www.toomanysecrets.com/faktura" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/faktura ../WEB-INF/shema/FakturaRaw.xsd ">
+  <zaglavlje idPoruke="faktura1">
+	<nazivDobavljaca>NIS</nazivDobavljaca>
+    <adresaDobavljaca>Bulevar Oslobodjenja 2</adresaDobavljaca>
+    <pibDobavljaca>104052135</pibDobavljaca>
+    <nazivKupca>DMS</nazivKupca>
+    <adresaKupca>Narodnog fronta 3</adresaKupca>
+    <pibKupca>105646535</pibKupca>
+    <brojRacuna>1</brojRacuna>
+    <datumRacuna>2014-01-29</datumRacuna>
+    <vrednostRobe>3700.00</vrednostRobe>
+    <vrednostUsluga>0.00</vrednostUsluga>
+    <ukupnoRobaIUsluge>3700.00</ukupnoRobaIUsluge>
+    <ukupanRabat>400.00</ukupanRabat>
+    <ukupanPorez>300.00</ukupanPorez>
+    <oznakaValute>RSD</oznakaValute>
+    <iznosZaUplatu>5000.00</iznosZaUplatu>
+    <uplataNaRacun>340111111111111111</uplataNaRacun>
+    <datumValute>2014-01-29</datumValute>
+  </zaglavlje>
+  <stavka redniBroj="1">
+    <nazivRobeIliUsluge>Bezolovni</nazivRobeIliUsluge>
+    <kolicina>10</kolicina>
+    <jedinicaMere>Litra</jedinicaMere>
+    <jedinicnaCena>100.00</jedinicnaCena>
+    <vrednost>1000.00</vrednost>
+    <procenatRabata>10</procenatRabata>
+    <iznosRabata>100.0</iznosRabata>
+    <umanjenoZaRabat>900.00</umanjenoZaRabat>
+    <ukupanPorez>100</ukupanPorez>
+  </stavka>
+  <stavka redniBroj="2">
+    <nazivRobeIliUsluge>Dizel</nazivRobeIliUsluge>
+    <kolicina>20</kolicina>
+    <jedinicaMere>Litra</jedinicaMere>
+    <jedinicnaCena>150.00</jedinicnaCena>
+    <vrednost>3000.00</vrednost>
+    <procenatRabata>10</procenatRabata>
+    <iznosRabata>300.0</iznosRabata>
+    <umanjenoZaRabat>2700.00</umanjenoZaRabat>
+    <ukupanPorez>200</ukupanPorez>
+  </stavka>
+</faktura>
