@@ -61,6 +61,7 @@ public class ViewFakturaDialog extends JDialog {
 			model.addRow(row);
 		}
 
+		model.setModelEditable(false);
 		table = new JTable(model);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.getTableHeader().setReorderingAllowed(false);
@@ -76,10 +77,9 @@ public class ViewFakturaDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (table.getSelectedRow() > -1) {
-					new ViewStavkeDialog(((ListTableModel) table.getModel()).getRow(table.getSelectedRow()).get(0));
+					new ViewStavkeDialog(((ListTableModel) table.getModel()).getRow(table.getSelectedRow()).get(0),
+							ViewFakturaDialog.this, table.getSelectedRow());
 				}
-				// TODO: Treba prilikom završavanje radnje kod unosa fakture da se to smesti u bazu, a ne da se pošalje
-				// putem WS.
 			}
 		});
 
@@ -88,6 +88,7 @@ public class ViewFakturaDialog extends JDialog {
 		JButton btnApprove = new JButton(new ApproveAction());
 		JButton btnDeny = new JButton(new DenyAction());
 
+		dataPanel.add(btnStavke);
 		bottomPanel.add(dataPanel);
 
 		buttonsPanel.setLayout(new MigLayout("wrap"));
@@ -98,5 +99,9 @@ public class ViewFakturaDialog extends JDialog {
 		add(bottomPanel, "grow, wrap");
 		setModal(true);
 		setLocationRelativeTo(MainFrame.getInstance());
+	}
+
+	public JTable getTable() {
+		return table;
 	}
 }

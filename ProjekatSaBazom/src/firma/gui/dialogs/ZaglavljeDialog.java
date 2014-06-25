@@ -446,7 +446,8 @@ public class ZaglavljeDialog extends JDialog {
 		});
 
 		btnZav.addActionListener(new ActionListener() {
-
+			// TODO: Umesto da se salje treba sacuvati u listu za sefa racunovodstva ili (ako je iznos veci od 50000) u
+			// tabelu direktora. Deo koda odavde prebaciti u action ApproveAction
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
