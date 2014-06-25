@@ -117,7 +117,7 @@ import javax.xml.bind.annotation.XmlType;
 public class CentralnaSema {
 
     @XmlElement(required = true)
-    protected List<CentralnaSema.Banke> banke;
+    protected List<CentralnaSema.Banke> banke = new ArrayList<CentralnaSema.Banke>();
     protected Integer brojacPoslednjePoslateNotifikacije;
     protected Integer brojacPoslednjegPoslatogMTNaloga;
     protected CentralnaSema.BrojacPoslednjegPrimljenogMTNaloga brojacPoslednjegPrimljenogMTNaloga;

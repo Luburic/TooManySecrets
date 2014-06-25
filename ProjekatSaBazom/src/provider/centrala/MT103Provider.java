@@ -153,6 +153,23 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					}*/
 					
 					//call clients
+					createMT910(mt103);
+					String reciver = null;
+					/*int size = semaBanka.getBanke().size();
+					System.out.println("VELICINA LISTE "+size);
+					for(CentralnaSema.Banke b : semaBanka.getBanke()) {
+						System.out.println("SWIFT SVAKE BANKE: " + b.getSwift());
+					}
+					for(CentralnaSema.Banke b : semaBanka.getBanke()) {
+						if(b.getSwift().equals(mt103.getSwiftBankePoverioca())) {
+							reciver = b.getNaziv();
+						}
+					}*/
+					if(testIt910(propReceiver, "bankab", "cer"+"bankab", apsolutePath)) {
+						System.out.println("USPESNO PROSAO!!!");
+					} else {
+						System.out.println("NIJE USPESNO PROSAO!!!");
+					}
 					createMT900(mt103);
 					encryptedDocument = MessageTransform.packS("MT900", "MT900", apsolute, propReceiver, "cer"+sender, ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
 				}
@@ -259,32 +276,31 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		return true;
 	}
 	
-	
-	private MT910 createMT910(MT103 mt103){
+	private void createMT910(MT103 mt103) {
 		MT910 mt = null;
 		try {
 			mt = new MT910();
-			mt.setIdPorukeNaloga("MT103");
+			mt.setIdPorukeNaloga(mt103.getIdPoruke());
 			mt.setDatumValute(mt103.getDatumValute());
-			mt.setIdPoruke("MT103");
+			mt.setIdPoruke(MessageTransform.randomString(50));
 			mt.setIznos(mt103.getIznos());
-			mt.setObracunskiRacunBankePoverioca(mt103.getObracunskiRacunBankePoverioca());
+			mt.setObracunskiRacunBankePoverioca(mt103.getObracunskiRacunBankeDuznika());
 			mt.setSifraValute(mt103.getSifraValute());
-			mt.setSwiftBankePoverioca(mt103.getSwiftBankePoverioca());
+			mt.setSwiftBankePoverioca(mt103.getSwiftBankeDuznika());
 			
 			JAXBContext context = JAXBContext.newInstance("beans.mt910");
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
 			
-			marshaller.marshal(mt, new File(apsolute));
+			String apsolutePathTemp = DocumentTransform.class.getClassLoader().getResource("mt910.xml").toString().substring(6);
+			marshaller.marshal(mt, new File(apsolutePathTemp));
 			
-
-			Document doc = Validation.buildDocumentWithoutValidation(apsolutePath);
+			Document doc = Validation.buildDocumentWithoutValidation(apsolutePathTemp);
 			Element mt910 = (Element) doc.getElementsByTagName("MT910").item(0);
 			mt910.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			mt910.setAttribute("idPoruke", "MT103");
+			mt910.setAttribute("idPoruke", "MT910");
 			SecurityClass sc = new SecurityClass();
-			sc.saveDocument(doc, apsolutePath);
+			sc.saveDocument(doc, apsolutePathTemp);
 			
 		} catch (PropertyException e) {
 			// TODO Auto-generated catch block
@@ -296,7 +312,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return mt;
+		
 	}
 	
 	
@@ -385,9 +401,9 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		public boolean testIt910(Properties propSender, String receiver, String cert,String inputFile) {
 
 			try {
-				URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/MT103Response?wsdl");
-				QName serviceName = new QName("http://www.toomanysecrets.com/MT103Response", "MT103Response");
-				QName portName = new QName("http://www.toomanysecrets.com/MT103Response","MT103ResponsePort");
+				URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/MT910Response?wsdl");
+				QName serviceName = new QName("http://www.toomanysecrets.com/MT103Response", "MT9103Response");
+				QName portName = new QName("http://www.toomanysecrets.com/MT103Response","MT910ResponsePort");
 
 				Service service;
 				try {
@@ -399,7 +415,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
 
 
-				Document encrypted = MessageTransform.packS("MT103", "MT103", inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_MT103, "MT103");
+				Document encrypted = MessageTransform.packS("MT910", "MT910", inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_MT910, "MT910");
 
 				DocumentTransform.printDocument(encrypted);
 
