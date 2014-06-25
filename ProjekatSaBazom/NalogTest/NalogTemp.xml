@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><nalog xmlns="http://www.toomanysecrets.com/nalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="firmaa">
+    <idPoruke>1</idPoruke>
+    <duznikNalogodavac>1</duznikNalogodavac>
+    <svrhaPlacanja>1</svrhaPlacanja>
+    <primalacPoverilac>1</primalacPoverilac>
+    <datumNaloga>2014-06-02</datumNaloga>
+    <datumValute>2014-06-03</datumValute>
+    <racunDuznika>111111111111111111</racunDuznika>
+    <modelZaduzenja>96</modelZaduzenja>
+    <pozivNaBrojZaduzenja>1</pozivNaBrojZaduzenja>
+    <racunPoverioca>111111111111111111</racunPoverioca>
+    <modelOdobrenja>97</modelOdobrenja>
+    <pozivNaBrojOdobrenja>1</pozivNaBrojOdobrenja>
+    <iznos>1.0</iznos>
+    <oznakaValute>1</oznakaValute>
+    <hitno>true</hitno>
+</nalog>

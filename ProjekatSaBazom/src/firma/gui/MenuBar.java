@@ -12,7 +12,6 @@ import util.ConstantsXWS;
 import util.accessControl.TAkcija;
 import firma.gui.actions.FakturaAction;
 import firma.gui.actions.FakturaViewAction;
-import firma.gui.actions.IzvodAction;
 import firma.gui.actions.NalogAction;
 import firma.gui.actions.NalogViewAction;
 
@@ -22,7 +21,6 @@ public class MenuBar extends JMenuBar {
 	private JMenu novo;
 	private JMenuItem posaljiFakturu;
 	private JMenuItem posaljiNalog;
-	private JMenuItem posaljiZizvod;
 	private JMenuItem pregledFaktura;
 	private JMenuItem pregledNaloga;
 	private JMenuItem close;
@@ -31,7 +29,6 @@ public class MenuBar extends JMenuBar {
 		novo = new JMenu("Fakture i nalozi");
 		posaljiFakturu = new JMenuItem(new FakturaAction());
 		posaljiNalog = new JMenuItem(new NalogAction());
-		posaljiZizvod = new JMenuItem(new IzvodAction());
 		pregledNaloga = new JMenuItem(new NalogViewAction());
 		pregledFaktura = new JMenuItem(new FakturaViewAction());
 
@@ -47,7 +44,6 @@ public class MenuBar extends JMenuBar {
 		});
 
 		refreshMenu();
-		novo.add(posaljiZizvod);
 		novo.addSeparator();
 		novo.add(close);
 		add(novo);

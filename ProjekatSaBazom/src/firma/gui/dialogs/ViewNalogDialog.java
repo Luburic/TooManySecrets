@@ -27,7 +27,7 @@ import util.DateLabelFormatter;
 import util.accessControl.TAkcija;
 import beans.nalog.Nalog;
 import firma.gui.MainFrame;
-import firma.gui.actions.ApproveAction;
+import firma.gui.actions.ApproveNalogAction;
 import firma.gui.actions.DenyAction;
 import firma.gui.tables.ListTableModel;
 
@@ -48,11 +48,11 @@ public class ViewNalogDialog extends AbstractViewDialog {
 		setSize(1000, 600);
 		List<Nalog> nalozi = new ArrayList<Nalog>();
 		for (TAkcija akcija : ConstantsXWS.AKTIVNA_ROLA.getAkcije().getAkcija()) {
-			if (akcija.getNazivAkcije().equals("odobrenjeNalogIspodGranice")) {
+			if (akcija.getNazivAkcije().equals("odobrenjeNalogaIspodGranice")) {
 				nalozi = MainFrame.getInstance().getBaza().getNaloziZaSefa().getNalog();
 				break;
 			}
-			if (akcija.getNazivAkcije().equals("odobrenjeNalogIznadGranice")) {
+			if (akcija.getNazivAkcije().equals("odobrenjeNalogaIznadGranice")) {
 				nalozi = MainFrame.getInstance().getBaza().getNaloziZaDirektora().getNalog();
 				break;
 			}
@@ -89,7 +89,7 @@ public class ViewNalogDialog extends AbstractViewDialog {
 					nalog.setDatumValute((Date) dateDatumValute.getJDateInstantPanel().getModel().getValue());
 					nalog.setHitno(chkHitno.isSelected());
 
-					AbstractAction a = new ApproveAction(ViewNalogDialog.this);
+					AbstractAction a = new ApproveNalogAction(ViewNalogDialog.this);
 					a.actionPerformed(e);
 				}
 			}
@@ -130,16 +130,9 @@ public class ViewNalogDialog extends AbstractViewDialog {
 	private void sync() {
 		Nalog nalog = (Nalog) ((ListTableModel) table.getModel()).getRow(table.getSelectedRow()).get(0);
 		String date = nalog.getDatumNaloga().toString();
-		if (date.contains("-")) {
-			String[] dates = date.split("\\-");
-			dateDatumNaloga.getModel().setDate(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]) - 1,
-					Integer.parseInt(dates[2]));
-		}
-		date = nalog.getDatumValute().toString();
-		if (date.contains("-")) {
-			String[] dates = date.split("\\-");
-			dateDatumValute.getModel().setDate(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]) - 1,
-					Integer.parseInt(dates[2]));
-		}
+		dateDatumNaloga.getModel().setDate(1900 + nalog.getDatumNaloga().getYear(), nalog.getDatumNaloga().getMonth(),
+				nalog.getDatumNaloga().getDay());
+		dateDatumValute.getModel().setDate(1900 + nalog.getDatumValute().getYear(), nalog.getDatumValute().getMonth(),
+				nalog.getDatumValute().getDay());
 	}
 }

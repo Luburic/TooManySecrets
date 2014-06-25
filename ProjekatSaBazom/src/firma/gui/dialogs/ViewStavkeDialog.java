@@ -42,9 +42,9 @@ public class ViewStavkeDialog extends JDialog {
 				"Umanjeno (rabat)", "Ukupan porez" }));
 
 		for (Stavka s : faktura.getStavka()) {
-			Object[] row = { s.getRedniBroj(), s.getKolicina(), s.getJedinicaMere(), s.getJedinicnaCena(),
-					s.getVrednost(), s.getProcenatRabata(), s.getIznosRabata(), s.getUmanjenoZaRabat(),
-					s.getUkupanPorez() };
+			Object[] row = { s.getRedniBroj(), s.getNazivRobeIliUsluge(), s.getKolicina(), s.getJedinicaMere(),
+					s.getJedinicnaCena(), s.getVrednost(), s.getProcenatRabata(), s.getIznosRabata(),
+					s.getUmanjenoZaRabat(), s.getUkupanPorez() };
 			model.addRow(row);
 		}
 		model.setModelEditable(false);
@@ -52,7 +52,6 @@ public class ViewStavkeDialog extends JDialog {
 		table = new JTable(model);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.getTableHeader().setReorderingAllowed(false);
-		table.removeColumn(table.getColumnModel().getColumn(0));
 		JScrollPane scrollPane = new JScrollPane(table);
 		add(scrollPane, "grow, wrap");
 		JPanel bottomPanel = new JPanel();
@@ -126,5 +125,6 @@ public class ViewStavkeDialog extends JDialog {
 		add(bottomPanel, "grow, wrap");
 		setModal(true);
 		setLocationRelativeTo(MainFrame.getInstance());
+		setVisible(true);
 	}
 }

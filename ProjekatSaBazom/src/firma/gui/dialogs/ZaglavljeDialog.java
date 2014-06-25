@@ -33,6 +33,7 @@ import util.DateLabelFormatter;
 import util.NSPrefixMapper;
 import util.Validation;
 import util.accessControl.TAkcija;
+import basexdb.util.FirmaDBUtil;
 import beans.faktura.Faktura;
 import beans.faktura.Faktura.Zaglavlje;
 import client.firma.FakturaClient;
@@ -450,7 +451,7 @@ public class ZaglavljeDialog extends JDialog {
 			// tabelu direktora. Deo koda odavde prebaciti u action ApproveAction
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+/*
 				try {
 					Faktura fakturaZaSlanje = fd.getFaktura();
 
@@ -480,7 +481,15 @@ public class ZaglavljeDialog extends JDialog {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-
+*/
+				if(uru.intValue() > 50000) {
+					MainFrame.getInstance().getBaza().getFaktureZaDirektora().getFaktura().add(faktura);
+				} else {
+					MainFrame.getInstance().getBaza().getFaktureZaSefa().getFaktura().add(faktura);
+				}
+				FirmaDBUtil.storeFirmaDatabase(MainFrame.getInstance().getBaza(),
+						"http://localhost:8081/BaseX75/rest/firmaa");
+				dispose();
 			}
 		});
 

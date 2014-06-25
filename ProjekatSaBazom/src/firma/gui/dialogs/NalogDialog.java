@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -18,8 +19,9 @@ import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import util.DocumentTransform;
-import client.firma.NalogClient;
+import util.MyDatatypeConverter;
+import basexdb.util.FirmaDBUtil;
+import beans.nalog.Nalog;
 import firma.gui.MainFrame;
 
 @SuppressWarnings("serial")
@@ -222,20 +224,41 @@ public class NalogDialog extends JDialog {
 					return;
 				}
 
-				NalogClient nc = new NalogClient();
-				/*
-				 * nc.createNalog( tfIdPor.getText(), tfDuz.getText(), tfPrim.getText(),
-				 * tfDatNal.getJFormattedTextField().getText(), tfDatVal.getJFormattedTextField().getText(),
-				 * chbHit.isSelected(), iznos, Integer.valueOf((String) cbModZad.getSelectedItem()),
-				 * Integer.valueOf((String) cbModOdo.getSelectedItem()), tfOznVal.getText(), tfPozBr.getText(),
-				 * Integer.valueOf(tfPozOdo.getText()), tfRacDuz.getText(), tfRacPov.getText(), tfSvr.getText() );
-				 */
-				nc.createNalog();
-				String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString()
-						.substring(6);
-				nc.testIt("firmaA", "bankaa", "cerbankaa", apsolute);
-				setVisible(false);
+				Nalog nalog = new Nalog();
+				nalog.setSender("firmaa");
+				nalog.setIdPoruke(tfIdPor.getText());
 
+				nalog.setDuznikNalogodavac(tfDuz.getText());
+				nalog.setPrimalacPoverilac(tfPrim.getText());
+
+				nalog.setDatumNaloga(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date(tfDatNal
+						.getJFormattedTextField().getText()))));
+				nalog.setDatumValute(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date(tfDatVal
+						.getJFormattedTextField().getText()))));
+
+				nalog.setHitno(chbHit.isSelected());
+
+				nalog.setIznos(iznos);
+
+				nalog.setModelOdobrenja(Integer.valueOf((String) cbModOdo.getSelectedItem()));
+				nalog.setModelZaduzenja(Integer.valueOf((String) cbModZad.getSelectedItem()));
+
+				nalog.setOznakaValute(tfOznVal.getText());
+				nalog.setPozivNaBrojOdobrenja(tfPozOdo.getText());
+				nalog.setPozivNaBrojZaduzenja(tfPozBr.getText());
+
+				nalog.setRacunDuznika(tfRacDuz.getText());
+				nalog.setRacunPoverioca(tfRacPov.getText());
+
+				nalog.setSvrhaPlacanja(tfSvr.getText());
+				if (iznos.intValue() > 50000) {
+					MainFrame.getInstance().getBaza().getNaloziZaDirektora().getNalog().add(nalog);
+				} else {
+					MainFrame.getInstance().getBaza().getNaloziZaSefa().getNalog().add(nalog);
+				}
+				FirmaDBUtil.storeFirmaDatabase(MainFrame.getInstance().getBaza(),
+						"http://localhost:8081/BaseX75/rest/firmaa");
+				dispose();
 			}
 		});
 
