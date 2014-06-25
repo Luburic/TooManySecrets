@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -24,7 +23,7 @@ import firma.gui.actions.DenyAction;
 import firma.gui.tables.ListTableModel;
 
 @SuppressWarnings("serial")
-public class ViewFakturaDialog extends JDialog {
+public class ViewFakturaDialog extends AbstractViewDialog {
 
 	private JTable table;
 	private JPanel dataPanel = new JPanel();
@@ -37,11 +36,11 @@ public class ViewFakturaDialog extends JDialog {
 		List<Faktura> fakture = new ArrayList<Faktura>();
 		for (TAkcija akcija : ConstantsXWS.AKTIVNA_ROLA.getAkcije().getAkcija()) {
 			if (akcija.getNazivAkcije().equals("odobrenjeFaktureIspodGranice")) {
-				MainFrame.getInstance().getBaza().getFaktureZaSefa().getFaktura();
+				fakture = MainFrame.getInstance().getBaza().getFaktureZaSefa().getFaktura();
 				break;
 			}
 			if (akcija.getNazivAkcije().equals("odobrenjeFaktureIznadGranice")) {
-				MainFrame.getInstance().getBaza().getFaktureZaDirektora().getFaktura();
+				fakture = MainFrame.getInstance().getBaza().getFaktureZaDirektora().getFaktura();
 				break;
 			}
 		}
@@ -85,8 +84,8 @@ public class ViewFakturaDialog extends JDialog {
 
 		JPanel buttonsPanel = new JPanel();
 
-		JButton btnApprove = new JButton(new ApproveAction());
-		JButton btnDeny = new JButton(new DenyAction());
+		JButton btnApprove = new JButton(new ApproveAction(this));
+		JButton btnDeny = new JButton(new DenyAction(this));
 
 		dataPanel.add(btnStavke);
 		bottomPanel.add(dataPanel);

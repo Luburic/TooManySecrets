@@ -76,7 +76,7 @@ public class NalogDialog extends JDialog {
 	/************************************************************************/
 
 	public NalogDialog(MainFrame instance) {
-		// TODO Auto-generated constructor stub
+		// TODO TREBA UBACITI nalog u listu šefa (ako je preko 50 000 direktora) umesto slati
 		super();
 		setTitle("Popunjavanje naloga");
 		setResizable(false);
@@ -85,7 +85,7 @@ public class NalogDialog extends JDialog {
 		initialize();
 		pack();
 		setLocationRelativeTo(instance);
-
+		chbHit.setEnabled(false);
 		btnCancel.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {

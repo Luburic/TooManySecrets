@@ -17,8 +17,6 @@ import beans.faktura.Faktura;
 import beans.faktura.Faktura.Stavka;
 import beans.faktura.Faktura.Zaglavlje;
 import firma.gui.MainFrame;
-import firma.gui.actions.ApproveAction;
-import firma.gui.actions.DenyAction;
 import firma.gui.tables.ListTableModel;
 
 @SuppressWarnings("serial")
@@ -114,15 +112,10 @@ public class ViewStavkeDialog extends JDialog {
 
 		JPanel buttonsPanel = new JPanel();
 
-		JButton btnApprove = new JButton(new ApproveAction());
-		JButton btnDeny = new JButton(new DenyAction());
-
 		dataPanel.add(btnSacuvajIzmene);
 		bottomPanel.add(dataPanel);
 
 		buttonsPanel.setLayout(new MigLayout("wrap"));
-		buttonsPanel.add(btnApprove);
-		buttonsPanel.add(btnDeny);
 		bottomPanel.add(buttonsPanel, "dock east");
 
 		add(bottomPanel, "grow, wrap");
