@@ -10,12 +10,15 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Properties;
+import java.util.Vector;
 
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -178,13 +181,21 @@ public class NalogProvider implements Provider<DOMSource> {
 						
 						String apsolute = DocumentTransform.class.getClassLoader().getResource("mt102.xml").toString().substring(6);						
 						
-						if(createOrUpdateMT102(nalog)){ 
-							if(testItMT102(propReceiver,"centralnabanka","cercentralnabanka",apsolute)){
-								//client call
-								DocumentTransform.createNotificationResponse("423", "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
-							}else{
-								DocumentTransform.createNotificationResponse("423", "Nalog nije uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+						Vector<MT102> result = createOrUpdateMT102(nalog);
+						
+						if(result!=null){ 
+							
+							for (MT102 mt102 : result) {
+								
+								String path = saveSingleMT102(mt102);
+								
+								if(testItMT102(propReceiver,"centralnabanka","cercentralnabanka",path)){
+									DocumentTransform.createNotificationResponse("423", "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+								}else{
+									DocumentTransform.createNotificationResponse("423", "Nalog nije uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+								}
 							}
+							
 						}
 						
 					}
@@ -343,81 +354,146 @@ public class NalogProvider implements Provider<DOMSource> {
 	}
 
 
-	private boolean createOrUpdateMT102(Nalog nalog) {
+	private Vector<MT102> createOrUpdateMT102(Nalog nalog) {
 		Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
-
 		BankeSema semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
-	 	int clCounter = 0;
 	 	
-	 	NerealizovanNalog nrn = new NerealizovanNalog();
+	 	
+	 	PojedinacnaUplata pu = new PojedinacnaUplata();
+ 		pu.setIdNalogaZaPlacanje(MessageTransform.randomString(50));
+ 		pu.setDuznik(nalog.getDuznikNalogodavac());
+ 		pu.setSvrhaUplate(nalog.getSvrhaPlacanja());
+ 		pu.setPrimalac(nalog.getPrimalacPoverilac());
+ 		pu.setDatumNaloga(nalog.getDatumNaloga());
+ 		pu.setRacunDuznika(nalog.getRacunDuznika());
+ 		pu.setModelZaduzenja(nalog.getModelZaduzenja());
+ 		pu.setPozivNaBrojZaduzenja(nalog.getPozivNaBrojZaduzenja());
+ 		pu.setRacunPoverioca(nalog.getRacunPoverioca());
+ 		pu.setModelOdobrenja(nalog.getModelOdobrenja());
+ 		pu.setPozivNaBrojOdobrenja(nalog.getPozivNaBrojOdobrenja());
+ 		pu.setIznos(nalog.getIznos());
+ 		pu.setSifraValute(nalog.getOznakaValute());
+ 		stavke.getPojedinacnaUplata().add(pu);
+ 		
+ 		NerealizovanNalog nrn = new NerealizovanNalog();
 	 	nrn.setNalog(nalog);
 	 	nrn.setVrstaNaloga("mt102");
 	 	semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().add(nrn);
-	 	
+
+		
+		int clCounter = 0;
+		
 	 	for(int i=0; i<semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().size(); i++){
-	 		if(semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().get(i).getVrstaNaloga().equalsIgnoreCase("mt102")){
+	 		if(semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().get(i).getVrstaNaloga().equalsIgnoreCase("mt102"))
 	 			clCounter++;
-	 		}
 	 	}
 	 	
-	 	if(clCounter++ ==3){
-	 		MT102 mt102 = new MT102();
-	 		ZaglavljeMT102 zag = new ZaglavljeMT102();
-	 		zag.setIdPoruke(MessageTransform.randomString(50));
+	 	
+	 	if(clCounter == 3){
+	 		Vector<MT102>result = new Vector<MT102>();
+	 		Vector<Banka>banke = new Vector<Banka>();
 	 		
-	 		zag.setSwiftBankeDuznika(propReceiver.getProperty("swift"));
-	 		zag.setObracunskiRacunBankeDuzinka(propReceiver.getProperty("obracunskiRac"));
-	 		//moze da se izvuce iz poslednjeg naloga zato sto su svi nalozi grupisani za jednu banku
-	 		zag.setSwiftBankePoverioca(registar.getBanke().getBankaByCode(nalog.getRacunPoverioca().substring(0,3)).getSwift());
-	 		zag.setObracunskiRacunBankePoverioca(registar.getBanke().getBankaByCode(nalog.getRacunPoverioca().substring(0,3)).getRacun());
+	 		for(int i=0; i<semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().size(); i++){
+	 			if(semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().get(i).getVrstaNaloga().equalsIgnoreCase("mt102")){
+	 				Nalog nc= semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().get(i).getNalog();
+	 				
+	 				if(!banke.contains(registar.getBanke().getBankaByCode(nc.getRacunPoverioca().substring(0,3))))
+	 					banke.add(registar.getBanke().getBankaByCode(nc.getRacunPoverioca().substring(0,3)));
+	 			}
+	 		}
 	 		
-	 		BigDecimal sum = new BigDecimal(0);
-	 		
-	 		for (PojedinacnaUplata stavka: stavke.getPojedinacnaUplata()) {
-				sum= sum.add(stavka.getIznos());
+	 		//za svaku target banku
+	 		for (Banka banka : banke) {
+				
+	 			MT102 mt102 = new MT102();
+	 			
+		 		ZaglavljeMT102 zag = new ZaglavljeMT102();
+		 		zag.setIdPoruke(MessageTransform.randomString(50));
+		 		zag.setSwiftBankeDuznika(propReceiver.getProperty("swift"));
+		 		zag.setObracunskiRacunBankeDuzinka(propReceiver.getProperty("obracunskiRac"));
+		 		zag.setSwiftBankePoverioca(banka.getSwift());
+		 		zag.setObracunskiRacunBankePoverioca(banka.getRacun()); //obracunski 
+		 		
+		 		BigDecimal sum = new BigDecimal(0);
+		 		PojedinacnaUplata represent = null;
+		 		PojedinacneUplate localUplate = new PojedinacneUplate();
+		 		
+		 		//sve pojedinacne uplate
+		 		for (PojedinacnaUplata stavka: stavke.getPojedinacnaUplata()){
+		 			Banka bankaStavke =registar.getBanke().getBankaByCode(stavka.getRacunPoverioca().substring(0,3));
+		 			
+		 			if(bankaStavke.equals(banka)) {
+		 				represent = stavka;
+		 				sum= sum.add(stavka.getIznos());
+		 				localUplate.getPojedinacnaUplata().add(stavka);
+		 				
+		 			}
+		 		}
+				
+		 		zag.setUkupanIznos(sum);
+		 		zag.setSifraValute(represent.getSifraValute());
+		 		zag.setDatumValute(new Date());
+		 		zag.setDatum(new Date());
+		 		zag.setSifraValute(represent.getSifraValute());
+		 		
+		 		mt102.setZaglavljeMT102(zag);
+		 		mt102.setPojedinacneUplate(localUplate);
+		 		result.add(mt102);
+		 		
 			}
 	 		
-	 		zag.setUkupanIznos(sum);
-	 		zag.setSifraValute(stavke.getPojedinacnaUplata().get(0).getSifraValute());
-	 		zag.setDatumValute(nalog.getDatumValute());
-	 		zag.setDatum(new Date());
-	 		
-	 		
-	 		mt102.setZaglavljeMT102(zag);
-	 		mt102.setPojedinacneUplate(stavke);
+	 	
 	 		stavke.getPojedinacnaUplata().clear();
 	 		
 	 		for(int i=0; i<semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().size(); i++){
 		 		if(semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().get(i).getVrstaNaloga().equalsIgnoreCase("mt102")){
+		 			RealizovanNalog rn = new RealizovanNalog();
+		 			rn.setNalog(semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().get(i).getNalog());
+		 			semaBanka.getRealizovaniNalozi().getRealizovanNalog().add(rn);
 		 			semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().remove(i);
 		 		}
 		 	}
 			BankaDBUtil.storeBankaDatabase(semaBanka,  propReceiver.getProperty("address"));
-	 		return true;
-	 	}else{
-	 		PojedinacnaUplata pu = new PojedinacnaUplata();
-	 		
-	 		pu.setIdNalogaZaPlacanje(MessageTransform.randomString(50));
-	 		pu.setDuznik(nalog.getDuznikNalogodavac());
-	 		pu.setSvrhaUplate(nalog.getSvrhaPlacanja());
-	 		pu.setPrimalac(nalog.getPrimalacPoverilac());
-	 		pu.setDatumNaloga(nalog.getDatumNaloga());
-	 		pu.setRacunDuznika(nalog.getRacunDuznika());
-	 		pu.setModelZaduzenja(nalog.getModelZaduzenja());
-	 		pu.setPozivNaBrojZaduzenja(nalog.getPozivNaBrojZaduzenja());
-	 		pu.setRacunPoverioca(nalog.getRacunPoverioca());
-	 		pu.setModelOdobrenja(nalog.getModelOdobrenja());
-	 		pu.setPozivNaBrojOdobrenja(nalog.getPozivNaBrojOdobrenja());
-	 		pu.setIznos(nalog.getIznos());
-	 		pu.setSifraValute(nalog.getOznakaValute());
-	 		
-	 		stavke.getPojedinacnaUplata().add(pu);
-			BankaDBUtil.storeBankaDatabase(semaBanka,  propReceiver.getProperty("address"));
-	 		return false;
-	 		}	
+	 		return result;
 	 	}
+	 	return null;
+	 	
+	}
 	 	
 	 
+	 	
+	 public String saveSingleMT102(MT102 mt){
+
+			String path=null;
+		 try {
+				path = DocumentTransform.class.getClassLoader().getResource("mt102.xml").toString().substring(6);
+				JAXBContext context = JAXBContext.newInstance("beans.mt102");
+				Marshaller marshaller = context.createMarshaller();
+				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
+				marshaller.marshal(mt, new File(path));
+
+
+				Document doc = Validation.buildDocumentWithoutValidation(path);
+				if(doc==null){
+					System.out.println("NULL JE DOCUMENT MT102");
+				}
+				Element mt102 = (Element) doc.getElementsByTagName("MT102").item(0);
+				mt102.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+				mt102.setAttribute("sender", propReceiver.getProperty("naziv"));
+				SecurityClass sc = new SecurityClass();
+				sc.saveDocument(doc, path);
+			} catch (PropertyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DOMException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JAXBException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 	return path;
+	 }
 	
 	
 	public boolean testItMT103(Properties propSender, String receiver, String cert,String inputFile) {
