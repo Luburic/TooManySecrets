@@ -99,9 +99,7 @@ public class NalogClient {
 					JOptionPane.showMessageDialog(null,notification.getNotificationstring(),"Notification", JOptionPane.INFORMATION_MESSAGE);
 				}
 				FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
-				} else {
-					JOptionPane.showMessageDialog(null,"Ne postoji racun u banci.","Notification", JOptionPane.INFORMATION_MESSAGE);
-				}
+				} 
 			}
 
 		} catch (MalformedURLException e) {
@@ -116,8 +114,8 @@ public class NalogClient {
 	public static void main(String[] args) {
 		NalogClient fc = new NalogClient();
 		//fc.createNalog();
-		//String path = "./TestXMLi/TestNalog01_ispravan_ista_banka.xml";
-		String path = "./TestXMLi/TestNalog02_ispravan_razlicita_banka_manje_250k.xml";
+		String path = "./TestXMLi/TestNalog01_ispravan_ista_banka.xml";
+		//String path = "./TestXMLi/TestNalog02_ispravan_razlicita_banka_manje_250k.xml";
 		//String path = "./TestXMLi/TestNalog03_ispravan_razlicita_banka_vece_250k.xml";
 		//String path = "./TestXMLi/TestNalog04_neispravna_struktura.xml";
 		//String path = "./TestXMLi/TestNalog05_neispravan_sadrzaj.xml";
@@ -125,9 +123,11 @@ public class NalogClient {
 		//String path = "./TestXMLi/TestNalog07_neispravan_sadrzaj_nema_racuna_druga_banka.xml";
 		//String path = "./TestXMLi/TestNalog08_neispravan_sadrzaj_druga_banka_ne_postoji.xml";
 		
-		//nelikvidan setovati u bankaa_init stanje=-20 i blokiran=true
+		//setovati u banka_init i blokiran=true
 		//String path = "./TestXMLi/TestNalog10_neispravan_blokiran_racun.xml";
-		//String path = "./TestXMLi/TestNalog11_neispravan_obracunski_racun_nelikvidan.xml";
+		
+		//nelikvidan setovati u bankaa_init i centrali xml , stanje=-20 npr
+		//tring path = "./TestXMLi/TestNalog11_neispravan_obracunski_racun_nelikvidan.xml";
 		
 		fc.testIt("firmaA", "bankaa", "cerbankaa", path);
 		

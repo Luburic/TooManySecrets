@@ -149,7 +149,7 @@ public class NalogProvider implements Provider<DOMSource> {
 				Nalog nalog = (Nalog) unmarshaller.unmarshal(decryptedDocument);
 
 
-				if (!validateContent(nalog)) {
+				if (validateContent(nalog) == false) {
 					DocumentTransform.createNotificationResponse("455", message, ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 				} 
 
@@ -276,15 +276,10 @@ public class NalogProvider implements Provider<DOMSource> {
 							bsema.setBrojacPoslednjePoslateNotifikacije(bsema.getBrojacPoslednjePoslateNotifikacije()+1);
 							BankaDBUtil.storeBankaDatabase(bsema,  propReceiver.getProperty("address"));
 						}
-					
-					
 				}
-			} else {
-				
 				String apsoluteNot = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
 				encrypted = MessageTransform.packS("Notifikacija", "Notification",apsoluteNot, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
-			}
-
+			} 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (DOMException e) {
@@ -307,6 +302,8 @@ public class NalogProvider implements Provider<DOMSource> {
 
 		racunPosaljioca = semaB.getKorisnickiRacuni().getRacunByNazivKlijenta(sender);
 
+		System.out.println(racunPosaljioca +"RACUN POSALJIOCAAAAAAA"  +racunPosaljioca.getBrojRacuna());
+		
 		
 		if(racunPosaljioca.getStanje().compareTo(nalog.getIznos()) == -1) {
 			message = "Na racunu korisnika nema dovoljno sredstava da bi se izvrsila uplata.";
@@ -318,7 +315,7 @@ public class NalogProvider implements Provider<DOMSource> {
 			message = "Racun posaljioca nije registrovan u banci.";
 			return false;
 		}
-
+		System.out.println(racunPosaljioca.isBlokiran() + "RACUN BLOKIRAANNNNANAANANANANAAANANANA");
 		if (racunPosaljioca.isBlokiran()) {
 			message = "Racun posiljaoca je blokiran.";
 			return false;
