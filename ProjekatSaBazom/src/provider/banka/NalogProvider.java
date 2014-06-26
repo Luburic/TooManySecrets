@@ -567,6 +567,85 @@ public class NalogProvider implements Provider<DOMSource> {
 		}
 
 	public boolean testItMT102(Properties propSender, String receiver, String cert,String inputFile) {
+		try {
+			URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/CentralnaClearingNalog?wsdl");
+			QName serviceName = new QName("http://www.toomanysecrets.com/CentralnaClearingNalog", "CentralnaClearingNalog");
+			QName portName = new QName("http://www.toomanysecrets.com/CentralnaClearingNalog","CentralnaClearingNalogPort");
+
+			Service service;
+			try {
+				service = Service.create(wsdlLocation, serviceName);
+			} catch (Exception e) {
+				throw Validation.generateSOAPFault("Server is not available.",
+						SoapFault.FAULT_CODE_CLIENT, null);
+			}
+			Dispatch<DOMSource> dispatch = service.createDispatch(portName,DOMSource.class, Service.Mode.PAYLOAD);
+			Document encrypted = MessageTransform.packS("MT102", "MT102",inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_MT102,"MT102");
+			//DocumentTransform.printDocument(encrypted);
+
+			BankeSema semaBanka = BankaDBUtil.loadBankaDatabase(propSender.getProperty("address"));
+			if(encrypted != null) {
+				semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
+			}
+
+
+
+			if (encrypted != null) {
+				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
+				//ZADUZENJE
+
+				if(response!=null) {
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");	
+					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "MT900", "MT900",ConstantsXWS.NAMESPACE_XSD_MT900, propSender, "banka", "MT900");
+
+					DocumentTransform.printDocument(decryptedDocument);
+					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
+
+					if(decryptedDocument != null){
+						Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_MT900,"timestamp").item(0);
+						String dateString = timestamp.getTextContent();
+						Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_MT900,"redniBrojPoruke").item(0);
+						int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
+						Date date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dateString);
+						//String owner = SecurityClass.getOwner(decryptedDocument).toLowerCase();
+
+						decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT900);
+						decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT900);
+						decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
+
+						
+						//DocumentTransform.printDocument(decryptedDocument);
+						
+						
+						String apsolute1 = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
+
+						SecurityClass sc = new SecurityClass();
+						sc.saveDocument(decryptedDocument, apsolute1);
+						JAXBContext context = JAXBContext.newInstance("beans.mt900");
+						Unmarshaller unmarshaller = context.createUnmarshaller();
+						MT900 mt900 = (MT900) unmarshaller.unmarshal(new File(apsolute1));
+
+						semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke); //poslednje primljen mt
+						semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString); //poslednje primljen mt
+						BankaDBUtil.storeBankaDatabase(semaBanka, propSender.getProperty("address"));
+						return true;
+					}else{
+						return false;
+					}
+
+				}else {
+					return false;
+				}
+			}else {
+				return false;
+			}
+		}catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (TransformerFactoryConfigurationError e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return true;
 	}
 	public boolean obaviTransakciju(Nalog nalog, Properties prop) {
