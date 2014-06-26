@@ -230,8 +230,6 @@ public class NalogProvider implements Provider<DOMSource> {
 							}
 						}
 						else {
-
-							String apsolute = DocumentTransform.class.getClassLoader().getResource("mt102.xml").toString().substring(6);						
 							BankeSema semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 							semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender).setRezervisano(semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(sender).getRezervisano().add(nalog.getIznos()));
 							//za primer samo stavke za kliring
@@ -246,13 +244,27 @@ public class NalogProvider implements Provider<DOMSource> {
 									String path = saveSingleMT102(mt102);
 
 									if(testItMT102(propReceiver,"centralnabanka","cercentralnabanka",path)){
-										DocumentTransform.createNotificationResponse("423", "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+										
+										for(int i=0; i< mt102.getPojedinacneUplate().getPojedinacnaUplata().size(); i++) {
+											PojedinacnaUplata pu = mt102.getPojedinacneUplate().getPojedinacnaUplata().get(i);
+											Racun racun =semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(registar.getFirme().getFirmaByRacun(pu.getRacunPoverioca()).getNaziv());
+											semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(registar.getFirme().getFirmaByRacun(pu.getRacunPoverioca()).getNaziv()).setStanje(racun.getStanje().subtract(pu.getIznos()));
+											semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(registar.getFirme().getFirmaByRacun(pu.getRacunPoverioca()).getNaziv()).setRezervisano(racun.getRezervisano().add(pu.getIznos()));
+											BankaDBUtil.storeBankaDatabase(semaBanka,  propReceiver.getProperty("address"));
+
+										}
+										
+										
+										
+										DocumentTransform.createNotificationResponse("423", "MT102 uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 									}else{
-										DocumentTransform.createNotificationResponse("423", "Nalog nije uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+										DocumentTransform.createNotificationResponse("423", "MT102 nije uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 									}
 								}
 
 							}
+							DocumentTransform.createNotificationResponse("423", "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+
 
 						}
 
@@ -339,8 +351,12 @@ public class NalogProvider implements Provider<DOMSource> {
 
 		NerealizovanNalog nrn = new NerealizovanNalog();
 		nrn.setNalog(nalog);
-		nrn.setVrstaNaloga("mt103");
-		semaB.getNerealizovaniNalozi().getNerealizovanNalog().add(nrn);
+		if(rtgs) {
+			nrn.setVrstaNaloga("mt103");
+		}else {
+			nrn.setVrstaNaloga("mt102");
+		}
+			semaB.getNerealizovaniNalozi().getNerealizovanNalog().add(nrn);
 		BankaDBUtil.storeBankaDatabase(semaB,  propReceiver.getProperty("address"));
 		return true;
 	}
@@ -420,10 +436,7 @@ public class NalogProvider implements Provider<DOMSource> {
  		pu.setSifraValute(nalog.getOznakaValute());
  		stavke.getPojedinacnaUplata().add(pu);
  		
- 		NerealizovanNalog nrn = new NerealizovanNalog();
-	 	nrn.setNalog(nalog);
-	 	nrn.setVrstaNaloga("mt102");
-	 	semaBanka.getNerealizovaniNalozi().getNerealizovanNalog().add(nrn);
+	 
 
 		
 		int clCounter = 0;
@@ -478,9 +491,7 @@ public class NalogProvider implements Provider<DOMSource> {
 		 		zag.setUkupanIznos(sum);
 		 		zag.setSifraValute(represent.getSifraValute());
 		 		zag.setDatumValute(new Date());
-		 		zag.setDatum(new Date());
-		 		zag.setSifraValute(represent.getSifraValute());
-		 		
+		 		zag.setDatum(new Date());		 		
 		 		mt102.setZaglavljeMT102(zag);
 		 		mt102.setPojedinacneUplate(localUplate);
 		 		result.add(mt102);
