@@ -135,9 +135,9 @@ public class NalogClient {
 			nalog.setDatumNaloga(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
 			nalog.setDatumValute(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
 
-			nalog.setHitno(false);
+			nalog.setHitno(true);
 
-			nalog.setIznos(new BigDecimal(10.00));
+			nalog.setIznos(new BigDecimal(100.00));
 
 			nalog.setModelOdobrenja(97);
 			nalog.setModelZaduzenja(97);
@@ -147,6 +147,7 @@ public class NalogClient {
 			nalog.setPozivNaBrojZaduzenja("111111");
 
 			nalog.setRacunDuznika("340111111111111111");
+			//nalog.setRacunPoverioca("360222222222222222");
 			nalog.setRacunPoverioca("360222222222222222");
 
 			nalog.setSvrhaPlacanja("reket");
@@ -160,7 +161,7 @@ public class NalogClient {
 			Document doc = Validation.buildDocumentWithoutValidation("./NalogTest/nalog.xml");
 			Element nal = (Element) doc.getElementsByTagName("nalog").item(0);
 			nal.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-			nal.setAttribute("sender",sender);
+			nal.setAttribute("sender","firmaa");
 			SecurityClass sc = new SecurityClass();
 			sc.saveDocument(doc,"./NalogTest/nalog.xml");
 

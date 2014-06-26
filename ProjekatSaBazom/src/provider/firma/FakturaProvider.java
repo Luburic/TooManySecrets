@@ -116,6 +116,7 @@ public class FakturaProvider implements Provider<DOMSource> {
 							semaFirma.getBrojacPoslednjePrimljeneFakture().getFirmaByNaziv(sender).getBrojac()+1);
 					semaFirma.getBrojacPoslednjePrimljeneFakture().getFirmaByNaziv(sender).setTimestamp(dateString);
 					semaFirma.getNeplaceneFakture().getFaktura().add(faktura);
+					FirmaDBUtil.storeFirmaDatabase(semaFirma, propReceiver.getProperty("address"));
 				}
 			}
 			
@@ -123,7 +124,9 @@ public class FakturaProvider implements Provider<DOMSource> {
 
 			encrypted = MessageTransform.packS("Notifikacija", "Notification",apsolute, propReceiver, "cer"+sender ,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 			if(encrypted != null) {
+				semaFirma = FirmaDBUtil.loadFirmaDatabase(propReceiver.getProperty("address"));
 				semaFirma.setBrojacPoslednjePoslateNotifikacije(semaFirma.getBrojacPoslednjePoslateNotifikacije()+1);
+				FirmaDBUtil.storeFirmaDatabase(semaFirma, propReceiver.getProperty("address"));
 			}
 			FirmaDBUtil.storeFirmaDatabase(semaFirma, propReceiver.getProperty("address"));
 

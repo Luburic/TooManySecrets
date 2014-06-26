@@ -106,7 +106,7 @@ public class MessageTransform {
 			return null;
 		}
 
-		Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
+		//Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 
 		//DocumentTransform.printDocument(forSave);
 
@@ -665,6 +665,14 @@ public class MessageTransform {
 				rbrPorukeFromXml = semaCentralna.getBrojacPoslednjegPoslatogMTNaloga();
 				break;
 			case "mt102":
+				rbrPorukeFromXml = semaCentralna.getBrojacPoslednjegPoslatogMTNaloga();
+				System.out.println("POSLEDNJA POSLATA PORUKA IZ CENTRALNE: "+rbrPorukeFromXml);
+				break;
+			case "mt910":
+				rbrPorukeFromXml = semaCentralna.getBrojacPoslednjegPoslatogMTNaloga();
+				System.out.println("POSLEDNJA POSLATA PORUKA IZ CENTRALNE: "+rbrPorukeFromXml);
+				break;
+			case "mt900":
 				rbrPorukeFromXml = semaCentralna.getBrojacPoslednjegPoslatogMTNaloga();
 				System.out.println("POSLEDNJA POSLATA PORUKA IZ CENTRALNE: "+rbrPorukeFromXml);
 				break;

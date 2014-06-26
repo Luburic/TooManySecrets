@@ -77,9 +77,6 @@ public class MT910ResponseProvider implements Provider<DOMSource> {
 			}
 			
 			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
-			if(semaBanka != null) {
-				System.out.println("SEMA BANKE NIJE PRAZNA, IMA RACUNA: "+semaBanka.getKorisnickiRacuni().getRacun().size());
-			}
 			
 			Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
 			
@@ -108,20 +105,20 @@ public class MT910ResponseProvider implements Provider<DOMSource> {
 					//semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke);
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString);
-					if(semaBanka != null) {
-						System.out.println("CUVANJE BAZE POSLE OVALJENE RAZMENE SREDSTAVA U MT910 RESPONSE A PRE SLANJA NOTIFIKACIJE CENTRALNOJ BANCI");
-						BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
-					}
+					BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 					DocumentTransform.createNotificationResponse("423", "Izvrsena radnja.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
-					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
+					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer"+sender, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 				} else {
 					
 					DocumentTransform.createNotificationResponse("424", "Nije izvrsena radnja.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
-					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
+					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer"+sender, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 				}
 				
 			
 			}
+			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+			semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
+			BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

@@ -78,7 +78,7 @@ public class MT103ResponseProvider implements Provider<DOMSource> {
 			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 			System.out.println("UCITANA SEMA BANKE KOJOJ SE POSLAO MT103 IZ CENTRALNE - SLEDE SVI RACUNI");
 			for(BankeSema.KorisnickiRacuni.Racun r : semaBanka.getKorisnickiRacuni().getRacun()) {
-				System.out.println("IME VLASNIKA RACUNA TREBA DA IMA 2 UKUPNO: "+r.getVlasnik());
+				System.out.println("IME VLASNIKA RACUNA: "+r.getVlasnik());
 			}
 			
 			Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
@@ -103,26 +103,25 @@ public class MT103ResponseProvider implements Provider<DOMSource> {
 				Unmarshaller unmarshaller = context.createUnmarshaller();
 				MT103 mt103 = (MT103) unmarshaller.unmarshal(decryptedDocument);
 			
-			
-				if(mt103 != null && (registar.getBanke().getBankaByCode(mt103.getSwiftBankeDuznika()) != null)) {
-					//semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+				System.out.println("ID MT103 PORUKE: " +mt103.getIdPoruke());
+				if(mt103 != null && (registar.getBanke().getBankaBySwift(mt103.getSwiftBankePoverioca()) != null) && mt103.getIdPoruke().equals("MT103MT103")) {
+					semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 					semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(mt103.getPrimalac()).setStanje(semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(mt103.getPrimalac()).getStanje().add(mt103.getIznos()));
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke);
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString);
-					if(semaBanka != null) {
-						System.out.println("CUVANJE U BANCI KOJA JE PRIMILA MT103, NA RACUN: "+semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(mt103.getPrimalac()));
-						BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
-					}
-					DocumentTransform.createNotificationResponse("423", "Izvrsena radnja.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
-					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
+					BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
+					DocumentTransform.createNotificationResponse("200", "Izvrsena radnja.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
+					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 				} else {
-					
 					DocumentTransform.createNotificationResponse("424", "Nije izvrsena radnja.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
-					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
+					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 				}
 				
 			
 			}
+			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+			semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
+			BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

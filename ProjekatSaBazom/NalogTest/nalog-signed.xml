@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><nalog xmlns="http://www.toomanysecrets.com/nalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="">
+<?xml version="1.0" encoding="UTF-8"?><nalog xmlns="http://www.toomanysecrets.com/nalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="firmaa">
     <idPoruke>123456</idPoruke>
     <duznikNalogodavac>firmaa</duznikNalogodavac>
     <svrhaPlacanja>reket</svrhaPlacanja>
@@ -11,10 +11,10 @@
     <racunPoverioca>360222222222222222</racunPoverioca>
     <modelOdobrenja>97</modelOdobrenja>
     <pozivNaBrojOdobrenja>111111</pozivNaBrojOdobrenja>
-    <iznos>10</iznos>
+    <iznos>100</iznos>
     <oznakaValute>rsd</oznakaValute>
-    <hitno>false</hitno>
-<timestamp>06/26/2014 03:01:58</timestamp><redniBrojPoruke>2</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <hitno>true</hitno>
+<timestamp>06/26/2014 07:18:35</timestamp><redniBrojPoruke>2</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -24,13 +24,13 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>rAXNqqFj22ixXdkAIX+3gw/R2cI=</ds:DigestValue>
+<ds:DigestValue>xRx5UviMRMl95WvVE463U+aCmrY=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-EhipWeJyLAXGCNZrdL937imZO9MjNbxcBe643HbW8JvA7G/4/ia6tS2J11FQ+3btU7j/R6DQMCuT
-NM4osJ00wU/oFcvuPcSWZdUce18nC9bFb2CoyKCKpCfnWZsMbeBd15YDyieMzszfdWv5ZD2Ie17C
-a9YNL5mHAaJVAIuSLyg=
+oXYzZ6UtneLpNbyVZQIi71tQoap3tTepYWk6lEJW7cUTmNMEQFvNHfXxuYYH2J0VJvfB1hHEhPqg
+ewmRma+0Yc6GATh4/dg2n3dsoyM/LI/Q0Xxg8vwWAjlLBp/RpXjm752Kc43M7k8V/fmNN1h4TZy2
+qmcsyFdrVLOJk5Un7pE=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>

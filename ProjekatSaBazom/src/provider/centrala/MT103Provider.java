@@ -50,11 +50,11 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 	private Document encryptedDocument;
 	public Centralna semaBanka;
-	private String message;
 	private Properties propReceiver;
 	private String apsolute = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
 	private String apsolutePath = DocumentTransform.class.getClassLoader().getResource("mt910.xml").toString().substring(6);
 	private String apsolutePath103 = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
+	private String notificationPath = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
 	private MT103 mt103;
 
 	public MT103Provider() {
@@ -108,16 +108,19 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_MT103,"redniBrojPoruke").item(0);
 				int rbrPoruke = Integer.parseInt(rbrPorukeEl.getTextContent());
 				sender = SecurityClass.getOwner(decryptedDocument).toLowerCase();
-
+				
+				semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(sender).setBrojac(rbrPoruke);
+				semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(sender).setTimestamp(dateString);
+				CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 
 				decryptedDocument = MessageTransform.removeTimestamp(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
 				decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_MT103);
 				decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 
 
-				System.out.println("UUUUSAOOOOOOOOOOOOOO U MT103 PROVIDERRRRRRRRRRRRRRRRRRRRRRRRRRRsdasfhgjgfdsfdgh");
+				System.out.println("UUUUSAOOOOOOOOOOOOOO U MT103 PROVIDER");
 				//DocumentTransform.printDocument(decryptedDocument);
-				System.out.println("UUUUSAOOOOOOOOOOOOOO U MT103 PROVIDERRRRRRRRRRRRRRRRRRRRRRRRRRRsdasfhgjgfdsfdgh");
+				System.out.println("UUUUSAOOOOOOOOOOOOOO U MT103 PROVIDER");
 
 				JAXBContext context = JAXBContext.newInstance("beans.mt103");
 				Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -132,13 +135,17 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					return new DOMSource(null);
 				} else {
 					
-					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: "+mt103.getObracunskiRacunBankeDuznika());
-					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: "+mt103.getObracunskiRacunBankePoverioca());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
 					for(Centralna.Banke.Banka b : semaBanka.getBanke().getBanka()) {
 						if(b.getRacun().equals(mt103.getObracunskiRacunBankeDuznika())) {
+							semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
 							b.setStanje(b.getStanje().subtract(mt103.getIznos()));
+							CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 						} else if (b.getRacun().equals(mt103.getObracunskiRacunBankePoverioca())) {
+							semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
 							b.setStanje(b.getStanje().add(mt103.getIznos()));
+							CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 						}
 					}
 					//call clients
@@ -168,13 +175,9 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					}
 					createMT900(mt103);
 					encryptedDocument = MessageTransform.packS("MT900", "MT900", apsolute, propReceiver, "cer"+sender, ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
-					System.out.println("CITANJE BROJACA IZ CENTRALNE ZA PRIMLJENI MT NALOG: "+semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(reciver).getBrojac());
-					semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(reciver).setBrojac(rbrPoruke);
-					semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(reciver).setTimestamp(dateString);
-					if(semaBanka != null) {
-						System.out.println("CUVANJE MT103 PRE VRACANJA MT900");
-						CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
-					}
+					semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
+					semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
+					CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 				}
 
 			}
@@ -241,6 +244,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 	private void createMT103(MT103 mt103) {
 
 		try {
+			mt103.setIdPoruke("MT103MT103");
 			JAXBContext context = JAXBContext.newInstance("beans.mt103");
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
@@ -277,7 +281,6 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 				return true;
 			}
 		}
-		System.out.println("IZGLEDA DA NE POSTOJI SA TIM SWIFTOM");
 		return false;
 	}
 
@@ -341,14 +344,12 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 			Document encrypted = MessageTransform.packS("MT910", "MT910", inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_MT910, "MT910");
 
-			DocumentTransform.printDocument(encrypted);
+			//DocumentTransform.printDocument(encrypted);
 
 			if(encrypted != null) {
+				semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
 				semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
-				if(semaBanka != null) {
-					System.out.println("CUVANJE UPDATE BROJACA ZA MT910 KOJI SE TEK SALJE");
-					CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
-				}
+				CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 			}
 
 
@@ -360,7 +361,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");	
 					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification", ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, propSender,"banka", "Notifikacija");
 
-					DocumentTransform.printDocument(decryptedDocument);
+					//DocumentTransform.printDocument(decryptedDocument);
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 
 					if(decryptedDocument != null){
@@ -371,10 +372,10 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 
 						SecurityClass sc = new SecurityClass();
-						sc.saveDocument(decryptedDocument, apsolute);
+						sc.saveDocument(decryptedDocument, notificationPath);
 						JAXBContext context = JAXBContext.newInstance("beans.notification");
 						Unmarshaller unmarshaller = context.createUnmarshaller();
-						Notification notification = (Notification) unmarshaller.unmarshal(new File(apsolute));
+						Notification notification = (Notification) unmarshaller.unmarshal(new File(notificationPath));
 
 						System.out.println("Notification message: " + notification.getNotificationstring());
 
@@ -421,14 +422,12 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 			Document encrypted = MessageTransform.packS("MT103", "MT103", inputFile, propSender, cert, ConstantsXWS.NAMESPACE_XSD_MT103, "MT103");
 
-			DocumentTransform.printDocument(encrypted);
+			//DocumentTransform.printDocument(encrypted);
 
 			if(encrypted != null) {
+				semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
 				semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
-				if(semaBanka != null) {
-					System.out.println("CUVANJE BROJACA PRE NEGO STO SE POSALJE MT103");
-					CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
-				}
+				CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 			}
 
 
@@ -451,10 +450,10 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 
 						SecurityClass sc = new SecurityClass();
-						sc.saveDocument(decryptedDocument, apsolute);
+						sc.saveDocument(decryptedDocument, notificationPath);
 						JAXBContext context = JAXBContext.newInstance("beans.notification");
 						Unmarshaller unmarshaller = context.createUnmarshaller();
-						Notification notification = (Notification) unmarshaller.unmarshal(new File(apsolute));
+						Notification notification = (Notification) unmarshaller.unmarshal(new File(notificationPath));
 
 						System.out.println("Notification message: " + notification.getNotificationstring());
 
