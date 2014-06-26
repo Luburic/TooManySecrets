@@ -30,6 +30,7 @@ import org.apache.cxf.binding.soap.SoapFault;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXParseException;
 
 import security.SecurityClass;
 //import util.AccountNumberISO7064Mod9710;
@@ -263,19 +264,20 @@ public class NalogProvider implements Provider<DOMSource> {
 								}
 
 							}
-							DocumentTransform.createNotificationResponse("423", "Nalog uspesno obradjen.",ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 
 
 						}
-
+					}
 						String apsoluteNot = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
 						encrypted = MessageTransform.packS("Notifikacija", "Notification",apsoluteNot, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 						BankeSema bsema = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+						
 						if(encrypted != null) {
 							bsema.setBrojacPoslednjePoslateNotifikacije(bsema.getBrojacPoslednjePoslateNotifikacije()+1);
 							BankaDBUtil.storeBankaDatabase(bsema,  propReceiver.getProperty("address"));
 						}
-					}
+					
+					
 				}
 			} else {
 				
@@ -305,6 +307,13 @@ public class NalogProvider implements Provider<DOMSource> {
 
 		racunPosaljioca = semaB.getKorisnickiRacuni().getRacunByNazivKlijenta(sender);
 
+		
+		if(racunPosaljioca.getStanje().compareTo(nalog.getIznos()) == -1) {
+			message = "Na racunu korisnika nema dovoljno sredstava da bi se izvrsila uplata.";
+			return false;
+		}
+		
+		
 		if(racunPosaljioca == null){
 			message = "Racun posaljioca nije registrovan u banci.";
 			return false;
@@ -338,6 +347,9 @@ public class NalogProvider implements Provider<DOMSource> {
 			message = "Racun nije registrovan u drugoj banci.";
 			return false;
 		}*/
+		
+		
+		
 		
 		Centralna semaCentralna = CentralnaDBUtil.loadCentralnaDatabase("http://localhost:8081/BaseX75/rest/centralna");
 		for(Centralna.Banke.Banka b : semaCentralna.getBanke().getBanka()) {

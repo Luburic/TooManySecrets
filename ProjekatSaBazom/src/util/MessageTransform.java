@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -337,7 +339,12 @@ public class MessageTransform {
 		} else {
 			document = Validation.buildDocumentWithoutValidation(inputFile);
 		}
-		System.out.println("****DOKUMENT :  "+ document);
+		if(document == null){
+			DocumentTransform.createNotificationResponse("470", "Xml fajl nije validan prema strukturi.", NAMESPACE_XSD);
+			JOptionPane.showMessageDialog(null,"Xml fajl nije validan prema strukturi.","Notification", JOptionPane.INFORMATION_MESSAGE);
+			return null;
+
+		}
 
 		Element mt = null;
 		if(schemaPrefix.equals("MT103") || schemaPrefix.equals("MT102") || schemaPrefix.equals("MT900") || schemaPrefix.equals("MT910")) {

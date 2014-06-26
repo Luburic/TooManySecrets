@@ -10,51 +10,13 @@
         <racun>
             <brojRacuna>340111111111111111</brojRacuna>
             <vlasnik>firmaa</vlasnik>
-            <pib>pib1</pib>
+            <pib>11111111111</pib>
             <stanje>200000.00</stanje>
             <blokiran>false</blokiran>
             <rezervisano>0.00</rezervisano>
         </racun>
     </korisnickiRacuni>
     <realizovaniNalozi xmlns="">
-        <realizovanNalog xmlns="">
-            <nalog xmlns="http://www.toomanysecrets.com/nalog" sender="firmaa">
-	            <idPoruke>idPoruke0</idPoruke>
-	            <duznikNalogodavac>firmaa</duznikNalogodavac>
-	            <svrhaPlacanja>svrhaPlacanja0</svrhaPlacanja>
-	            <primalacPoverilac>firmab</primalacPoverilac>
-	            <datumNaloga>2014-06-24</datumNaloga>
-	            <datumValute>2014-06-24</datumValute>
-	            <racunDuznika>340111111111111111</racunDuznika>
-	            <modelZaduzenja>0</modelZaduzenja>
-	            <pozivNaBrojZaduzenja>pozivNaBrojZaduzenja</pozivNaBrojZaduzenja>
-	            <racunPoverioca>000000000000000000</racunPoverioca>
-	            <modelOdobrenja>0</modelOdobrenja>
-	            <pozivNaBrojOdobrenja>pozivNaBrojOdobrenja</pozivNaBrojOdobrenja>
-	            <iznos>500.00</iznos>
-	            <oznakaValute>ozn</oznakaValute>
-            	<hitno>false</hitno>
-        	</nalog>
-        </realizovanNalog>
-        <realizovanNalog xmlns="">
-            <nalog xmlns="http://www.toomanysecrets.com/nalog" sender="firmaa">
-	            <idPoruke>idPoruke0</idPoruke>
-	            <duznikNalogodavac>firmaa</duznikNalogodavac>
-	            <svrhaPlacanja>svrhaPlacanja0</svrhaPlacanja>
-	            <primalacPoverilac>firmab</primalacPoverilac>
-	            <datumNaloga>2014-06-24</datumNaloga>
-	            <datumValute>2014-06-24</datumValute>
-	            <racunDuznika>340111111111111111</racunDuznika>
-	            <modelZaduzenja>0</modelZaduzenja>
-	            <pozivNaBrojZaduzenja>pozivNaBrojZaduzenja</pozivNaBrojZaduzenja>
-	            <racunPoverioca>340000000000000000</racunPoverioca>
-	            <modelOdobrenja>0</modelOdobrenja>
-	            <pozivNaBrojOdobrenja>pozivNaBrojOdobrenja</pozivNaBrojOdobrenja>
-	            <iznos>500.00</iznos>
-	            <oznakaValute>ozn</oznakaValute>
-	            <hitno>false</hitno>
-        	</nalog>
-        </realizovanNalog>
     </realizovaniNalozi>
     <nerealizovaniNalozi xmlns="">
     </nerealizovaniNalozi>

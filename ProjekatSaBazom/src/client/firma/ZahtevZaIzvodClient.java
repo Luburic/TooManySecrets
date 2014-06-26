@@ -127,6 +127,9 @@ public class ZahtevZaIzvodClient {
 	}
 
 	public static void main(String[] args) {
+		String path = "./TestXMLi/TestZahtevZaIzvod1_jedan_presek.xml";
+		//String path = "./TestXMLi/TestZahtevZaIzvod2_vise_preseka.xml";
+		//String path = "./TestXMLi/TestZahtevZaIzvod3_nema_preseka.xml";
 		ZahtevZaIzvodClient zzi = new ZahtevZaIzvodClient();
 		int cnt = 0;
 		List<Presek> preseci = new ArrayList<>();

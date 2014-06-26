@@ -72,7 +72,7 @@ public class Validation {
 			e.printStackTrace();
 			
 		} catch (SAXException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return null;
 		} catch (IOException e) {
 			e.printStackTrace();

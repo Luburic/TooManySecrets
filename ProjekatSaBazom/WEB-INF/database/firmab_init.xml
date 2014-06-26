@@ -4,8 +4,8 @@
  xsi:schemaLocation="http://www.toomanysecrets.com/firmesema file:../shema/firmeSema.xsd">
     <informacijeOFirmi xmlns="">
         <naziv>firmab</naziv>
-        <pib>pib0</pib>
-        <adresa>adresa0</adresa>
+        <pib>22222222222</pib>
+        <adresa>adresa3</adresa>
     </informacijeOFirmi>
     <informacijeOBankama xmlns="">
         <banka>

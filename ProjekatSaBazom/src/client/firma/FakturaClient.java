@@ -121,6 +121,8 @@ public class FakturaClient {
 
 	public static void main(String[] args) {
 		FakturaClient fc = new FakturaClient();
-		fc.testIt("firmaB", "firmaa", "cerfirmaa", "./FakturaTest/faktura-example1.xml");
+		//String path = "./TestXMLi/TestFaktura1_ispravna.xml";
+		String path = "./TestXMLi/TestFaktura2_neispravna_struktura.xml";
+		fc.testIt("firmaB", "firmaa", "cerfirmaa", path);
 	}
 }
