@@ -120,6 +120,7 @@ public class MT103ResponseProvider implements Provider<DOMSource> {
 			
 			}
 			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+			semaBanka.setBrojacPoslednjePoslateNotifikacije(semaBanka.getBrojacPoslednjePoslateNotifikacije()+1);
 			semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
 			BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 			

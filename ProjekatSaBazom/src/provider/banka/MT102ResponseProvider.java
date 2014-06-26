@@ -54,7 +54,7 @@ public class MT102ResponseProvider implements Provider<DOMSource> {
     		System.out.println("\nInvoking MT103Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			Document document =DocumentTransform.convertToDocument(request);
-			DocumentTransform.printDocument(document);
+			//DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
@@ -91,7 +91,7 @@ public class MT102ResponseProvider implements Provider<DOMSource> {
 				decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 				
 				
-				DocumentTransform.printDocument(decryptedDocument);
+				//DocumentTransform.printDocument(decryptedDocument);
 			
 				JAXBContext context = JAXBContext.newInstance("beans.mt102");
 				Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -106,13 +106,15 @@ public class MT102ResponseProvider implements Provider<DOMSource> {
 					}
 					if(ukupanIznos.compareTo(pojedinacneSuma) != 0) {
 						DocumentTransform.createNotificationResponse("426", "Ukupan iznos i suma stavki se ne poklapaju.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
-						encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
+						encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender, ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 					} else {
 						for(PojedinacnaUplata p : mt102.getPojedinacneUplate().getPojedinacnaUplata()) {
+							semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 							semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(p.getPrimalac()).setStanje(semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(p.getPrimalac()).getStanje().add(p.getIznos()));
+							BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 						}
 					}
-
+					semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke);
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString);
 					BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
@@ -123,6 +125,10 @@ public class MT102ResponseProvider implements Provider<DOMSource> {
 					DocumentTransform.createNotificationResponse("424", "Nije izvrsena radnja.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 				}
+				
+				semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+				semaBanka.setBrojacPoslednjePoslateNotifikacije(semaBanka.getBrojacPoslednjePoslateNotifikacije()+1);
+				BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 				
 			
 			}

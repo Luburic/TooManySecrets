@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><izvod xmlns="http://www.toomanysecrets.com/zahtevzaizvod" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="firmaa">
-    <brojRacuna>111111111111111111</brojRacuna>
+    <brojRacuna>340111111111111111</brojRacuna>
     <datum>2014-06-24</datum>
     <redniBrojPreseka>2</redniBrojPreseka>
-<timestamp>06/24/2014 22:21:53</timestamp><redniBrojPoruke>2</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<timestamp>06/26/2014 07:59:16</timestamp><redniBrojPoruke>3</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -12,13 +12,13 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>sgnwg27K8Pl2hpzwkxtBXQFwUs8=</ds:DigestValue>
+<ds:DigestValue>skeUdd0I4QZwroc7VX86tm6YZjc=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-BV/nBrIzCYdVYwq0lZ5vJxCq8WvrN3DerqSXEnDSSKWoiwXVOTPCOFen2snJ9g1DvCXsrSa+dXS+
-JkGHg9JsbNIjavw8DbZo3p2kfStWXWMXqOzYbo4Yd407N8TQs/bLF9nvQmbaKCygL6rWb7j3nS80
-7l05Afug2XBkwLYl4rc=
+rF/o6vdV1J5oWmRuZJLU2RU7VsLMzJz5N6Gqg7u47aJYHZBOKOL9tf5WjZ7tSvaWAKWK0aqJomS6
+d2Pc+a03SPhxIBlwcLvmzkSbPqDsKmQ+qZ+bPw1DwLpkLf9ty5U6Q1jcqZ6OoiJNGgwnAcbSpW+3
+qjB95wtl+PVXPnluEzc=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>

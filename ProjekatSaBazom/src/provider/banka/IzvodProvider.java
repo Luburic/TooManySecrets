@@ -135,38 +135,35 @@ public class IzvodProvider  implements Provider<DOMSource>{
 						}
 					}
 					
-					//svi prihodi koji su bili nakon zadatog datuma
+					//sve sto je bilo posle navedenog datuma u korist
 					BigDecimal sumaUKorist = new BigDecimal(0);
 					for(Nalog nalog : naloziUKorist){
-						//ako je na taj datum ili posle bila uplata
-						if(nalog.getDatumNaloga().compareTo(izvod.getDatum())>=0){
+						if(nalog.getDatumNaloga().compareTo(izvod.getDatum()) >= 0){
 							sumaUKorist = sumaUKorist.add(nalog.getIznos());
 						}
 					}
 					
-					//svi rashodi koji su bili nakon zadatog datuma
+					//sve sto je bilo posle navedenog datuma na teret
 					BigDecimal sumaNaTeret = new BigDecimal(0);
 					for(Nalog nalog : naloziNaTeret){
-						//ako je na taj datum ili posle bila isplata
-						if(nalog.getDatumNaloga().compareTo(izvod.getDatum())>=0){
+						if(nalog.getDatumNaloga().compareTo(izvod.getDatum()) >= 0){
 							sumaNaTeret=sumaNaTeret.add(nalog.getIznos());
 						}
 					}
 					
-					//prethodno stanje je trenutno-sve uplate+sve isplate
 					BigDecimal prethodnoStanje = racunIzBaze.getStanje().subtract(sumaUKorist).add(sumaNaTeret);
 					
 					List<Nalog> naloziNaDan = new ArrayList<Nalog>();
 					
 					//svi nalozi u korist na datum
 					for(Nalog nalog : naloziUKorist){
-						if(nalog.getDatumNaloga().compareTo(izvod.getDatum())==0){
+						if(nalog.getDatumNaloga().compareTo(izvod.getDatum()) == 0){
 							naloziNaDan.add(nalog);
 						}
 					}
 					//svi nalozi na teret na datum
 					for(Nalog nalog : naloziNaTeret){
-						if(nalog.getDatumNaloga().compareTo(izvod.getDatum())==0){
+						if(nalog.getDatumNaloga().compareTo(izvod.getDatum()) == 0){
 							naloziNaDan.add(nalog);
 						}
 					}
@@ -202,9 +199,11 @@ public class IzvodProvider  implements Provider<DOMSource>{
 						presek.setSender(propReceiver.getProperty("naziv"));
 					}
 					
+					semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 					semaBanka.getBrojacPoslednjegPrimljenogZahtevaZaIzvod().getFirmaByNaziv(sender).setBrojac(
 							semaBanka.getBrojacPoslednjegPrimljenogZahtevaZaIzvod().getFirmaByNaziv(sender).getBrojac()+1);
 					semaBanka.getBrojacPoslednjegPrimljenogZahtevaZaIzvod().getFirmaByNaziv(sender).setTimestamp(dateString);
+					BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 
 					try {
 
@@ -232,7 +231,9 @@ public class IzvodProvider  implements Provider<DOMSource>{
 					encrypted = MessageTransform.packS("Presek", "Presek", apsolute, propReceiver, "cer"+sender ,ConstantsXWS.NAMESPACE_XSD_PRESEK, "Presek");
 					DocumentTransform.printDocument(encrypted);
 					if(encrypted != null) {
+						semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 						semaBanka.setBrojacPoslednjegPoslatogPreseka(semaBanka.getBrojacPoslednjegPoslatogPreseka()+1);
+						BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
 					}
 					
 				}

@@ -59,6 +59,7 @@ public class ZahtevZaIzvodClient {
 			FirmeSema semaFirma = FirmaDBUtil.loadFirmaDatabase(propSender.getProperty("address"));
 			if(encrypted != null) {
 				semaFirma.setBrojacPoslednjegZahtevaZaIzvod(semaFirma.getBrojacPoslednjegZahtevaZaIzvod()+1);
+				FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
 				DOMSource response = dispatch.invoke(new DOMSource(encrypted));
 				
 				if(response!=null) {
@@ -66,7 +67,7 @@ public class ZahtevZaIzvodClient {
 					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "Presek", "Presek",
 							ConstantsXWS.NAMESPACE_XSD_PRESEK, propSender, "firma", "Presek");
 				
-					DocumentTransform.printDocument(decryptedDocument);
+					//DocumentTransform.printDocument(decryptedDocument);
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 					if(decryptedDocument != null){
 						Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_PRESEK,"timestamp").item(0);
@@ -89,7 +90,7 @@ public class ZahtevZaIzvodClient {
 						decryptedDocument = MessageTransform.removeRedniBrojPoruke(decryptedDocument, ConstantsXWS.NAMESPACE_XSD_PRESEK);
 						decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 						
-						DocumentTransform.printDocument(decryptedDocument);
+						//DocumentTransform.printDocument(decryptedDocument);
 						
 
 						SecurityClass sc = new SecurityClass();
@@ -99,8 +100,10 @@ public class ZahtevZaIzvodClient {
 						Unmarshaller unmarshaller = context.createUnmarshaller();
 						presek = (Presek) unmarshaller.unmarshal(new File("./PresekTest/presek.xml"));
 						
+						semaFirma = FirmaDBUtil.loadFirmaDatabase(propSender.getProperty("address"));
 						semaFirma.getBrojacPoslednjegPrimljenogPreseka().getBankaByNaziv(owner).setBrojac(rbrPoruke);
 						semaFirma.getBrojacPoslednjegPrimljenogPreseka().getBankaByNaziv(owner).setTimestamp(dateString);
+						FirmaDBUtil.storeFirmaDatabase(semaFirma, propSender.getProperty("address"));
 						
 					} else {
 						System.out.println("Ne postoji racun u banci");
