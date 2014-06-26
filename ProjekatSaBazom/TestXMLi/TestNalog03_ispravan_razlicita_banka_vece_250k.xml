@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nalog xmlns="http://www.toomanysecrets.com/nalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/nalog ../WEB-INF/shema/NalogRaw.xsd ">
+  <idPoruke>nzpT03</idPoruke>
+  <duznikNalogodavac>DMS</duznikNalogodavac>
+  <svrhaPlacanja>Placanje fakture fak2</svrhaPlacanja>
+  <primalacPoverilac>NIS</primalacPoverilac>
+  <datumNaloga>2014-05-25</datumNaloga>
+  <datumValute>2014-05-25</datumValute>
+  <racunDuznika>310111111111111111</racunDuznika>
+  <modelZaduzenja>97</modelZaduzenja>
+  <pozivNaBrojZaduzenja>12345678912345678912</pozivNaBrojZaduzenja>
+  <racunPoverioca>340111111111111111</racunPoverioca>
+  <modelOdobrenja>97</modelOdobrenja>
+  <pozivNaBrojOdobrenja>12345678912345678912</pozivNaBrojOdobrenja>
+  <iznos>25500.0</iznos>
+  <oznakaValute>RSD</oznakaValute>
+  <hitno>false</hitno>
+</nalog>

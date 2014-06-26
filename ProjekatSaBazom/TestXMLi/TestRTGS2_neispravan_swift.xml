@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MT103 xmlns"http://www.toomanysecrets.com/mt103" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/mt103 ../WEB-INF/shema/MT103Raw.xsd ">
+  <idPoruke>rtgs1</idPoruke>
+  <swiftBankeDuznika>CONARS22</swiftBankeDuznika>
+  <obracunskiRacunBankeDuznika>310000000000000000</obracunskiRacunBankeDuznika>
+  <swiftBankePoverioca>GIBARS23</swiftBankePoverioca>
+  <obracunskiRacunBankePoverioca>340000000000000000</obracunskiRacunBankePoverioca>
+  <duznik>DMS</duznik>
+  <svrhaPlacanja>Placanje fakture fak3</svrhaPlacanja>
+  <primalac>NIS</primalac>
+  <datumNaloga>2014-05-25</datumNaloga>
+  <datumValute>2014-05-25</datumValute>
+  <racunDuznika>310111111111111111</racunDuznika>
+  <modelZaduzenja>97</modelZaduzenja>
+  <pozivNaBrojZaduzenja>12345678912345678912</pozivNaBrojZaduzenja>
+  <racunPoverioca>340111111111111111</racunPoverioca>
+  <modelOdobrenja>97</modelOdobrenja>
+  <pozivNaBrojOdobrenja>12345678912345678912</pozivNaBrojOdobrenja>
+  <iznos>265500.00</iznos>
+  <sifraValute>RSD</sifraValute>
+</MT103>

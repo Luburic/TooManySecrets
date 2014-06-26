@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MT102 xmlns="http://www.toomanysecrets.com/mt102" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/mt102 ../WEB-INF/shema/MT102Raw.xsd ">
+    <zaglavljeMT102 idPoruke="mt102XX9">
+        <swiftBankeDuznika>CONARS22</swiftBankeDuznika>
+        <obracunskiRacunBankeDuzinka>310000000000000000</obracunskiRacunBankeDuzinka>
+        <swiftBankePoverioca>GIBARS22</swiftBankePoverioca>
+        <obracunskiRacunBankePoverioca>340000000000000000</obracunskiRacunBankePoverioca>
+        <ukupanIznos>2001.00</ukupanIznos>
+        <sifraValute>RSD</sifraValute>
+        <datumValute>2014-05-25</datumValute>
+        <datum>2014-05-25</datum>
+    </zaglavljeMT102>
+    <pojedinacneUplate>
+        <pojedinacnaUplata idNalogaZaPlacanje="nzp1">
+            <duznik>DMS</duznik>
+            <svrhaUplate>Nafta</svrhaUplate>
+            <primalac>NIS</primalac>
+            <datumNaloga>2014-05-25</datumNaloga>
+            <racunDuznika>310111111111111111</racunDuznika>
+            <modelZaduzenja>97</modelZaduzenja>
+            <pozivNaBrojZaduzenja>12345678912345678912</pozivNaBrojZaduzenja>
+            <racunPoverioca>340111111111111111</racunPoverioca>
+            <modelOdobrenja>97</modelOdobrenja>
+            <pozivNaBrojOdobrenja>12345678912345678912</pozivNaBrojOdobrenja>
+            <iznos>500.00</iznos>
+            <sifraValute>RSD</sifraValute>
+        </pojedinacnaUplata>
+		<pojedinacnaUplata idNalogaZaPlacanje="nzp2">
+            <duznik>DMS</duznik>
+            <svrhaUplate>Barut</svrhaUplate>
+            <primalac>NIS</primalac>
+            <datumNaloga>2014-05-25</datumNaloga>
+            <racunDuznika>310111111111111111</racunDuznika>
+            <modelZaduzenja>97</modelZaduzenja>
+            <pozivNaBrojZaduzenja>12345678912345678912</pozivNaBrojZaduzenja>
+            <racunPoverioca>340111111111111111</racunPoverioca>
+            <modelOdobrenja>97</modelOdobrenja>
+            <pozivNaBrojOdobrenja>12345678912345678912</pozivNaBrojOdobrenja>
+            <iznos>1500.00</iznos>
+            <sifraValute>RSD</sifraValute>
+        </pojedinacnaUplata>
+    </pojedinacneUplate>
+</MT102>

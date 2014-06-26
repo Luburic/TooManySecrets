@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<izvod xmlns="http://www.toomanysecrets.com/zahtevzaizvod" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.toomanysecrets.com/zahtevzaizvod ../WEB-INF/shema/IzvodRaw.xsd ">
+  <brojRacuna>310111111111111111</brojRacuna>
+  <datum>2014-05-28</datum>
+  <redniBrojPreseka>1</redniBrojPreseka>
+</izvod>
