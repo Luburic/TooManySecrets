@@ -41,7 +41,7 @@ import beans.mt103.MT103;
 public class MT103ResponseProvider implements Provider<DOMSource> {
 	
 	private Document encryptedDocument;
-	private BankeSema semaBanka;
+	public BankeSema semaBanka;
 	private Properties propReceiver;
 	private String apsolute = DocumentTransform.class.getClassLoader().getResource("Notification.xml").toString().substring(6);
 	
@@ -53,7 +53,7 @@ public class MT103ResponseProvider implements Provider<DOMSource> {
     		System.out.println("\nInvoking MT103Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			Document document =DocumentTransform.convertToDocument(request);
-			DocumentTransform.printDocument(document);
+			//DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
@@ -66,8 +66,8 @@ public class MT103ResponseProvider implements Provider<DOMSource> {
 			
 			Document decryptedDocument = MessageTransform.unpack(document,"MT103", "MT103", ConstantsXWS.NAMESPACE_XSD_MT103, propReceiver, "banka", "MT103");
 			
-			System.out.println("STIGAO U MT103 PROVIDEOOOOOOOOooooooooooooooOOOOOOOOoooooooo");
-			DocumentTransform.printDocument(decryptedDocument);
+			System.out.println("STIGAO U MT103 RESPONSE PROVIDER");
+			//DocumentTransform.printDocument(decryptedDocument);
 
 			Document forSave = null;
 			if(decryptedDocument != null) {
@@ -76,11 +76,15 @@ public class MT103ResponseProvider implements Provider<DOMSource> {
 			}
 			
 			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+			System.out.println("UCITANA SEMA BANKE KOJOJ SE POSLAO MT103 IZ CENTRALNE - SLEDE SVI RACUNI");
+			for(BankeSema.KorisnickiRacuni.Racun r : semaBanka.getKorisnickiRacuni().getRacun()) {
+				System.out.println("IME VLASNIKA RACUNA TREBA DA IMA 2 UKUPNO: "+r.getVlasnik());
+			}
 			
 			Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
 			
 			if (forSave != null) {
-			
+				
 				Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_MT103,"timestamp").item(0);
 				String dateString = timestamp.getTextContent();
 				Element rbrPorukeEl = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_MT103,"redniBrojPoruke").item(0);
@@ -93,7 +97,7 @@ public class MT103ResponseProvider implements Provider<DOMSource> {
 				decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 				
 				
-				DocumentTransform.printDocument(decryptedDocument);
+				//DocumentTransform.printDocument(decryptedDocument);
 			
 				JAXBContext context = JAXBContext.newInstance("beans.mt103");
 				Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -101,11 +105,14 @@ public class MT103ResponseProvider implements Provider<DOMSource> {
 			
 			
 				if(mt103 != null && (registar.getBanke().getBankaByCode(mt103.getSwiftBankeDuznika()) != null)) {
-					semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+					//semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 					semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(mt103.getPrimalac()).setStanje(semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(mt103.getPrimalac()).getStanje().add(mt103.getIznos()));
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke);
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString);
-					BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
+					if(semaBanka != null) {
+						System.out.println("CUVANJE U BANCI KOJA JE PRIMILA MT103, NA RACUN: "+semaBanka.getKorisnickiRacuni().getRacunByNazivKlijenta(mt103.getPrimalac()));
+						BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
+					}
 					DocumentTransform.createNotificationResponse("423", "Izvrsena radnja.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 				} else {

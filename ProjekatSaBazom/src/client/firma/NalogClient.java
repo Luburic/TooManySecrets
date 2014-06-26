@@ -126,7 +126,7 @@ public class NalogClient {
 		Nalog nalog = null;
 		try {
 			nalog = new Nalog();
-			nalog.setSender(sender);
+			nalog.setSender("firmaa");
 			nalog.setIdPoruke("123456");
 
 			nalog.setDuznikNalogodavac("firmaa");
@@ -135,7 +135,7 @@ public class NalogClient {
 			nalog.setDatumNaloga(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
 			nalog.setDatumValute(MyDatatypeConverter.parseDate(MyDatatypeConverter.printDate(new Date())));
 
-			nalog.setHitno(true);
+			nalog.setHitno(false);
 
 			nalog.setIznos(new BigDecimal(10.00));
 

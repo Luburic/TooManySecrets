@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:centralna xmlns:ns1="http://www.toomanysecrets.com/centralna"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.toomanysecrets.com/centralna http://localhost:8081/centralna.xsd">
+    <banke>
+        <banka>
+            <naziv>bankaa</naziv>
+            <swift>ERSTSR20</swift>
+            <stanje>300000.00</stanje>
+            <racun>340111111111111111</racun>
+        </banka>
+        <banka>
+            <naziv>bankab</naziv>
+            <swift>COMBSR20</swift>
+            <stanje>300000.00</stanje>
+            <racun>360222222222222222</racun>
+        </banka>
+    </banke>
+    <brojacPoslednjePoslateNotifikacije>0</brojacPoslednjePoslateNotifikacije>
+    <brojacPoslednjegPoslatogMTNaloga>0</brojacPoslednjegPoslatogMTNaloga>
+    <brojacPoslednjegPrimljenogMTNaloga>
+        <banka>
+            <naziv>bankaa</naziv>
+            <brojac>0</brojac>
+            <timestamp>05/04/2006 04:12:55</timestamp>
+        </banka>
+        <banka>
+            <naziv>bankab</naziv>
+            <brojac>0</brojac>
+            <timestamp>05/04/2006 04:12:55</timestamp>
+        </banka>
+    </brojacPoslednjegPrimljenogMTNaloga>
+</ns1:centralna>

@@ -21,7 +21,6 @@ import java.util.Random;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import client.firma.ZahtevZaIzvodClient;
 import provider.banka.IzvodProvider;
 import provider.banka.NalogProvider;
 import provider.centrala.MT102Provider;
@@ -29,11 +28,12 @@ import provider.centrala.MT103Provider;
 import provider.firma.FakturaProvider;
 import security.SecurityClass;
 import basexdb.banka.BankeSema;
-import basexdb.centralna.CentralnaSema;
+import basexdb.centralna.Centralna;
 import basexdb.firma.FirmeSema;
 import basexdb.util.BankaDBUtil;
 import basexdb.util.CentralnaDBUtil;
 import basexdb.util.FirmaDBUtil;
+import client.firma.ZahtevZaIzvodClient;
 import crlBanks.CrlBank;
 import crlBanks.CrlBank.Firm;
 import crlCentralna.CrlCentralna;
@@ -49,7 +49,7 @@ public class MessageTransform {
 
 		FirmeSema semaFirma = null;
 		BankeSema semaBanka = null;
-		CentralnaSema semaCentralna = null;
+		Centralna semaCentralna = null;
 		String dbType = propReceiver.getProperty("type");
 		if(dbType.equalsIgnoreCase("firma")) {
 			semaFirma = FirmaDBUtil.loadFirmaDatabase(propReceiver.getProperty("address"));
@@ -108,7 +108,7 @@ public class MessageTransform {
 
 		Document forSave = Validation.buildDocumentWithValidation(Validation.createReader(decrypt), new String[]{ "http://localhost:8080/"+schemaPrefix+"Signed.xsd","http://localhost:8080/xmldsig-core-schema.xsd"});
 
-		DocumentTransform.printDocument(forSave);
+		//DocumentTransform.printDocument(forSave);
 
 		Element timestamp = (Element) decrypt.getElementsByTagNameNS(TARGET_NAMESPACE, "timestamp").item(0);
 		String dateString = timestamp.getTextContent();
@@ -165,7 +165,7 @@ public class MessageTransform {
 				downloadUsingStream("http://localhost:8080/"+"centralnabanka"+"/"+"centralnabanka"+".cer", "centralnabanka"+".cer");
 				SecurityClass sc = new SecurityClass();
 				certIssuer = sc.readCertificateFromFile(new File(issuerName+".cer"));
-				System.out.println(certIssuer);
+				//System.out.println(certIssuer);
 				certCentralna = sc.readCertificateFromFile(new File("centralnabanka"+".cer"));
 
 				try {
@@ -205,7 +205,7 @@ public class MessageTransform {
 				}
 				crlDoc = removeSignature(crlDoc);
 				DocumentTransform.transform(crlDoc, "temp.xml");
-				DocumentTransform.printDocument(crlDoc);
+				//DocumentTransform.printDocument(crlDoc);
 				CrlBank crlBank = CrlBank.load("temp.xml");
 				for(Firm f : crlBank.getFirm()) {
 					for(String s: f.getCertificateID()){
@@ -273,7 +273,7 @@ public class MessageTransform {
 					}
 					crlDoc = removeSignature(crlDoc);
 					DocumentTransform.transform(crlDoc, "temp2.xml");
-					DocumentTransform.printDocument(crlDoc);
+					//DocumentTransform.printDocument(crlDoc);
 					CrlCentralna crlCentralna = CrlCentralna.load("temp2.xml");
 					for(Bank b : crlCentralna.getBank()) {
 						for(String s: b.getCertificateID()){
@@ -317,7 +317,7 @@ public class MessageTransform {
 
 		FirmeSema semaFirma = null;
 		BankeSema semaBanka = null;
-		CentralnaSema semaCentralna = null;
+		Centralna semaCentralna = null;
 		String dbType = propSender.getProperty("type");
 		if(dbType.equalsIgnoreCase("firma")) {
 			semaFirma = FirmaDBUtil.loadFirmaDatabase(propSender.getProperty("address"));
@@ -487,7 +487,7 @@ public class MessageTransform {
 		bis.close();
 	}
 
-	public static int getBrojPoslednjePrimljenePoruke(FirmeSema semaFirma, BankeSema semaBanka, CentralnaSema semaCentralna, String type, String senderName, String entity) {
+	public static int getBrojPoslednjePrimljenePoruke(FirmeSema semaFirma, BankeSema semaBanka, Centralna semaCentralna, String type, String senderName, String entity) {
 		int rbrPorukeFromXml = 0;
 		if(semaFirma != null) {
 			switch(type.toLowerCase()) {
@@ -538,7 +538,7 @@ public class MessageTransform {
 
 		} else if (semaCentralna != null) {
 			System.out.println("USAO KOD CENTRALNE U BAZU");
-			CentralnaSema.BrojacPoslednjegPrimljenogMTNaloga.Banka cMTNalog = semaCentralna.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(senderName);
+			Centralna.BrojacPoslednjegPrimljenogMTNaloga.Banka cMTNalog = semaCentralna.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(senderName);
 			if(cMTNalog == null){
 				System.out.println("NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLAAAAAAAAAAAAAAAASDASDASDASDASDASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			}
@@ -548,7 +548,7 @@ public class MessageTransform {
 		return rbrPorukeFromXml;
 	}
 
-	public static Date getTimeStampPoslednjePrimljenePoruke(FirmeSema semaFirma, BankeSema semaBanka, CentralnaSema semaCentralna, String type, String senderName, String entity) {
+	public static Date getTimeStampPoslednjePrimljenePoruke(FirmeSema semaFirma, BankeSema semaBanka, Centralna semaCentralna, String type, String senderName, String entity) {
 		Date date = null;
 		String dateFromXml = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
@@ -601,12 +601,14 @@ public class MessageTransform {
 			
 
 		} else if (semaCentralna != null) {
-			System.out.println("USAO U MESSAGE TRANSFORM U GET KURCINA");
+			System.out.println("USAO U MESSAGE TRANSFORM KOD CENTRALNE BANKE");
 			System.out.println("SENDER NAME: "+senderName);
 			
-			CentralnaSema.BrojacPoslednjegPrimljenogMTNaloga.Banka cMTNalog = semaCentralna.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(senderName);
+			Centralna.BrojacPoslednjegPrimljenogMTNaloga.Banka cMTNalog = semaCentralna.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(senderName);
 			if(cMTNalog == null){
 				System.out.println("NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLAAAAAAAAAAAAAAAASDASDASDASDASDASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			} else {
+				System.out.println("POSLEDNJI PRIMLJENI MT NALOG: "+cMTNalog.getTimestamp());
 			}
 			dateFromXml = cMTNalog.getTimestamp();
 		}
@@ -620,7 +622,7 @@ public class MessageTransform {
 		return date;
 	}
 
-	public static int getBrojPoslednjePoslatePoruke(FirmeSema semaFirma, BankeSema semaBanka, CentralnaSema semaCentralna, String type) {
+	public static int getBrojPoslednjePoslatePoruke(FirmeSema semaFirma, BankeSema semaBanka, Centralna semaCentralna, String type) {
 		int rbrPorukeFromXml = 0;
 		if(semaFirma != null) {
 			switch(type.toLowerCase()) {
@@ -664,6 +666,7 @@ public class MessageTransform {
 				break;
 			case "mt102":
 				rbrPorukeFromXml = semaCentralna.getBrojacPoslednjegPoslatogMTNaloga();
+				System.out.println("POSLEDNJA POSLATA PORUKA IZ CENTRALNE: "+rbrPorukeFromXml);
 				break;
 				
 			}

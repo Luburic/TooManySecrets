@@ -34,8 +34,6 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.sun.xml.bind.v2.schemagen.xmlschema.List;
-
 import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
@@ -44,18 +42,19 @@ import util.MyDatatypeConverter;
 import util.Validation;
 import basexdb.banka.BankeSema;
 import basexdb.banka.BankeSema.KorisnickiRacuni.Racun;
-import basexdb.banka.BankeSema.NerealizovaniNalozi;
 import basexdb.banka.BankeSema.NerealizovaniNalozi.NerealizovanNalog;
 import basexdb.banka.BankeSema.RealizovaniNalozi.RealizovanNalog;
+import basexdb.centralna.Centralna;
 import basexdb.registar.Registar;
 import basexdb.registar.Registar.Banke.Banka;
 import basexdb.registar.Registar.Firme.Firma;
 import basexdb.util.BankaDBUtil;
+import basexdb.util.CentralnaDBUtil;
 import basexdb.util.RegistarDBUtil;
 import beans.mt102.MT102;
 import beans.mt102.MT102.PojedinacneUplate;
-import beans.mt102.MT102.ZaglavljeMT102;
 import beans.mt102.MT102.PojedinacneUplate.PojedinacnaUplata;
+import beans.mt102.MT102.ZaglavljeMT102;
 import beans.mt103.MT103;
 import beans.mt900.MT900;
 import beans.nalog.Nalog;
@@ -69,13 +68,13 @@ public class NalogProvider implements Provider<DOMSource> {
 	private Document encrypted;
 	private BigDecimal limit = new BigDecimal(250000);
 	private Properties propReceiver;
-	private BankeSema semaBanka;
+	public BankeSema semaBanka;
 	private String sender;
 	private boolean rtgs;
 	private Racun racunPosaljioca;
 	
-	private PojedinacneUplate stavke = new PojedinacneUplate();
-	private String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
+	public PojedinacneUplate stavke = new PojedinacneUplate();
+	public String apsolute = DocumentTransform.class.getClassLoader().getResource("mt103.xml").toString().substring(6);
 	private BigDecimal usluga = new BigDecimal(55.00);
 
 
@@ -89,7 +88,7 @@ public class NalogProvider implements Provider<DOMSource> {
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 
 			Document document = DocumentTransform.convertToDocument(request);
-			DocumentTransform.printDocument(document);
+			//DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 
@@ -108,6 +107,31 @@ public class NalogProvider implements Provider<DOMSource> {
 			}
 
 			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+			
+			System.out.println("U BANCI A SE NALAZE SLEDECI PODACI");
+			for(BankeSema.KorisnickiRacuni.Racun r : semaBanka.getKorisnickiRacuni().getRacun()){
+				System.out.println("RACUN: "+r.getVlasnik());
+			}
+			
+			Centralna semaCentralna = CentralnaDBUtil.loadCentralnaDatabase("http://localhost:8081/BaseX75/rest/centralna");
+			
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			for(Centralna.Banke.Banka b : semaCentralna.getBanke().getBanka()) {
+				System.out.println("NAZIV: "+b.getNaziv());
+				System.out.println("RACUN: "+b.getRacun());
+				System.out.println("SWIFT: "+b.getSwift());
+				System.out.println("STANJE: "+b.getStanje());
+			}
+			
+			Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
+			System.out.println("U REGISTRU SU SELEDECI PODACI: ");
+			for(Registar.Banke.Banka b : registar.getBanke().getBanka()) {
+				System.out.println(b.getNaziv());
+			}
+			for(Registar.Firme.Firma b : registar.getFirme().getFirma()) {
+				System.out.println(b.getNaziv());
+			}
+			System.out.println("KRAJ ISPISA ZA REGISTAR");
 
 			if (forSave != null) {
 				Element timestamp = (Element) decryptedDocument.getElementsByTagNameNS(ConstantsXWS.NAMESPACE_XSD_NALOG,"timestamp").item(0);
@@ -258,13 +282,13 @@ public class NalogProvider implements Provider<DOMSource> {
 			Banka bankaPoverioca = registar.getBanke().getBankaByCode(nalog.getRacunPoverioca().substring(0, 3)); 
 			
 			if (bankaPoverioca == null) {
-				message = "Raèun poverioca nije registrovan ni u jednoj banci.";
+				message = "Raï¿½un poverioca nije registrovan ni u jednoj banci.";
 				return false;
 			} 
 			
 			Firma firma = registar.getFirme().getFirmaByRacun(nalog.getRacunPoverioca());
 			if (firma == null) {
-				message = "Medju registrovanim firmama ne postoji ona kojoj se vrši uplata.";
+				message = "Medju registrovanim firmama ne postoji ona kojoj se vrï¿½i uplata.";
 				return false;
 			} 
 			

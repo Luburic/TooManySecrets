@@ -22,10 +22,10 @@ public class DBRun {
 	public static void initCentralna(){
 		try{
 
-			RESTUtility.dropSchema("http://localhost:8081/BaseX75/rest/centralnabanka");
-			RESTUtility.createSchema("http://localhost:8081/BaseX75/rest/centralnabanka");
+			RESTUtility.dropSchema("http://localhost:8081/BaseX75/rest/centralna");
+			RESTUtility.createSchema("http://localhost:8081/BaseX75/rest/centralna");
 
-			RESTUtility.createResource("http://localhost:8081/BaseX75/rest/centralnabanka", "centralnabanka.xml", new FileInputStream(new File("WEB-INF/database/centralnabanka_init.xml")));
+			RESTUtility.createResource("http://localhost:8081/BaseX75/rest/centralna", "centralna.xml", new FileInputStream(new File("WEB-INF/database/centralna.xml")));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -34,7 +34,7 @@ public class DBRun {
 	public static void initBanke(){
 		try{
 
-			RESTUtility.dropSchema("http://localhost:8081/BaseX75/rest/bankaaa");
+			RESTUtility.dropSchema("http://localhost:8081/BaseX75/rest/bankaa");
 			RESTUtility.dropSchema("http://localhost:8081/BaseX75/rest/bankab");
 			RESTUtility.createSchema("http://localhost:8081/BaseX75/rest/bankaa");
 			RESTUtility.createSchema("http://localhost:8081/BaseX75/rest/bankab");

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.toomanysecrets.com/centralna"
+    targetNamespace="http://www.toomanysecrets.com/centralna">
+    <xs:element name="centralna">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="banke">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element name="banka">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="naziv" type="xs:string"/>
+                                        <xs:element name="swift" type="xs:string"/>
+                                        <xs:element name="stanje" type="xs:decimal"/>
+                                        <xs:element name="racun">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                  <xs:length value="18"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="brojacPoslednjePoslateNotifikacije" type="xs:int"/>
+                <xs:element name="brojacPoslednjegPoslatogMTNaloga" type="xs:int"/>
+                <xs:element name="brojacPoslednjegPrimljenogMTNaloga">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element name="banka">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="naziv" type="xs:string"/>
+                                        <xs:element name="brojac" type="xs:int"/>
+                                        <xs:element name="timestamp" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

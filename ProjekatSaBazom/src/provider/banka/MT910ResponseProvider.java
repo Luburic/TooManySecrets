@@ -54,7 +54,7 @@ public class MT910ResponseProvider implements Provider<DOMSource> {
     		System.out.println("\nInvoking MT103Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			Document document =DocumentTransform.convertToDocument(request);
-			DocumentTransform.printDocument(document);
+			//DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 			
@@ -67,8 +67,8 @@ public class MT910ResponseProvider implements Provider<DOMSource> {
 			
 			Document decryptedDocument = MessageTransform.unpack(document,"MT910", "MT910", ConstantsXWS.NAMESPACE_XSD_MT910, propReceiver, "banka", "MT910");
 
-			System.out.println("STIGAO U MT910 PROVIDERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-			DocumentTransform.printDocument(decryptedDocument);
+			System.out.println("STIGAO U MT910 PRVIDER");
+			//DocumentTransform.printDocument(decryptedDocument);
 			
 			Document forSave = null;
 			if(decryptedDocument != null) {
@@ -77,6 +77,9 @@ public class MT910ResponseProvider implements Provider<DOMSource> {
 			}
 			
 			semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+			if(semaBanka != null) {
+				System.out.println("SEMA BANKE NIJE PRAZNA, IMA RACUNA: "+semaBanka.getKorisnickiRacuni().getRacun().size());
+			}
 			
 			Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
 			
@@ -94,7 +97,7 @@ public class MT910ResponseProvider implements Provider<DOMSource> {
 				decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 				
 				
-				DocumentTransform.printDocument(decryptedDocument);
+				//DocumentTransform.printDocument(decryptedDocument);
 			
 				JAXBContext context = JAXBContext.newInstance("beans.mt910");
 				Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -102,10 +105,13 @@ public class MT910ResponseProvider implements Provider<DOMSource> {
 			
 			
 				if(registar.getBanke().getBankaByCode(mt910.getSwiftBankePoverioca()) != null) {
-					semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
+					//semaBanka = BankaDBUtil.loadBankaDatabase(propReceiver.getProperty("address"));
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setBrojac(rbrPoruke);
 					semaBanka.getBrojacPoslednjePrimljeneNotifikacije().getCentralnabanka().setTimestamp(dateString);
-					BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
+					if(semaBanka != null) {
+						System.out.println("CUVANJE BAZE POSLE OVALJENE RAZMENE SREDSTAVA U MT910 RESPONSE A PRE SLANJA NOTIFIKACIJE CENTRALNOJ BANCI");
+						BankaDBUtil.storeBankaDatabase(semaBanka, propReceiver.getProperty("address"));
+					}
 					DocumentTransform.createNotificationResponse("423", "Izvrsena radnja.", ConstantsXWS.TARGET_NAMESPACE_BANKA_NALOG);
 					encryptedDocument = MessageTransform.packS("Notifikacija", "Notification", apsolute, propReceiver, "cer" + sender,ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, "Notifikacija");
 				} else {

@@ -3,8 +3,8 @@
     <duznikNalogodavac>firmaa</duznikNalogodavac>
     <svrhaPlacanja>reket</svrhaPlacanja>
     <primalacPoverilac>firmab</primalacPoverilac>
-    <datumNaloga>2014-06-25</datumNaloga>
-    <datumValute>2014-06-25</datumValute>
+    <datumNaloga>2014-06-26</datumNaloga>
+    <datumValute>2014-06-26</datumValute>
     <racunDuznika>340111111111111111</racunDuznika>
     <modelZaduzenja>97</modelZaduzenja>
     <pozivNaBrojZaduzenja>111111</pozivNaBrojZaduzenja>
@@ -13,5 +13,5 @@
     <pozivNaBrojOdobrenja>111111</pozivNaBrojOdobrenja>
     <iznos>10</iznos>
     <oznakaValute>rsd</oznakaValute>
-    <hitno>true</hitno>
+    <hitno>false</hitno>
 </nalog>

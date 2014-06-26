@@ -6,9 +6,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Properties;
 
 import javax.ejb.Stateless;
@@ -35,10 +32,8 @@ import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
 import util.Validation;
-import basexdb.centralna.CentralnaSema;
-import basexdb.registar.Registar;
+import basexdb.centralna.Centralna;
 import basexdb.util.CentralnaDBUtil;
-import basexdb.util.RegistarDBUtil;
 import beans.mt103.MT103;
 import beans.mt900.MT900;
 import beans.mt910.MT910;
@@ -54,7 +49,7 @@ wsdlLocation = "WEB-INF/wsdl/CentralnaRTGSNalog.wsdl")
 public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 	private Document encryptedDocument;
-	private CentralnaSema semaBanka;
+	public Centralna semaBanka;
 	private String message;
 	private Properties propReceiver;
 	private String apsolute = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
@@ -75,7 +70,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			System.out.println("\nInvoking MT103Provider\n");
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			Document document =DocumentTransform.convertToDocument(request);
-			DocumentTransform.printDocument(document);
+			//DocumentTransform.printDocument(document);
 			System.out.println("-------------------REQUEST MESSAGE----------------------------------");
 			System.out.println("\n");
 
@@ -95,6 +90,14 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 			}
 
 			semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
+			
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			for(Centralna.Banke.Banka b : semaBanka.getBanke().getBanka()) {
+				System.out.println("NAZIV: "+b.getNaziv());
+				System.out.println("RACUN: "+b.getRacun());
+				System.out.println("SWIFT: "+b.getSwift());
+				System.out.println("STANJE: "+b.getStanje());
+			}
 
 
 
@@ -113,7 +116,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 
 				System.out.println("UUUUSAOOOOOOOOOOOOOO U MT103 PROVIDERRRRRRRRRRRRRRRRRRRRRRRRRRRsdasfhgjgfdsfdgh");
-				DocumentTransform.printDocument(decryptedDocument);
+				//DocumentTransform.printDocument(decryptedDocument);
 				System.out.println("UUUUSAOOOOOOOOOOOOOO U MT103 PROVIDERRRRRRRRRRRRRRRRRRRRRRRRRRRsdasfhgjgfdsfdgh");
 
 				JAXBContext context = JAXBContext.newInstance("beans.mt103");
@@ -129,7 +132,9 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					return new DOMSource(null);
 				} else {
 					
-					for(CentralnaSema.Banke b : semaBanka.getBanke()) {
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: "+mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: "+mt103.getObracunskiRacunBankePoverioca());
+					for(Centralna.Banke.Banka b : semaBanka.getBanke().getBanka()) {
 						if(b.getRacun().equals(mt103.getObracunskiRacunBankeDuznika())) {
 							b.setStanje(b.getStanje().subtract(mt103.getIznos()));
 						} else if (b.getRacun().equals(mt103.getObracunskiRacunBankePoverioca())) {
@@ -138,15 +143,17 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					}
 					//call clients
 					createMT910(mt103);
+					createMT103(mt103);
 					String reciver = null;
-					int size = semaBanka.getBanke().size();
-					System.out.println("VELICINA LISTE "+size);
-					for(CentralnaSema.Banke b : semaBanka.getBanke()) {
+					int size = semaBanka.getBanke().getBanka().size();
+					System.out.println("VELICINA LISTE CENTRALNE BANKE"+size);
+					for(Centralna.Banke.Banka b : semaBanka.getBanke().getBanka()) {
 						System.out.println("SWIFT SVAKE BANKE: " + b.getSwift());
 					}
-					for(CentralnaSema.Banke b : semaBanka.getBanke()) {
+					for(Centralna.Banke.Banka b : semaBanka.getBanke().getBanka()) {
 						if(b.getSwift().equals(mt103.getSwiftBankePoverioca())) {
 							reciver = b.getNaziv();
+							System.out.println("RECIVER KOME SE SALJE MT103 i MT910: "+reciver);
 						}
 					}
 					if(testIt910(propReceiver, reciver, "cer"+reciver, apsolutePath)) {
@@ -161,9 +168,13 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					}
 					createMT900(mt103);
 					encryptedDocument = MessageTransform.packS("MT900", "MT900", apsolute, propReceiver, "cer"+sender, ConstantsXWS.NAMESPACE_XSD_MT900, "MT900");
+					System.out.println("CITANJE BROJACA IZ CENTRALNE ZA PRIMLJENI MT NALOG: "+semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(reciver).getBrojac());
 					semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(reciver).setBrojac(rbrPoruke);
 					semaBanka.getBrojacPoslednjegPrimljenogMTNaloga().getBankaByNaziv(reciver).setTimestamp(dateString);
-					CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
+					if(semaBanka != null) {
+						System.out.println("CUVANJE MT103 PRE VRACANJA MT900");
+						CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
+					}
 				}
 
 			}
@@ -227,9 +238,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 	}
 
-	private MT103 createMT103(MT103 mt103) {
-
-		Registar registar = RegistarDBUtil.loadRegistarDatabase("http://localhost:8081/BaseX75/rest/registar");
+	private void createMT103(MT103 mt103) {
 
 		try {
 			JAXBContext context = JAXBContext.newInstance("beans.mt103");
@@ -254,25 +263,22 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 		mt103El.setAttribute("sender", "centralnabanka");
 		SecurityClass sc = new SecurityClass();
 		sc.saveDocument(doc, apsolutePath103);
-
-
-		RegistarDBUtil.storeRegistarDatabase(registar, "http://localhost:8081/BaseX75/rest/registar");
-		return mt103;
 	}
 
 
 	public boolean validateContent(MT103 mt103){
-		/*if(semaBanka == null) {
+		if(semaBanka == null) {
 			System.out.println("SEMA JE NULLL U VALIDACIJI");
 		}
-		for (CentralnaSema.Banke b : semaBanka.getBanke()) {
+		System.out.println("SEMA CENTRALNE NIJE NULL I VRSI SE VALIDACIJA DA LI POSTOJI BANKA SA POSLATIM SWIFT KODOM");
+		for (Centralna.Banke.Banka b : semaBanka.getBanke().getBanka()) {
 			if(b.getSwift().equals(mt103.getSwiftBankeDuznika()) || b.getSwift().equals(mt103.getSwiftBankePoverioca())) {
-				message = "Ne postoji banka sa dostavljenim swift kodom";
+				System.out.println("Ne postoji banka sa dostavljenim swift kodom");
 				return true;
 			}
 		}
-		return false;*/
-		return true;
+		System.out.println("IZGLEDA DA NE POSTOJI SA TIM SWIFTOM");
+		return false;
 	}
 
 	private void createMT910(MT103 mt103) {
@@ -339,7 +345,10 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 			if(encrypted != null) {
 				semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
-				CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propSender.getProperty("address"));
+				if(semaBanka != null) {
+					System.out.println("CUVANJE UPDATE BROJACA ZA MT910 KOJI SE TEK SALJE");
+					CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
+				}
 			}
 
 
@@ -397,8 +406,8 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 		try {
 			URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/MT103Response?wsdl");
-			QName serviceName = new QName("http://www.toomanysecrets.com/MT910Response", "MT103Response");
-			QName portName = new QName("http://www.toomanysecrets.com/MT910Response","MT103ResponsePort");
+			QName serviceName = new QName("http://www.toomanysecrets.com/MT103Response", "MT103Response");
+			QName portName = new QName("http://www.toomanysecrets.com/MT103Response","MT103ResponsePort");
 
 			Service service;
 			try {
@@ -416,7 +425,10 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 
 			if(encrypted != null) {
 				semaBanka.setBrojacPoslednjegPoslatogMTNaloga(semaBanka.getBrojacPoslednjegPoslatogMTNaloga()+1);
-				CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propSender.getProperty("address"));
+				if(semaBanka != null) {
+					System.out.println("CUVANJE BROJACA PRE NEGO STO SE POSALJE MT103");
+					CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
+				}
 			}
 
 
@@ -428,7 +440,7 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");	
 					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response),"Nalog", "Notification", ConstantsXWS.NAMESPACE_XSD_NOTIFICATION, propSender,"banka", "Notifikacija");
 
-					DocumentTransform.printDocument(decryptedDocument);
+					//DocumentTransform.printDocument(decryptedDocument);
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 
 					if(decryptedDocument != null){
