@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><nalog xmlns="http://www.toomanysecrets.com/nalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="firmaa">
+<?xml version="1.0" encoding="UTF-8"?><nalog xmlns="http://www.toomanysecrets.com/nalog" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="firmaA">
     <idPoruke>123456</idPoruke>
     <duznikNalogodavac>firmaa</duznikNalogodavac>
     <svrhaPlacanja>reket</svrhaPlacanja>

@@ -11,7 +11,7 @@
             <brojRacuna>340111111111111111</brojRacuna>
             <vlasnik>firmaa</vlasnik>
             <pib>11111111111</pib>
-            <stanje>-200000.00</stanje>
+            <stanje>200000.00</stanje>
             <blokiran>false</blokiran>
             <rezervisano>0.00</rezervisano>
         </racun>
