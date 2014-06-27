@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><faktura 
-xmlns="http://www.toomanysecrets.com/faktura" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-sender="firmaB">
+<?xml version="1.0" encoding="UTF-8"?><faktura xmlns="http://www.toomanysecrets.com/faktura" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="firmaB">
     <zaglavlje idPoruke="123456">
         <nazivDobavljaca>NIS</nazivDobavljaca>
         <adresaDobavljaca>BULEVAR OSLOBODJENJA</adresaDobavljaca>

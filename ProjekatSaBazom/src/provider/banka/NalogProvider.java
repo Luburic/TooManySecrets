@@ -1,6 +1,7 @@
 package provider.banka;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -30,7 +31,6 @@ import org.apache.cxf.binding.soap.SoapFault;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXParseException;
 
 import security.SecurityClass;
 //import util.AccountNumberISO7064Mod9710;
@@ -654,6 +654,7 @@ public class NalogProvider implements Provider<DOMSource> {
 	}
 
 	public boolean testItMT102(Properties propSender, String receiver, String cert,String inputFile) {
+
 		try {
 			URL wsdlLocation = new URL("http://localhost:8080/" + receiver+ "/services/CentralnaClearingNalog?wsdl");
 			QName serviceName = new QName("http://www.toomanysecrets.com/CentralnaClearingNalog", "CentralnaClearingNalog");
@@ -686,7 +687,7 @@ public class NalogProvider implements Provider<DOMSource> {
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");	
 					Document decryptedDocument = MessageTransform.unpack(DocumentTransform.convertToDocument(response), "MT900", "MT900",ConstantsXWS.NAMESPACE_XSD_MT900, propSender, "banka", "MT900");
 
-					//DocumentTransform.printDocument(decryptedDocument);
+					DocumentTransform.printDocument(decryptedDocument);
 					System.out.println("-------------------RESPONSE MESSAGE---------------------------------");
 
 					if(decryptedDocument != null){
@@ -700,7 +701,7 @@ public class NalogProvider implements Provider<DOMSource> {
 						decryptedDocument = MessageTransform.removeSignature(decryptedDocument);
 
 						
-						//DocumentTransform.printDocument(decryptedDocument);
+						DocumentTransform.printDocument(decryptedDocument);
 						
 						
 						String apsolute1 = DocumentTransform.class.getClassLoader().getResource("mt900.xml").toString().substring(6);
@@ -735,6 +736,27 @@ public class NalogProvider implements Provider<DOMSource> {
 			e.printStackTrace();
 		}
 		return true;
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		
+		//String path = "./TestXMLi/TestRTGS1_ispravan.xml";
+		String path = "./TestXMLi/TestRTGS2_neispravan_swift.xml";
+		Properties prop = new Properties();
+		InputStream input = null;
+		 
+		try {
+			input = new FileInputStream(new File("C:\\Users\\Branislav\\Documents\\GitHub\\TooManySecrets\\ProjekatSaBazom\\WEB-INF\\keystores\\BankaA\\banka.properties"));
+			prop.load(input);
+		}
+		 catch (IOException ex) {
+			 ex.printStackTrace();
+		} 
+		
+		System.out.println("MT900 client status: " + new NalogProvider().testItMT103(prop, "centralnabanka", "cercentralnabanka", path));
+		
 	}
 }
 

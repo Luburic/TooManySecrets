@@ -114,12 +114,12 @@ public class NalogClient {
 	public static void main(String[] args) {
 		NalogClient fc = new NalogClient();
 		//fc.createNalog();
-		//String path = "./TestXMLi/TestNalog01_ispravan_ista_banka.xml";
+		String path = "./TestXMLi/TestNalog01_ispravan_ista_banka.xml";
 		//String path = "./TestXMLi/TestNalog02_ispravan_razlicita_banka_manje_250k.xml";
 		//String path = "./TestXMLi/TestNalog03_ispravan_razlicita_banka_vece_250k.xml";
 		//String path = "./TestXMLi/TestNalog04_neispravna_struktura.xml";
 		//String path = "./TestXMLi/TestNalog05_neispravan_sadrzaj.xml";
-		String path = "./TestXMLi/TestNalog06_neispravan_sadrzaj_nema_racuna_ista_banka.xml";
+		//String path = "./TestXMLi/TestNalog06_neispravan_sadrzaj_nema_racuna_ista_banka.xml";
 		//String path = "./TestXMLi/TestNalog07_neispravan_sadrzaj_nema_racuna_druga_banka.xml";
 		//String path = "./TestXMLi/TestNalog08_neispravan_sadrzaj_druga_banka_ne_postoji.xml";
 		
