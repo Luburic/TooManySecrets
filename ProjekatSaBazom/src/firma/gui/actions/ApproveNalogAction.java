@@ -50,13 +50,14 @@ public class ApproveNalogAction extends AbstractAction {
 			try {
 				JAXBContext context = JAXBContext.newInstance("beans.nalog");
 				Marshaller marshaller = context.createMarshaller();
-				marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new NSPrefixMapper("nalog"));
+				//marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new NSPrefixMapper("nalog"));
 				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 				marshaller.marshal(nalog, new File("./NalogTest/NalogTemp.xml"));
 
 				Document doc = Validation.buildDocumentWithoutValidation("./NalogTest/NalogTemp.xml");
 				Element eNalog = (Element) doc.getElementsByTagName("nalog").item(0);
 				eNalog.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+				eNalog.setAttribute("sender", "firmaa");
 				SecurityClass sc = new SecurityClass();
 				sc.saveDocument(doc, "./NalogTest/NalogTemp.xml");
 

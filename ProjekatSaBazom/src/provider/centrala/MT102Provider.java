@@ -31,11 +31,9 @@ import security.SecurityClass;
 import util.ConstantsXWS;
 import util.DocumentTransform;
 import util.MessageTransform;
-import util.NSPrefixMapper;
 import util.Validation;
 import basexdb.centralna.Centralna;
 import basexdb.util.CentralnaDBUtil;
-import beans.mt102.MT102;
 import beans.mt103.MT103;
 import beans.mt900.MT900;
 import beans.mt910.MT910;
@@ -94,12 +92,29 @@ public class MT102Provider implements javax.xml.ws.Provider<DOMSource>{
 			semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
 			
 			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
 			for(Centralna.Banke.Banka b : semaBanka.getBanke().getBanka()) {
 				System.out.println("NAZIV: "+b.getNaziv());
 				System.out.println("RACUN: "+b.getRacun());
 				System.out.println("SWIFT: "+b.getSwift());
 				System.out.println("STANJE: "+b.getStanje());
 			}
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE: ");
+			
 
 
 
@@ -138,15 +153,56 @@ public class MT102Provider implements javax.xml.ws.Provider<DOMSource>{
 				} else {
 					
 					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
+					
 					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
+					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
+					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
+					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
+					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
+					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
+					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
+					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
+					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
+					
 					for(Centralna.Banke.Banka b : semaBanka.getBanke().getBanka()) {
-						if(b.getRacun().equals(mt103.getObracunskiRacunBankeDuznika())) {
+						if(b.getSwift().equals(mt103.getSwiftBankeDuznika())) {
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							
 							semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
+							System.out.println("Stanje Pre: "+b.getStanje());
 							b.setStanje(b.getStanje().subtract(mt103.getIznos()));
+							System.out.println("Stanje posle: "+b.getStanje());
 							CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
-						} else if (b.getRacun().equals(mt103.getObracunskiRacunBankePoverioca())) {
+						} else if (b.getSwift().equals(mt103.getSwiftBankePoverioca())) {
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							System.out.println("DASAO GAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+							
 							semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
+							System.out.println("Stanje pre: "+b.getStanje());
 							b.setStanje(b.getStanje().add(mt103.getIznos()));
+							System.out.println("Stanje posle: "+b.getStanje());
 							CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 						}
 					}

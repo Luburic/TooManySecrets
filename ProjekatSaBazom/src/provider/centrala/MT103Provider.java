@@ -138,15 +138,17 @@ public class MT103Provider implements javax.xml.ws.Provider<DOMSource>{
 					System.out.println("OBRACUNSKI RACUN BANKE DUZNIKA: " + mt103.getObracunskiRacunBankeDuznika());
 					System.out.println("OBRACUNSKI RACUN BANKE POVERIOCA: " + mt103.getObracunskiRacunBankePoverioca());
 					for(Centralna.Banke.Banka b : semaBanka.getBanke().getBanka()) {
-						if(b.getRacun().equals(mt103.getObracunskiRacunBankeDuznika())) {
-							semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
+						if(b.getSwift().equals(mt103.getSwiftBankeDuznika())) {
 							b.setStanje(b.getStanje().subtract(mt103.getIznos()));
-							CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
-						} else if (b.getRacun().equals(mt103.getObracunskiRacunBankePoverioca())) {
-							semaBanka = CentralnaDBUtil.loadCentralnaDatabase(propReceiver.getProperty("address"));
+						} else if (b.getSwift().equals(mt103.getSwiftBankePoverioca())) {
 							b.setStanje(b.getStanje().add(mt103.getIznos()));
-							CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
 						}
+					}
+					CentralnaDBUtil.storeCentralnaDatabase(semaBanka, propReceiver.getProperty("address"));
+					System.out.println("U CENTRALNOJ SE NALAZE SLEDECE BANKE POSLE TRANSFERA: ");
+					for(Centralna.Banke.Banka b : semaBanka.getBanke().getBanka()) {
+						System.out.println("NAZIV: "+b.getNaziv());
+						System.out.println("STANJE: "+b.getStanje());
 					}
 					//call clients
 					createMT910(mt103);

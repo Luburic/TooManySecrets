@@ -2,7 +2,7 @@
     <brojRacuna>340111111111111111</brojRacuna>
     <datum>2014-06-24</datum>
     <redniBrojPreseka>1</redniBrojPreseka>
-<timestamp>06/26/2014 07:59:04</timestamp><redniBrojPoruke>2</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<timestamp>06/27/2014 02:15:01</timestamp><redniBrojPoruke>1</redniBrojPoruke><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -12,13 +12,13 @@
 <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>okuWONzl2UbKDXi4xpHrFsBLWRA=</ds:DigestValue>
+<ds:DigestValue>x+uU0PQaXU5PyTqpqA0JIFfahe4=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
 <ds:SignatureValue>
-idWIuIK0C0/PVbxdEnt5kUIgWklADjFRE/jQVV/qpORve37GemP4AUegINk0zVX07iMJge3XchOm
-DhL2taAS9y6lkWnQUkNR+TrWEpap8yWNHkKF0HqZqmaaX+V0TtqfzYpm068fc3M/fYesbUjOtiOB
-MQBGzi/DA6PfaIw9FEA=
+oggYfoqtJapRcN9du4RicMAKiDu5aeGPimtB+VVWNiTp9Qv0cAZ6RReKle2vJaQWO/OzUJKL1EDl
+JiJzJ5m24R9aIA/fbsTsei3177cy4Y1tO6r5Z/JTGl3Cds4Dhy0MxktaVrUF9wdOm09k7rapMZig
+AhuDqiiLhFecvdGrcTE=
 </ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>

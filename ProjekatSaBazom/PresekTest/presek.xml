@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><presek xmlns="http://www.toomanysecrets.com/presek" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender="bankaa">
     <zaglavlje xmlns="http://www.toomanysecrets.com/presek" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <brojRacuna>000000000000000000</brojRacuna>
-        <datumNaloga>2014-06-26</datumNaloga>
+        <datumNaloga>2014-06-27</datumNaloga>
         <brojPreseka>0</brojPreseka>
         <prethodnoStanje>0</prethodnoStanje>
         <brojPromenaUKorist>0</brojPromenaUKorist>
@@ -15,8 +15,8 @@
             <duznikNalogodavac>0</duznikNalogodavac>
             <svrhaPlacanja>0</svrhaPlacanja>
             <primalacPoverilac>0</primalacPoverilac>
-            <datumNaloga>2014-06-26</datumNaloga>
-            <datumValute>2014-06-26</datumValute>
+            <datumNaloga>2014-06-27</datumNaloga>
+            <datumValute>2014-06-27</datumValute>
             <racunDuznika>000000000000000000</racunDuznika>
             <modelZaduzenja>0</modelZaduzenja>
             <pozivNaBrojZaduzenja>0</pozivNaBrojZaduzenja>

@@ -139,8 +139,34 @@ public class ZahtevZaIzvodClient {
 			presek = zzi.testIt("firmaA", "bankaa", "cerbankaa", "./IzvodTest/izvod"+(++cnt)+".xml");
 		}
 		for(Presek p : preseci) {
-			System.out.println("ZAGLAVLJE: "+p.getZaglavlje().getNovoStanje());
-			System.out.println("STAVKE: "+p.getStavke().getStavka().get(0).getDuznikNalogodavac());
+			System.out.println("-------------------------------------ZAGLAVLJE---------------------------------------");
+			System.out.println("Broj preseka: "+p.getZaglavlje().getBrojPreseka());
+			System.out.println("Broj promena na teret: "+p.getZaglavlje().getBrojPromenaNaTeret());
+			System.out.println("Broj promena u korist: "+p.getZaglavlje().getBrojPromenaUKorist());
+			System.out.println("Broj racuna: "+p.getZaglavlje().getBrojRacuna());
+			System.out.println("Datum naloga: "+p.getZaglavlje().getDatumNaloga());
+			System.out.println("Novo stanje: "+p.getZaglavlje().getNovoStanje());
+			System.out.println("Prethodno stanje: "+p.getZaglavlje().getPrethodnoStanje());
+			System.out.println("Ukupno na teret: "+p.getZaglavlje().getUkupnoNaTeret());
+			System.out.println("Ukupno u korist: "+p.getZaglavlje().getUkupnoUKorist());
+			
+			for(Presek.Stavke.Stavka s : p.getStavke().getStavka()) {
+				System.out.println("-------------------------------------STAVKA---------------------------------------");
+				System.out.println("Duznik nalogodavac: "+s.getDuznikNalogodavac());
+				System.out.println("Model odobrenja: "+s.getModelOdobrenja());
+				System.out.println("Model zaduzenja: "+s.getModelZaduzenja());
+				System.out.println("Poziv na broj odobrenja: "+s.getPozivNaBrojOdobrenja());
+				System.out.println("Poziv na broj zaduzenja: "+s.getPozivNaBrojZaduzenja());
+				System.out.println("Primalac-poverilac: "+s.getPrimalacPoverilac());
+				System.out.println("Racun duznika: "+s.getRacunDuznika());
+				System.out.println("Racun poverioca: "+s.getRacunPoverioca());
+				System.out.println("Smer: "+s.getSmer());
+				System.out.println("Svrha placanja: "+s.getSvrhaPlacanja());
+				System.out.println("Datum naloga: "+s.getDatumNaloga());
+				System.out.println("Datum valute: "+s.getDatumValute());
+				System.out.println("Iznos: "+s.getIznos());
+			}
+			
 		}
 	}
 
